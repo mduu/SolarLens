@@ -7,12 +7,12 @@
 
 import Foundation
 
-public actor BuildingState: Actor {
-    public private(set) var currentSolarProduction: Double = 0
-    public private(set) var currentOverallConsumption: Double = 0
-    public private(set) var currentBatteryLevel: Double = 0
-    public private(set) var currentNetworkConsumption: Double = 0
-    public private(set) var currentBatteryChargeRate: Double = 0
+class BuildingStateModel: ObservableObject {
+    @Published private(set) var currentSolarProduction: Double = 0
+    @Published private(set) var currentOverallConsumption: Double = 0
+    @Published private(set) var currentBatteryLevel: Double = 0
+    @Published private(set) var currentNetworkConsumption: Double = 0
+    @Published private(set) var currentBatteryChargeRate: Double = 0
     
     public func updateOverview(
         currentSolarProduction: Double,

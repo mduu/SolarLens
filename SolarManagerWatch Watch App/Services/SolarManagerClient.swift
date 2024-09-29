@@ -6,7 +6,7 @@
 //
 
 class SolarManagerClient {
-    public private(set) var currentBuildingState: BuildingState = .init()
+    public private(set) var currentBuildingState: BuildingStateModel = .init()
     
     init() {
         self.update()
@@ -14,14 +14,12 @@ class SolarManagerClient {
     
     func update() {
         // TODO Replace fake implementation
-        Task {
-            await currentBuildingState.updateOverview(
-                currentSolarProduction: 3.2,
-                currentOverallConsumption: 0.8,
-                currentBatteryLevel: 42,
-                currentNetworkConsumption: 0.01,
-                currentBatteryChargeRate: 2.4
-            )
-        }
+        currentBuildingState.updateOverview(
+            currentSolarProduction: 3.2,
+            currentOverallConsumption: 0.8,
+            currentBatteryLevel: 42,
+            currentNetworkConsumption: 0.01,
+            currentBatteryChargeRate: 2.4
+        )
     }
 }
