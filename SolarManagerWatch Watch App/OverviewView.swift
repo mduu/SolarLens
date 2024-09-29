@@ -19,3 +19,7 @@ struct OverviewView: View {
         .padding()
     }
 }
+
+#Preview {
+    OverviewView()
+}

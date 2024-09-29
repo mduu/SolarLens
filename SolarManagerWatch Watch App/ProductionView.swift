@@ -19,3 +19,7 @@ struct ProductionView: View {
         .padding()
     }
 }
+
+#Preview {
+    ProductionView()
+}

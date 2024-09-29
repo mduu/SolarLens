@@ -19,3 +19,7 @@ struct ConsumationView: View {
         .padding()
     }
 }
+
+#Preview {
+    ConsumationView()
+}
