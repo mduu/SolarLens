@@ -27,7 +27,8 @@ struct SolarProductionView: View {
                 )
             }
             .gaugeStyle(.circular)
-            
+            .tint(Gradient(colors: [.blue, .yellow, .red]))
+
             Image(systemName: "sun.max")
         }
     }
