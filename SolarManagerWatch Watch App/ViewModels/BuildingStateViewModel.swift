@@ -12,7 +12,7 @@ class BuildingStateViewModel: ObservableObject {
     @Published private(set) var isDirty: Bool = true;
     @Published private(set) var errorMessage = ""
     
-    @Published private(set) var overviewData: OverviewData = .init()
+    @Published var overviewData: OverviewData = .init()
     
     private let solarManagerClient: EnergyManagerClient
     
