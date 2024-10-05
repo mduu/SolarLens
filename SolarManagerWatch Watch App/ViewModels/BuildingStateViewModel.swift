@@ -14,10 +14,11 @@ class BuildingStateViewModel: ObservableObject {
     
     @Published private(set) var overviewData: OverviewData = .init()
     
-    private let solarManagerClient: SolarManagerClient
+    private let solarManagerClient: EnergyManagerClient
     
-    init(solarManagerClient: SolarManagerClient = SolarManagerClient()) {
+    init(solarManagerClient: EnergyManagerClient = SolarManagerClient()) {
         self.solarManagerClient = solarManagerClient
+        fetchServerData()
     }
     
     func fetchServerData() {
