@@ -67,19 +67,13 @@ struct OverviewView: View {
             * model.overviewData.currentSolarProduction
     }
 
-    private func shouldInvertColor() -> Bool {
-        return solarPercentage() >= 40
-            ? true
-            : false
-    }
-
     private func getBackgroundGRadient() -> Gradient {
         if solarPercentage() >= 40 {
             return Gradient(colors: [.yellow, .black])
         }
 
         if solarPercentage() >= 10 {
-            return Gradient(colors: [.orange, .black])
+            return Gradient(colors: [.yellow.opacity(0.7), .black])
         }
 
         if solarPercentage() >= 1 {
