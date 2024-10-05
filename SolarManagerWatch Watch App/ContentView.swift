@@ -8,19 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var model = BuildingStateModel()
+    @StateObject private var viewModel = BuildingStateViewModel()
     
     var body: some View {
         TabView {
             OverviewView()
-                .environmentObject(model)
+                .environmentObject(viewModel)
             ProductionView()
-                .environmentObject(model)
+                .environmentObject(viewModel)
             ConsumationView()
-                .environmentObject(model)
-   }
+                .environmentObject(viewModel)
+        }
         .tabViewStyle(
             .verticalPage(transitionStyle: .blur))
+        .onAppear {
+            viewModel.fetchServerData()
+        }
     }
 }
 

@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct OverviewView: View {
-    @EnvironmentObject var model: BuildingStateModel
+    @EnvironmentObject var model: BuildingStateViewModel
     
     var body: some View {
         VStack {
@@ -17,7 +17,7 @@ struct OverviewView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("House Overview")
-            Text("Solar Power: \(model.currentSolarProduction, specifier:"%.2f")")
+            Text("Solar Power: \(model.overviewData.currentSolarProduction, specifier:"%.2f")")
         }
         .padding()
     }
