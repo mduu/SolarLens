@@ -28,6 +28,7 @@ struct HouseholdConsumptionView: View {
                 )
             }
             .gaugeStyle(.circular)
+            .tint(Gradient(colors: [.green, .orange]))
 
             Image(systemName: "house")
         }

@@ -32,7 +32,7 @@ class FakeEnergyManager : EnergyManagerClient {
                 currentSolarProduction: 3.2,
                 currentOverallConsumption: 0.8,
                 currentBatteryLevel: 42,
-                currentNetworkConsumption: 0.01,
+                currentNetworkConsumption: 0.1,
                 currentBatteryChargeRate: 2.4)
     }
     

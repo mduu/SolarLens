@@ -22,11 +22,12 @@ struct NetworkConsumptionView: View {
             } currentValueLabel: {
                 Text(
                     String(
-                        format: "%.0f",
+                        format: "%.1f",
                         currentNetworkConsumption)
                 )
             }
             .gaugeStyle(.accessoryCircular)
+            .tint(Gradient(colors: [.green, .orange, .orange, .red]))
 
             Image(systemName: "network")
         }
