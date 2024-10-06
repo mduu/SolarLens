@@ -15,7 +15,7 @@ class SolarManagerClient: EnergyManagerClient {
     private var refreshToken: String?
     private var expireAt: Date?
 
-    func fetchOverviewData() -> OverviewData {
+    func fetchOverviewData() async throws -> OverviewData {
         return OverviewData(
             currentSolarProduction: 3.2,
             currentOverallConsumption: 0.8,
@@ -44,7 +44,7 @@ class SolarManagerClient: EnergyManagerClient {
         let loginSuccess = await login()
         if !loginSuccess {
             print("Login failed!")
-            throw SolarManagerError.init("Login failed!")
+            throw EnergyManagerClientError.loginFailed("Login failed!")
         } else {
             print("Login succeeded.")
         }

@@ -10,5 +10,5 @@ import Combine
 import Foundation
 
 protocol EnergyManagerClient {
-    func fetchOverviewData() -> OverviewData
+    func fetchOverviewData() async throws -> OverviewData
 }

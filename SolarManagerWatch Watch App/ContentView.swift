@@ -9,8 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = BuildingStateViewModel()
-    
+
     var body: some View {
+
         TabView {
             OverviewView()
                 .environmentObject(viewModel)
@@ -20,9 +21,12 @@ struct ContentView: View {
                 .environmentObject(viewModel)
         }
         .tabViewStyle(
-            .verticalPage(transitionStyle: .blur))
+            .verticalPage(transitionStyle: .blur)
+        )
         .onAppear {
-            viewModel.fetchServerData()
+            Task {
+                await viewModel.fetchServerData()
+            }
         }
     }
 }

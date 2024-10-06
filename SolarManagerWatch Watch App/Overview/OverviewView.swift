@@ -49,7 +49,7 @@ struct OverviewView: View {
                             currentChargeRate: $model.overviewData
                                 .currentBatteryChargeRate
                         )
-                        
+
                         HouseholdConsumptionView(
                             currentOverallConsumption: $model.overviewData
                                 .currentNetworkConsumption,
@@ -59,6 +59,11 @@ struct OverviewView: View {
                 }
             }
             .padding()
+        }
+        .onAppear {
+            Task {
+                await model.fetchServerData()
+            }
         }
     }
 
@@ -88,6 +93,6 @@ struct OverviewView: View {
     OverviewView()
         .environmentObject(
             BuildingStateViewModel(
-                solarManagerClient: FakeEnergyManager()
+                energyManagerClient: FakeEnergyManager()
             ))
 }
