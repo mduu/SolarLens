@@ -14,10 +14,10 @@ class BuildingStateViewModel: ObservableObject {
     
     @Published var overviewData: OverviewData = .init()
     
-    private let solarManagerClient: EnergyManagerClient
+    private let energyManager: EnergyManagerClient
     
     init(solarManagerClient: EnergyManagerClient = SolarManagerClient()) {
-        self.solarManagerClient = solarManagerClient
+        self.energyManager = solarManagerClient
         fetchServerData()
     }
     
@@ -25,6 +25,6 @@ class BuildingStateViewModel: ObservableObject {
         isLoading = true
         errorMessage = ""
         
-        self.overviewData = solarManagerClient.fetchOverviewData()
+        self.overviewData = energyManager.fetchOverviewData()
     }
 }
