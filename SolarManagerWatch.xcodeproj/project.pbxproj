@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		494882B62CA8443300C59146 /* SolarManagerWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		49D910902CB25A250017E5F0 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 49D9108F2CB25A250017E5F0 /* KeychainAccess */; };
+		495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 495B2E1F2CB2AE520089AD1B /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,9 +40,22 @@
 		494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SolarManagerWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		496717BD2CB2A6960054024C /* Exceptions for "SolarManagerWatch Watch App" folder in "Copy Bundle Resources" phase from "SolarManagerWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 494882B32CA8443300C59146 /* Resources */;
+			membershipExceptions = (
+				"SolarManagerWatch Watch App.entitlements",
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		494882B92CA8443300C59146 /* SolarManagerWatch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				496717BD2CB2A6960054024C /* Exceptions for "SolarManagerWatch Watch App" folder in "Copy Bundle Resources" phase from "SolarManagerWatch Watch App" target */,
+			);
 			path = "SolarManagerWatch Watch App";
 			sourceTree = "<group>";
 		};
@@ -53,7 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49D910902CB25A250017E5F0 /* KeychainAccess in Frameworks */,
+				495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,7 +129,7 @@
 			);
 			name = "SolarManagerWatch Watch App";
 			packageProductDependencies = (
-				49D9108F2CB25A250017E5F0 /* KeychainAccess */,
+				495B2E1F2CB2AE520089AD1B /* KeychainAccess */,
 			);
 			productName = "SolarManagerWatch Watch App";
 			productReference = 494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */;
@@ -150,7 +163,7 @@
 			mainGroup = 494882A82CA8443300C59146;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				49D9108E2CB25A250017E5F0 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 494882B02CA8443300C59146 /* Products */;
@@ -235,7 +248,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTABILITY = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -318,13 +331,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "SolarManagerWatch Watch App/SolarManagerWatch Watch App.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SolarManagerWatch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SolarManagerWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = SolarManagerWatch;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -335,12 +350,14 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+				VALIDATE_PRODUCT = NO;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
 			};
 			name = Debug;
 		};
@@ -349,13 +366,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "SolarManagerWatch Watch App/SolarManagerWatch Watch App.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SolarManagerWatch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SolarManagerWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = SolarManagerWatch;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -366,13 +385,14 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
 			};
 			name = Release;
 		};
@@ -442,20 +462,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		49D9108E2CB25A250017E5F0 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+		495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		49D9108F2CB25A250017E5F0 /* KeychainAccess */ = {
+		495B2E1F2CB2AE520089AD1B /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 49D9108E2CB25A250017E5F0 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
 		};
 /* End XCSwiftPackageProductDependency section */
