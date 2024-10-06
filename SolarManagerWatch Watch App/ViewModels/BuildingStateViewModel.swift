@@ -8,10 +8,10 @@
 import Foundation
 
 class BuildingStateViewModel: ObservableObject {
-    @Published private(set) var isLoading = false
-    @Published private(set) var isDirty: Bool = true
-    @Published private(set) var errorMessage: String?
-    @Published private(set) var loginCredentialsExists: Bool = false
+    @Published var isLoading = false
+    @Published var isDirty: Bool = true
+    @Published var errorMessage: String?
+    @Published var loginCredentialsExists: Bool = false
     @Published var overviewData: OverviewData = .init()
 
     private let energyManager: EnergyManagerClient
