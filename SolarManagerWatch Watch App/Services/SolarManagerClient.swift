@@ -8,9 +8,6 @@
 import Combine
 import Foundation
 
-protocol EnergyManagerClient {
-    func fetchOverviewData() -> OverviewData
-}
 
 class SolarManagerClient: EnergyManagerClient {
     private let apiBaseUrl: String = "https://cloud.solar-manager.ch/"
