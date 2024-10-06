@@ -37,7 +37,7 @@ struct ContentView: View {
                 }
             }
         } else {
-            Text("Need login")
+            LoginView()
         }
     }
 }

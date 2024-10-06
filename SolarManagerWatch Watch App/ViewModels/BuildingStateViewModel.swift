@@ -40,6 +40,11 @@ class BuildingStateViewModel: ObservableObject {
             isDirty = true
         }
     }
+    
+    func login(email: String, password: String) {
+        KeychainHelper.saveCredentials(username: email, password: password)
+        updateCredentialsExists()
+    }
 
     func updateCredentialsExists() {
         let credentials = KeychainHelper.loadCredentials()
