@@ -26,6 +26,12 @@ class KeychainHelper {
 
         return (username, password)
     }
+    
+    static func deleteCredentials() {
+        let keychain = getKeychain()
+        keychain[usernameKey] = nil
+        keychain[passwordKey] = nil
+    }
 
     private static func getKeychain() -> Keychain {
         return Keychain(service: serviceName)

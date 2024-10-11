@@ -41,7 +41,6 @@ struct LoginView: View {
                 }
 
             Button("Login") {
-                print("Login")
                 model.login(email: email, password: password)
             }
             .disabled(isValidEmail || isValidPasswort)

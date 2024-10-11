@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class BuildingStateViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var isDirty: Bool = true
@@ -26,13 +27,13 @@ class BuildingStateViewModel: ObservableObject {
         if !loginCredentialsExists {
             return
         }
-        
+
         do {
             isLoading = true
             errorMessage = nil
 
             overviewData = try await energyManager.fetchOverviewData()
-            
+
             isLoading = false
         } catch {
             errorMessage = error.localizedDescription
@@ -40,14 +41,25 @@ class BuildingStateViewModel: ObservableObject {
             isDirty = true
         }
     }
-    
-    func login(email: String, password: String) {
+
+    func login(email: String, password: String) -> Void {
+        defer {
+            isLoading = false
+        }
+        
+        isLoading = true
         KeychainHelper.saveCredentials(username: email, password: password)
+        updateCredentialsExists()
+    }
+    
+    func logout() -> Void {
+        KeychainHelper.deleteCredentials()
         updateCredentialsExists()
     }
 
     func updateCredentialsExists() {
         let credentials = KeychainHelper.loadCredentials()
+
         loginCredentialsExists =
             credentials.username?.isEmpty == false
             && credentials.password?.isEmpty == false

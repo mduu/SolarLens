@@ -12,9 +12,7 @@ struct ContentView: View {
 
     var body: some View {
         
-        if (viewModel.isLoading) {
-            Text("Loading ...")
-        } else if (viewModel.errorMessage != nil) {
+        if (viewModel.errorMessage != nil) {
             Text("Error: \(viewModel.errorMessage ?? "")")
                 .foregroundStyle(Color.red)
                 .font(.headline)
@@ -27,6 +25,8 @@ struct ContentView: View {
                     .environmentObject(viewModel)
                 ConsumationView()
                     .environmentObject(viewModel)
+                Settings()
+                    .environmentObject(viewModel)
             }
             .tabViewStyle(
                 .verticalPage(transitionStyle: .blur)
@@ -38,6 +38,7 @@ struct ContentView: View {
             }
         } else {
             LoginView()
+                .environmentObject(viewModel)
         }
     }
 }
