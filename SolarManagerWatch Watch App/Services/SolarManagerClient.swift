@@ -8,16 +8,16 @@
 import Combine
 import Foundation
 
-
 class SolarManagerClient: EnergyManagerClient {
     private let apiBaseUrl: String = "https://cloud.solar-manager.ch/"
     private var accessToken: String?
     private var refreshToken: String?
     private var expireAt: Date?
+    private var isEnsuringLoggedIn = false
 
     func fetchOverviewData() async throws -> OverviewData {
         try await ensureLoggedIn()
-        
+
         return OverviewData(
             currentSolarProduction: 3.2,
             currentOverallConsumption: 0.8,
@@ -27,6 +27,15 @@ class SolarManagerClient: EnergyManagerClient {
     }
 
     func ensureLoggedIn() async throws {
+        if isEnsuringLoggedIn {
+            return
+        }
+
+        isEnsuringLoggedIn = true
+        defer {
+            isEnsuringLoggedIn = false
+        }
+
         if let accessToken, let expireAt, expireAt > Date() {
             print("Valid login can be re-used")
             return
@@ -50,6 +59,7 @@ class SolarManagerClient: EnergyManagerClient {
         } else {
             print("Login succeeded.")
         }
+
     }
 
     func refresh() async {
@@ -57,7 +67,7 @@ class SolarManagerClient: EnergyManagerClient {
             print("No refresh token available.")
             return
         }
-        
+
         // TODO Refresh
     }
 
@@ -89,9 +99,7 @@ class SolarManagerClient: EnergyManagerClient {
         request.httpBody = encodedLoginRequest
 
         do {
-            let (data, _) = try await URLSession.shared.upload(
-                for: request,
-                from: encodedLoginRequest)
+            let (data, _) = try await URLSession.shared.data(for: request)
 
             // Handle response
             do {
