@@ -64,8 +64,8 @@ class SolarManagerClient: EnergyManagerClient {
     func login() async -> Bool {
         // Get credentials
         let credentials = KeychainHelper.loadCredentials()
-        if ((credentials.username?.isEmpty) != nil)
-            || ((credentials.password?.isEmpty) != nil)
+        if (credentials.username?.isEmpty ?? true)
+            || (credentials.password?.isEmpty ?? true)
         {
             print("No credentials found!")
             return false
