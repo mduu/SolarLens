@@ -16,6 +16,8 @@ class SolarManagerClient: EnergyManagerClient {
     private var expireAt: Date?
 
     func fetchOverviewData() async throws -> OverviewData {
+        try await ensureLoggedIn()
+        
         return OverviewData(
             currentSolarProduction: 3.2,
             currentOverallConsumption: 0.8,
@@ -60,11 +62,6 @@ class SolarManagerClient: EnergyManagerClient {
     }
 
     func login() async -> Bool {
-        guard let accessToken else {
-            print("No access token available.")
-            return false
-        }
-
         // Get credentials
         let credentials = KeychainHelper.loadCredentials()
         if ((credentials.username?.isEmpty) != nil)
