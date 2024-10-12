@@ -9,11 +9,11 @@ import Combine
 import Foundation
 
 class SolarManagerClient: EnergyManagerClient {
-    private let apiBaseUrl: String = "https://cloud.solar-manager.ch/"
     private var accessToken: String?
     private var refreshToken: String?
     private var expireAt: Date?
     private var isEnsuringLoggedIn = false
+    private var solarManagerApi = SolarManagerApi()
 
     func fetchOverviewData() async throws -> OverviewData {
         try await ensureLoggedIn()
@@ -43,7 +43,7 @@ class SolarManagerClient: EnergyManagerClient {
 
         if let refreshToken {
             print("Refresh token exists. Refreshing ...")
-            await refresh()
+            try await solarManagerApi.refresh(refreshToken: self.refreshToken!)
         }
 
         if let accessToken, let expireAt, expireAt > Date() {
@@ -51,98 +51,32 @@ class SolarManagerClient: EnergyManagerClient {
             return
         }
 
-        print("Performe login")
-        let loginSuccess = await login()
-        if !loginSuccess {
-            print("Login failed!")
-            throw EnergyManagerClientError.loginFailed("Login failed!")
-        } else {
-            print("Login succeeded.")
-        }
-
-    }
-
-    func refresh() async {
-        guard let refreshToken else {
-            print("No refresh token available.")
-            return
-        }
-
-        // TODO Refresh
-    }
-
-    func login() async -> Bool {
-        // Get credentials
         let credentials = KeychainHelper.loadCredentials()
         if (credentials.username?.isEmpty ?? true)
             || (credentials.password?.isEmpty ?? true)
         {
             print("No credentials found!")
-            return false
+            return
         }
 
-        // Build request content
-        guard
-            let encodedLoginRequest = try? JSONEncoder().encode(
-                LoginRequest(
-                    email: credentials.username!,
-                    password: credentials.password!))
-        else {
-            print("Failed to encode login request.")
-            return false
+        print("Performe login")
+        let loginSuccess = try await solarManagerApi.login(
+            email: credentials.username!,
+            password: credentials.password!)
+        
+        if loginSuccess == nil {
+            print("Login failed!")
+            throw EnergyManagerClientError.loginFailed("Login failed!")
+        } else {
+
+            self.accessToken = loginSuccess?.accessToken
+            self.refreshToken = loginSuccess?.refreshToken
+            self.expireAt = Date().addingTimeInterval(
+                TimeInterval(loginSuccess?.expiresIn ?? 0))
+
+            print("Login succeeded.")
         }
 
-        // Create HTTP POST request
-        let url = URL(string: "\(apiBaseUrl)/v1/oauth/login")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = encodedLoginRequest
-
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-
-            // Handle response
-            do {
-                let loginResponse = try JSONDecoder().decode(
-                    LoginResponse.self, from: data)
-
-                self.accessToken = loginResponse.accessToken
-                self.refreshToken = loginResponse.refreshToken
-                self.expireAt = Date().addingTimeInterval(
-                    TimeInterval(loginResponse.expiresIn))
-
-                return true
-            } catch {
-                print("Error decoding login response: \(error)")
-                return false
-            }
-        } catch {
-            print(
-                "Login failed! Error: \(error). Email: \(credentials.username ?? "<no email>"), Passwort: \(credentials.password ?? "<no password>")"
-            )
-            return false
-        }
     }
-}
 
-class LoginRequest: Codable {
-    var email: String
-    var password: String
-
-    init(email: String, password: String) {
-        self.email = email
-        self.password = password
-    }
-}
-
-class LoginResponse: Codable {
-    var accessToken: String
-    var refreshToken: String
-    var expiresIn: Int
-
-    init(accessToken: String, refreshToken: String, expiresIn: Int) {
-        self.accessToken = accessToken
-        self.refreshToken = refreshToken
-        self.expiresIn = expiresIn
-    }
 }
