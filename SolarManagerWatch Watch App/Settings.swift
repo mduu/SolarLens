@@ -21,11 +21,7 @@ struct Settings: View {
             {
                 model.logout()
             }
-        
-            Spacer()
         }
-        
-        Spacer()
     }
 }
 
