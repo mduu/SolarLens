@@ -21,10 +21,10 @@ struct ContentView: View {
             TabView {
                 OverviewView()
                     .environmentObject(viewModel)
-                ProductionView()
-                    .environmentObject(viewModel)
-                ConsumationView()
-                    .environmentObject(viewModel)
+//                ProductionView()
+//                    .environmentObject(viewModel)
+//                ConsumationView()
+//                    .environmentObject(viewModel)
                 Settings()
                     .environmentObject(viewModel)
             }
