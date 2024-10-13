@@ -18,7 +18,7 @@ struct NetworkConsumptionView: View {
                 value: Double(currentNetworkConsumption) / 1000,
                 in: 0...Double(maximumNetworkConsumption) / 1000
             ) {
-                Text("kWh")
+                Text("kW")
             } currentValueLabel: {
                 Text(
                     String(
