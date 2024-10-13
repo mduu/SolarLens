@@ -15,16 +15,16 @@ struct HouseholdConsumptionView: View {
     var body: some View {
         VStack(spacing: 0) {
             Gauge(
-                value: Double(currentOverallConsumption / 1000),
+                value: Double(currentOverallConsumption) / 1000,
                 in:
-                    0...Double(consumptionMaxValue / 1000)
+                    0...Double(consumptionMaxValue) / 1000
             ) {
                 Text("kW")
             } currentValueLabel: {
                 Text(
                     String(
                         format: "%.1f",
-                        Double(currentOverallConsumption / 1000))
+                        Double(currentOverallConsumption) / 1000)
                 )
             }
             .gaugeStyle(.circular)

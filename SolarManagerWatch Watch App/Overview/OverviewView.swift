@@ -58,8 +58,8 @@ struct OverviewView: View {
 
                         HouseholdConsumptionView(
                             currentOverallConsumption: $model.overviewData
-                                .currentNetworkConsumption,
-                            consumptionMaxValue: $networkProductionMaxValue
+                                .currentOverallConsumption,
+                            consumptionMaxValue: $consumptionMaxValue
                         )
                     }
                 }

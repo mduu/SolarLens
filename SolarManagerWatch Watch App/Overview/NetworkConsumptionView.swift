@@ -15,15 +15,15 @@ struct NetworkConsumptionView: View {
     var body: some View {
         VStack(spacing: 1) {
             Gauge(
-                value: Double(currentNetworkConsumption / 1000),
-                in: 0...Double(maximumNetworkConsumption / 1000)
+                value: Double(currentNetworkConsumption) / 1000,
+                in: 0...Double(maximumNetworkConsumption) / 1000
             ) {
                 Text("kWh")
             } currentValueLabel: {
                 Text(
                     String(
                         format: "%.1f",
-                        Double(currentNetworkConsumption / 1000))
+                        Double(currentNetworkConsumption) / 1000)
                 )
             }
             .gaugeStyle(.accessoryCircular)

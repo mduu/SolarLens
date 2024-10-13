@@ -8,13 +8,14 @@
 import Combine
 import Foundation
 
-class SolarManagerClient: EnergyManagerClient {
+actor SolarManagerClient: EnergyManagerClient {
     private var expireAt: Date?
     private var isEnsuringLoggedIn = false
     private var solarManagerApi = SolarManagerApi()
     private var smId: String?
 
     func fetchOverviewData() async throws -> OverviewData {
+        
         try await ensureLoggedIn()
         try await ensureSmId()
 

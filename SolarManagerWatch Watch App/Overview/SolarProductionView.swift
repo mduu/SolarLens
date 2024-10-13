@@ -15,15 +15,15 @@ struct SolarProductionView: View {
     var body: some View {
         VStack() {
             Gauge(
-                value: Double(currentSolarProduction / 1000),
-                in: 0...Double(maximumSolarProduction / 1000)
+                value: Double(currentSolarProduction) / 1000,
+                in: 0...Double(maximumSolarProduction) / 1000
             ) {
                 Text("kW")
             } currentValueLabel: {
                 Text(
                     String(
                         format: "%.1f",
-                        Double(currentSolarProduction / 1000))
+                        Double(currentSolarProduction) / 1000)
                 )
             }
             .gaugeStyle(.circular)

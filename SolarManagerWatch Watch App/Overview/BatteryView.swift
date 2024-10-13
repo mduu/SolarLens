@@ -16,14 +16,14 @@ struct BatteryView: View {
             
             VStack(spacing: 1) {
                 Gauge(
-                    value: Double(currentBatteryLevel!),
+                    value: Double(currentBatteryLevel ?? 0),
                     in: 0...100
                 ) {
                 } currentValueLabel: {
                     Text(
                         String(
                             format: "%.0f%%",
-                            currentBatteryLevel!)
+                            Double(currentBatteryLevel ?? 0))
                     )
                     .foregroundStyle(getColor())
                 }
