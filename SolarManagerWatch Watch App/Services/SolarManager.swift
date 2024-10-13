@@ -23,7 +23,7 @@ actor SolarManager: EnergyManager {
             solarManagerId: systemInformation!.sm_id)
         {
             let networkConsumption = max(
-                chart.consumption - chart.production, 0)
+                chart.consumption - chart.production - (chart.battery?.batteryDischarging ?? 0), 0)
             let batteryChargingRate = chart.battery != nil
                 ? chart.battery!.batteryCharging - chart.battery!.batteryDischarging
                 : nil
