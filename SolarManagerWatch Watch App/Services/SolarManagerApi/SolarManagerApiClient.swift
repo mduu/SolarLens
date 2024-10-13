@@ -72,4 +72,13 @@ class SolarManagerApi: RestClient {
 
         return response
     }
+    
+    func getV1Users() async throws -> [V1User]? {
+        let response: [V1User]? = try await get(
+            serviceUrl: "/v1/users",
+            parameters: nil,
+            accessToken: KeychainHelper.accessToken)
+        
+        return response
+    }
 }

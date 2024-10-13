@@ -32,18 +32,29 @@ class RestClient {
                 "Bearer " + accessToken, forHTTPHeaderField: "Authorization")
         }
 
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        if let response = response as? HTTPURLResponse,
-            response.statusCode != 200
-        {
-            print(
-                "RestClient Error: \(response.statusCode), \(String(describing: HTTPURLResponse.localizedString))"
-            )
-            throw RestError.responseError(response: response)
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            if let response = response as? HTTPURLResponse,
+               response.statusCode != 200
+            {
+                print(
+                    "RestClient Error: \(response.statusCode), \(String(describing: HTTPURLResponse.localizedString))"
+                )
+                throw RestError.responseError(response: response)
+            }
+            
+            do {
+                return try JSONDecoder().decode(TResponse.self, from: data)
+            } catch let error {
+                print("Error deserializing response: \(error.localizedDescription)")
+                throw error
+            }
+            
+        } catch let error {
+            print("Error while GET request: \(error.localizedDescription)")
+            return nil
         }
-
-        return try JSONDecoder().decode(TResponse.self, from: data)
     }
 
 }

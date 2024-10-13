@@ -12,7 +12,7 @@ actor SolarManager: EnergyManager {
     private var expireAt: Date?
     private var isEnsuringLoggedIn = false
     private var solarManagerApi = SolarManagerApi()
-    private var smId: String?
+    private var systemInformation: V1User?
 
     func fetchOverviewData() async throws -> OverviewData {
         
@@ -20,7 +20,7 @@ actor SolarManager: EnergyManager {
         try await ensureSmId()
 
         if let chart = try await solarManagerApi.getV1Chart(
-            solarManagerId: smId!)
+            solarManagerId: systemInformation!.sm_id)
         {
             let networkConsumption = max(
                 chart.consumption - chart.production, 0)
@@ -105,19 +105,29 @@ actor SolarManager: EnergyManager {
     }
 
     private func ensureSmId() async throws {
-        if self.smId != nil {
+        try await ensureLoggedIn()
+        try await ensureSystemInfomation()
+    }
+    
+    private func ensureSystemInfomation() async throws {
+        if self.systemInformation != nil {
             return
         }
 
-        print("No SMID found. Requesting ...")
+        print("Requesting System Information ...")
 
         try await ensureLoggedIn()
 
         do {
-            // TODO Implement this
-            //let solarManagerId = try await solarManagerApi.getUser()
+            let users = try await solarManagerApi.getV1Users()
+            let firstUser = users?.first
+            if firstUser == nil
+            {
+                throw EnergyManagerClientError.systemInformationNotFound
+            }
 
-            self.smId = "00000000AC513AFE"
+            self.systemInformation = firstUser
+            print("System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")")
         }
     }
 

@@ -8,4 +8,5 @@
 enum EnergyManagerClientError: Error {
     case loginFailed
     case credentialsMissing
+    case systemInformationNotFound
 }
