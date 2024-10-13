@@ -8,31 +8,35 @@
 import SwiftUI
 
 struct BatteryView: View {
-    @Binding var currentBatteryLevel: Double
-    @Binding var currentChargeRate: Double
+    @Binding var currentBatteryLevel: Int?
+    @Binding var currentChargeRate: Int?
 
     var body: some View {
-        VStack(spacing: 1) {
-            Gauge(
-                value: currentBatteryLevel,
-                in: 0...100
-            ) {
-            } currentValueLabel: {
-                Text(
-                    String(
-                        format: "%.0f%%",
-                        currentBatteryLevel)
-                )
-                .foregroundStyle(getColor())
-            }
-            .gaugeStyle(.accessoryCircular)
-            .tint(Gradient(colors: [.red, .green, .green, .green]))
+        if currentBatteryLevel != nil && currentChargeRate != nil {
+            
+            VStack(spacing: 1) {
+                Gauge(
+                    value: Double(currentBatteryLevel!),
+                    in: 0...100
+                ) {
+                } currentValueLabel: {
+                    Text(
+                        String(
+                            format: "%.0f%%",
+                            currentBatteryLevel!)
+                    )
+                    .foregroundStyle(getColor())
+                }
+                .gaugeStyle(.accessoryCircular)
+                .tint(Gradient(colors: [.red, .green, .green, .green]))
 
-            Image(systemName: "battery.100percent")
+                Image(systemName: "battery.100percent")
+            }
+            .padding()
         }
     }
 
     private func getColor() -> Color {
-        currentBatteryLevel >= 10 ? .primary : .red
+        currentBatteryLevel ?? 0 >= 10 ? .primary : .red
     }
 }

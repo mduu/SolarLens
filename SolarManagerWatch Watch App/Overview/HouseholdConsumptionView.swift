@@ -9,22 +9,22 @@
 import SwiftUI
 
 struct HouseholdConsumptionView: View {
-    @Binding var currentOverallConsumption: Double
-    @Binding var consumptionMaxValue: Double
+    @Binding var currentOverallConsumption: Int
+    @Binding var consumptionMaxValue: Int
 
     var body: some View {
         VStack(spacing: 0) {
             Gauge(
-                value: currentOverallConsumption,
+                value: Double(currentOverallConsumption / 1000),
                 in:
-                    0...consumptionMaxValue
+                    0...Double(consumptionMaxValue / 1000)
             ) {
                 Text("kW")
             } currentValueLabel: {
                 Text(
                     String(
                         format: "%.1f",
-                        currentOverallConsumption)
+                        Double(currentOverallConsumption / 1000))
                 )
             }
             .gaugeStyle(.circular)

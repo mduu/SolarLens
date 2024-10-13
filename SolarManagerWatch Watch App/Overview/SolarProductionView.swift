@@ -9,21 +9,21 @@
 import SwiftUI
 
 struct SolarProductionView: View {
-    @Binding var currentSolarProduction: Double
-    @Binding var maximumSolarProduction: Double
+    @Binding var currentSolarProduction: Int
+    @Binding var maximumSolarProduction: Int
     
     var body: some View {
         VStack() {
             Gauge(
-                value: currentSolarProduction,
-                in: 0...maximumSolarProduction
+                value: Double(currentSolarProduction / 1000),
+                in: 0...Double(maximumSolarProduction / 1000)
             ) {
                 Text("kW")
             } currentValueLabel: {
                 Text(
                     String(
                         format: "%.1f",
-                        currentSolarProduction)
+                        Double(currentSolarProduction / 1000))
                 )
             }
             .gaugeStyle(.circular)

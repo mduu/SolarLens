@@ -6,12 +6,25 @@
 //
 
 import KeychainAccess
+import Foundation
 
 class KeychainHelper {
     static let serviceName = "com.marcduerst.SolarManagerWatch"
     static let serviceComment = "SolarManager Watch Login"
     static let usernameKey = "username"
     static let passwordKey = "password"
+    static let accessTokenKey = "accessToken"
+    static let refreshTokenKey = "refreshToken"
+    
+    static var accessToken: String? {
+        get { getKeychain()[accessTokenKey] }
+        set { getKeychain()[accessTokenKey] = newValue }
+    }
+    
+    static var refreshToken: String? {
+        get { getKeychain()[refreshTokenKey] }
+        set { getKeychain()[refreshTokenKey] = newValue }
+    }
 
     static func saveCredentials(username: String, password: String) {
         let keychain = getKeychain()

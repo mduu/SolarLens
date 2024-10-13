@@ -6,9 +6,9 @@
 //
 
 public struct OverviewData: Codable {
-    var currentSolarProduction: Double = 0
-    var currentOverallConsumption: Double = 0
-    var currentBatteryLevel: Double = 0
-    var currentNetworkConsumption: Double = 0
-    var currentBatteryChargeRate: Double = 0
+    var currentSolarProduction: Int = 0
+    var currentOverallConsumption: Int = 0
+    var currentBatteryLevel: Int? = 0
+    var currentNetworkConsumption: Int = 0
+    var currentBatteryChargeRate: Int? = 0
 }

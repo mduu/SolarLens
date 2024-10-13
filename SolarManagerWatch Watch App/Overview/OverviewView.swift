@@ -10,9 +10,9 @@ import SwiftUI
 struct OverviewView: View {
     @EnvironmentObject var model: BuildingStateViewModel
 
-    @State private var solarProductionMaxValue = 11.0
-    @State private var networkProductionMaxValue = 20.0
-    @State private var consumptionMaxValue = 15.0
+    @State private var solarProductionMaxValue = 11_000
+    @State private var networkProductionMaxValue = 20_000
+    @State private var consumptionMaxValue = 15_000
 
     var body: some View {
         VStack {
@@ -43,12 +43,18 @@ struct OverviewView: View {
                     }
 
                     HStack(spacing: 50) {
-                        BatteryView(
-                            currentBatteryLevel: $model.overviewData
-                                .currentBatteryLevel,
-                            currentChargeRate: $model.overviewData
-                                .currentBatteryChargeRate
-                        )
+                
+                        if $model.overviewData.currentBatteryLevel.wrappedValue != nil && $model.overviewData
+                            .currentBatteryChargeRate.wrappedValue != nil {
+                            
+                            BatteryView(
+                                currentBatteryLevel: $model.overviewData
+                                    .currentBatteryLevel,
+                                currentChargeRate: $model.overviewData
+                                    .currentBatteryChargeRate
+                            )
+                        }
+                        
 
                         HouseholdConsumptionView(
                             currentOverallConsumption: $model.overviewData
@@ -67,7 +73,7 @@ struct OverviewView: View {
         }
     }
 
-    private func solarPercentage() -> Double {
+    private func solarPercentage() -> Int {
         return 100 / solarProductionMaxValue
             * model.overviewData.currentSolarProduction
     }

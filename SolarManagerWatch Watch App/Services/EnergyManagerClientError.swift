@@ -6,5 +6,6 @@
 //
 
 enum EnergyManagerClientError: Error {
-    case loginFailed(String)
+    case loginFailed
+    case credentialsMissing
 }

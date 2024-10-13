@@ -9,21 +9,21 @@
 import SwiftUI
 
 struct NetworkConsumptionView: View {
-    @Binding var currentNetworkConsumption: Double
-    @Binding var maximumNetworkConsumption: Double
+    @Binding var currentNetworkConsumption: Int
+    @Binding var maximumNetworkConsumption: Int
 
     var body: some View {
         VStack(spacing: 1) {
             Gauge(
-                value: currentNetworkConsumption,
-                in: 0...maximumNetworkConsumption
+                value: Double(currentNetworkConsumption / 1000),
+                in: 0...Double(maximumNetworkConsumption / 1000)
             ) {
                 Text("kWh")
             } currentValueLabel: {
                 Text(
                     String(
                         format: "%.1f",
-                        currentNetworkConsumption)
+                        Double(currentNetworkConsumption / 1000))
                 )
             }
             .gaugeStyle(.accessoryCircular)

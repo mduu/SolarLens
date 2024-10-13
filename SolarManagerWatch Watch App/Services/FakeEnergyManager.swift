@@ -14,11 +14,11 @@ class FakeEnergyManager : EnergyManagerClient {
     
     init(data: OverviewData? = nil) {
         self.data = data ?? OverviewData(
-                currentSolarProduction: 3.2,
-                currentOverallConsumption: 0.8,
+                currentSolarProduction: 3200,
+                currentOverallConsumption: 800,
                 currentBatteryLevel: 42,
-                currentNetworkConsumption: 0.1,
-                currentBatteryChargeRate: 2.4)
+                currentNetworkConsumption: 100,
+                currentBatteryChargeRate: 2400)
     }
     
     func fetchOverviewData() -> OverviewData {
