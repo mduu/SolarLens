@@ -32,7 +32,6 @@ struct BatteryView: View {
 
                 Image(systemName: "battery.100percent")
             }
-            .padding()
         }
     }
 
