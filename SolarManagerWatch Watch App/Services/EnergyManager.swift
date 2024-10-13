@@ -9,6 +9,6 @@
 import Combine
 import Foundation
 
-protocol EnergyManagerClient {
+protocol EnergyManager {
     func fetchOverviewData() async throws -> OverviewData
 }

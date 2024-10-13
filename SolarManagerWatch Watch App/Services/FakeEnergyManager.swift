@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-class FakeEnergyManager : EnergyManagerClient {
+class FakeEnergyManager : EnergyManager {
     let data: OverviewData
     
     init(data: OverviewData? = nil) {

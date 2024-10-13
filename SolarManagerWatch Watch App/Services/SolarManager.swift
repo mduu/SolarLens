@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-actor SolarManagerClient: EnergyManagerClient {
+actor SolarManager: EnergyManager {
     private var expireAt: Date?
     private var isEnsuringLoggedIn = false
     private var solarManagerApi = SolarManagerApi()

@@ -15,9 +15,9 @@ class BuildingStateViewModel: ObservableObject {
     @Published var loginCredentialsExists: Bool = false
     @Published var overviewData: OverviewData = .init()
 
-    private let energyManager: EnergyManagerClient
+    private let energyManager: EnergyManager
 
-    init(energyManagerClient: EnergyManagerClient = SolarManagerClient()) {
+    init(energyManagerClient: EnergyManager = SolarManager()) {
         self.energyManager = energyManagerClient
         self.isDirty = true
         updateCredentialsExists()
