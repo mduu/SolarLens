@@ -43,10 +43,13 @@ struct OverviewView: View {
                     }
 
                     HStack(spacing: 50) {
-                
-                        if $model.overviewData.currentBatteryLevel.wrappedValue != nil && $model.overviewData
-                            .currentBatteryChargeRate.wrappedValue != nil {
-                            
+
+                        if $model.overviewData.currentBatteryLevel.wrappedValue
+                            != nil
+                            && $model.overviewData
+                                .currentBatteryChargeRate.wrappedValue != nil
+                        {
+
                             BatteryView(
                                 currentBatteryLevel: $model.overviewData
                                     .currentBatteryLevel,
@@ -54,7 +57,6 @@ struct OverviewView: View {
                                     .currentBatteryChargeRate
                             )
                         }
-                        
 
                         HouseholdConsumptionView(
                             currentOverallConsumption: $model.overviewData
@@ -63,12 +65,22 @@ struct OverviewView: View {
                         )
                     }
                 }
+
+                HStack {
+                    Text(
+                        model.lastUpdatedAt?.formatted() ?? "-"
+                    )
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
+                }.padding(.top, 10)
             }
             .padding()
         }
         .onAppear {
-            Task {
-                await model.fetchServerData()
+            Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { _ in
+                Task {
+                    await model.fetchServerData()
+                }
             }
         }
     }

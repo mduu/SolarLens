@@ -14,6 +14,7 @@ class BuildingStateViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var loginCredentialsExists: Bool = false
     @Published var overviewData: OverviewData = .init()
+    @Published var lastUpdatedAt: Date?
 
     private let energyManager: EnergyManager
 
@@ -33,7 +34,7 @@ class BuildingStateViewModel: ObservableObject {
             errorMessage = nil
 
             overviewData = try await energyManager.fetchOverviewData()
-
+            lastUpdatedAt = Date()
             isLoading = false
         } catch {
             errorMessage = error.localizedDescription
@@ -42,17 +43,17 @@ class BuildingStateViewModel: ObservableObject {
         }
     }
 
-    func login(email: String, password: String) -> Void {
+    func login(email: String, password: String) {
         defer {
             isLoading = false
         }
-        
+
         isLoading = true
         KeychainHelper.saveCredentials(username: email, password: password)
         updateCredentialsExists()
     }
-    
-    func logout() -> Void {
+
+    func logout() {
         KeychainHelper.deleteCredentials()
         updateCredentialsExists()
     }
