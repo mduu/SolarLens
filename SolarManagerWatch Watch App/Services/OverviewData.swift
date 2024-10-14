@@ -11,4 +11,5 @@ public struct OverviewData: Codable {
     var currentBatteryLevel: Int? = 0
     var currentNetworkConsumption: Int = 0
     var currentBatteryChargeRate: Int? = 0
+    var solarProductionMax: Int = 0
 }

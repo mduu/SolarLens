@@ -33,14 +33,16 @@ actor SolarManager: EnergyManager {
                 currentOverallConsumption: chart.consumption,
                 currentBatteryLevel: chart.battery?.capacity ?? 0,
                 currentNetworkConsumption: networkConsumption,
-                currentBatteryChargeRate: batteryChargingRate)
+                currentBatteryChargeRate: batteryChargingRate,
+                solarProductionMax: (systemInformation?.kWp ?? 0) * 1000)
         } else {
             return OverviewData(
                 currentSolarProduction: 0,
                 currentOverallConsumption: 0,
                 currentBatteryLevel: nil,
                 currentNetworkConsumption: 0,
-                currentBatteryChargeRate: nil)
+                currentBatteryChargeRate: nil,
+                solarProductionMax: 0)
         }
     }
 

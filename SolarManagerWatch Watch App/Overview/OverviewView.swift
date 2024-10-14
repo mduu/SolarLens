@@ -12,7 +12,6 @@ struct OverviewView: View {
 
     @State private var solarProductionMaxValue = 11_000
     @State private var networkProductionMaxValue = 20_000
-    @State private var consumptionMaxValue = 15_000
 
     var body: some View {
         VStack {
@@ -61,7 +60,7 @@ struct OverviewView: View {
                         HouseholdConsumptionView(
                             currentOverallConsumption: $model.overviewData
                                 .currentOverallConsumption,
-                            consumptionMaxValue: $consumptionMaxValue
+                            consumptionMaxValue: $networkProductionMaxValue
                         )
                     }
                 }
