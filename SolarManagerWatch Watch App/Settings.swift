@@ -28,13 +28,13 @@ struct Settings: View {
                 model.logout()
             }
 
-            VStack {
+            HStack {
                 Text(
-                    "Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")"
+                    "v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
                 )
 
                 Text(
-                    "Build: \(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
+                    "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
                 )
             }
             .frame(maxWidth: .infinity, alignment: .center)
