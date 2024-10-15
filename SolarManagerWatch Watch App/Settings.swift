@@ -13,20 +13,26 @@ struct Settings: View {
     var body: some View {
         VStack(alignment: .center) {
             Text("Settings")
-                .font(.largeTitle)
+                .font(.title)
                 .foregroundColor(.blue)
                 .padding(.bottom, 16)
+
+            Text(
+                "\(KeychainHelper.loadCredentials().username ?? "-")"
+            )
+            .font(.subheadline)
+            .foregroundColor(.primary)
+            .padding(.bottom, 16)
 
             Button("Log out") {
                 model.logout()
             }
-            
-            Spacer()
 
-            HStack {
+            VStack {
                 Text(
                     "Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")"
                 )
+
                 Text(
                     "Build: \(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
                 )
@@ -34,7 +40,7 @@ struct Settings: View {
             .frame(maxWidth: .infinity, alignment: .center)
             .font(.footnote)
             .foregroundColor(.gray)
-            .padding(.top, 20)
+            .padding(.top, 16)
         }
 
     }
