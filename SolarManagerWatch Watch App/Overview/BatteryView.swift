@@ -13,7 +13,7 @@ struct BatteryView: View {
 
     var body: some View {
         if currentBatteryLevel != nil && currentChargeRate != nil {
-            
+
             VStack(spacing: 1) {
                 Gauge(
                     value: Double(currentBatteryLevel ?? 0),
@@ -30,12 +30,40 @@ struct BatteryView: View {
                 .gaugeStyle(.accessoryCircular)
                 .tint(Gradient(colors: [.red, .green, .green, .green]))
 
-                Image(systemName: "battery.100percent")
+                getBatterImage()
             }
         }
     }
 
     private func getColor() -> Color {
-        currentBatteryLevel ?? 0 >= 10 ? .primary : .red
+        currentBatteryLevel ?? 0 < 10
+            ? .red
+            : currentBatteryLevel ?? 0 == 100
+                ? .green
+                : .primary
+    }
+
+    private func getBatterImage() -> Image {
+        if currentChargeRate ?? 0 > 0 {
+            return Image(systemName: "battery.100percent.bolt")
+        }
+
+        if currentBatteryLevel ?? 0 >= 99 {
+            return Image(systemName: "battery.100percent")
+        }
+
+        if currentBatteryLevel ?? 0 >= 75 {
+            return Image(systemName: "battery.75percent")
+        }
+
+        if currentBatteryLevel ?? 0 >= 50 {
+            return Image(systemName: "battery.50percent")
+        }
+
+        if currentBatteryLevel ?? 0 >= 25 {
+            return Image(systemName: "battery.25percent")
+        }
+
+        return Image(systemName: "battery.0percent")
     }
 }
