@@ -33,11 +33,23 @@
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		49EED1B62CC0389E00A89445 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		494882AF2CA8443300C59146 /* SolarManagerWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SolarManagerWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SolarManagerWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49EED1A82CC0389C00A89445 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		49EED1AA2CC0389D00A89445 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -59,6 +71,11 @@
 			path = "SolarManagerWatch Watch App";
 			sourceTree = "<group>";
 		};
+		49EED1AC2CC0389D00A89445 /* Solar Lens Widgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Solar Lens Widgets";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +94,8 @@
 			isa = PBXGroup;
 			children = (
 				494882B92CA8443300C59146 /* SolarManagerWatch Watch App */,
+				49EED1AC2CC0389D00A89445 /* Solar Lens Widgets */,
+				49EED1A72CC0389C00A89445 /* Frameworks */,
 				494882B02CA8443300C59146 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +107,15 @@
 				494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		49EED1A72CC0389C00A89445 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				49EED1A82CC0389C00A89445 /* WidgetKit.framework */,
+				49EED1AA2CC0389D00A89445 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +147,7 @@
 				494882B12CA8443300C59146 /* Sources */,
 				494882B22CA8443300C59146 /* Frameworks */,
 				494882B32CA8443300C59146 /* Resources */,
+				49EED1B62CC0389E00A89445 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -334,7 +363,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20241015.2;
+				CURRENT_PROJECT_VERSION = 20241016.1;
 				DEVELOPMENT_ASSET_PATHS = "\"SolarManagerWatch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -347,7 +376,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -369,7 +398,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20241015.2;
+				CURRENT_PROJECT_VERSION = 20241016.1;
 				DEVELOPMENT_ASSET_PATHS = "\"SolarManagerWatch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -382,7 +411,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -400,11 +429,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20241015.2;
+				CURRENT_PROJECT_VERSION = 20241016.1;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -416,11 +445,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20241015.2;
+				CURRENT_PROJECT_VERSION = 20241016.1;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

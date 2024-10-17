@@ -20,6 +20,12 @@ struct BatteryStatusResponse : Codable {
 }
 
 struct ArrowResponse: Codable {
-    var direction: String
+    var direction: ArrowType
     var value: Int
+}
+
+enum ArrowType: String, Codable {
+    case fromPVToGrid
+    case fromGridToConsumer
+    case fromPVToConsumer
 }

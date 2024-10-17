@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Solar Lens WidgetsExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>SolarManagerWatch Watch App.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>

@@ -13,9 +13,17 @@ struct ContentView: View {
     var body: some View {
         
         if (viewModel.errorMessage != nil) {
-            Text("Error: \(viewModel.errorMessage ?? "")")
-                .foregroundStyle(Color.red)
-                .font(.headline)
+            VStack {
+                Text("Error occured!")
+                    .foregroundStyle(Color.red)
+                    .font(.headline)
+                Text("Error: \(viewModel.errorMessage ?? "")")
+                    .font(.subheadline)
+                Button("Log out") {
+                    viewModel.logout()
+                }
+            }
+            
         } else if (viewModel.loginCredentialsExists) {
             
             TabView {

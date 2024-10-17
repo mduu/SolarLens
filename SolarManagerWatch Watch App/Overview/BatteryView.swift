@@ -12,28 +12,31 @@ struct BatteryView: View {
     @Binding var currentChargeRate: Int?
 
     var body: some View {
-        if currentBatteryLevel != nil && currentChargeRate != nil {
+        HStack {
+            if currentBatteryLevel != nil && currentChargeRate != nil {
 
-            VStack(spacing: 1) {
-                Gauge(
-                    value: Double(currentBatteryLevel ?? 0),
-                    in: 0...100
-                ) {
-                } currentValueLabel: {
-                    Text(
-                        String(
-                            format: "%.0f%%",
-                            Double(currentBatteryLevel ?? 0))
-                    )
-                    .foregroundStyle(getColor())
+                VStack(spacing: 1) {
+                    Gauge(
+                        value: Double(currentBatteryLevel ?? 0),
+                        in: 0...100
+                    ) {
+                    } currentValueLabel: {
+                        Text(
+                            String(
+                                format: "%.0f%%",
+                                Double(currentBatteryLevel ?? 0))
+                        )
+                        .foregroundStyle(getColor())
+                    }
+                    .gaugeStyle(.accessoryCircular)
+                    .tint(Gradient(colors: [.red, .green, .green, .green]))
+
+                    getBatterImage()
                 }
-                .gaugeStyle(.accessoryCircular)
-                .tint(Gradient(colors: [.red, .green, .green, .green]))
-
-                getBatterImage()
             }
-        }
+        }.frame(minWidth: 50)
     }
+        
 
     private func getColor() -> Color {
         currentBatteryLevel ?? 0 < 10

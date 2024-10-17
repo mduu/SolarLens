@@ -24,56 +24,99 @@ struct OverviewView: View {
             .edgesIgnoringSafeArea(.all)
 
             // Other controls on top of background
-            VStack {
-                VStack(spacing: 20) {
-                    HStack(spacing: 50) {
-                        SolarProductionView(
-                            currentSolarProduction: $model.overviewData
-                                .currentSolarProduction,
-                            maximumSolarProduction: $solarProductionMaxValue
-                        )
+            Grid {
+                GridRow(alignment: .center) {
+                    SolarProductionView(
+                        currentSolarProduction: $model.overviewData
+                            .currentSolarProduction,
+                        maximumSolarProduction: $solarProductionMaxValue
+                    )
 
-                        NetworkConsumptionView(
-                            currentNetworkConsumption: $model.overviewData
-                                .currentNetworkConsumption,
-                            maximumNetworkConsumption:
-                                $networkProductionMaxValue
-                        )
+                    if model.overviewData.isFlowSolarToGrid() {
+                        Image(systemName: "arrow.right")
+                            .foregroundColor(.orange)
+                            .symbolEffect(
+                                .wiggle.byLayer,
+                                options: .repeat(.periodic(delay: 0.7)))
+                    } else {
+                        Text("")
                     }
 
-                    HStack(spacing: 50) {
-
-                        if $model.overviewData.currentBatteryLevel.wrappedValue
-                            != nil
-                            && $model.overviewData
-                                .currentBatteryChargeRate.wrappedValue != nil
-                        {
-
-                            BatteryView(
-                                currentBatteryLevel: $model.overviewData
-                                    .currentBatteryLevel,
-                                currentChargeRate: $model.overviewData
-                                    .currentBatteryChargeRate
-                            )
-                        }
-
-                        HouseholdConsumptionView(
-                            currentOverallConsumption: $model.overviewData
-                                .currentOverallConsumption,
-                            consumptionMaxValue: $networkProductionMaxValue
-                        )
-                    }
+                    NetworkConsumptionView(
+                        currentNetworkConsumption: $model.overviewData
+                            .currentGridToHouse,
+                        maximumNetworkConsumption:
+                            $networkProductionMaxValue
+                    )
                 }
 
-                HStack {
-                    Text(
-                        model.lastUpdatedAt?.formatted() ?? "-"
+                GridRow(alignment: .center) {
+                    if model.overviewData.isFlowSolarToBattery() {
+                        Image(systemName: "arrow.down")
+                            .foregroundColor(.green)
+                            .symbolEffect(
+                                .wiggle.byLayer,
+                                options: .repeat(.periodic(delay: 0.7)))
+                    } else {
+                        Text("")
+                    }
+
+                    if model.overviewData.isFlowSolarToHouse() {
+                        Image(systemName: "arrow.down.right")
+                            .foregroundColor(.green)
+                            .symbolEffect(
+                                .wiggle.byLayer,
+                                options: .repeat(.periodic(delay: 0.7)))
+                    } else {
+                        Text("")
+                    }
+
+                    if model.overviewData.isFlowGridToHouse() {
+                        Image(systemName: "arrow.down")
+                            .foregroundColor(.red)
+                            .symbolEffect(
+                                .wiggle.byLayer,
+                                options: .repeat(.periodic(delay: 0.7)))
+                    } else {
+                        Text("")
+                    }
+                }.frame(width: 30, height: 20)
+
+                GridRow(alignment: .center) {
+
+                    BatteryView(
+                        currentBatteryLevel: $model.overviewData
+                            .currentBatteryLevel,
+                        currentChargeRate: $model.overviewData
+                            .currentBatteryChargeRate
                     )
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
-                }.padding(.top, 10)
+
+                    if model.overviewData.isFlowBatteryToHome() {
+                        Image(systemName: "arrow.right")
+                            .symbolEffect(
+                                .wiggle.byLayer,
+                                options: .repeat(.periodic(delay: 0.7)))
+                    } else {
+                        Text("")
+                    }
+
+                    HouseholdConsumptionView(
+                        currentOverallConsumption: $model.overviewData
+                            .currentOverallConsumption,
+                        consumptionMaxValue: $networkProductionMaxValue
+                    )
+                }
             }
-            .padding()
+            .padding(.leading, 20)
+            .padding(.trailing, 20)
+
+            HStack {
+                Text(
+                    model.lastUpdatedAt?.formatted() ?? "-"
+                )
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+            }.padding(.top, 10)
         }
         .onAppear {
             Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { _ in

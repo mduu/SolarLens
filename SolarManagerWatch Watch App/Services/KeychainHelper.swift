@@ -44,6 +44,8 @@ class KeychainHelper {
         let keychain = getKeychain()
         keychain[usernameKey] = nil
         keychain[passwordKey] = nil
+        accessToken = nil
+        refreshToken = nil
     }
 
     private static func getKeychain() -> Keychain {

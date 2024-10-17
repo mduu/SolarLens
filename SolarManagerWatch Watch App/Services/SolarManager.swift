@@ -22,8 +22,6 @@ actor SolarManager: EnergyManager {
         if let chart = try await solarManagerApi.getV1Chart(
             solarManagerId: systemInformation!.sm_id)
         {
-            let networkConsumption = max(
-                chart.consumption - chart.production - (chart.battery?.batteryDischarging ?? 0), 0)
             let batteryChargingRate = chart.battery != nil
                 ? chart.battery!.batteryCharging - chart.battery!.batteryDischarging
                 : nil
@@ -32,16 +30,29 @@ actor SolarManager: EnergyManager {
                 currentSolarProduction: chart.production,
                 currentOverallConsumption: chart.consumption,
                 currentBatteryLevel: chart.battery?.capacity ?? 0,
-                currentNetworkConsumption: networkConsumption,
                 currentBatteryChargeRate: batteryChargingRate,
+                currentSolarToGrid: chart
+                    .arrows?.first(
+                        where: { $0.direction == .fromPVToGrid}
+                    )?.value ?? 0,
+                currentGridToHouse: chart
+                    .arrows?.first(
+                        where: { $0.direction == .fromGridToConsumer}
+                    )?.value ?? 0,
+                currentSolarToHouse: chart
+                    .arrows?.first(
+                        where: { $0.direction == .fromPVToConsumer}
+                    )?.value ?? 0,
                 solarProductionMax: (systemInformation?.kWp ?? 0) * 1000)
         } else {
             return OverviewData(
                 currentSolarProduction: 0,
                 currentOverallConsumption: 0,
                 currentBatteryLevel: nil,
-                currentNetworkConsumption: 0,
                 currentBatteryChargeRate: nil,
+                currentSolarToGrid: 0,
+                currentGridToHouse: 0,
+                currentSolarToHouse: 0,
                 solarProductionMax: 0)
         }
     }

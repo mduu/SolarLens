@@ -5,11 +5,36 @@
 //  Created by Marc Dürst on 05.10.2024.
 //
 
-public struct OverviewData: Codable {
+public struct OverviewData {
+    private let minGridConsumptionTreashold: Int = 30
+    private let minGridIngestionTreashold: Int = 10
+    
     var currentSolarProduction: Int = 0
     var currentOverallConsumption: Int = 0
     var currentBatteryLevel: Int? = 0
-    var currentNetworkConsumption: Int = 0
     var currentBatteryChargeRate: Int? = 0
+    var currentSolarToGrid: Int = 0
+    var currentGridToHouse: Int = 0
+    var currentSolarToHouse: Int = 0
     var solarProductionMax: Int = 0
+    
+    func isFlowBatteryToHome() -> Bool {
+        return currentBatteryChargeRate ?? 0 < 0
+    }
+    
+    func isFlowSolarToBattery() -> Bool {
+        return currentBatteryChargeRate ?? 0 > 0
+    }
+    
+    func isFlowSolarToHouse() -> Bool {
+        return currentSolarToHouse > 0
+    }
+    
+    func isFlowSolarToGrid() -> Bool {
+        return currentSolarToGrid > minGridIngestionTreashold
+    }
+    
+    func isFlowGridToHouse() -> Bool {
+        return currentGridToHouse > minGridConsumptionTreashold
+    }
 }

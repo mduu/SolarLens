@@ -17,8 +17,9 @@ class FakeEnergyManager : EnergyManager {
                 currentSolarProduction: 3200,
                 currentOverallConsumption: 800,
                 currentBatteryLevel: 42,
-                currentNetworkConsumption: 100,
-                currentBatteryChargeRate: 2400)
+                currentBatteryChargeRate: 2400,
+                currentSolarToGrid: 120, currentGridToHouse: 100,
+                currentSolarToHouse: 1100)
     }
     
     func fetchOverviewData() -> OverviewData {

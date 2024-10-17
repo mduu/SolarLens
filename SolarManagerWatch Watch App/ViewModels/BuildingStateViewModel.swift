@@ -34,6 +34,7 @@ class BuildingStateViewModel: ObservableObject {
             errorMessage = nil
 
             overviewData = try await energyManager.fetchOverviewData()
+            
             lastUpdatedAt = Date()
             isLoading = false
         } catch {
