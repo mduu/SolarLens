@@ -11,7 +11,6 @@ struct OverviewView: View {
     @EnvironmentObject var model: BuildingStateViewModel
 
     @State private var solarProductionMaxValue = 11_000
-    @State private var networkProductionMaxValue = 20_000
 
     var body: some View {
         VStack {
@@ -34,10 +33,7 @@ struct OverviewView: View {
                     }
 
                     NetworkConsumptionView(
-                        currentNetworkConsumption: $model.overviewData
-                            .currentGridToHouse,
-                        maximumNetworkConsumption:
-                            $networkProductionMaxValue
+                        currentNetworkConsumption: $model.overviewData.currentGridToHouse
                     )
                 }
 
@@ -64,7 +60,7 @@ struct OverviewView: View {
 
                     if model.overviewData.isFlowGridToHouse() {
                         Image(systemName: "arrow.down")
-                            .foregroundColor(.red)
+                            .foregroundColor(.orange)
                             .symbolEffect(
                                 .wiggle.byLayer,
                                 options: .repeat(.periodic(delay: 0.7)))
@@ -94,11 +90,12 @@ struct OverviewView: View {
 
                     HouseholdConsumptionView(
                         currentOverallConsumption: $model.overviewData
-                            .currentOverallConsumption,
-                        consumptionMaxValue: $networkProductionMaxValue
+                            .currentOverallConsumption
                     )
                 }
             }
+            .padding(.top, 10)
+            .padding(.bottom, 0)
             .padding(.leading, 20)
             .padding(.trailing, 20)
 
@@ -106,9 +103,9 @@ struct OverviewView: View {
                 Text(
                     model.lastUpdatedAt?.formatted() ?? "-"
                 )
-                .font(.system(size: 12))
+                .font(.system(size: 11))
                 .foregroundColor(.gray)
-            }.padding(.top, 10)
+            }.padding(.top, 5)
         }
         .onAppear {
             Timer.scheduledTimer(withTimeInterval: 20, repeats: true) { _ in

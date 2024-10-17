@@ -10,26 +10,25 @@ import SwiftUI
 
 struct NetworkConsumptionView: View {
     @Binding var currentNetworkConsumption: Int
-    @Binding var maximumNetworkConsumption: Int
+    
+    @State var circleColor: Color = .orange
+    @State var largeText: String = "-"
+    @State var smallText: String? = "kW"
 
     var body: some View {
         VStack(spacing: 1) {
-            Gauge(
-                value: Double(currentNetworkConsumption) / 1000,
-                in: 0...Double(maximumNetworkConsumption) / 1000
-            ) {
-                Text("kW")
-            } currentValueLabel: {
-                Text(
-                    String(
-                        format: "%.1f",
-                        Double(currentNetworkConsumption) / 1000)
-                )
+            CircularInstrument(
+                color: $circleColor,
+                largeText: $largeText,
+                smallText: $smallText)
+            .onChange(of: currentNetworkConsumption, initial: true) { oldValue, newValue in
+                largeText = String(
+                    format: "%.1f",
+                    Double(newValue) / 1000)
             }
-            .gaugeStyle(.accessoryCircular)
-            .tint(Gradient(colors: [.green, .orange, .orange, .red]))
-
+           
             Image(systemName: "network")
-        }
+                .padding(.top, 3)
+   }
     }
 }

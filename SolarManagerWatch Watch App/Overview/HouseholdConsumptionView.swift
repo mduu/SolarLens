@@ -5,32 +5,37 @@
 //  Created by Marc Dürst on 05.10.2024.
 //
 
-
 import SwiftUI
 
 struct HouseholdConsumptionView: View {
     @Binding var currentOverallConsumption: Int
-    @Binding var consumptionMaxValue: Int
+
+    @State var circleColor: Color = .green
+    @State var circleLargeText: String = "-"
+    @State var circleSmallText: String? = "kW"
 
     var body: some View {
         VStack(spacing: 0) {
-            Gauge(
-                value: Double(currentOverallConsumption) / 1000,
-                in:
-                    0...Double(consumptionMaxValue) / 1000
-            ) {
-                Text("kW")
-            } currentValueLabel: {
-                Text(
-                    String(
-                        format: "%.1f",
-                        Double(currentOverallConsumption) / 1000)
+            CircularInstrument(
+                color: $circleColor,
+                largeText: $circleLargeText,
+                smallText: $circleSmallText
+            )
+            .onChange(of: currentOverallConsumption, initial: true) { newValue, transition in
+                circleLargeText = String(
+                    format: "%.1f",
+                    Double(newValue) / 1000
                 )
             }
-            .gaugeStyle(.circular)
-            .tint(Gradient(colors: [.green, .orange]))
 
             Image(systemName: "house")
+                .padding(.top, 3)
         }
     }
+}
+
+#Preview {
+    HouseholdConsumptionView(
+        currentOverallConsumption: Binding.constant(1230)
+    )
 }
