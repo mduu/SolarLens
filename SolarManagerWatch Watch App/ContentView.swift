@@ -11,28 +11,50 @@ struct ContentView: View {
     @StateObject private var viewModel = BuildingStateViewModel()
 
     var body: some View {
-        
-        if (viewModel.errorMessage != nil) {
-            VStack {
-                Text("Error occured!")
-                    .foregroundStyle(Color.red)
-                    .font(.headline)
-                Text("Error: \(viewModel.errorMessage ?? "")")
-                    .font(.subheadline)
-                Button("Log out") {
-                    viewModel.logout()
+
+        if viewModel.error != nil || viewModel.errorMessage != nil {
+            ScrollView {
+                VStack {
+                    Text("Login failed!")
+                        .foregroundStyle(Color.red)
+                        .font(.title3)
+                    if viewModel.error == EnergyManagerClientError.loginFailed {
+                        Text(
+                            "Please make sure you are using the correct email and passwort from your Solar Manager login."
+                        )
+                        .padding(.top, 5)
+                        .padding(.bottom, 5)
+                        .font(.subheadline)
+                        Button("Retry login") {
+                            viewModel.logout()
+                        }
+                    } else {
+                        Text("Error: \(viewModel.errorMessage ?? "")")
+                            .font(.subheadline)
+                        Button("Try again") {
+                            Task {
+                                await viewModel.fetchServerData()
+                            }
+                        }
+                        Button("Log out") {
+                            viewModel.logout()
+                        }
+                    }
                 }
             }
-            
-        } else if (viewModel.loginCredentialsExists) {
-            
+
+        } else if !viewModel.loginCredentialsExists {
+            LoginView()
+                .environmentObject(viewModel)
+        } else if viewModel.isDirty {
+
             TabView {
                 OverviewView()
                     .environmentObject(viewModel)
-//                ProductionView()
-//                    .environmentObject(viewModel)
-//                ConsumationView()
-//                    .environmentObject(viewModel)
+                //                ProductionView()
+                //                    .environmentObject(viewModel)
+                //                ConsumationView()
+                //                    .environmentObject(viewModel)
                 Settings()
                     .environmentObject(viewModel)
             }
@@ -45,8 +67,32 @@ struct ContentView: View {
                 }
             }
         } else {
-            LoginView()
-                .environmentObject(viewModel)
+            ScrollView {
+                VStack {
+                    Text("Unknown error occured!")
+                        .foregroundStyle(Color.red)
+                        .font(.title3)
+
+                    Text(
+                        "Plase try again or re-login. If the problem persists, contact support."
+                    )
+                    .padding(.top, 5)
+                    .padding(.bottom, 5)
+                    .font(.subheadline)
+
+                    Button("Try again") {
+                        Task {
+                            await viewModel.fetchServerData()
+                        }
+                    }
+
+                    Button("Log out") {
+                        viewModel.logout()
+                    }
+
+                }
+            }
+
         }
     }
 }

@@ -95,7 +95,7 @@ actor SolarManager: EnergyManager {
             || (credentials.password?.isEmpty ?? true)
         {
             print("No credentials found!")
-            throw EnergyManagerClientError.credentialsMissing
+            throw EnergyManagerClientError.loginFailed
         }
 
         print("Performe login")
@@ -113,6 +113,7 @@ actor SolarManager: EnergyManager {
         } catch {
             KeychainHelper.accessToken = nil
             KeychainHelper.refreshToken = nil
+            KeychainHelper.deleteCredentials()
             throw EnergyManagerClientError.loginFailed
         }
     }

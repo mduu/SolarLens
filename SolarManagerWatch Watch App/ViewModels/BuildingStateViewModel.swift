@@ -12,6 +12,7 @@ class BuildingStateViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var isDirty: Bool = true
     @Published var errorMessage: String?
+    @Published var error: EnergyManagerClientError?
     @Published var loginCredentialsExists: Bool = false
     @Published var overviewData: OverviewData = .init()
     @Published var lastUpdatedAt: Date?
@@ -25,46 +26,53 @@ class BuildingStateViewModel: ObservableObject {
     }
 
     func fetchServerData() async {
-        if !loginCredentialsExists {
+        if !loginCredentialsExists || isLoading {
             return
         }
 
         do {
             isLoading = true
-            errorMessage = nil
+            resetError()
 
             overviewData = try await energyManager.fetchOverviewData()
-            
             lastUpdatedAt = Date()
             isLoading = false
+            isDirty = false
         } catch {
+            self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
             isLoading = false
             isDirty = true
         }
     }
 
-    func login(email: String, password: String) {
+    func login(email: String, password: String) async {
         defer {
             isLoading = false
         }
 
-        isLoading = true
+        resetError()
         KeychainHelper.saveCredentials(username: email, password: password)
         updateCredentialsExists()
+        await fetchServerData()
     }
 
     func logout() {
         KeychainHelper.deleteCredentials()
         updateCredentialsExists()
-        errorMessage = nil
+        resetError()
     }
 
-    func updateCredentialsExists() {
+    private func updateCredentialsExists() {
         let credentials = KeychainHelper.loadCredentials()
 
         loginCredentialsExists =
             credentials.username?.isEmpty == false
             && credentials.password?.isEmpty == false
+    }
+
+    private func resetError() {
+        errorMessage = nil
+        error = nil
     }
 }

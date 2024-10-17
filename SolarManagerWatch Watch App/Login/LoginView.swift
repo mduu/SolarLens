@@ -41,7 +41,9 @@ struct LoginView: View {
                 }
 
             Button("Login") {
-                model.login(email: email, password: password)
+                Task {
+                    await model.login(email: email, password: password)
+                }
             }
             .disabled(isValidEmail || isValidPasswort)
         }
