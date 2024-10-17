@@ -46,7 +46,7 @@ struct ContentView: View {
         } else if !viewModel.loginCredentialsExists {
             LoginView()
                 .environmentObject(viewModel)
-        } else if viewModel.isDirty {
+        } else if viewModel.loginCredentialsExists {
 
             TabView {
                 OverviewView()
@@ -66,33 +66,6 @@ struct ContentView: View {
                     await viewModel.fetchServerData()
                 }
             }
-        } else {
-            ScrollView {
-                VStack {
-                    Text("Unknown error occured!")
-                        .foregroundStyle(Color.red)
-                        .font(.title3)
-
-                    Text(
-                        "Plase try again or re-login. If the problem persists, contact support."
-                    )
-                    .padding(.top, 5)
-                    .padding(.bottom, 5)
-                    .font(.subheadline)
-
-                    Button("Try again") {
-                        Task {
-                            await viewModel.fetchServerData()
-                        }
-                    }
-
-                    Button("Log out") {
-                        viewModel.logout()
-                    }
-
-                }
-            }
-
         }
     }
 }
