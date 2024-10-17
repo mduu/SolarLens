@@ -57,6 +57,7 @@ class BuildingStateViewModel: ObservableObject {
     func logout() {
         KeychainHelper.deleteCredentials()
         updateCredentialsExists()
+        errorMessage = nil
     }
 
     func updateCredentialsExists() {
