@@ -15,14 +15,6 @@ struct OverviewView: View {
 
     var body: some View {
         VStack {
-            // Background Gradient
-            LinearGradient(
-                gradient: getBackgroundGRadient(),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .edgesIgnoringSafeArea(.all)
-
             Grid {
                 GridRow(alignment: .center) {
                     SolarProductionView(
@@ -130,22 +122,6 @@ struct OverviewView: View {
     private func solarPercentage() -> Int {
         return 100 / solarProductionMaxValue
             * model.overviewData.currentSolarProduction
-    }
-
-    private func getBackgroundGRadient() -> Gradient {
-        if solarPercentage() >= 40 {
-            return Gradient(colors: [.yellow, .black])
-        }
-
-        if solarPercentage() >= 10 {
-            return Gradient(colors: [.yellow.opacity(0.7), .black])
-        }
-
-        if solarPercentage() >= 1 {
-            return Gradient(colors: [.red, .black])
-        }
-
-        return Gradient(colors: [.blue.opacity(0.5), .black])
     }
 }
 
