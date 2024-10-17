@@ -23,7 +23,6 @@ struct OverviewView: View {
             )
             .edgesIgnoringSafeArea(.all)
 
-            // Other controls on top of background
             Grid {
                 GridRow(alignment: .center) {
                     SolarProductionView(
@@ -93,6 +92,7 @@ struct OverviewView: View {
 
                     if model.overviewData.isFlowBatteryToHome() {
                         Image(systemName: "arrow.right")
+                            .foregroundColor(.green)
                             .symbolEffect(
                                 .wiggle.byLayer,
                                 options: .repeat(.periodic(delay: 0.7)))
