@@ -15,10 +15,10 @@ struct ContentView: View {
         if viewModel.error != nil || viewModel.errorMessage != nil {
             ScrollView {
                 VStack {
-                    Text("Login failed!")
-                        .foregroundStyle(Color.red)
-                        .font(.title3)
                     if viewModel.error == EnergyManagerClientError.loginFailed {
+                        Text("Login failed!")
+                            .foregroundStyle(Color.red)
+                            .font(.title3)
                         Text(
                             "Please make sure you are using the correct email and passwort from your Solar Manager login."
                         )
@@ -29,7 +29,10 @@ struct ContentView: View {
                             viewModel.logout()
                         }
                     } else {
-                        Text("Error: \(viewModel.errorMessage ?? "")")
+                        Text("Errpr occured!")
+                            .foregroundStyle(Color.red)
+                            .font(.title3)
+                        Text("Something went wrong! \(viewModel.errorMessage ?? "")")
                             .font(.subheadline)
                         Button("Try again") {
                             Task {
@@ -46,7 +49,7 @@ struct ContentView: View {
         } else if !viewModel.loginCredentialsExists {
             LoginView()
                 .environmentObject(viewModel)
-        } else if viewModel.loginCredentialsExists {
+        } else if viewModel.isLoggedIn {
 
             TabView {
                 OverviewView()
@@ -66,6 +69,13 @@ struct ContentView: View {
                     await viewModel.fetchServerData()
                 }
             }
+        } else {
+            ProgressView()
+                .onAppear() {
+                    Task {
+                        await viewModel.fetchServerData()
+                    }
+                }
         }
     }
 }

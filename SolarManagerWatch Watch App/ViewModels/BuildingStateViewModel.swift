@@ -10,10 +10,10 @@ import Foundation
 @MainActor
 class BuildingStateViewModel: ObservableObject {
     @Published var isLoading = false
-    @Published var isDirty: Bool = true
     @Published var errorMessage: String?
     @Published var error: EnergyManagerClientError?
     @Published var loginCredentialsExists: Bool = false
+    @Published var isLoggedIn: Bool = false
     @Published var overviewData: OverviewData = .init()
     @Published var lastUpdatedAt: Date?
 
@@ -21,7 +21,6 @@ class BuildingStateViewModel: ObservableObject {
 
     init(energyManagerClient: EnergyManager = SolarManager()) {
         self.energyManager = energyManagerClient
-        self.isDirty = true
         updateCredentialsExists()
     }
 
@@ -37,12 +36,12 @@ class BuildingStateViewModel: ObservableObject {
             overviewData = try await energyManager.fetchOverviewData()
             lastUpdatedAt = Date()
             isLoading = false
-            isDirty = false
+            isLoggedIn = true
         } catch {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
             isLoading = false
-            isDirty = true
+            isLoggedIn = self.error != .loginFailed
         }
     }
 
@@ -52,8 +51,11 @@ class BuildingStateViewModel: ObservableObject {
         }
 
         resetError()
+        KeychainHelper.accessToken = nil
+        KeychainHelper.refreshToken = nil
         KeychainHelper.saveCredentials(username: email, password: password)
         updateCredentialsExists()
+        
         await fetchServerData()
     }
 
