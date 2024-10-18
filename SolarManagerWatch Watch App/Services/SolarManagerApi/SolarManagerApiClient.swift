@@ -17,35 +17,19 @@ class SolarManagerApi: RestClient {
     }
 
     func login(email: String, password: String) async throws -> LoginResponse {
-
-        // Create HTTP POST request
-        let url = URL(string: "\(apiBaseUrl)/v1/oauth/login")!
-        let loginRequest = LoginRequest(email: email, password: password)
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONEncoder().encode(loginRequest)
-
         do {
-            // POST
-            let (data, response) = try await URLSession.shared.data(
-                for: request)
-            debugPrint(response)
+            if let loginResponse: LoginResponse? = try await post(
+                serviceUrl: "/v1/oauth/login",
+                requestBody: LoginRequest(email: email, password: password))
+            {
+                KeychainHelper.accessToken = loginResponse!.accessToken
+                KeychainHelper.refreshToken = loginResponse!.refreshToken
 
-            // Handle response
-            do {
-                let loginResponse = try JSONDecoder().decode(
-                    LoginResponse.self, from: data)
-
-                KeychainHelper.accessToken = loginResponse.accessToken
-                KeychainHelper.refreshToken = loginResponse.refreshToken
-
-                return loginResponse
-            } catch {
-                print("Error decoding login response: \(error)")
-                throw SolarManagerApiClientError.errorWhileDecoding
+                return loginResponse!
             }
+
+            throw SolarManagerApiClientError.communicationError
+
         } catch {
             KeychainHelper.accessToken = nil
             KeychainHelper.refreshToken = nil
@@ -64,21 +48,19 @@ class SolarManagerApi: RestClient {
         print("NOT IMPLEMENTED YET - Refresh access token !!!")
     }
 
-    func getV1Chart(solarManagerId smId: String) async throws -> GetV1ChartResponse? {
+    func getV1Chart(solarManagerId smId: String) async throws
+        -> GetV1ChartResponse?
+    {
         let response: GetV1ChartResponse? = try await get(
-            serviceUrl: "/v1/chart/gateway/\(smId)",
-            parameters: nil,
-            accessToken: KeychainHelper.accessToken)
+            serviceUrl: "/v1/chart/gateway/\(smId)")
 
         return response
     }
-    
+
     func getV1Users() async throws -> [V1User]? {
         let response: [V1User]? = try await get(
-            serviceUrl: "/v1/users",
-            parameters: nil,
-            accessToken: KeychainHelper.accessToken)
-        
+            serviceUrl: "/v1/users")
+
         return response
     }
 }
