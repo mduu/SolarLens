@@ -15,7 +15,7 @@ struct CircularInstrument: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(color, lineWidth: 5)
+                .stroke(color, lineWidth: 4)
                 .frame(maxWidth: 45)
             VStack {
                 Text(largeText)

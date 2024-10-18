@@ -67,7 +67,7 @@ struct OverviewView: View {
                     } else {
                         Text("")
                     }
-                }.frame(width: 30, height: 20)
+                }.frame(minWidth: 30, minHeight: 20)
 
                 GridRow(alignment: .center) {
 
@@ -96,8 +96,8 @@ struct OverviewView: View {
             }
             .padding(.top, 10)
             .padding(.bottom, 0)
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
+            .padding(.leading, 10)
+            .padding(.trailing, 10)
 
             HStack {
                 Text(
@@ -105,7 +105,7 @@ struct OverviewView: View {
                 )
                 .font(.system(size: 11))
                 .foregroundColor(.gray)
-            }.padding(.top, 5)
+            }.padding(.top, 2)
         }
         .onAppear {
             Timer.scheduledTimer(withTimeInterval: 20, repeats: true) { _ in
