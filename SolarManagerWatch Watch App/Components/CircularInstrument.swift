@@ -20,12 +20,12 @@ struct CircularInstrument: View {
             VStack {
                 Text(largeText)
                     .fontWeight(.bold)
-                    .font(.system(size: 20))
+                    .font(.system(size: 18))
                     .padding(.top, 6)
 
                 if smallText != nil {
                     Text(smallText!)
-                        .font(.system(size: 9))
+                        .font(.system(size: 8))
                         .padding(.bottom, 4)
                 }
             }
