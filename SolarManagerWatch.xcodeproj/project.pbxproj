@@ -433,7 +433,7 @@
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -449,7 +449,7 @@
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
