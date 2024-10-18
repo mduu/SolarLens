@@ -16,7 +16,7 @@ public struct OverviewData {
     var currentSolarToGrid: Int = 0
     var currentGridToHouse: Int = 0
     var currentSolarToHouse: Int = 0
-    var solarProductionMax: Int = 0
+    var solarProductionMax: Double = 0
     
     func isFlowBatteryToHome() -> Bool {
         return currentBatteryChargeRate ?? 0 < 0
