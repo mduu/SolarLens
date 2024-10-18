@@ -44,10 +44,13 @@ class RestClient {
                 throw RestError.responseError(response: response)
             }
             
+            print(String(data: data, encoding: .utf8) ?? "Data could not be decoded as UTF-8")
+
             do {
                 return try JSONDecoder().decode(TResponse.self, from: data)
             } catch let error {
                 print("Error deserializing response: \(error.localizedDescription)")
+                debugPrint(String(data: data, encoding: .utf8) ?? "Data could not be decoded as UTF-8")
                 throw error
             }
             

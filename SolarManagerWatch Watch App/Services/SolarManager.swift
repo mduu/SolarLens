@@ -43,7 +43,7 @@ actor SolarManager: EnergyManager {
                     .arrows?.first(
                         where: { $0.direction == .fromPVToConsumer}
                     )?.value ?? 0,
-                solarProductionMax: (systemInformation?.kWp ?? 0) * 1000)
+                solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000)
         } else {
             return OverviewData(
                 currentSolarProduction: 0,
@@ -107,6 +107,7 @@ actor SolarManager: EnergyManager {
 
             self.expireAt = Date().addingTimeInterval(
                 TimeInterval(loginSuccess.expiresIn))
+            self.systemInformation = nil
 
             print("Login succeeded.")
             return
