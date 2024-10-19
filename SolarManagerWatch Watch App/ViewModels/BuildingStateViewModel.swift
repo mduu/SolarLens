@@ -32,9 +32,13 @@ class BuildingStateViewModel: ObservableObject {
         do {
             isLoading = true
             resetError()
+            
+            print("Fetching server data...")
 
             overviewData = try await energyManager.fetchOverviewData()
             lastUpdatedAt = Date()
+            print("Server data fetched at \(Date())")
+
             isLoading = false
             isLoggedIn = true
         } catch {

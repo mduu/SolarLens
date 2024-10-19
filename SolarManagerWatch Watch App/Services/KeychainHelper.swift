@@ -11,6 +11,7 @@ import Foundation
 class KeychainHelper {
     static let serviceName = "com.marcduerst.SolarManagerWatch"
     static let serviceComment = "SolarManager Watch Login"
+    
     static let usernameKey = "username"
     static let passwordKey = "password"
     static let accessTokenKey = "accessToken"

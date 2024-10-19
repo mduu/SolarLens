@@ -15,7 +15,8 @@ class RestClient {
         self.baseUrl = baseUrl
     }
 
-    func get<TResponse>(serviceUrl: String, parameters: Codable? = nil) async throws
+    func get<TResponse>(serviceUrl: String, parameters: Codable? = nil)
+        async throws
         -> TResponse? where TResponse: Codable
     {
         guard let url = URL(string: "\(baseUrl)\(serviceUrl)") else {
@@ -43,10 +44,6 @@ class RestClient {
                 throw RestError.responseError(response: response)
             }
 
-            print(
-                String(data: data, encoding: .utf8)
-                    ?? "Data could not be decoded as UTF-8")
-
             do {
                 return try JSONDecoder().decode(TResponse.self, from: data)
             } catch let error {
@@ -66,7 +63,10 @@ class RestClient {
     }
 
     func post<TRequest, TResponse>(
-        serviceUrl: String, requestBody: TRequest, parameters: Codable? = nil
+        serviceUrl: String,
+        requestBody: TRequest,
+        parameters: Codable? = nil,
+        useAccessToken: Bool = true
     ) async throws
         -> TResponse? where TRequest: Codable, TResponse: Codable
     {
@@ -77,8 +77,8 @@ class RestClient {
         var request = URLRequest(url: url, timeoutInterval: 20)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        
-        if let accessToken = KeychainHelper.accessToken {
+
+        if useAccessToken, let accessToken = KeychainHelper.accessToken {
             request.setValue(
                 "Bearer " + accessToken, forHTTPHeaderField: "Authorization")
         }
@@ -90,7 +90,7 @@ class RestClient {
                 for: request)
 
             if let response = response as? HTTPURLResponse,
-                response.statusCode != 200
+                response.statusCode != 200, response.statusCode != 201
             {
                 print(
                     "RestClient POST Error: \(response.statusCode), \(String(describing: HTTPURLResponse.localizedString))"
@@ -98,19 +98,19 @@ class RestClient {
                 throw RestError.responseError(response: response)
             }
 
-            print(
-                String(data: data, encoding: .utf8)
-                    ?? "Data could not be decoded as UTF-8")
-
             do {
+
                 return try JSONDecoder().decode(TResponse.self, from: data)
+
             } catch let error {
                 print(
                     "Error deserializing POST response: \(error.localizedDescription)"
                 )
+
                 debugPrint(
                     String(data: data, encoding: .utf8)
                         ?? "Data could not be decoded as UTF-8")
+
                 throw error
             }
 

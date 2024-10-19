@@ -108,7 +108,7 @@ struct OverviewView: View {
             }.padding(.top, 2)
         }
         .onAppear {
-            Timer.scheduledTimer(withTimeInterval: 20, repeats: true) { _ in
+            Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { _ in
                 Task {
                     await model.fetchServerData()
                 }

@@ -10,20 +10,23 @@ import Foundation
 
 actor SolarManager: EnergyManager {
     private var expireAt: Date?
-    private var isEnsuringLoggedIn = false
+    private var accessClaims: [String]?
     private var solarManagerApi = SolarManagerApi()
     private var systemInformation: V1User?
 
     func fetchOverviewData() async throws -> OverviewData {
-        
+
         try await ensureLoggedIn()
         try await ensureSmId()
 
+        // GET GetV1Chart
         if let chart = try await solarManagerApi.getV1Chart(
             solarManagerId: systemInformation!.sm_id)
-        {
-            let batteryChargingRate = chart.battery != nil
-                ? chart.battery!.batteryCharging - chart.battery!.batteryDischarging
+        {            
+            let batteryChargingRate =
+                chart.battery != nil
+                ? chart.battery!.batteryCharging
+                    - chart.battery!.batteryDischarging
                 : nil
 
             return OverviewData(
@@ -33,60 +36,60 @@ actor SolarManager: EnergyManager {
                 currentBatteryChargeRate: batteryChargingRate,
                 currentSolarToGrid: chart
                     .arrows?.first(
-                        where: { $0.direction == .fromPVToGrid}
+                        where: { $0.direction == .fromPVToGrid }
                     )?.value ?? 0,
                 currentGridToHouse: chart
                     .arrows?.first(
-                        where: { $0.direction == .fromGridToConsumer}
+                        where: { $0.direction == .fromGridToConsumer }
                     )?.value ?? 0,
                 currentSolarToHouse: chart
                     .arrows?.first(
-                        where: { $0.direction == .fromPVToConsumer}
+                        where: { $0.direction == .fromPVToConsumer }
                     )?.value ?? 0,
                 solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000)
-        } else {
-            return OverviewData(
-                currentSolarProduction: 0,
-                currentOverallConsumption: 0,
-                currentBatteryLevel: nil,
-                currentBatteryChargeRate: nil,
-                currentSolarToGrid: 0,
-                currentGridToHouse: 0,
-                currentSolarToHouse: 0,
-                solarProductionMax: 0)
         }
+
+        return OverviewData(
+            currentSolarProduction: 0,
+            currentOverallConsumption: 0,
+            currentBatteryLevel: nil,
+            currentBatteryChargeRate: nil,
+            currentSolarToGrid: 0,
+            currentGridToHouse: 0,
+            currentSolarToHouse: 0,
+            solarProductionMax: 0)
     }
 
     private func ensureLoggedIn() async throws {
-        if isEnsuringLoggedIn {
-            return
-        }
-
-        isEnsuringLoggedIn = true
-        defer {
-            isEnsuringLoggedIn = false
-        }
-
         let accessToken = KeychainHelper.accessToken
         let refreshToken = KeychainHelper.refreshToken
 
         if accessToken != nil && expireAt != nil && expireAt! > Date() {
-            print("Valid login can be re-used")
             return
         }
 
         if let refreshToken = refreshToken {
-            print("Refresh token exists. Refreshing ...")
+            print("Refresh token exists. Refreshing access-token...")
 
             do {
-                try await solarManagerApi.refresh(refreshToken: refreshToken)
-                // TODO Update expire at
+                let refreshResponse = try await solarManagerApi.refresh(
+                    refreshToken: refreshToken)
                 
+                self.expireAt = Date().addingTimeInterval(
+                    TimeInterval(refreshResponse.expiresIn))
+                self.accessClaims = refreshResponse.accessClaims
+
                 if accessToken != nil && expireAt != nil && expireAt! > Date() {
-                    print("Refresh auth-token succeeded.")
+                    print("Refresh auth-token succeeded. Token will expire at \(expireAt!)")
+        
                     return
                 }
+
+                print("Refresh access-token succeeded.")
             } catch {
+                print(
+                    "Refresh access-token failed. Will performan a regular login."
+                )
             }
         }
 
@@ -109,7 +112,7 @@ actor SolarManager: EnergyManager {
                 TimeInterval(loginSuccess.expiresIn))
             self.systemInformation = nil
 
-            print("Login succeeded.")
+            print("Login succeeded. Token will expire at \(expireAt!)")
             return
         } catch {
             KeychainHelper.accessToken = nil
@@ -123,7 +126,7 @@ actor SolarManager: EnergyManager {
         try await ensureLoggedIn()
         try await ensureSystemInfomation()
     }
-    
+
     private func ensureSystemInfomation() async throws {
         if self.systemInformation != nil {
             return
@@ -136,13 +139,14 @@ actor SolarManager: EnergyManager {
         do {
             let users = try await solarManagerApi.getV1Users()
             let firstUser = users?.first
-            if firstUser == nil
-            {
+            if firstUser == nil {
                 throw EnergyManagerClientError.systemInformationNotFound
             }
 
             self.systemInformation = firstUser
-            print("System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")")
+            print(
+                "System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")"
+            )
         }
     }
 

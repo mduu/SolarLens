@@ -20,10 +20,12 @@ class SolarManagerApi: RestClient {
         do {
             if let loginResponse: LoginResponse? = try await post(
                 serviceUrl: "/v1/oauth/login",
-                requestBody: LoginRequest(email: email, password: password))
+                requestBody: LoginRequest(email: email, password: password),
+                useAccessToken: false)
             {
-                KeychainHelper.accessToken = loginResponse!.accessToken
-                KeychainHelper.refreshToken = loginResponse!.refreshToken
+                storeLogin(
+                    accessToken: loginResponse!.accessToken,
+                    refreshToken: loginResponse!.refreshToken)
 
                 return loginResponse!
             }
@@ -31,8 +33,7 @@ class SolarManagerApi: RestClient {
             throw SolarManagerApiClientError.communicationError
 
         } catch {
-            KeychainHelper.accessToken = nil
-            KeychainHelper.refreshToken = nil
+            clearLogin()
 
             print(
                 "Login failed! Error: \(error). Email: \(email), Passwort: \(password)"
@@ -41,11 +42,30 @@ class SolarManagerApi: RestClient {
         }
     }
 
-    func refresh(refreshToken: String) async throws {
-        // TODO Refresh
-        // TODO Store new accessToken
-        // TODO Return new expiresAt
-        print("NOT IMPLEMENTED YET - Refresh access token !!!")
+    func refresh(refreshToken: String) async throws -> RefreshResponse {
+        do {
+            if let refreshResponse: RefreshResponse? = try await post(
+                serviceUrl: "/v1/oauth/refresh",
+                requestBody: RefreshRequest(refreshToken: refreshToken),
+                useAccessToken: false)
+            {
+                storeLogin(
+                    accessToken: refreshResponse!.accessToken,
+                    refreshToken: refreshResponse!.refreshToken)
+
+                return refreshResponse!
+            }
+
+            throw SolarManagerApiClientError.communicationError
+
+        } catch {
+            clearLogin()
+
+            print(
+                "Refresh failed! Error: \(error)"
+            )
+            throw SolarManagerApiClientError.communicationError
+        }
     }
 
     func getV1Chart(solarManagerId smId: String) async throws
@@ -62,5 +82,15 @@ class SolarManagerApi: RestClient {
             serviceUrl: "/v1/users")
 
         return response
+    }
+
+    private func storeLogin(accessToken: String, refreshToken: String) {
+        KeychainHelper.accessToken = accessToken
+        KeychainHelper.refreshToken = refreshToken
+    }
+
+    private func clearLogin() {
+        KeychainHelper.accessToken = nil
+        KeychainHelper.refreshToken = nil
     }
 }
