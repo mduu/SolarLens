@@ -41,8 +41,6 @@ Solar Lens is a powerful app that gives you a comprehensive overview of your hom
 
 - Solar Lens is not affiliated with Solar Manager AG. The app is designed to work with Solar Manager systems, but it is a separate product developed by Marc Dürst.
 
-A standalone Apple Watch App showing basic information from *Solar Manager* like the overview of the house energy flow, the solar production and some consumption information.
-
 # Technology
 
 * XCode
