@@ -1,6 +1,9 @@
-# SolarManagerWatch
-
-Download: [Apple App Store](https://apple.co/408SKri)
+<h1>
+  <img src="marketing/solar_lens.png" width="32" height="auto" alt="Solar Lens Logo"> SolarManagerWatch <a href="">
+    <img src="marketing/black.svg" width="96" height="auto" alt="Solar Lens Download Button">
+  </a>
+</h1>
+<img src="marketing/qr_code.png" width="240" height="auto" alt="Solar Lens QR Code">
 
 ## Description
 
