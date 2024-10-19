@@ -10,8 +10,6 @@ import SwiftUI
 struct OverviewView: View {
     @EnvironmentObject var model: BuildingStateViewModel
 
-    @State private var solarProductionMaxValue = 11_000
-
     var body: some View {
         VStack {
             Grid {
@@ -19,7 +17,8 @@ struct OverviewView: View {
                     SolarProductionView(
                         currentSolarProduction: $model.overviewData
                             .currentSolarProduction,
-                        maximumSolarProduction: $solarProductionMaxValue
+                        maximumSolarProduction: $model.overviewData
+                            .solarProductionMax
                     )
 
                     if model.overviewData.isFlowSolarToGrid() {
@@ -33,7 +32,8 @@ struct OverviewView: View {
                     }
 
                     NetworkConsumptionView(
-                        currentNetworkConsumption: $model.overviewData.currentGridToHouse
+                        currentNetworkConsumption: $model.overviewData
+                            .currentGridToHouse
                     )
                 }
 
@@ -114,11 +114,6 @@ struct OverviewView: View {
                 }
             }
         }
-    }
-
-    private func solarPercentage() -> Int {
-        return 100 / solarProductionMaxValue
-            * model.overviewData.currentSolarProduction
     }
 }
 

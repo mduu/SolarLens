@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SolarProductionView: View {
     @Binding var currentSolarProduction: Int
-    @Binding var maximumSolarProduction: Int
+    @Binding var maximumSolarProduction: Double
     
     var body: some View {
         VStack() {
