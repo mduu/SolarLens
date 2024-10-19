@@ -1,9 +1,26 @@
 <h1>
   <img src="marketing/solar_lens.png" width="32" height="auto" alt="Solar Lens Logo"> SolarManagerWatch <a href="">
+    <a href="https://apple.co/408SKri">
     <img src="marketing/black.svg" width="96" height="auto" alt="Solar Lens Download Button">
   </a>
 </h1>
+
+<a href="https://apple.co/408SKri">
 <img src="marketing/qr_code.png" width="240" height="auto" alt="Solar Lens QR Code">
+</a>
+
+## Support
+
+Deutsch:
+- Dokumentation [hier](https://github.com/mduu/SolarManagerWatch/wiki)
+- Probleme melden oder Fragen: [hier](https://github.com/mduu/SolarManagerWatch/issues)
+- Was ist für die App weiter geplant? [Hier](https://github.com/users/mduu/projects/2/views/1)
+
+English:
+
+- Find documentattion [here](https://github.com/mduu/SolarManagerWatch/wiki)
+- Report issues and ask questions [here](https://github.com/mduu/SolarManagerWatch/issues)
+- See what's planned [here](https://github.com/users/mduu/projects/2/views/1)
 
 ## Description
 
