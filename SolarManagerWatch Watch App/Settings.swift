@@ -13,7 +13,7 @@ struct Settings: View {
     var body: some View {
         VStack(alignment: .center) {
             Text("Settings")
-                .font(.title)
+                .font(.title2)
                 .foregroundColor(.blue)
                 .padding(.bottom, 16)
 
@@ -46,10 +46,20 @@ struct Settings: View {
     }
 }
 
-#Preview {
+#Preview("English") {
     Settings()
         .environmentObject(
             BuildingStateViewModel(
                 energyManagerClient: FakeEnergyManager()
             ))
+}
+
+#Preview("German") {
+    
+    Settings()
+        .environmentObject(
+            BuildingStateViewModel(
+                energyManagerClient: FakeEnergyManager()
+            ))
+        .environment(\.locale, Locale(identifier: "DE"))
 }

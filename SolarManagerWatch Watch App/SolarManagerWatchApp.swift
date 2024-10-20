@@ -13,5 +13,6 @@ struct SolarManagerWatch_Watch_AppApp: App {
         WindowGroup {
             ContentView()
         }
+        //.environment(\.locale, Locale(identifier: "DE"))
     }
 }

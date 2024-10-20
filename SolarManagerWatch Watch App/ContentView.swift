@@ -14,17 +14,19 @@ struct ContentView: View {
 
         if viewModel.error != nil || viewModel.errorMessage != nil {
             ScrollView {
-                VStack {
+                VStack(alignment: HorizontalAlignment.leading) {
                     if viewModel.error == EnergyManagerClientError.loginFailed {
                         Text("Login failed!")
                             .foregroundStyle(Color.red)
                             .font(.title3)
+                        
                         Text(
                             "Please make sure you are using the correct email and passwort from your Solar Manager login."
                         )
-                        .padding(.top, 5)
-                        .padding(.bottom, 5)
-                        .font(.subheadline)
+                            .padding(.top, 5)
+                            .padding(.bottom, 5)
+                            .font(.subheadline)
+                        
                         Button("Retry login") {
                             viewModel.logout()
                         }
@@ -32,13 +34,18 @@ struct ContentView: View {
                         Text("Errpr occured!")
                             .foregroundStyle(Color.red)
                             .font(.title3)
-                        Text("Something went wrong! \(viewModel.errorMessage ?? "")")
+                        
+                        Text(
+                            "Something went wrong! \(viewModel.errorMessage ?? "")"
+                        )
                             .font(.subheadline)
+                        
                         Button("Try again") {
                             Task {
                                 await viewModel.fetchServerData()
                             }
                         }
+                        
                         Button("Log out") {
                             viewModel.logout()
                         }
@@ -71,7 +78,7 @@ struct ContentView: View {
             }
         } else {
             ProgressView()
-                .onAppear() {
+                .onAppear {
                     Task {
                         await viewModel.fetchServerData()
                     }
@@ -80,6 +87,6 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+#Preview("Login Form") {
     ContentView()
 }

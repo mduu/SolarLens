@@ -117,10 +117,19 @@ struct OverviewView: View {
     }
 }
 
-#Preview {
+#Preview("English") {
     OverviewView()
         .environmentObject(
             BuildingStateViewModel(
                 energyManagerClient: FakeEnergyManager()
             ))
+}
+
+#Preview("German") {
+    OverviewView()
+        .environmentObject(
+            BuildingStateViewModel(
+                energyManagerClient: FakeEnergyManager()
+            ))
+        .environment(\.locale, Locale(identifier: "DE"))
 }
