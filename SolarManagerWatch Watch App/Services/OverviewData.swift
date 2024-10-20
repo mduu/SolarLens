@@ -5,7 +5,7 @@
 //  Created by Marc Dürst on 05.10.2024.
 //
 
-public struct OverviewData {
+struct OverviewData {
     private let minGridConsumptionTreashold: Int = 30
     private let minGridIngestionTreashold: Int = 10
     
@@ -17,6 +17,7 @@ public struct OverviewData {
     var currentGridToHouse: Int = 0
     var currentSolarToHouse: Int = 0
     var solarProductionMax: Double = 0
+    var hasConnectionError: Bool = false
     
     func isFlowBatteryToHome() -> Bool {
         return currentBatteryChargeRate ?? 0 < 0

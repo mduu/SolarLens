@@ -19,10 +19,11 @@ class FakeEnergyManager : EnergyManager {
                 currentBatteryLevel: 42,
                 currentBatteryChargeRate: 2400,
                 currentSolarToGrid: 120, currentGridToHouse: 100,
-                currentSolarToHouse: 1100)
+                currentSolarToHouse: 1100,
+                hasConnectionError: true)
     }
     
-    func fetchOverviewData() -> OverviewData {
+    func fetchOverviewData(lastOverviewData: OverviewData?) -> OverviewData {
         return data
     }
 }

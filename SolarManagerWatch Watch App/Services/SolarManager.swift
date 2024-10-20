@@ -14,7 +14,9 @@ actor SolarManager: EnergyManager {
     private var solarManagerApi = SolarManagerApi()
     private var systemInformation: V1User?
 
-    func fetchOverviewData() async throws -> OverviewData {
+    func fetchOverviewData(lastOverviewData: OverviewData?) async throws
+        -> OverviewData
+    {
 
         try await ensureLoggedIn()
         try await ensureSmId()
@@ -22,7 +24,7 @@ actor SolarManager: EnergyManager {
         // GET GetV1Chart
         if let chart = try await solarManagerApi.getV1Chart(
             solarManagerId: systemInformation!.sm_id)
-        {            
+        {
             let batteryChargingRate =
                 chart.battery != nil
                 ? chart.battery!.batteryCharging
@@ -49,15 +51,21 @@ actor SolarManager: EnergyManager {
                 solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000)
         }
 
-        return OverviewData(
-            currentSolarProduction: 0,
-            currentOverallConsumption: 0,
-            currentBatteryLevel: nil,
-            currentBatteryChargeRate: nil,
-            currentSolarToGrid: 0,
-            currentGridToHouse: 0,
-            currentSolarToHouse: 0,
-            solarProductionMax: 0)
+        var errorOverviewData =
+            lastOverviewData
+            ?? OverviewData(
+                currentSolarProduction: 0,
+                currentOverallConsumption: 0,
+                currentBatteryLevel: nil,
+                currentBatteryChargeRate: nil,
+                currentSolarToGrid: 0,
+                currentGridToHouse: 0,
+                currentSolarToHouse: 0,
+                solarProductionMax: 0)
+
+        errorOverviewData.hasConnectionError = true
+
+        return errorOverviewData
     }
 
     private func ensureLoggedIn() async throws {
@@ -74,14 +82,16 @@ actor SolarManager: EnergyManager {
             do {
                 let refreshResponse = try await solarManagerApi.refresh(
                     refreshToken: refreshToken)
-                
+
                 self.expireAt = Date().addingTimeInterval(
                     TimeInterval(refreshResponse.expiresIn))
                 self.accessClaims = refreshResponse.accessClaims
 
                 if accessToken != nil && expireAt != nil && expireAt! > Date() {
-                    print("Refresh auth-token succeeded. Token will expire at \(expireAt!)")
-        
+                    print(
+                        "Refresh auth-token succeeded. Token will expire at \(expireAt!)"
+                    )
+
                     return
                 }
 

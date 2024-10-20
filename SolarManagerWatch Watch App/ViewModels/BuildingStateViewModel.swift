@@ -35,7 +35,7 @@ class BuildingStateViewModel: ObservableObject {
             
             print("Fetching server data...")
 
-            overviewData = try await energyManager.fetchOverviewData()
+            overviewData = try await energyManager.fetchOverviewData(lastOverviewData: overviewData)
             lastUpdatedAt = Date()
             print("Server data fetched at \(Date())")
 
