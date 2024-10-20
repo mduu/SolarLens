@@ -117,7 +117,7 @@ struct OverviewView: View {
 
                 HStack {
                     Text(
-                        model.lastUpdatedAt?.formatted() ?? "-"
+                        model.lastUpdatedAt?.formatted(date: .numeric, time: .standard) ?? "-"
                     )
                     .font(.system(size: 11))
                     .foregroundColor(.gray)
