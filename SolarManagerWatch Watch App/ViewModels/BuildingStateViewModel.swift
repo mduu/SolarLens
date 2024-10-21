@@ -24,6 +24,19 @@ class BuildingStateViewModel: ObservableObject {
         updateCredentialsExists()
     }
 
+    static func fake(energyManagerClient: EnergyManager)
+        -> BuildingStateViewModel
+    {
+        let result = BuildingStateViewModel.init(
+            energyManagerClient: energyManagerClient)
+
+        Task {
+            await result.fetchServerData()
+        }
+
+        return result
+    }
+
     func fetchServerData() async {
         if !loginCredentialsExists || isLoading {
             return
@@ -32,10 +45,11 @@ class BuildingStateViewModel: ObservableObject {
         do {
             isLoading = true
             resetError()
-            
+
             print("Fetching server data...")
 
-            overviewData = try await energyManager.fetchOverviewData(lastOverviewData: overviewData)
+            overviewData = try await energyManager.fetchOverviewData(
+                lastOverviewData: overviewData)
             lastUpdatedAt = Date()
             print("Server data fetched at \(Date())")
 
@@ -59,7 +73,7 @@ class BuildingStateViewModel: ObservableObject {
         KeychainHelper.refreshToken = nil
         KeychainHelper.saveCredentials(username: email, password: password)
         updateCredentialsExists()
-        
+
         await fetchServerData()
     }
 

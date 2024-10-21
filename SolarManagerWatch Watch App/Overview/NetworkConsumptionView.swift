@@ -10,6 +10,8 @@ import SwiftUI
 struct NetworkConsumptionView: View {
     @Binding var currentNetworkConsumption: Int
     @Binding var currentNetworkFeedin: Int
+    var isFlowFromNetwork: Bool
+    var isFlowToNetwork: Bool
 
     @State var largeText: String = "-"
     @State var smallText: String? = "kW"
@@ -48,7 +50,7 @@ struct NetworkConsumptionView: View {
 
     private func updateColor() {
         color =
-            currentNetworkFeedin > 0 || currentNetworkConsumption > 0
+        isFlowToNetwork || isFlowFromNetwork
             ? Color.orange
             : Color.secondary
     }
@@ -57,20 +59,26 @@ struct NetworkConsumptionView: View {
 #Preview("Consume from grid") {
     NetworkConsumptionView(
         currentNetworkConsumption: Binding.constant(2300),
-        currentNetworkFeedin: Binding.constant(0)
+        currentNetworkFeedin: Binding.constant(0),
+        isFlowFromNetwork: true,
+        isFlowToNetwork: false
     )
 }
 
 #Preview("Feed-in to grid") {
     NetworkConsumptionView(
         currentNetworkConsumption: Binding.constant(0),
-        currentNetworkFeedin: Binding.constant(3200)
+        currentNetworkFeedin: Binding.constant(3200),
+        isFlowFromNetwork: false,
+        isFlowToNetwork: true
     )
 }
 
 #Preview("No grid") {
     NetworkConsumptionView(
         currentNetworkConsumption: Binding.constant(0),
-        currentNetworkFeedin: Binding.constant(0)
+        currentNetworkFeedin: Binding.constant(0),
+        isFlowFromNetwork: true,
+        isFlowToNetwork: false
     )
 }

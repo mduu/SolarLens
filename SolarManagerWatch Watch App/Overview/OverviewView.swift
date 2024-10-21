@@ -37,7 +37,11 @@ struct OverviewView: View {
                             currentNetworkConsumption: $model.overviewData
                                 .currentGridToHouse,
                             currentNetworkFeedin: $model.overviewData
-                                .currentSolarToGrid
+                                .currentSolarToGrid,
+                            isFlowFromNetwork: model.overviewData
+                                .isFlowGridToHouse(),
+                            isFlowToNetwork: model.overviewData
+                                .isFlowSolarToGrid()
                         )
                     }
 
@@ -143,6 +147,28 @@ struct OverviewView: View {
             BuildingStateViewModel(
                 energyManagerClient: FakeEnergyManager()
             ))
+}
+
+struct OverviewView_Preiews: PreviewProvider {
+
+    static var previews: some View {
+        OverviewView()
+            .environmentObject(
+                BuildingStateViewModel.fake(
+                    energyManagerClient: FakeEnergyManager(
+                        data: .init(
+                            currentSolarProduction: 4500,
+                            currentOverallConsumption: 400,
+                            currentBatteryLevel: 99,
+                            currentBatteryChargeRate: 150,
+                            currentSolarToGrid: 3600,
+                            currentGridToHouse: 0,
+                            currentSolarToHouse: 400,
+                            solarProductionMax: 11000
+                        )
+                    )
+                ))
+    }
 }
 
 #Preview("German") {
