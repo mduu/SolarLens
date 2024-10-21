@@ -5,6 +5,8 @@
 //  Created by Marc Dürst on 05.10.2024.
 //
 
+import Foundation
+
 struct OverviewData {
     private let minGridConsumptionTreashold: Int = 30
     private let minGridIngestionTreashold: Int = 10
@@ -18,6 +20,7 @@ struct OverviewData {
     var currentSolarToHouse: Int = 0
     var solarProductionMax: Double = 0
     var hasConnectionError: Bool = false
+    var lastUpdated: Date? = nil
     
     func isFlowBatteryToHome() -> Bool {
         return currentBatteryChargeRate ?? 0 < 0

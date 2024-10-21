@@ -15,7 +15,6 @@ class BuildingStateViewModel: ObservableObject {
     @Published var loginCredentialsExists: Bool = false
     @Published var isLoggedIn: Bool = false
     @Published var overviewData: OverviewData = .init()
-    @Published var lastUpdatedAt: Date?
 
     private let energyManager: EnergyManager
 
@@ -50,7 +49,6 @@ class BuildingStateViewModel: ObservableObject {
 
             overviewData = try await energyManager.fetchOverviewData(
                 lastOverviewData: overviewData)
-            lastUpdatedAt = Date()
             print("Server data fetched at \(Date())")
 
             isLoading = false

@@ -13,13 +13,15 @@ actor SolarManager: EnergyManager {
     private var accessClaims: [String]?
     private var solarManagerApi = SolarManagerApi()
     private var systemInformation: V1User?
+    private var sensorInfos: [SensorInfosV1Response]?
+    private var sensorInfosUpdatedAt: Date?
 
     func fetchOverviewData(lastOverviewData: OverviewData?) async throws
         -> OverviewData
     {
-
         try await ensureLoggedIn()
         try await ensureSmId()
+        //try await ensureSensorInfosAreCurrent()
 
         // GET GetV1Chart
         if let chart = try await solarManagerApi.getV1Chart(
@@ -48,7 +50,8 @@ actor SolarManager: EnergyManager {
                     .arrows?.first(
                         where: { $0.direction == .fromPVToConsumer }
                     )?.value ?? 0,
-                solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000)
+                solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000,
+                lastUpdated: Date())
         }
 
         var errorOverviewData =
@@ -146,18 +149,30 @@ actor SolarManager: EnergyManager {
 
         try await ensureLoggedIn()
 
-        do {
-            let users = try await solarManagerApi.getV1Users()
-            let firstUser = users?.first
-            if firstUser == nil {
-                throw EnergyManagerClientError.systemInformationNotFound
-            }
-
-            self.systemInformation = firstUser
-            print(
-                "System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")"
-            )
+        let users = try await solarManagerApi.getV1Users()
+        let firstUser = users?.first
+        if firstUser == nil {
+            throw EnergyManagerClientError.systemInformationNotFound
         }
+
+        self.systemInformation = firstUser
+        print(
+            "System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")"
+        )
+    }
+
+    private func ensureSensorInfosAreCurrent() async throws {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+
+        if sensorInfos != nil && sensorInfosUpdatedAt != nil
+            && Date.now < sensorInfosUpdatedAt!.addingTimeInterval(60)
+        {
+            print("Reuse existing sensor infos")
+        }
+
+        sensorInfos = try await solarManagerApi.getV1InfoSensors(
+            solarManagerId: systemInformation!.sm_id)
     }
 
 }
