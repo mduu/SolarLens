@@ -14,20 +14,6 @@ struct OverviewView: View {
         ZStack {
 
             VStack {
-                HStack {
-                    if model.overviewData.hasConnectionError {
-                        Image(systemName: "exclamationmark.icloud")
-                            .foregroundColor(Color.red)
-                            .symbolEffect(
-                                .pulse.wholeSymbol,
-                                options: .repeat(.continuous))
-                    }
-                }
-
-                Spacer()
-            }
-
-            VStack {
                 Grid {
                     GridRow(alignment: .center) {
                         SolarProductionView(
@@ -49,7 +35,9 @@ struct OverviewView: View {
 
                         NetworkConsumptionView(
                             currentNetworkConsumption: $model.overviewData
-                                .currentGridToHouse
+                                .currentGridToHouse,
+                            currentNetworkFeedin: $model.overviewData
+                                .currentSolarToGrid
                         )
                     }
 
@@ -117,7 +105,8 @@ struct OverviewView: View {
 
                 HStack {
                     Text(
-                        model.lastUpdatedAt?.formatted(date: .numeric, time: .standard) ?? "-"
+                        model.lastUpdatedAt?.formatted(
+                            date: .numeric, time: .standard) ?? "-"
                     )
                     .font(.system(size: 11))
                     .foregroundColor(.gray)
@@ -129,6 +118,20 @@ struct OverviewView: View {
                         await model.fetchServerData()
                     }
                 }
+            }
+
+            VStack {
+                HStack {
+                    if model.overviewData.hasConnectionError {
+                        Image(systemName: "exclamationmark.icloud")
+                            .foregroundColor(Color.red)
+                            .symbolEffect(
+                                .pulse.wholeSymbol,
+                                options: .repeat(.continuous))
+                    }
+                }
+
+                Spacer()
             }
         }
     }
