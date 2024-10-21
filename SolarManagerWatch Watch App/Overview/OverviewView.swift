@@ -98,7 +98,9 @@ struct OverviewView: View {
 
                         HouseholdConsumptionView(
                             currentOverallConsumption: $model.overviewData
-                                .currentOverallConsumption
+                                .currentOverallConsumption,
+                            isAnyCarCharging: $model.overviewData
+                                .isAnyCarCharing
                         )
                     }
                 }
@@ -164,7 +166,8 @@ struct OverviewView_Preiews: PreviewProvider {
                             currentSolarToGrid: 3600,
                             currentGridToHouse: 0,
                             currentSolarToHouse: 400,
-                            solarProductionMax: 11000
+                            solarProductionMax: 11000,
+                            isAnyCarCharing: true
                         )
                     )
                 ))

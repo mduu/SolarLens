@@ -21,7 +21,7 @@ actor SolarManager: EnergyManager {
     {
         try await ensureLoggedIn()
         try await ensureSmId()
-        //try await ensureSensorInfosAreCurrent()
+        try await ensureSensorInfosAreCurrent()
 
         // GET GetV1Chart
         if let chart = try await solarManagerApi.getV1Chart(
@@ -32,6 +32,13 @@ actor SolarManager: EnergyManager {
                 ? chart.battery!.batteryCharging
                     - chart.battery!.batteryDischarging
                 : nil
+
+            let streamSensorInfos =
+                try await solarManagerApi.getV1StreamGateway(
+                    solarManagerId: systemInformation!.sm_id)
+
+            let isAnyCarCharing = getIsAnyCarCharing(
+                streamSensors: streamSensorInfos)
 
             return OverviewData(
                 currentSolarProduction: chart.production,
@@ -51,7 +58,8 @@ actor SolarManager: EnergyManager {
                         where: { $0.direction == .fromPVToConsumer }
                     )?.value ?? 0,
                 solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000,
-                lastUpdated: Date())
+                lastUpdated: Date(),
+                isAnyCarCharing: isAnyCarCharing)
         }
 
         var errorOverviewData =
@@ -173,6 +181,26 @@ actor SolarManager: EnergyManager {
 
         sensorInfos = try await solarManagerApi.getV1InfoSensors(
             solarManagerId: systemInformation!.sm_id)
+    }
+
+    private func getIsAnyCarCharing(streamSensors: StreamSensorsV1Response?)
+        -> Bool
+    {
+        guard streamSensors != nil else { return false }
+        guard sensorInfos != nil else { return false }
+
+        let chargingSensorIds =
+            sensorInfos!.filter {
+                $0.type == "Car Charging" && $0.device_type == "device"
+            }
+            .map { $0._id }
+
+        let charingPower = streamSensors!.devices
+            .filter { chargingSensorIds.contains($0._id) }
+            .map { $0.currentPower ?? 0 }
+            .reduce(0, +)
+
+        return charingPower > 0
     }
 
 }

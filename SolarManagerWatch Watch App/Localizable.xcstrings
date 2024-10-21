@@ -18,6 +18,9 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "+" : {
+
+    },
     "Email" : {
       "localizations" : {
         "de" : {

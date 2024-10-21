@@ -83,6 +83,20 @@ class SolarManagerApi: RestClient {
 
         return response
     }
+    
+    func getV1InfoSensors(solarManagerId smId: String) async throws -> [SensorInfosV1Response]? {
+        let response: [SensorInfosV1Response]? = try await get(
+            serviceUrl: "/v1/info/sensors/\(smId)")
+        
+        return response
+    }
+    
+    func getV1StreamGateway(solarManagerId smId: String) async throws -> StreamSensorsV1Response? {
+        let response: StreamSensorsV1Response? = try await get(
+            serviceUrl: "/v1/stream/gateway/\(smId)")
+        
+        return response
+    }
 
     private func storeLogin(accessToken: String, refreshToken: String) {
         KeychainHelper.accessToken = accessToken

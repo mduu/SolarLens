@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HouseholdConsumptionView: View {
     @Binding var currentOverallConsumption: Int
+    @Binding var isAnyCarCharging: Bool
 
     @State var circleColor: Color = .green
     @State var circleLargeText: String = "-"
@@ -21,21 +22,38 @@ struct HouseholdConsumptionView: View {
                 largeText: $circleLargeText,
                 smallText: $circleSmallText
             )
-            .onChange(of: currentOverallConsumption, initial: true) { newValue, transition in
+            .onChange(of: currentOverallConsumption, initial: true) {
+                newValue, transition in
                 circleLargeText = String(
                     format: "%.1f",
                     Double(newValue) / 1000
                 )
             }
 
-            Image(systemName: "house")
+            HStack(alignment: VerticalAlignment.bottom) {
+                Image(systemName: "house")
+                if isAnyCarCharging {
+                    Image(systemName: "car.side")
+                        .symbolEffect(
+                            .pulse.wholeSymbol, options: .repeat(.continuous))
+                }
+            }
                 .padding(.top, 3)
+
         }
     }
 }
 
-#Preview {
+#Preview("No charing") {
     HouseholdConsumptionView(
-        currentOverallConsumption: Binding.constant(1230)
+        currentOverallConsumption: Binding.constant(1230),
+        isAnyCarCharging: Binding.constant(false)
+    )
+}
+
+#Preview("Charing") {
+    HouseholdConsumptionView(
+        currentOverallConsumption: Binding.constant(1230),
+        isAnyCarCharging: Binding.constant(true)
     )
 }

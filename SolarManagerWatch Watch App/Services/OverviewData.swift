@@ -21,6 +21,7 @@ struct OverviewData {
     var solarProductionMax: Double = 0
     var hasConnectionError: Bool = false
     var lastUpdated: Date? = nil
+    var isAnyCarCharing: Bool = false
     
     func isFlowBatteryToHome() -> Bool {
         return currentBatteryChargeRate ?? 0 < 0
