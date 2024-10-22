@@ -23,7 +23,7 @@ actor SolarManager: EnergyManager {
         try await ensureSmId()
         try await ensureSensorInfosAreCurrent()
 
-        // GET GetV1Chart
+        // GET chart:SSID
         if let chart = try await solarManagerApi.getV1Chart(
             solarManagerId: systemInformation!.sm_id)
         {
@@ -33,6 +33,7 @@ actor SolarManager: EnergyManager {
                     - chart.battery!.batteryDischarging
                 : nil
 
+            // GET stream/gateway/:SSID
             let streamSensorInfos =
                 try await solarManagerApi.getV1StreamGateway(
                     solarManagerId: systemInformation!.sm_id)

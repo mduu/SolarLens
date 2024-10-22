@@ -18,9 +18,6 @@
     "%@" : {
       "shouldTranslate" : false
     },
-    "+" : {
-
-    },
     "Email" : {
       "localizations" : {
         "de" : {
@@ -38,6 +35,7 @@
       }
     },
     "Errpr occured!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -284,6 +282,7 @@
       }
     },
     "Something went wrong! %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -300,6 +299,7 @@
       }
     },
     "Try again" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

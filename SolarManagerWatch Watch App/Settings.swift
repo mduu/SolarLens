@@ -11,38 +11,39 @@ struct Settings: View {
     @EnvironmentObject var model: BuildingStateViewModel
 
     var body: some View {
-        VStack(alignment: .center) {
-            Text("Settings")
-                .font(.title2)
-                .foregroundColor(.blue)
+        ScrollView {
+            VStack(alignment: .center) {
+                Text("Settings")
+                    .font(.title2)
+                    .foregroundColor(.blue)
+                    .padding(.bottom, 16)
+
+                Text(
+                    "\(KeychainHelper.loadCredentials().username ?? "-")"
+                )
+                .font(.subheadline)
+                .foregroundColor(.primary)
                 .padding(.bottom, 16)
 
-            Text(
-                "\(KeychainHelper.loadCredentials().username ?? "-")"
-            )
-            .font(.subheadline)
-            .foregroundColor(.primary)
-            .padding(.bottom, 16)
+                Button("Log out") {
+                    model.logout()
+                }
 
-            Button("Log out") {
-                model.logout()
+                HStack {
+                    Text(
+                        "v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
+                    )
+
+                    Text(
+                        "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
+                    )
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .font(.footnote)
+                .foregroundColor(.gray)
+                .padding(.top, 16)
             }
-
-            HStack {
-                Text(
-                    "v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
-                )
-
-                Text(
-                    "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
-                )
-            }
-            .frame(maxWidth: .infinity, alignment: .center)
-            .font(.footnote)
-            .foregroundColor(.gray)
-            .padding(.top, 16)
         }
-
     }
 }
 
@@ -55,11 +56,12 @@ struct Settings: View {
 }
 
 #Preview("German") {
-    
+
     Settings()
         .environmentObject(
             BuildingStateViewModel(
                 energyManagerClient: FakeEnergyManager()
-            ))
+            )
+        )
         .environment(\.locale, Locale(identifier: "DE"))
 }

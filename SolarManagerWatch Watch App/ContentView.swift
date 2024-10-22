@@ -12,43 +12,24 @@ struct ContentView: View {
 
     var body: some View {
 
-        if viewModel.error != nil || viewModel.errorMessage != nil {
+        if viewModel.error == EnergyManagerClientError.loginFailed
+            || viewModel.errorMessage != nil
+        {
             ScrollView {
                 VStack(alignment: HorizontalAlignment.leading) {
-                    if viewModel.error == EnergyManagerClientError.loginFailed {
-                        Text("Login failed!")
-                            .foregroundStyle(Color.red)
-                            .font(.title3)
-                        
-                        Text(
-                            "Please make sure you are using the correct email and passwort from your Solar Manager login."
-                        )
-                            .padding(.top, 5)
-                            .padding(.bottom, 5)
-                            .font(.subheadline)
-                        
-                        Button("Retry login") {
-                            viewModel.logout()
-                        }
-                    } else {
-                        Text("Errpr occured!")
-                            .foregroundStyle(Color.red)
-                            .font(.title3)
-                        
-                        Text(
-                            "Something went wrong! \(viewModel.errorMessage ?? "")"
-                        )
-                            .font(.subheadline)
-                        
-                        Button("Try again") {
-                            Task {
-                                await viewModel.fetchServerData()
-                            }
-                        }
-                        
-                        Button("Log out") {
-                            viewModel.logout()
-                        }
+                    Text("Login failed!")
+                        .foregroundStyle(Color.red)
+                        .font(.title3)
+
+                    Text(
+                        "Please make sure you are using the correct email and passwort from your Solar Manager login."
+                    )
+                    .padding(.top, 5)
+                    .padding(.bottom, 5)
+                    .font(.subheadline)
+
+                    Button("Retry login") {
+                        viewModel.logout()
                     }
                 }
             }
@@ -59,8 +40,18 @@ struct ContentView: View {
         } else if viewModel.isLoggedIn {
 
             TabView {
-                OverviewView()
-                    .environmentObject(viewModel)
+                HStack {
+                    OverviewView()
+                        .environmentObject(viewModel)
+                        .background(Color.black.opacity(1.0))
+                        .onTapGesture {
+                            print("Force refresh")
+                            Task {
+                                await viewModel.fetchServerData()
+                            }
+                        }
+                }
+
                 //                ProductionView()
                 //                    .environmentObject(viewModel)
                 //                ConsumationView()

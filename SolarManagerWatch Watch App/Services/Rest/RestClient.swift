@@ -21,7 +21,7 @@ class RestClient {
     }
 
     func get<TResponse>(
-        serviceUrl: String, parameters: Codable? = nil, maxRetry: Int = 3
+        serviceUrl: String, parameters: Codable? = nil, maxRetry: Int = 4
     )
         async throws
         -> TResponse? where TResponse: Codable
@@ -178,7 +178,7 @@ class RestClient {
     }
 
     private func exponentialWait(attempt: Int, maxDelay: Double = 20.0) async {
-        let delay = UInt64(min(maxDelay, pow(2.0, Double(attempt))))
+        let delay = UInt64(min(maxDelay, pow(0.5, Double(attempt))))
         print("Request attempt #\(attempt), waiting for \(delay) seconds")
         try? await Task.sleep(nanoseconds: delay * 1_000_000_000)
     }
