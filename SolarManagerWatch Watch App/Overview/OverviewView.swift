@@ -9,6 +9,8 @@ import SwiftUI
 
 struct OverviewView: View {
     @EnvironmentObject var model: BuildingStateViewModel
+    
+    @State private var refreshTimer: Timer?
 
     var body: some View {
         VStack {
@@ -140,10 +142,15 @@ struct OverviewView: View {
                     }.padding(.top, 2)
                 }
                 .onAppear {
-                    Timer.scheduledTimer(withTimeInterval: 15, repeats: true) {
-                        _ in
-                        Task {
-                            await model.fetchServerData()
+                    Task {
+                        await model.fetchServerData()
+                    }
+                    if refreshTimer == nil {
+                        refreshTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) {
+                            _ in
+                            Task {
+                                await model.fetchServerData()
+                            }
                         }
                     }
                 }
