@@ -24,6 +24,12 @@ struct Settings: View {
                 .font(.subheadline)
                 .foregroundColor(.primary)
                 .padding(.bottom, 16)
+                
+                Button("Reload") {
+                    Task {
+                        await model.fetchServerData()
+                    }
+                }
 
                 Button("Log out") {
                     model.logout()

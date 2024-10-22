@@ -348,30 +348,24 @@
       },
       "shouldTranslate" : false
     },
-    "Retry login" : {
+    "Reload" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erneut anmelden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retry login"
+            "value" : "Neu laden"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réessayer la connexion"
+            "value" : "Recharger"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Riprova l'accesso"
+            "value" : "Ricarica"
           }
         }
       }

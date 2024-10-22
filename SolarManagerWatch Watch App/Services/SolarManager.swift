@@ -139,7 +139,6 @@ actor SolarManager: EnergyManager {
         } catch {
             KeychainHelper.accessToken = nil
             KeychainHelper.refreshToken = nil
-            KeychainHelper.deleteCredentials()
             throw EnergyManagerClientError.loginFailed
         }
     }

@@ -28,7 +28,7 @@ struct ContentView: View {
                     .padding(.bottom, 5)
                     .font(.subheadline)
 
-                    Button("Retry login") {
+                    Button("Reload") {
                         Task {
                             await viewModel.fetchServerData()
                         }
