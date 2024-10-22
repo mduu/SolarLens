@@ -29,6 +29,12 @@ struct ContentView: View {
                     .font(.subheadline)
 
                     Button("Retry login") {
+                        Task {
+                            await viewModel.fetchServerData()
+                        }
+                    }
+
+                    Button("Log out") {
                         viewModel.logout()
                     }
                 }

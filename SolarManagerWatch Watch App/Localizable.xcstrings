@@ -34,23 +34,6 @@
         }
       }
     },
-    "Errpr occured!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fehler aufgetreten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Errpr occured!"
-          }
-        }
-      }
-    },
     "Invalid Email" : {
       "localizations" : {
         "de" : {
@@ -277,40 +260,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Solar Manger Login"
-          }
-        }
-      }
-    },
-    "Something went wrong! %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etwas ist schiefgelaufen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Something went wrong! %@"
-          }
-        }
-      }
-    },
-    "Try again" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erneut versuchen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Try again"
           }
         }
       }
