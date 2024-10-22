@@ -31,6 +31,18 @@
             "state" : "translated",
             "value" : "Email"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse e-mail"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail"
+          }
         }
       }
     },
@@ -46,6 +58,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Invalid Email"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse e-mail invalide"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indirizzo e-mail non valido"
           }
         }
       }
@@ -63,6 +87,18 @@
             "state" : "translated",
             "value" : "Invalid passwort"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mot de passe incorrect"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password errata"
+          }
         }
       }
     },
@@ -75,6 +111,18 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kW"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kW"
+          }
+        },
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "kW"
@@ -95,6 +143,18 @@
             "state" : "translated",
             "value" : "Log out"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnexion"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esci"
+          }
         }
       }
     },
@@ -110,6 +170,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Login"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accedi"
           }
         }
       }
@@ -127,6 +199,18 @@
             "state" : "translated",
             "value" : "Login failed!"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion échouée!"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesso non riuscito!"
+          }
         }
       }
     },
@@ -139,6 +223,18 @@
           }
         },
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mot de passe"
+          }
+        },
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Password"
@@ -159,6 +255,18 @@
             "state" : "translated",
             "value" : "Please enter a valid email address"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez saisir une adresse e-mail valide"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci un indirizzo e-mail valido"
+          }
         }
       }
     },
@@ -175,6 +283,18 @@
             "state" : "translated",
             "value" : "Please enter a valid password"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez saisir un mot de passe valide"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci una password valida"
+          }
         }
       }
     },
@@ -190,6 +310,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please make sure you are using the correct email and passwort from your Solar Manager login."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assurez-vous d'utiliser l'adresse e-mail et le mot de passe corrects de votre connexion Solar Manager."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assicurati di utilizzare l'indirizzo e-mail e la password corretti dalla tua connessione Solar Manager."
           }
         }
       }
@@ -229,6 +361,18 @@
             "state" : "translated",
             "value" : "Retry login"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réessayer la connexion"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riprova l'accesso"
+          }
         }
       }
     },
@@ -245,6 +389,18 @@
             "state" : "translated",
             "value" : "Settings"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paramètres"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
+          }
         }
       }
     },
@@ -260,6 +416,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Solar Manger Login"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion Solar Manager"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesso al Solar Manager"
           }
         }
       }

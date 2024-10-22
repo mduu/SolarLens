@@ -65,3 +65,25 @@ struct Settings: View {
         )
         .environment(\.locale, Locale(identifier: "DE"))
 }
+
+#Preview("French") {
+
+    Settings()
+        .environmentObject(
+            BuildingStateViewModel(
+                energyManagerClient: FakeEnergyManager()
+            )
+        )
+        .environment(\.locale, Locale(identifier: "FR"))
+}
+
+#Preview("Italian") {
+
+    Settings()
+        .environmentObject(
+            BuildingStateViewModel(
+                energyManagerClient: FakeEnergyManager()
+            )
+        )
+        .environment(\.locale, Locale(identifier: "IT"))
+}

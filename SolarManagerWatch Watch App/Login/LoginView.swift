@@ -16,36 +16,41 @@ struct LoginView: View {
     @State var isValidPasswort = false
 
     var body: some View {
-        VStack {
-            Text("Solar Manger Login")
-                .font(.title3)
-
-            TextField("Email", text: $email)
-                .onChange(of: email) { oldValue, newValue in
-                    isValidEmail = isValidEmail(newValue)
+        ScrollView {
+            VStack {
+                Text("Solar Manger Login")
+                    .font(.title3)
+                    .padding(0)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                
+                TextField("Email", text: $email)
+                    .onChange(of: email) { oldValue, newValue in
+                        isValidEmail = isValidEmail(newValue)
+                    }
+                    .alert(isPresented: $isValidEmail) {
+                        Alert(
+                            title: Text("Invalid Email"),
+                            message: Text("Please enter a valid email address"))
+                    }
+                
+                SecureField("Password", text: $password)
+                    .onChange(of: password) { oldValue, newValue in
+                        isValidPasswort = isValidPassword(newValue)
+                    }
+                    .alert(isPresented: $isValidPasswort) {
+                        Alert(
+                            title: Text("Invalid passwort"),
+                            message: Text("Please enter a valid password"))
+                    }
+                
+                Button("Login") {
+                    Task {
+                        await model.login(email: email, password: password)
+                    }
                 }
-                .alert(isPresented: $isValidEmail) {
-                    Alert(
-                        title: Text("Invalid Email"),
-                        message: Text("Please enter a valid email address"))
-                }
-
-            SecureField("Password", text: $password)
-                .onChange(of: password) { oldValue, newValue in
-                    isValidPasswort = isValidPassword(newValue)
-                }
-                .alert(isPresented: $isValidPasswort) {
-                    Alert(
-                        title: Text("Invalid passwort"),
-                        message: Text("Please enter a valid password"))
-                }
-
-            Button("Login") {
-                Task {
-                    await model.login(email: email, password: password)
-                }
+                .disabled(isValidEmail || isValidPasswort)
             }
-            .disabled(isValidEmail || isValidPasswort)
         }
     }
 
@@ -67,4 +72,14 @@ struct LoginView: View {
 #Preview("German") {
     LoginView()
         .environment(\.locale, Locale(identifier: "DE"))
+}
+
+#Preview("French") {
+    LoginView()
+        .environment(\.locale, Locale(identifier: "FR"))
+}
+
+#Preview("Italian") {
+    LoginView()
+        .environment(\.locale, Locale(identifier: "IT"))
 }
