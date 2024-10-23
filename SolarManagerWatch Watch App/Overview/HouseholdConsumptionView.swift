@@ -23,7 +23,7 @@ struct HouseholdConsumptionView: View {
                 smallText: $circleSmallText
             )
             .onChange(of: currentOverallConsumption, initial: true) {
-                newValue, transition in
+                oldValue, newValue in
                 circleLargeText = String(
                     format: "%.1f",
                     Double(newValue) / 1000
