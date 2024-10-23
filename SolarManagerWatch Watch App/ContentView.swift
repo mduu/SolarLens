@@ -12,38 +12,10 @@ struct ContentView: View {
 
     var body: some View {
 
-        if viewModel.error == EnergyManagerClientError.loginFailed
-            || viewModel.errorMessage != nil
-        {
-            ScrollView {
-                VStack(alignment: HorizontalAlignment.leading) {
-                    Text("Login failed!")
-                        .foregroundStyle(Color.red)
-                        .font(.title3)
-
-                    Text(
-                        "Please make sure you are using the correct email and passwort from your Solar Manager login."
-                    )
-                    .padding(.top, 5)
-                    .padding(.bottom, 5)
-                    .font(.subheadline)
-
-                    Button("Reload") {
-                        Task {
-                            await viewModel.fetchServerData()
-                        }
-                    }
-
-                    Button("Log out") {
-                        viewModel.logout()
-                    }
-                }
-            }
-
-        } else if !viewModel.loginCredentialsExists {
+        if !viewModel.loginCredentialsExists {
             LoginView()
                 .environmentObject(viewModel)
-        } else if viewModel.isLoggedIn {
+        } else if viewModel.loginCredentialsExists {
 
             TabView {
                 HStack {
@@ -68,11 +40,6 @@ struct ContentView: View {
             .tabViewStyle(
                 .verticalPage(transitionStyle: .blur)
             )
-            .onAppear {
-                Task {
-                    await viewModel.fetchServerData()
-                }
-            }
         } else {
             ProgressView()
                 .onAppear {

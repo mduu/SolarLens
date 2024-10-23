@@ -17,39 +17,60 @@ struct LoginView: View {
 
     var body: some View {
         ScrollView {
-            VStack {
-                Text("Solar Manger Login")
-                    .font(.title3)
-                    .padding(0)
+            if model.didLoginSucceed == false {
+                VStack(alignment: HorizontalAlignment.center) {
+                    Text("Login failed!")
+                        .foregroundStyle(Color.red)
+                        .font(.title3)
+
+                    Text(
+                        "Please make sure you are using the correct email and passwort from your Solar Manager login."
+                    )
+                    .padding(.top, 5)
+                    .padding(.bottom, 5)
+                    .font(.subheadline)
                     .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                
-                TextField("Email", text: $email)
-                    .onChange(of: email) { oldValue, newValue in
-                        isValidEmail = isValidEmail(newValue)
-                    }
-                    .alert(isPresented: $isValidEmail) {
-                        Alert(
-                            title: Text("Invalid Email"),
-                            message: Text("Please enter a valid email address"))
-                    }
-                
-                SecureField("Password", text: $password)
-                    .onChange(of: password) { oldValue, newValue in
-                        isValidPasswort = isValidPassword(newValue)
-                    }
-                    .alert(isPresented: $isValidPasswort) {
-                        Alert(
-                            title: Text("Invalid passwort"),
-                            message: Text("Please enter a valid password"))
-                    }
-                
-                Button("Login") {
-                    Task {
-                        await model.login(email: email, password: password)
+
+                    Button("Try again") {
+                        model.didLoginSucceed = nil
                     }
                 }
-                .disabled(isValidEmail || isValidPasswort)
+            } else {
+                
+                VStack {
+                    Text("Solar Manger Login")
+                        .font(.title3)
+                        .padding(0)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    
+                    TextField("Email", text: $email)
+                        .onChange(of: email) { oldValue, newValue in
+                            isValidEmail = isValidEmail(newValue)
+                        }
+                        .alert(isPresented: $isValidEmail) {
+                            Alert(
+                                title: Text("Invalid Email"),
+                                message: Text("Please enter a valid email address"))
+                        }
+                    
+                    SecureField("Password", text: $password)
+                        .onChange(of: password) { oldValue, newValue in
+                            isValidPasswort = isValidPassword(newValue)
+                        }
+                        .alert(isPresented: $isValidPasswort) {
+                            Alert(
+                                title: Text("Invalid passwort"),
+                                message: Text("Please enter a valid password"))
+                        }
+                    
+                    Button("Login") {
+                        Task {
+                            await model.tryLogin(email: email, password: password)
+                        }
+                    }
+                    .disabled(isValidEmail || isValidPasswort)
+                }
             }
         }
     }

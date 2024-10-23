@@ -11,6 +11,10 @@ import Combine
 
 class FakeEnergyManager : EnergyManager {
     let data: OverviewData
+
+    func login(username: String, password: String) async -> Bool {
+        return true;
+    }
     
     init(data: OverviewData? = nil) {
         self.data = data ?? OverviewData(

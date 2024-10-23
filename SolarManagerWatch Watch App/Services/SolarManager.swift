@@ -15,6 +15,10 @@ actor SolarManager: EnergyManager {
     private var systemInformation: V1User?
     private var sensorInfos: [SensorInfosV1Response]?
     private var sensorInfosUpdatedAt: Date?
+    
+    func login(username: String, password: String) async -> Bool {
+        return await doLogin(email: username, password: password)
+    }
 
     func fetchOverviewData(lastOverviewData: OverviewData?) async throws
         -> OverviewData
@@ -40,7 +44,7 @@ actor SolarManager: EnergyManager {
 
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos)
-
+            
             return OverviewData(
                 currentSolarProduction: chart.production,
                 currentOverallConsumption: chart.consumption,
@@ -124,21 +128,12 @@ actor SolarManager: EnergyManager {
         }
 
         print("Performe login")
+        
+        let loginSuccess = await doLogin(
+            email: credentials.username!,
+            password: credentials.password!)
 
-        do {
-            let loginSuccess = try await solarManagerApi.login(
-                email: credentials.username!,
-                password: credentials.password!)
-
-            self.expireAt = Date().addingTimeInterval(
-                TimeInterval(loginSuccess.expiresIn))
-            self.systemInformation = nil
-
-            print("Login succeeded. Token will expire at \(expireAt!)")
-            return
-        } catch {
-            KeychainHelper.accessToken = nil
-            KeychainHelper.refreshToken = nil
+        if (!loginSuccess) {
             throw EnergyManagerClientError.loginFailed
         }
     }
@@ -201,6 +196,26 @@ actor SolarManager: EnergyManager {
             .reduce(0, +)
 
         return charingPower > 0
+    }
+
+    private func doLogin(email: String, password: String) async -> Bool {
+        do {
+            let loginSuccess = try await solarManagerApi.login(
+                email: email,
+                password: password)
+
+            KeychainHelper.saveCredentials(username: email, password: password)
+            self.expireAt = Date().addingTimeInterval(
+                TimeInterval(loginSuccess.expiresIn))
+            self.systemInformation = nil
+
+            print("Login succeeded. Token will expire at \(expireAt!)")
+
+            return true
+        } catch {
+            print("Login failed!")
+            return false
+        }
     }
 
 }

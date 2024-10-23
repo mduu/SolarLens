@@ -13,7 +13,7 @@ class BuildingStateViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var error: EnergyManagerClientError?
     @Published var loginCredentialsExists: Bool = false
-    @Published var isLoggedIn: Bool = false
+    @Published var didLoginSucceed: Bool? = nil
     @Published var overviewData: OverviewData = .init()
 
     private let energyManager: EnergyManager
@@ -35,6 +35,15 @@ class BuildingStateViewModel: ObservableObject {
 
         return result
     }
+    
+    func tryLogin(email: String, password: String) async {
+        didLoginSucceed = await energyManager.login(username: email, password: password)
+        updateCredentialsExists()
+        
+        if (didLoginSucceed == true) {
+            resetError()
+        }
+    }
 
     func fetchServerData() async {
         if !loginCredentialsExists || isLoading {
@@ -52,27 +61,11 @@ class BuildingStateViewModel: ObservableObject {
             print("Server data fetched at \(Date())")
 
             isLoading = false
-            isLoggedIn = true
         } catch {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
             isLoading = false
-            isLoggedIn = self.error != .loginFailed
         }
-    }
-
-    func login(email: String, password: String) async {
-        defer {
-            isLoading = false
-        }
-
-        resetError()
-        KeychainHelper.accessToken = nil
-        KeychainHelper.refreshToken = nil
-        KeychainHelper.saveCredentials(username: email, password: password)
-        updateCredentialsExists()
-
-        await fetchServerData()
     }
 
     func logout() {
