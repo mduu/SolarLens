@@ -18,7 +18,7 @@ struct StreamSensorsV1Response : Codable {
 struct StreamSensorsV1Device : Codable {
     var _id: String
     var activeDevice: Int?
-    var currentMode: Int?
+    var currentMode: ChargingMode?
     var currentPower: Int?
     var deviceStatus: Int?
     var signal: SensorConnectionStatus?
