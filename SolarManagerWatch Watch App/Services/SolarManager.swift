@@ -63,8 +63,10 @@ actor SolarManager: EnergyManager {
                         where: { $0.direction == .fromPVToConsumer }
                     )?.value ?? 0,
                 solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000,
+                hasConnectionError: false,
                 lastUpdated: Date(),
-                isAnyCarCharing: isAnyCarCharing)
+                isAnyCarCharing: isAnyCarCharing,
+                sensors: sensorInfos)
         }
 
         var errorOverviewData =
@@ -77,7 +79,11 @@ actor SolarManager: EnergyManager {
                 currentSolarToGrid: 0,
                 currentGridToHouse: 0,
                 currentSolarToHouse: 0,
-                solarProductionMax: 0)
+                solarProductionMax: 0,
+                hasConnectionError: true,
+                lastUpdated: Date(),
+                isAnyCarCharing: false,
+                sensors: nil)
 
         errorOverviewData.hasConnectionError = true
 

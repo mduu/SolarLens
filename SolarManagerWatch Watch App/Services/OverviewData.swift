@@ -22,6 +22,25 @@ struct OverviewData {
     var hasConnectionError: Bool = false
     var lastUpdated: Date? = nil
     var isAnyCarCharing: Bool = false
+    var sensors: [SensorInfosV1Response]? = nil
+    
+    init() {
+    }
+    
+    init(currentSolarProduction: Int,
+         currentOverallConsumption: Int,
+         currentBatteryLevel: Int?,
+         currentBatteryChargeRate: Int?,
+         currentSolarToGrid: Int,
+         currentGridToHouse: Int,
+         currentSolarToHouse: Int,
+         solarProductionMax: Double,
+         hasConnectionError: Bool,
+         lastUpdated: Date?,
+         isAnyCarCharing: Bool,
+         sensors: [SensorInfosV1Response]?) {
+        
+    }
     
     func isFlowBatteryToHome() -> Bool {
         return currentBatteryChargeRate ?? 0 <= -100

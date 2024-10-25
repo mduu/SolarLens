@@ -162,39 +162,43 @@ struct OverviewView: View {
 #Preview("English") {
     OverviewView()
         .environmentObject(
-            BuildingStateViewModel(
-                energyManagerClient: FakeEnergyManager()
-            ))
-}
-
-struct OverviewView_Preiews: PreviewProvider {
-
-    static var previews: some View {
-        OverviewView()
-            .environmentObject(
-                BuildingStateViewModel.fake(
-                    energyManagerClient: FakeEnergyManager(
-                        data: .init(
-                            currentSolarProduction: 4500,
-                            currentOverallConsumption: 400,
-                            currentBatteryLevel: 99,
-                            currentBatteryChargeRate: 150,
-                            currentSolarToGrid: 3600,
-                            currentGridToHouse: 0,
-                            currentSolarToHouse: 400,
-                            solarProductionMax: 11000,
-                            isAnyCarCharing: true
-                        )
+            BuildingStateViewModel.fake(
+                overviewData: .init(
+                        currentSolarProduction: 4500,
+                        currentOverallConsumption: 400,
+                        currentBatteryLevel: 99,
+                        currentBatteryChargeRate: 150,
+                        currentSolarToGrid: 3600,
+                        currentGridToHouse: 0,
+                        currentSolarToHouse: 400,
+                        solarProductionMax: 11000,
+                        hasConnectionError: false,
+                        lastUpdated: Date(),
+                        isAnyCarCharing: true,
+                        sensors: nil
                     )
-                ))
-    }
+            )
+        )
 }
 
 #Preview("German") {
     OverviewView()
         .environmentObject(
-            BuildingStateViewModel(
-                energyManagerClient: FakeEnergyManager()
+            BuildingStateViewModel.fake(
+                overviewData: .init(
+                        currentSolarProduction: 4500,
+                        currentOverallConsumption: 400,
+                        currentBatteryLevel: 99,
+                        currentBatteryChargeRate: 150,
+                        currentSolarToGrid: 3600,
+                        currentGridToHouse: 0,
+                        currentSolarToHouse: 400,
+                        solarProductionMax: 11000,
+                        hasConnectionError: false,
+                        lastUpdated: Date(),
+                        isAnyCarCharing: true,
+                        sensors: nil
+                    )
             )
         )
         .environment(\.locale, Locale(identifier: "DE"))

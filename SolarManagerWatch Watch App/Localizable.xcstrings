@@ -18,6 +18,9 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "Car Charging" : {
+
+    },
     "Email" : {
       "localizations" : {
         "de" : {
@@ -45,9 +48,6 @@
           }
         }
       }
-    },
-    "Hello, World!" : {
-
     },
     "Invalid Email" : {
       "localizations" : {
