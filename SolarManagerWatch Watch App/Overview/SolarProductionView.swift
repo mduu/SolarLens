@@ -27,9 +27,43 @@ struct SolarProductionView: View {
                 )
             }
             .gaugeStyle(.circular)
-            .tint(Gradient(colors: [.blue, .yellow, .orange]))
+            .tint(getGaugeStyle())
 
             Image(systemName: "sun.max")
         }
     }
+    
+    private func getGaugeStyle() -> Gradient {
+        if (currentSolarProduction < 100)
+        {
+            return Gradient(colors: [.gray, .gray])
+        } else {
+            return Gradient(colors: [.blue, .yellow, .orange])
+        }
+    }
+}
+
+#Preview("Low PV)") {
+    SolarProductionView(
+        currentSolarProduction: .constant(1000),
+        maximumSolarProduction: .constant(11000))
+}
+
+#Preview("Max PV)") {
+    SolarProductionView(
+        currentSolarProduction: .constant(11000),
+        maximumSolarProduction: .constant(11000))
+}
+
+
+#Preview("Ver-low PV)") {
+    SolarProductionView(
+        currentSolarProduction: .constant(10),
+        maximumSolarProduction: .constant(11000))
+}
+
+#Preview("No PV)") {
+    SolarProductionView(
+        currentSolarProduction: .constant(0),
+        maximumSolarProduction: .constant(11000))
 }

@@ -8,8 +8,8 @@
 import Foundation
 
 struct OverviewData {
-    private let minGridConsumptionTreashold: Int = 30
-    private let minGridIngestionTreashold: Int = 10
+    private let minGridConsumptionTreashold: Int = 100
+    private let minGridIngestionTreashold: Int = 100
     
     var currentSolarProduction: Int = 0
     var currentOverallConsumption: Int = 0
@@ -24,22 +24,22 @@ struct OverviewData {
     var isAnyCarCharing: Bool = false
     
     func isFlowBatteryToHome() -> Bool {
-        return currentBatteryChargeRate ?? 0 < 0
+        return currentBatteryChargeRate ?? 0 <= 100
     }
     
     func isFlowSolarToBattery() -> Bool {
-        return currentBatteryChargeRate ?? 0 > 0
+        return currentBatteryChargeRate ?? 0 >= 100
     }
     
     func isFlowSolarToHouse() -> Bool {
-        return currentSolarToHouse > 0
+        return currentSolarToHouse >= 100
     }
     
     func isFlowSolarToGrid() -> Bool {
-        return currentSolarToGrid > minGridIngestionTreashold
+        return currentSolarToGrid >= minGridIngestionTreashold
     }
     
     func isFlowGridToHouse() -> Bool {
-        return currentGridToHouse > minGridConsumptionTreashold
+        return currentGridToHouse >= minGridConsumptionTreashold
     }
 }
