@@ -34,7 +34,7 @@ struct SolarProductionView: View {
     }
     
     private func getGaugeStyle() -> Gradient {
-        if (currentSolarProduction < 100)
+        if (currentSolarProduction < 50)
         {
             return Gradient(colors: [.gray, .gray])
         } else {
@@ -58,7 +58,7 @@ struct SolarProductionView: View {
 
 #Preview("Ver-low PV)") {
     SolarProductionView(
-        currentSolarProduction: .constant(10),
+        currentSolarProduction: .constant(45),
         maximumSolarProduction: .constant(11000))
 }
 
