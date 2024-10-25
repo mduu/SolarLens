@@ -29,6 +29,8 @@ struct ContentView: View {
                             }
                         }
                 }
+                
+                ChargingControlView()
 
                 //                ProductionView()
                 //                    .environmentObject(viewModel)
