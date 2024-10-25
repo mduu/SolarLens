@@ -24,7 +24,7 @@ struct OverviewData {
     var isAnyCarCharing: Bool = false
     
     func isFlowBatteryToHome() -> Bool {
-        return currentBatteryChargeRate ?? 0 <= 100
+        return currentBatteryChargeRate ?? 0 <= -100
     }
     
     func isFlowSolarToBattery() -> Bool {
