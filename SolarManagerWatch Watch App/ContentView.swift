@@ -29,21 +29,18 @@ struct ContentView: View {
                             }
                         }
                 }
-                
+
                 ChargingControlView()
                     .environmentObject(viewModel)
-                    .background(Color.black.opacity(1.0))
-
-                //                ProductionView()
-                //                    .environmentObject(viewModel)
-                //                ConsumationView()
-                //                    .environmentObject(viewModel)
+                
                 Settings()
                     .environmentObject(viewModel)
+
             }
             .tabViewStyle(
                 .verticalPage(transitionStyle: .blur)
             )
+
         } else {
             ProgressView()
                 .onAppear {

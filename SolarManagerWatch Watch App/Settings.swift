@@ -14,8 +14,7 @@ struct Settings: View {
         ScrollView {
             VStack(alignment: .center) {
                 Text("Settings")
-                    .font(.title2)
-                    .foregroundColor(.blue)
+                    .font(.headline)
                     .padding(.bottom, 16)
 
                 Text(
