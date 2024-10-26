@@ -15,7 +15,7 @@ actor SolarManager: EnergyManager {
     private var systemInformation: V1User?
     private var sensorInfos: [SensorInfosV1Response]?
     private var sensorInfosUpdatedAt: Date?
-    
+
     func login(username: String, password: String) async -> Bool {
         return await doLogin(email: username, password: password)
     }
@@ -44,7 +44,7 @@ actor SolarManager: EnergyManager {
 
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos)
-            
+
             return OverviewData(
                 currentSolarProduction: chart.production,
                 currentOverallConsumption: chart.consumption,
@@ -66,7 +66,22 @@ actor SolarManager: EnergyManager {
                 hasConnectionError: false,
                 lastUpdated: Date(),
                 isAnyCarCharing: isAnyCarCharing,
-                sensors: sensorInfos)
+                chargingStations: sensorInfos == nil
+                    ? []
+                    : sensorInfos!
+                        .filter { $0.isCarCharging() }
+                        .map {
+                            let id = $0._id
+                            let streamInfo = streamSensorInfos?.devices.first { $0._id == id }
+                            
+                            return ChargingStation.init(
+                                id: $0._id,
+                                name: $0.device_group,
+                                chargingMode: streamInfo?.currentMode ?? ChargingMode.off,
+                                priority: $0.priority,
+                                currentPower: streamInfo?.currentPower ?? 0,
+                                signal: $0.signal)
+                        })
         }
 
         var errorOverviewData =
@@ -83,7 +98,7 @@ actor SolarManager: EnergyManager {
                 hasConnectionError: true,
                 lastUpdated: Date(),
                 isAnyCarCharing: false,
-                sensors: nil)
+                chargingStations: [])
 
         errorOverviewData.hasConnectionError = true
 
@@ -134,12 +149,12 @@ actor SolarManager: EnergyManager {
         }
 
         print("Performe login")
-        
+
         let loginSuccess = await doLogin(
             email: credentials.username!,
             password: credentials.password!)
 
-        if (!loginSuccess) {
+        if !loginSuccess {
             throw EnergyManagerClientError.loginFailed
         }
     }

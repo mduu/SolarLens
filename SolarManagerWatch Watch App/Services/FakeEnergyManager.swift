@@ -28,7 +28,7 @@ class FakeEnergyManager : EnergyManager {
                 hasConnectionError: true,
                 lastUpdated: Date(),
                 isAnyCarCharing: false,
-                sensors: nil)
+                chargingStations: [])
     }
     
     func fetchOverviewData(lastOverviewData: OverviewData?) -> OverviewData {

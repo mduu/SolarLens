@@ -175,7 +175,7 @@ struct OverviewView: View {
                         hasConnectionError: false,
                         lastUpdated: Date(),
                         isAnyCarCharing: true,
-                        sensors: nil
+                        chargingStations: []
                     )
             )
         )
@@ -197,7 +197,7 @@ struct OverviewView: View {
                         hasConnectionError: false,
                         lastUpdated: Date(),
                         isAnyCarCharing: true,
-                        sensors: nil
+                        chargingStations: []
                     )
             )
         )

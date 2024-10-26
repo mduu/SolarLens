@@ -14,9 +14,10 @@ struct ChargingControlView: View {
         ScrollView {
             Text("Car Charging")
                 .font(.headline)
-            
-                ForEach(model.overviewData.sensors ?? [], id: \._id) {sensor in
-                }
+
+            ForEach(model.overviewData.chargingStations, id: \.id) {
+                chargingStation in
+            }
         }
     }
 }
@@ -37,7 +38,15 @@ struct ChargingControlView: View {
                     hasConnectionError: false,
                     lastUpdated: Date(),
                     isAnyCarCharing: false,
-                    sensors: nil
+                    chargingStations: [
+                        .init(
+                            id: "42",
+                            name: "Keba",
+                            chargingMode: ChargingMode.withSolarPower,
+                            priority: 1,
+                            currentPower: 0,
+                            signal: SensorConnectionStatus.connected)
+                    ]
                 )
             ))
 }

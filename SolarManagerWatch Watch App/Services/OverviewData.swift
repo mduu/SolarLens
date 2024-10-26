@@ -22,7 +22,7 @@ struct OverviewData {
     var hasConnectionError: Bool = false
     var lastUpdated: Date? = nil
     var isAnyCarCharing: Bool = false
-    var sensors: [SensorInfosV1Response]? = nil
+    var chargingStations: [ChargingStation] = []
     
     init() {
     }
@@ -38,8 +38,20 @@ struct OverviewData {
          hasConnectionError: Bool,
          lastUpdated: Date?,
          isAnyCarCharing: Bool,
-         sensors: [SensorInfosV1Response]?) {
-        
+         chargingStations: [ChargingStation])
+    {
+        self.currentSolarProduction = currentSolarProduction
+        self.currentOverallConsumption = currentOverallConsumption
+        self.currentBatteryLevel = currentBatteryLevel
+        self.currentBatteryChargeRate = currentBatteryChargeRate
+        self.currentSolarToGrid = currentSolarToGrid
+        self.currentGridToHouse = currentGridToHouse
+        self.currentSolarToHouse = currentSolarToHouse
+        self.solarProductionMax = solarProductionMax
+        self.hasConnectionError = hasConnectionError
+        self.lastUpdated = lastUpdated
+        self.isAnyCarCharing = isAnyCarCharing
+        self.chargingStations = chargingStations
     }
     
     func isFlowBatteryToHome() -> Bool {
@@ -61,4 +73,13 @@ struct OverviewData {
     func isFlowGridToHouse() -> Bool {
         return currentGridToHouse >= minGridConsumptionTreashold
     }
+}
+
+struct ChargingStation: Codable {
+    let id: String
+    let name: String
+    let chargingMode: ChargingMode
+    let priority: Int // lower number is higher Priority (ordering)
+    let currentPower: Int // Watt
+    var signal: SensorConnectionStatus?
 }
