@@ -76,10 +76,10 @@ struct OverviewData {
 }
 
 struct ChargingStation: Codable {
-    let id: String
-    let name: String
-    let chargingMode: ChargingMode
-    let priority: Int // lower number is higher Priority (ordering)
-    let currentPower: Int // Watt
+    var id: String
+    var name: String
+    var chargingMode: ChargingMode
+    var priority: Int // lower number is higher Priority (ordering)
+    var currentPower: Int // Watt
     var signal: SensorConnectionStatus?
 }

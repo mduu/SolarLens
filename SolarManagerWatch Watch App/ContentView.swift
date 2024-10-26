@@ -31,6 +31,8 @@ struct ContentView: View {
                 }
                 
                 ChargingControlView()
+                    .environmentObject(viewModel)
+                    .background(Color.black.opacity(1.0))
 
                 //                ProductionView()
                 //                    .environmentObject(viewModel)

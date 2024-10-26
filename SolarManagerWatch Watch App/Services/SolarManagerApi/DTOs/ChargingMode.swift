@@ -5,7 +5,7 @@
 //  Created by Marc Dürst on 25.10.2024.
 //
 
-enum ChargingMode: Int, Codable {
+enum ChargingMode: Int, Codable, CaseIterable {
     case alwaysCharge = 0
     case withSolarPower = 1
     case withSolarOrLowTariff = 2

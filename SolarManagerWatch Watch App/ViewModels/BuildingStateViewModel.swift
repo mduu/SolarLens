@@ -26,7 +26,9 @@ class BuildingStateViewModel: ObservableObject {
     static func fake(overviewData: OverviewData) -> BuildingStateViewModel {
         let result = BuildingStateViewModel.init(
             energyManagerClient: FakeEnergyManager.init(data: overviewData))
-
+        result.isLoading = false
+        result.loginCredentialsExists = true
+        
         Task {
             await result.fetchServerData()
         }
