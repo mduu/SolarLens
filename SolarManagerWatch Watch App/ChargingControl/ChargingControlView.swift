@@ -88,7 +88,7 @@ struct ChargingControlView: View {
         case .constantCurrent:
             return getColoredImage(systemName: "glowplug", color: .green)
         case .minimalAndSolar:
-            return getColoredImage(systemName: "glowplug", color: .indigo)
+            return getColoredImage(systemName: "fluid.batteryblock", color: .yellow)
         case .minimumQuantity:
             return getColoredImage(
                 systemName: "minus.plus.and.fluid.batteryblock", color: .blue)
