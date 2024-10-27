@@ -13,7 +13,7 @@ struct ChargingControlView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                
+
                 Spacer()
 
                 ForEach($model.overviewData.chargingStations, id: \.id) {
@@ -44,7 +44,11 @@ struct ChargingControlView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.all, 0)
-
+                            .tint(
+                                getButtonTint(
+                                    chargingMode: chargingMode,
+                                    chargingStation: chargingStation
+                                        .wrappedValue))
                         }
                     }
                 }
@@ -88,7 +92,8 @@ struct ChargingControlView: View {
         case .constantCurrent:
             return getColoredImage(systemName: "glowplug", color: .green)
         case .minimalAndSolar:
-            return getColoredImage(systemName: "fluid.batteryblock", color: .yellow)
+            return getColoredImage(
+                systemName: "fluid.batteryblock", color: .yellow)
         case .minimumQuantity:
             return getColoredImage(
                 systemName: "minus.plus.and.fluid.batteryblock", color: .blue)
@@ -102,6 +107,15 @@ struct ChargingControlView: View {
     {
         return Image(systemName: systemName)
             .foregroundColor(color)
+    }
+
+    private func getButtonTint(
+        chargingMode: ChargingMode,
+        chargingStation: ChargingStation
+    ) -> Color? {
+        return (chargingStation.chargingMode == chargingMode)
+            ? .accent
+            : .primary
     }
 }
 
