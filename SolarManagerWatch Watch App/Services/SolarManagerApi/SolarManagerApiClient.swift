@@ -97,6 +97,14 @@ class SolarManagerApi: RestClient {
         
         return response
     }
+    
+    func putControlCarCharger(smId: String, control: ControlCarChargingRequest) async throws -> Void {
+        var _: NoContentResponse? = try await put(
+            serviceUrl: "/v1/control/car-charger/\(smId)",
+            requestBody: control)
+        
+        return
+    }
 
     private func storeLogin(accessToken: String, refreshToken: String) {
         KeychainHelper.accessToken = accessToken

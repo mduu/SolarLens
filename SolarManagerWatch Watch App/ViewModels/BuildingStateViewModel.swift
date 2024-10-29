@@ -15,6 +15,8 @@ class BuildingStateViewModel: ObservableObject {
     @Published var loginCredentialsExists: Bool = false
     @Published var didLoginSucceed: Bool? = nil
     @Published var overviewData: OverviewData = .init()
+    @Published var isChangingCarCharger: Bool = false
+    @Published var carChargerSetSuccessfully: Bool? = nil
 
     private let energyManager: EnergyManager
 
@@ -22,25 +24,26 @@ class BuildingStateViewModel: ObservableObject {
         self.energyManager = energyManagerClient
         updateCredentialsExists()
     }
-    
+
     static func fake(overviewData: OverviewData) -> BuildingStateViewModel {
         let result = BuildingStateViewModel.init(
             energyManagerClient: FakeEnergyManager.init(data: overviewData))
         result.isLoading = false
         result.loginCredentialsExists = true
-        
+
         Task {
             await result.fetchServerData()
         }
 
         return result
     }
-    
+
     func tryLogin(email: String, password: String) async {
-        didLoginSucceed = await energyManager.login(username: email, password: password)
+        didLoginSucceed = await energyManager.login(
+            username: email, password: password)
         updateCredentialsExists()
-        
-        if (didLoginSucceed == true) {
+
+        if didLoginSucceed == true {
             resetError()
         }
     }
@@ -65,6 +68,36 @@ class BuildingStateViewModel: ObservableObject {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
             isLoading = false
+        }
+    }
+
+    func setCarCharging() async {
+        guard loginCredentialsExists && !isLoading && !isChangingCarCharger
+        else {
+            return false
+        }
+
+        carChargerSetSuccessfully = nil
+        isChangingCarCharger = true
+        defer {
+            isChangingCarCharger = false
+        }
+
+        do {
+
+            resetError()
+
+            print("Set car-changing settings \(Date())")
+
+            try await energyManager.setCarChargingMode(
+                carCharging: ControlCarChargingRequest)(
+                    lastOverviewData: overviewData)
+
+            print("Car-Charging set at \(Date())")
+
+            carChargerSetSuccessfully = true
+        } catch {
+            carChargerSetSuccessfully = true
         }
     }
 

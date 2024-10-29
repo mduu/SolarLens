@@ -72,12 +72,15 @@ actor SolarManager: EnergyManager {
                         .filter { $0.isCarCharging() }
                         .map {
                             let id = $0._id
-                            let streamInfo = streamSensorInfos?.devices.first { $0._id == id }
-                            
+                            let streamInfo = streamSensorInfos?.devices.first {
+                                $0._id == id
+                            }
+
                             return ChargingStation.init(
                                 id: $0._id,
                                 name: $0.device_group,
-                                chargingMode: streamInfo?.currentMode ?? ChargingMode.off,
+                                chargingMode: streamInfo?.currentMode
+                                    ?? ChargingMode.off,
                                 priority: $0.priority,
                                 currentPower: streamInfo?.currentPower ?? 0,
                                 signal: $0.signal)
@@ -103,6 +106,24 @@ actor SolarManager: EnergyManager {
         errorOverviewData.hasConnectionError = true
 
         return errorOverviewData
+    }
+
+    func setCarChargingMode(carCharging: ControlCarChargingRequest) async throws
+        -> Bool
+    {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        do {
+            try await solarManagerApi.putControlCarCharger(
+                smId: self.systemInformation!.sm_id,
+                control: carCharging)
+        } catch {
+
+            return false
+        }
+        return true
     }
 
     private func ensureLoggedIn() async throws {

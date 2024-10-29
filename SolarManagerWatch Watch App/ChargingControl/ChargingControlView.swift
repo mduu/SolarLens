@@ -29,7 +29,7 @@ struct ChargingControlView: View {
                             chargingMode in
 
                             Button(action: {
-                                print("Model: \(chargingMode) pressed")
+                                print("\(chargingMode) pressed")
                             }) {
                                 HStack(spacing: 2) {
                                     getModeImage(for: chargingMode)
