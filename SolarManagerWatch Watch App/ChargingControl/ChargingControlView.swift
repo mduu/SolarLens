@@ -10,6 +10,8 @@ import SwiftUI
 struct ChargingControlView: View {
     @EnvironmentObject var model: BuildingStateViewModel
 
+    @State var newCarCharging: ControlCarChargingRequest? = nil
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -30,6 +32,26 @@ struct ChargingControlView: View {
 
                             Button(action: {
                                 print("\(chargingMode) pressed")
+
+                                switch chargingMode {
+                                case let chargingMode where
+                                    chargingMode == ChargingMode.alwaysCharge
+                                    || chargingMode == ChargingMode.withSolarPower
+                                    || chargingMode == ChargingMode.minimalAndSolar
+                                    || chargingMode == ChargingMode.off:
+
+                                    Task {
+                                        await model.setCarCharging(
+                                            newCarCharging:
+                                                ControlCarChargingRequest.init(
+                                                    chargingMode: chargingMode)
+                                        )
+                                    }
+
+                                default:
+                                    print("Unsupported charging mode: \(chargingMode.rawValue)")
+                                }
+
                             }) {
                                 HStack(spacing: 2) {
                                     getModeImage(for: chargingMode)

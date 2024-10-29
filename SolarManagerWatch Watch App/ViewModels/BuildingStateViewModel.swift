@@ -71,10 +71,10 @@ class BuildingStateViewModel: ObservableObject {
         }
     }
 
-    func setCarCharging() async {
+    func setCarCharging(newCarCharging: ControlCarChargingRequest) async -> Void {
         guard loginCredentialsExists && !isLoading && !isChangingCarCharger
         else {
-            return false
+            return
         }
 
         carChargerSetSuccessfully = nil
@@ -89,15 +89,13 @@ class BuildingStateViewModel: ObservableObject {
 
             print("Set car-changing settings \(Date())")
 
-            try await energyManager.setCarChargingMode(
-                carCharging: ControlCarChargingRequest)(
-                    lastOverviewData: overviewData)
+            let result = try await energyManager.setCarChargingMode(carCharging: newCarCharging)
 
             print("Car-Charging set at \(Date())")
 
-            carChargerSetSuccessfully = true
+            carChargerSetSuccessfully = result
         } catch {
-            carChargerSetSuccessfully = true
+            carChargerSetSuccessfully = false
         }
     }
 

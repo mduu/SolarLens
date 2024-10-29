@@ -119,11 +119,10 @@ actor SolarManager: EnergyManager {
             try await solarManagerApi.putControlCarCharger(
                 smId: self.systemInformation!.sm_id,
                 control: carCharging)
+            return true
         } catch {
-
             return false
         }
-        return true
     }
 
     private func ensureLoggedIn() async throws {

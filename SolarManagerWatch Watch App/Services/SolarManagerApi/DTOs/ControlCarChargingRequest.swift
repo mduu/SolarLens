@@ -5,7 +5,9 @@
 //  Created by Marc Dürst on 27.10.2024.
 //
 
-struct ControlCarChargingRequest : Codable {
+import Foundation
+
+struct ControlCarChargingRequest: Codable {
     /// Charging mode
     /// 0 = Fast Charge
     /// 1 = Only solar
@@ -16,24 +18,33 @@ struct ControlCarChargingRequest : Codable {
     /// 6 = Minimum charge quantity
     /// 7 = Charging Target(%)
     var chargingMode: ChargingMode
-    
+
     /// Only for "Constant current" mode
     /// 6-32 (Ampere)
-    var constantCurrentSetting: Int?
-    
+    var constantCurrentSetting: Int = 6
+
     /// Target date and time - only for "Minimum charge quantity" mode
     /// Example: "2023-12-27T06:00:00.000Z"
-    var minimumChargeQuantityTargetDateTime: String?
-    
+    var minimumChargeQuantityTargetDateTime: String
+
     /// Charge quantity - only for "Minimum charge quantity" mode
     /// Min: 1, Max: 100
-    var minimumChargeQuantityTargetAmount: Int?
-    
+    var minimumChargeQuantityTargetAmount: Int = 1
+
     /// Car battery charge level % - only for "Charging Target(%)" mode
-    /// Min: 0, Max: 100
-    var chargingTargetSoc: Int?
-    
+    /// Min: 1, Max: 100
+    var chargingTargetSoc: Int = 1
+
     /// Target date and time
     /// Example: "2023-12-27T06:00:00.000Z" - only for "Charging Target(%)" mode
-    var chargingTargetSocDateTime: Int?
+    var chargingTargetSocDateTime: String
+
+    init(chargingMode: ChargingMode) {
+        self.chargingMode = chargingMode
+        constantCurrentSetting = 6
+        minimumChargeQuantityTargetDateTime = Date.now.formatted()
+        minimumChargeQuantityTargetAmount = 1
+        chargingTargetSoc = 1
+        chargingTargetSocDateTime = Date.now.formatted()
+    }
 }

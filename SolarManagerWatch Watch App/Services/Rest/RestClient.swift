@@ -164,7 +164,7 @@ class RestClient {
 
                     return nil
                 }
-            case 201:  // OK no data
+            case 201, 202, 204:  // OK no data
                 return nil
             case 400:  // Bad request
                 canRetry = false

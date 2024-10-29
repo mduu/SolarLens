@@ -34,4 +34,10 @@ class FakeEnergyManager : EnergyManager {
     func fetchOverviewData(lastOverviewData: OverviewData?) -> OverviewData {
         return data
     }
+    
+    func setCarChargingMode(carCharging: ControlCarChargingRequest) async throws -> Bool
+    {
+        print("setCarChargingMode: \(carCharging)")
+        return true
+    }
 }
