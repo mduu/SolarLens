@@ -108,7 +108,10 @@ actor SolarManager: EnergyManager {
         return errorOverviewData
     }
 
-    func setCarChargingMode(carCharging: ControlCarChargingRequest) async throws
+    func setCarChargingMode(
+        sensorId: String,
+        carCharging: ControlCarChargingRequest
+    ) async throws
         -> Bool
     {
         try await ensureLoggedIn()
@@ -117,7 +120,7 @@ actor SolarManager: EnergyManager {
 
         do {
             try await solarManagerApi.putControlCarCharger(
-                smId: self.systemInformation!.sm_id,
+                sensorId: sensorId,
                 control: carCharging)
             return true
         } catch {

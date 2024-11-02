@@ -11,9 +11,12 @@ import Foundation
 class RestClient {
     let baseUrl: String
     private let session: URLSession
+    private let jsonEncoder: JSONEncoder = .init()
+    private let jsonDecoder: JSONDecoder = .init()
 
     init(baseUrl: String) {
         self.baseUrl = baseUrl
+        self.jsonEncoder.dateEncodingStrategy = .iso8601
 
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 10  // Set timeout to 30 seconds
@@ -101,7 +104,7 @@ class RestClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = httpMethod
         if requestBody != nil {
-            request.httpBody = try! JSONEncoder().encode(requestBody)
+            request.httpBody = try! jsonEncoder.encode(requestBody)
         }
         if useAccessToken, let accessToken = KeychainHelper.accessToken {
             request.setValue(
@@ -127,7 +130,7 @@ class RestClient {
                 data = responseData
                 response = responseMeta as? HTTPURLResponse
                 print(
-                    "DoRequest successful. Status-Code: \(response?.statusCode ?? -1)"
+                    "HTTP \(httpMethod) done. Status-Code: \(response?.statusCode ?? -1)"
                 )
 
             } catch let error {
@@ -152,8 +155,7 @@ class RestClient {
                 }
 
                 do {
-                    return try JSONDecoder().decode(
-                        TResponse.self, from: data!)
+                    return try jsonDecoder.decode(TResponse.self, from: data!)
                 } catch let error {
                     print(
                         "Error deserializing response: \(error.localizedDescription)"
@@ -168,15 +170,20 @@ class RestClient {
                 return nil
             case 400:  // Bad request
                 canRetry = false
+                print("ERROR: BAD REQUEST")
+                print(
+                    "HTTP-Body: \(String(describing: String(data: request.httpBody!, encoding: .utf8)))"
+                )
             case 401:  // Unauthorized / Token expired
                 canRetry = await handleTokenExpired(
                     failedResponse: response!)
             case 403:  // Forbidden
+                print("ERROR: FORBIDDEN")
                 canRetry = await handleForbidden(
                     failedResponse: response!)
             default:
                 print(
-                    "RestClient GET Error: \(response!.statusCode), \(String(describing: HTTPURLResponse.localizedString))"
+                    "ERROR HTTP \(httpMethod): \(response!.statusCode), \(String(describing: HTTPURLResponse.localizedString))"
                 )
             }
 

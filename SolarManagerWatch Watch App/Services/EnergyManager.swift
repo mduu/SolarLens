@@ -10,6 +10,11 @@ import Foundation
 
 protocol EnergyManager {
     func login(username: String, password: String) async -> Bool
-    func fetchOverviewData(lastOverviewData: OverviewData?) async throws -> OverviewData
-    func setCarChargingMode(carCharging: ControlCarChargingRequest) async throws -> Bool
+
+    func fetchOverviewData(lastOverviewData: OverviewData?) async throws
+        -> OverviewData
+
+    func setCarChargingMode(
+        sensorId: String, carCharging: ControlCarChargingRequest
+    ) async throws -> Bool
 }

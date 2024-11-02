@@ -71,9 +71,13 @@ class BuildingStateViewModel: ObservableObject {
         }
     }
 
-    func setCarCharging(newCarCharging: ControlCarChargingRequest) async -> Void {
-        guard loginCredentialsExists && !isLoading && !isChangingCarCharger
+    func setCarCharging(
+        sensorId: String,
+        newCarCharging: ControlCarChargingRequest
+    ) async {
+        guard loginCredentialsExists && !isChangingCarCharger
         else {
+            print("WARN: Login-Credentials don't exists or is loading already")
             return
         }
 
@@ -89,7 +93,9 @@ class BuildingStateViewModel: ObservableObject {
 
             print("Set car-changing settings \(Date())")
 
-            let result = try await energyManager.setCarChargingMode(carCharging: newCarCharging)
+            let result = try await energyManager.setCarChargingMode(
+                sensorId: sensorId,
+                carCharging: newCarCharging)
 
             print("Car-Charging set at \(Date())")
 

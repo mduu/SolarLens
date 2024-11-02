@@ -5,19 +5,20 @@
 //  Created by Marc Dürst on 06.10.2024.
 //
 
-
-import Foundation
 import Combine
+import Foundation
 
-class FakeEnergyManager : EnergyManager {
+class FakeEnergyManager: EnergyManager {
     let data: OverviewData
 
     func login(username: String, password: String) async -> Bool {
-        return true;
+        return true
     }
-    
+
     init(data: OverviewData? = nil) {
-        self.data = data ?? OverviewData(
+        self.data =
+            data
+            ?? OverviewData(
                 currentSolarProduction: 3200,
                 currentOverallConsumption: 800,
                 currentBatteryLevel: 42,
@@ -30,13 +31,14 @@ class FakeEnergyManager : EnergyManager {
                 isAnyCarCharing: false,
                 chargingStations: [])
     }
-    
+
     func fetchOverviewData(lastOverviewData: OverviewData?) -> OverviewData {
         return data
     }
-    
-    func setCarChargingMode(carCharging: ControlCarChargingRequest) async throws -> Bool
-    {
+
+    func setCarChargingMode(
+        sensorId: String, carCharging: ControlCarChargingRequest
+    ) async throws -> Bool {
         print("setCarChargingMode: \(carCharging)")
         return true
     }
