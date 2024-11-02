@@ -14,6 +14,9 @@ struct ChargingControlView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                
+                LinearGradient(gradient: Gradient(colors: [.green.opacity(0.5), .green.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
+                                .edgesIgnoringSafeArea(.all)
 
                 ScrollView {
 
