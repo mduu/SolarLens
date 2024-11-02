@@ -1,5 +1,5 @@
 <h1>
-  <img src="marketing/solar_lens.png" width="32" height="auto" alt="Solar Lens Logo"> SolarManagerWatch <a href="">
+  <img src="marketing/solar_lens.png" width="32" height="auto" alt="Solar Lens Logo"> Solar Lens
     <a href="https://apple.co/408SKri">
     <img src="marketing/black.svg" width="96" height="auto" alt="Solar Lens Download Button">
   </a>
