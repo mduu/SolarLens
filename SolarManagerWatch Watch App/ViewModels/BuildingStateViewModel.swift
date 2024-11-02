@@ -98,6 +98,11 @@ class BuildingStateViewModel: ObservableObject {
                 carCharging: newCarCharging)
 
             print("Car-Charging set at \(Date())")
+            
+            // Optimistic UI: Update charging mode in-memory to speed up UI
+            var chargingStation = overviewData.chargingStations
+                .first(where: { $0.id == sensorId })
+            chargingStation?.chargingMode = newCarCharging.chargingMode
 
             carChargerSetSuccessfully = result
         } catch {

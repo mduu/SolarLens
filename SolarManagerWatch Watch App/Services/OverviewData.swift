@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct OverviewData {
+class OverviewData: ObservableObject {
     private let minGridConsumptionTreashold: Int = 100
     private let minGridIngestionTreashold: Int = 100
     
@@ -75,7 +75,7 @@ struct OverviewData {
     }
 }
 
-struct ChargingStation: Codable {
+struct ChargingStation: Codable, Observable {
     var id: String
     var name: String
     var chargingMode: ChargingMode

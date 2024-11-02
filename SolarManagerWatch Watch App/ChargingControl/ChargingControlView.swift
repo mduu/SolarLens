@@ -13,28 +13,38 @@ struct ChargingControlView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ZStack {
 
-                Spacer()
+                ScrollView {
 
-                ForEach($model.overviewData.chargingStations, id: \.id) {
-                    chargingStation in
+                    Spacer()
 
-                    VStack(alignment: .leading, spacing: 3)
-                    {
-                        ChargingStationModeView(
-                            isTheOnlyOne: .constant(model.overviewData.chargingStations.count <= 1),
-                            chargingStation: chargingStation)
-                    }
-                } // :ForEach
+                    ForEach($model.overviewData.chargingStations, id: \.id) {
+                        chargingStation in
+
+                        VStack(alignment: .leading, spacing: 3) {
+                            ChargingStationModeView(
+                                isTheOnlyOne: .constant(
+                                    model.overviewData.chargingStations.count
+                                        <= 1),
+                                chargingStation: chargingStation)
+                        }
+                    }  // :ForEach
+
+                }  // :ScrollView
+                .navigationTitle("Charging")
+                .navigationBarTitleDisplayMode(.inline)
                 
-            } // :ScrollView
-            .navigationTitle("Charging")
-            .navigationBarTitleDisplayMode(.inline)
-            
-        } // :NavigationStack
-    } // :Body
-} // :View
+                if model.isChangingCarCharger {
+                    HStack {
+                        ProgressView()
+                    }.background(Color.black.opacity(0.8))
+                }
+            }  // :ZStack
+
+        }  // :NavigationStack
+    }  // :Body
+}  // :View
 
 #Preview {
     ChargingControlView()
