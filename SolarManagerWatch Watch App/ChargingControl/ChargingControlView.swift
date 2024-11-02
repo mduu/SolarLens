@@ -19,9 +19,6 @@ struct ChargingControlView: View {
                                 .edgesIgnoringSafeArea(.all)
 
                 ScrollView {
-
-                    Spacer()
-
                     ForEach($model.overviewData.chargingStations, id: \.id) {
                         chargingStation in
 
@@ -37,6 +34,7 @@ struct ChargingControlView: View {
                 }  // :ScrollView
                 .navigationTitle("Charging")
                 .navigationBarTitleDisplayMode(.inline)
+                .scrollContentBackground(.automatic)
                 
                 if model.isChangingCarCharger {
                     HStack {

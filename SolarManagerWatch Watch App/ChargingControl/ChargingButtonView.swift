@@ -12,14 +12,20 @@ struct ChargingButtonView: View {
     @Binding var chargingMode: ChargingMode
     @Binding var chargingStation: ChargingStation
 
+    @State private var showingPopup = false
+
     var body: some View {
         Button(action: {
             print("\(chargingMode) pressed")
 
-            Task {
-                await setChargingMode(
-                    chargingStation: chargingStation,
-                    chargingMode: chargingMode)
+            if isSimpleChargingMode(chargingMode: chargingMode) {
+                Task {
+                    await setSimpleChargingMode(
+                        chargingStation: chargingStation,
+                        chargingMode: chargingMode)
+                }
+            } else {
+                showingPopup = true
             }
 
         }) {
@@ -40,9 +46,14 @@ struct ChargingButtonView: View {
             getButtonTint(
                 chargingMode: chargingMode,
                 chargingStation: $chargingStation
-                    .wrappedValue))
+                    .wrappedValue)
+        )
+        .sheet(isPresented: $showingPopup) {
+            ChargingOptionsPopupView()
+        }
     }
 
+    
     private func getCharingModeName(for mode: ChargingMode) -> String {
         switch mode {
         case .withSolarPower:
@@ -103,24 +114,27 @@ struct ChargingButtonView: View {
             : .primary
     }
 
-    private func setChargingMode(
+    private func isSimpleChargingMode(chargingMode: ChargingMode) -> Bool {
+        return chargingMode == .alwaysCharge
+            || chargingMode == .withSolarPower
+            || chargingMode == .withSolarOrLowTariff
+            || chargingMode == .minimalAndSolar
+            || chargingMode == .off
+    }
+
+    private func setSimpleChargingMode(
         chargingStation: ChargingStation,
         chargingMode: ChargingMode
     ) async {
-        switch chargingMode {
-        
-        case .alwaysCharge, .withSolarPower, .withSolarOrLowTariff, .minimalAndSolar, .off:
-
-            await model.setCarCharging(
-                sensorId: chargingStation.id,
-                newCarCharging:
-                    ControlCarChargingRequest.init(chargingMode: chargingMode))
-
-        default:
-            print(
-                "Unsupported charging mode: \(chargingMode.rawValue)"
-            )
+        guard isSimpleChargingMode(chargingMode: chargingMode) else {
+            print("ERROR: \(chargingMode) is not a simple charging mode")
+            return
         }
+
+        await model.setCarCharging(
+            sensorId: chargingStation.id,
+            newCarCharging:
+                ControlCarChargingRequest.init(chargingMode: chargingMode))
     }
 
 }
