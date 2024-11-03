@@ -30,8 +30,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "494882AE2CA8443300C59146"
-               BuildableName = "SolarManagerWatch.app"
-               BlueprintName = "SolarManagerWatch"
+               BuildableName = "Solar Lens.app"
+               BlueprintName = "Solar Lens"
                ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
