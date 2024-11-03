@@ -71,11 +71,6 @@
 			path = "SolarManagerWatch Watch App";
 			sourceTree = "<group>";
 		};
-		49EED1AC2CC0389D00A89445 /* Solar Lens Widgets */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Solar Lens Widgets";
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +89,6 @@
 			isa = PBXGroup;
 			children = (
 				494882B92CA8443300C59146 /* SolarManagerWatch Watch App */,
-				49EED1AC2CC0389D00A89445 /* Solar Lens Widgets */,
 				49EED1A72CC0389C00A89445 /* Frameworks */,
 				494882B02CA8443300C59146 /* Products */,
 			);
