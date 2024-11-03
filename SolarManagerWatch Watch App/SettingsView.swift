@@ -7,16 +7,13 @@
 
 import SwiftUI
 
-struct Settings: View {
+struct SettingsView: View {
     @EnvironmentObject var model: BuildingStateViewModel
 
     var body: some View {
         ScrollView {
             VStack(alignment: .center) {
-                Text("Settings")
-                    .font(.headline)
-                    .padding(.bottom, 16)
-
+                Text("Logged in as:")
                 Text(
                     "\(KeychainHelper.loadCredentials().username ?? "-")"
                 )
@@ -47,7 +44,7 @@ struct Settings: View {
 }
 
 #Preview("English") {
-    Settings()
+    SettingsView()
         .environmentObject(
             BuildingStateViewModel(
                 energyManagerClient: FakeEnergyManager()
@@ -56,7 +53,7 @@ struct Settings: View {
 
 #Preview("German") {
 
-    Settings()
+    SettingsView()
         .environmentObject(
             BuildingStateViewModel(
                 energyManagerClient: FakeEnergyManager()
@@ -67,7 +64,7 @@ struct Settings: View {
 
 #Preview("French") {
 
-    Settings()
+    SettingsView()
         .environmentObject(
             BuildingStateViewModel(
                 energyManagerClient: FakeEnergyManager()
@@ -78,7 +75,7 @@ struct Settings: View {
 
 #Preview("Italian") {
 
-    Settings()
+    SettingsView()
         .environmentObject(
             BuildingStateViewModel(
                 energyManagerClient: FakeEnergyManager()

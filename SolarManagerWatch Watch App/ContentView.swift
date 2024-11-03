@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = BuildingStateViewModel()
+    @StateObject var viewModel = BuildingStateViewModel()
+
+    @State var selection = 0
+    @Namespace var namespace
 
     var body: some View {
 
@@ -17,25 +20,44 @@ struct ContentView: View {
                 .environmentObject(viewModel)
         } else if viewModel.loginCredentialsExists {
 
-            TabView {
-                HStack {
-                    OverviewView()
-                        .environmentObject(viewModel)
-                        .background(Color.black.opacity(1.0))
-                        .onTapGesture {
-                            print("Force refresh")
-                            Task {
-                                await viewModel.fetchServerData()
-                            }
+            TabView(selection: $selection) {
+                OverviewView()
+                    .environmentObject(viewModel)
+                    .onTapGesture {
+                        print("Force refresh")
+                        Task {
+                            await viewModel.fetchServerData()
                         }
-                }
+                    }
+                    .containerBackground(.black, for: .tabView)
+                    .matchedGeometryEffect(
+                        id: "Overview",
+                        in: namespace,
+                        properties: .frame,
+                        isSource: selection == 0
+                    )
+                    .tag(0)
 
                 ChargingControlView()
                     .environmentObject(viewModel)
-                
-                Settings()
-                    .environmentObject(viewModel)
+                    .navigationTitle("Charging")
 
+                SettingsView()
+                    .environmentObject(viewModel)
+                    .containerBackground(.black, for: .tabView)
+                    .navigationTitle("Settings")
+
+            }  // :TabView
+            .navigationTitle("Overview")
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    OverviewView()
+                        .matchedGeometryEffect(
+                            id: "Overview",
+                            in: namespace,
+                            properties: .frame,
+                            isSource: selection != 0)
+                }
             }
             .tabViewStyle(
                 .verticalPage(transitionStyle: .blur)
@@ -54,4 +76,23 @@ struct ContentView: View {
 
 #Preview("Login Form") {
     ContentView()
+}
+
+#Preview("Logged in") {
+    ContentView(viewModel: BuildingStateViewModel.fake(
+        overviewData: .init(
+            currentSolarProduction: 4500,
+            currentOverallConsumption: 400,
+            currentBatteryLevel: 99,
+            currentBatteryChargeRate: 150,
+            currentSolarToGrid: 3600,
+            currentGridToHouse: 0,
+            currentSolarToHouse: 400,
+            solarProductionMax: 11000,
+            hasConnectionError: false,
+            lastUpdated: Date(),
+            isAnyCarCharing: true,
+            chargingStations: []
+        ), loggedIn: true
+    ))
 }

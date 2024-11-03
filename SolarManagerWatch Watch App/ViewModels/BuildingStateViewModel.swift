@@ -25,11 +25,11 @@ class BuildingStateViewModel: ObservableObject {
         updateCredentialsExists()
     }
 
-    static func fake(overviewData: OverviewData) -> BuildingStateViewModel {
+    static func fake(overviewData: OverviewData, loggedIn: Bool = true) -> BuildingStateViewModel {
         let result = BuildingStateViewModel.init(
             energyManagerClient: FakeEnergyManager.init(data: overviewData))
         result.isLoading = false
-        result.loginCredentialsExists = true
+        result.loginCredentialsExists = loggedIn
 
         Task {
             await result.fetchServerData()

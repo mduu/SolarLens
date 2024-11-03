@@ -12,11 +12,11 @@ struct ChargingControlView: View {
     @State var newCarCharging: ControlCarChargingRequest? = nil
 
     var body: some View {
-        NavigationStack {
+        // NavigationStack {
             ZStack {
                 
-                LinearGradient(gradient: Gradient(colors: [.green.opacity(0.5), .green.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
-                                .edgesIgnoringSafeArea(.all)
+                //LinearGradient(gradient: Gradient(colors: [.green.opacity(0.5), .green.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
+                //                .edgesIgnoringSafeArea(.all)
 
                 ScrollView {
                     ForEach($model.overviewData.chargingStations, id: \.id) {
@@ -43,7 +43,7 @@ struct ChargingControlView: View {
                 }
             }  // :ZStack
 
-        }  // :NavigationStack
+        //}  // :NavigationStack
     }  // :Body
 }  // :View
 
