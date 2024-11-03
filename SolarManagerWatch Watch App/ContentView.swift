@@ -23,20 +23,13 @@ struct ContentView: View {
             TabView(selection: $selection) {
                 OverviewView()
                     .environmentObject(viewModel)
+                    .navigationTitle("Overview")
                     .onTapGesture {
                         print("Force refresh")
                         Task {
                             await viewModel.fetchServerData()
                         }
                     }
-                    .containerBackground(.black, for: .tabView)
-                    .matchedGeometryEffect(
-                        id: "Overview",
-                        in: namespace,
-                        properties: .frame,
-                        isSource: selection == 0
-                    )
-                    .tag(0)
 
                 ChargingControlView()
                     .environmentObject(viewModel)
@@ -48,19 +41,20 @@ struct ContentView: View {
                     .navigationTitle("Settings")
 
             }  // :TabView
-            .navigationTitle("Overview")
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    OverviewView()
-                        .matchedGeometryEffect(
-                            id: "Overview",
-                            in: namespace,
-                            properties: .frame,
-                            isSource: selection != 0)
-                }
-            }
+            //.toolbar {
+            //    ToolbarItem(placement: .automatic) {
+            //OverviewView()
+            //    .matchedGeometryEffect(
+            //        id: "Overview",
+            //        in: namespace,
+            //        properties: .frame,
+            //        isSource: selection != 0)
+            //        Text("hi")
+            //    }
+            //}
             .tabViewStyle(
-                .verticalPage(transitionStyle: .blur)
+                //.verticalPage(transitionStyle: .blur)
+                .verticalPage
             )
 
         } else {
@@ -79,20 +73,21 @@ struct ContentView: View {
 }
 
 #Preview("Logged in") {
-    ContentView(viewModel: BuildingStateViewModel.fake(
-        overviewData: .init(
-            currentSolarProduction: 4500,
-            currentOverallConsumption: 400,
-            currentBatteryLevel: 99,
-            currentBatteryChargeRate: 150,
-            currentSolarToGrid: 3600,
-            currentGridToHouse: 0,
-            currentSolarToHouse: 400,
-            solarProductionMax: 11000,
-            hasConnectionError: false,
-            lastUpdated: Date(),
-            isAnyCarCharing: true,
-            chargingStations: []
-        ), loggedIn: true
-    ))
+    ContentView(
+        viewModel: BuildingStateViewModel.fake(
+            overviewData: .init(
+                currentSolarProduction: 4500,
+                currentOverallConsumption: 400,
+                currentBatteryLevel: 99,
+                currentBatteryChargeRate: 150,
+                currentSolarToGrid: 3600,
+                currentGridToHouse: 0,
+                currentSolarToHouse: 400,
+                solarProductionMax: 11000,
+                hasConnectionError: false,
+                lastUpdated: Date(),
+                isAnyCarCharing: true,
+                chargingStations: []
+            ), loggedIn: true
+        ))
 }

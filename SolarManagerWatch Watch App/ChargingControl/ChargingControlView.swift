@@ -15,8 +15,8 @@ struct ChargingControlView: View {
         // NavigationStack {
             ZStack {
                 
-                //LinearGradient(gradient: Gradient(colors: [.green.opacity(0.5), .green.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
-                //                .edgesIgnoringSafeArea(.all)
+                LinearGradient(gradient: Gradient(colors: [.green.opacity(0.5), .green.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
+                                .edgesIgnoringSafeArea(.all)
 
                 ScrollView {
                     ForEach($model.overviewData.chargingStations, id: \.id) {
