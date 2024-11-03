@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		494882B62CA8443300C59146 /* SolarManagerWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		494882B62CA8443300C59146 /* Solar Lens Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 494882B52CA8443300C59146 /* Solar Lens Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 495B2E1F2CB2AE520089AD1B /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +28,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				494882B62CA8443300C59146 /* SolarManagerWatch Watch App.app in Embed Watch Content */,
+				494882B62CA8443300C59146 /* Solar Lens Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,13 +47,13 @@
 
 /* Begin PBXFileReference section */
 		494882AF2CA8443300C59146 /* SolarManagerWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SolarManagerWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SolarManagerWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		494882B52CA8443300C59146 /* Solar Lens Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EED1A82CC0389C00A89445 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		49EED1AA2CC0389D00A89445 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		496717BD2CB2A6960054024C /* Exceptions for "SolarManagerWatch Watch App" folder in "Copy Bundle Resources" phase from "SolarManagerWatch Watch App" target */ = {
+		496717BD2CB2A6960054024C /* Exceptions for "SolarManagerWatch Watch App" folder in "Copy Bundle Resources" phase from "Solar Lens Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 494882B32CA8443300C59146 /* Resources */;
 			membershipExceptions = (
@@ -66,7 +66,7 @@
 		494882B92CA8443300C59146 /* SolarManagerWatch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				496717BD2CB2A6960054024C /* Exceptions for "SolarManagerWatch Watch App" folder in "Copy Bundle Resources" phase from "SolarManagerWatch Watch App" target */,
+				496717BD2CB2A6960054024C /* Exceptions for "SolarManagerWatch Watch App" folder in "Copy Bundle Resources" phase from "Solar Lens Watch App" target */,
 			);
 			path = "SolarManagerWatch Watch App";
 			sourceTree = "<group>";
@@ -98,7 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				494882AF2CA8443300C59146 /* SolarManagerWatch.app */,
-				494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */,
+				494882B52CA8443300C59146 /* Solar Lens Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,9 +134,9 @@
 			productReference = 494882AF2CA8443300C59146 /* SolarManagerWatch.app */;
 			productType = "com.apple.product-type.application.watchapp2-container";
 		};
-		494882B42CA8443300C59146 /* SolarManagerWatch Watch App */ = {
+		494882B42CA8443300C59146 /* Solar Lens Watch App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 494882C52CA8443400C59146 /* Build configuration list for PBXNativeTarget "SolarManagerWatch Watch App" */;
+			buildConfigurationList = 494882C52CA8443400C59146 /* Build configuration list for PBXNativeTarget "Solar Lens Watch App" */;
 			buildPhases = (
 				494882B12CA8443300C59146 /* Sources */,
 				494882B22CA8443300C59146 /* Frameworks */,
@@ -150,12 +150,12 @@
 			fileSystemSynchronizedGroups = (
 				494882B92CA8443300C59146 /* SolarManagerWatch Watch App */,
 			);
-			name = "SolarManagerWatch Watch App";
+			name = "Solar Lens Watch App";
 			packageProductDependencies = (
 				495B2E1F2CB2AE520089AD1B /* KeychainAccess */,
 			);
 			productName = "SolarManagerWatch Watch App";
-			productReference = 494882B52CA8443300C59146 /* SolarManagerWatch Watch App.app */;
+			productReference = 494882B52CA8443300C59146 /* Solar Lens Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -197,7 +197,7 @@
 			projectRoot = "";
 			targets = (
 				494882AE2CA8443300C59146 /* SolarManagerWatch */,
-				494882B42CA8443300C59146 /* SolarManagerWatch Watch App */,
+				494882B42CA8443300C59146 /* Solar Lens Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -232,7 +232,7 @@
 /* Begin PBXTargetDependency section */
 		494882B82CA8443300C59146 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 494882B42CA8443300C59146 /* SolarManagerWatch Watch App */;
+			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
 			targetProxy = 494882B72CA8443300C59146 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -471,7 +471,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		494882C52CA8443400C59146 /* Build configuration list for PBXNativeTarget "SolarManagerWatch Watch App" */ = {
+		494882C52CA8443400C59146 /* Build configuration list for PBXNativeTarget "Solar Lens Watch App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				494882C62CA8443400C59146 /* Debug */,
