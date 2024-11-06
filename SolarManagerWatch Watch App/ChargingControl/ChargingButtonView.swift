@@ -49,7 +49,10 @@ struct ChargingButtonView: View {
                     .wrappedValue)
         )
         .sheet(isPresented: $showingPopup) {
-            ChargingOptionsPopupView()
+            ChargingOptionsPopupView(
+                chargingMode: $chargingMode,
+                chargingStation: $chargingStation)
+            .environmentObject(model)
         }
     }
 

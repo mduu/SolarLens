@@ -18,6 +18,9 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "%lld A" : {
+
+    },
     "Charging" : {
 
     },
@@ -357,6 +360,9 @@
       },
       "shouldTranslate" : false
     },
+    "Set" : {
+
+    },
     "Settings" : {
       "localizations" : {
         "de" : {
@@ -413,9 +419,6 @@
         }
       }
     },
-    "This is a popup!" : {
-
-    },
     "Try again" : {
       "localizations" : {
         "de" : {
@@ -437,6 +440,9 @@
           }
         }
       }
+    },
+    "Unknown charging mode" : {
+
     },
     "v%@" : {
       "shouldTranslate" : false

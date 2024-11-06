@@ -42,4 +42,9 @@ struct ControlCarChargingRequest: Codable {
     init(chargingMode: ChargingMode) {
         self.chargingMode = chargingMode
     }
+    
+    init(constantCurrent: Int) {
+        self.chargingMode = .constantCurrent
+        self.constantCurrentSetting = constantCurrent
+    }
 }
