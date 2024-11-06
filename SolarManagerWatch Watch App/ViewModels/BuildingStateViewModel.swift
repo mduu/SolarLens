@@ -100,7 +100,7 @@ class BuildingStateViewModel: ObservableObject {
             print("Car-Charging set at \(Date())")
             
             // Optimistic UI: Update charging mode in-memory to speed up UI
-            var chargingStation = overviewData.chargingStations
+            let chargingStation = overviewData.chargingStations
                 .first(where: { $0.id == sensorId })
             chargingStation?.chargingMode = newCarCharging.chargingMode
 

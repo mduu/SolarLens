@@ -87,7 +87,7 @@ actor SolarManager: EnergyManager {
                         })
         }
 
-        var errorOverviewData =
+        let errorOverviewData =
             lastOverviewData
             ?? OverviewData(
                 currentSolarProduction: 0,
