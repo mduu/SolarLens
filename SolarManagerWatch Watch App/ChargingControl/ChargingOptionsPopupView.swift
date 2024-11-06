@@ -18,6 +18,16 @@ struct ChargingOptionsPopupView: View {
     private let minConstantCurrent: Int = 6
     private let maxConstantCurrent: Int = 32
 
+    var body: some View {
+
+        switch chargingMode {
+        case .constantCurrent: constantCurrentView
+        default:
+            Text("Unknown charging mode")
+                .foregroundColor(.red)
+        }
+    }
+    
     var constantCurrentView: some View {
         ZStack {
             VStack {
@@ -73,15 +83,6 @@ struct ChargingOptionsPopupView: View {
         }
     }
 
-    var body: some View {
-
-        switch chargingMode {
-        case .constantCurrent: constantCurrentView
-        default:
-            Text("Unknown charging mode")
-                .foregroundColor(.red)
-        }
-    }
 }
 
 #Preview("Constant Current") {
