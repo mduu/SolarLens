@@ -47,4 +47,10 @@ struct ControlCarChargingRequest: Codable {
         self.chargingMode = .constantCurrent
         self.constantCurrentSetting = constantCurrent
     }
+    
+    init(minimumChargeQuantityTargetAmount: Int, targetTime: Date) {
+        self.chargingMode = .minimumQuantity
+        self.minimumChargeQuantityTargetAmount = minimumChargeQuantityTargetAmount
+        self.minimumChargeQuantityTargetDateTime = targetTime
+    }
 }

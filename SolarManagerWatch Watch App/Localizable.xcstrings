@@ -21,6 +21,9 @@
     "%lld A" : {
 
     },
+    "%lld kWh" : {
+
+    },
     "Charging" : {
 
     },
@@ -223,9 +226,6 @@
         }
       }
     },
-    "Overview" : {
-
-    },
     "Password" : {
       "localizations" : {
         "de" : {
@@ -360,10 +360,17 @@
       },
       "shouldTranslate" : false
     },
+    "Select target date" : {
+
+    },
+    "Select target time" : {
+
+    },
     "Set" : {
 
     },
     "Settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -418,6 +425,12 @@
           }
         }
       }
+    },
+    "Target date" : {
+
+    },
+    "Target time" : {
+
     },
     "Try again" : {
       "localizations" : {
