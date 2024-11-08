@@ -25,6 +25,14 @@ struct ChargingOptionsPopupView: View {
     @State var showMinCurrentTimePicker: Bool = false
     private let minMinQuantity: Int = 1
     private let maxMinQuantity: Int = 100
+    
+    @State var targetSocPercent: Int = 1
+    @State var targetSocDate: Date = Date()
+    @State var targetSocTime: Date = Date()
+    @State var showTargetSocDatePicker: Bool = false
+    @State var showTargetSocTimePicker: Bool = false
+    private let targetSocMinPercent: Int = 1
+    private let targetSocMaxPercent: Int = 100
 
     let dateRange: ClosedRange<Date> = {
         let calendar = Calendar.current
@@ -50,6 +58,7 @@ struct ChargingOptionsPopupView: View {
             switch chargingMode {
             case .constantCurrent: constantCurrentView
             case .minimumQuantity: minimumChargeQuantity
+            case .chargingTargetSoc: targetSoc
             default:
                 Text("Unknown charging mode")
                     .foregroundColor(.red)
@@ -195,7 +204,6 @@ struct ChargingOptionsPopupView: View {
                 }
 
                 Button(action: {
-                    let targetTime = $minQuantityDate
                     Task {
                         await model.setCarCharging(
                             sensorId: chargingStation.id,
@@ -205,6 +213,111 @@ struct ChargingOptionsPopupView: View {
                                 targetTime: combineDateTime(
                                     date: $minQuantityDate.wrappedValue,
                                     time: $minQuantityTime.wrappedValue
+                                )))
+                        dismiss()
+                    }
+                }) {
+                    Text("Set")
+                }
+                .buttonStyle(.bordered)
+                .foregroundColor(.green)
+                .padding()
+            }
+        }
+    }
+
+    var targetSoc: some View {
+        ScrollView {
+            VStack {
+
+                HStack {
+
+                    Button(action: {
+                        targetSocPercent -= 5
+                        if targetSocMinPercent < targetSocPercent {
+                            targetSocPercent = targetSocMinPercent
+                        }
+                    }) {
+                        Image(systemName: "minus")
+                    }
+                    .buttonBorderShape(.circle)
+                    .foregroundColor(.accent)
+                    .padding()
+
+                    Text("\(targetSocPercent) %")
+
+                    Button(action: {
+                        targetSocPercent += 1
+                        if targetSocPercent > targetSocMaxPercent {
+                            targetSocPercent = targetSocMaxPercent
+                        }
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                    .buttonBorderShape(.circle)
+                    .foregroundColor(.accent)
+                    .padding()
+                }
+
+                Button(action: {
+                    showTargetSocDatePicker = true
+                }) {
+                    VStack {
+                        Text("Target date")
+                            .font(.callout)
+                        Text(
+                            "\($targetSocDate.wrappedValue.formatted(date: .numeric, time: .omitted))"
+                        )
+                    }
+                }
+                .buttonBorderShape(.circle)
+                .foregroundColor(.accentColor)
+                .sheet(isPresented: $showTargetSocDatePicker) {
+                    DatePicker(
+                        selection: $targetSocDate,
+                        in: dateRange,
+                        displayedComponents: [.date]
+                    ) {
+                        Text("Select target date")
+                    }
+                    .datePickerStyle(.automatic)
+                    .frame(minHeight: 130)
+                }
+
+                Button(action: {
+                    showTargetSocTimePicker = true
+                }) {
+                    VStack {
+                        Text("Target time")
+                            .font(.callout)
+                        Text(
+                            "\($targetSocTime.wrappedValue.formatted(date: .omitted, time: .shortened))"
+                        )
+                    }
+                }
+                .buttonBorderShape(.circle)
+                .foregroundColor(.accentColor)
+                .sheet(isPresented: $showTargetSocTimePicker) {
+                    DatePicker(
+                        selection: $targetSocTime,
+                        displayedComponents: [.hourAndMinute]
+                    ) {
+                        Text("Select target time")
+                    }
+                    .datePickerStyle(.automatic)
+                    .frame(minHeight: 130)
+                }
+
+                Button(action: {
+                    Task {
+                        await model.setCarCharging(
+                            sensorId: chargingStation.id,
+                            newCarCharging: .init(
+                                targetSocPercent: $targetSocPercent
+                                    .wrappedValue,
+                                targetTime: combineDateTime(
+                                    date: $targetSocDate.wrappedValue,
+                                    time: $targetSocTime.wrappedValue
                                 )))
                         dismiss()
                     }
@@ -273,6 +386,38 @@ struct ChargingOptionsPopupView: View {
 #Preview("Min. Qty.") {
     ChargingOptionsPopupView(
         chargingMode: .constant(.minimumQuantity),
+        chargingStation: .constant(
+            ChargingStation.init(
+                id: "id-1",
+                name: "Station #1",
+                chargingMode: .withSolarPower,
+                priority: 1,
+                currentPower: 0,
+                signal: .connected))
+    )
+    .environmentObject(
+        BuildingStateViewModel.fake(
+            overviewData: .init(
+                currentSolarProduction: 4500,
+                currentOverallConsumption: 400,
+                currentBatteryLevel: 99,
+                currentBatteryChargeRate: 150,
+                currentSolarToGrid: 3600,
+                currentGridToHouse: 0,
+                currentSolarToHouse: 400,
+                solarProductionMax: 11000,
+                hasConnectionError: false,
+                lastUpdated: Date(),
+                isAnyCarCharing: true,
+                chargingStations: []
+            )
+        )
+    )
+}
+
+#Preview("SOC") {
+    ChargingOptionsPopupView(
+        chargingMode: .constant(.chargingTargetSoc),
         chargingStation: .constant(
             ChargingStation.init(
                 id: "id-1",

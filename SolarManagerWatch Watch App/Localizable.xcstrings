@@ -18,6 +18,9 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "%lld %%" : {
+
+    },
     "%lld A" : {
 
     },
