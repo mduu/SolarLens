@@ -137,7 +137,7 @@ struct OverviewView: View {
                             model.overviewData.lastUpdated?.formatted(
                                 date: .numeric, time: .standard) ?? "-"
                         )
-                        .font(.system(size: 11))
+                        .font(.system(size: 10))
                         .foregroundColor(.gray)
                     }.padding(.top, 2)
                 }

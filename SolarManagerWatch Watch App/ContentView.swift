@@ -10,9 +10,6 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var viewModel = BuildingStateViewModel()
 
-    @State var selection = 0
-    @Namespace var namespace
-
     var body: some View {
 
         if !viewModel.loginCredentialsExists {
@@ -20,10 +17,9 @@ struct ContentView: View {
                 .environmentObject(viewModel)
         } else if viewModel.loginCredentialsExists {
 
-            TabView(selection: $selection) {
+            TabView() {
                 OverviewView()
                     .environmentObject(viewModel)
-                    .navigationTitle("Overview")
                     .onTapGesture {
                         print("Force refresh")
                         Task {
@@ -33,28 +29,14 @@ struct ContentView: View {
 
                 ChargingControlView()
                     .environmentObject(viewModel)
-                    .navigationTitle("Charging")
 
                 SettingsView()
                     .environmentObject(viewModel)
                     .containerBackground(.black, for: .tabView)
-                    .navigationTitle("Settings")
 
             }  // :TabView
-            //.toolbar {
-            //    ToolbarItem(placement: .automatic) {
-            //OverviewView()
-            //    .matchedGeometryEffect(
-            //        id: "Overview",
-            //        in: namespace,
-            //        properties: .frame,
-            //        isSource: selection != 0)
-            //        Text("hi")
-            //    }
-            //}
             .tabViewStyle(
-                //.verticalPage(transitionStyle: .blur)
-                .verticalPage
+                .verticalPage(transitionStyle: .blur)
             )
 
         } else {
