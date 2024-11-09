@@ -9,60 +9,63 @@ import SwiftUI
 
 struct ChargingControlView: View {
     @EnvironmentObject var model: BuildingStateViewModel
+
     @State var newCarCharging: ControlCarChargingRequest? = nil
     @State var showChargingModeConfig: Bool = false
 
     var body: some View {
         // NavigationStack {
-            ZStack {
-                
-                LinearGradient(gradient: Gradient(colors: [.green.opacity(0.5), .green.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
-                                .edgesIgnoringSafeArea(.all)
+        ZStack {
 
-                ScrollView {
-                    VStack(spacing: 10) {
-                        ForEach($model.overviewData.chargingStations, id: \.id) {
-                            chargingStation in
-                            
-                            VStack(alignment: .leading, spacing: 3) {
-                                ChargingStationModeView(
-                                    isTheOnlyOne: .constant(
-                                        model.overviewData.chargingStations.count
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    .green.opacity(0.5), .green.opacity(0.2),
+                ]), startPoint: .top, endPoint: .bottom
+            )
+            .edgesIgnoringSafeArea(.all)
+
+            ScrollView {
+                VStack(spacing: 10) {
+                    ForEach($model.overviewData.chargingStations, id: \.id) {
+                        chargingStation in
+
+                        VStack(alignment: .leading, spacing: 3) {
+                            ChargingStationModeView(
+                                isTheOnlyOne: .constant(
+                                    model.overviewData.chargingStations.count
                                         <= 1),
-                                    chargingStation: chargingStation)
-                            }
-                        }  // :ForEach
-                        
-                        HStack {
-                            Spacer()
-                            
-                            Button(action: {
-                                showChargingModeConfig = true
-                            })
-                            {
-                                Image(systemName: "gear")
-                            }
-                            .buttonStyle(.borderless)
-                            .foregroundColor(.secondary)
-                            .padding( .trailing, 15)
-                            .sheet(isPresented: $showChargingModeConfig)
-                            {
-                                ChargingModeConfigurationView()
-                            }
-                        } // :HStack
-                    } // :VStack
+                                chargingStation: chargingStation)
+                        }
+                    }  // :ForEach
 
-                }  // :ScrollView
-                .navigationTitle("Charging")
-                .navigationBarTitleDisplayMode(.inline)
-                .scrollContentBackground(.automatic)
-                
-                if model.isChangingCarCharger {
                     HStack {
-                        ProgressView()
-                    }.background(Color.black.opacity(0.8))
-                }
-            }  // :ZStack
+                        Spacer()
+
+                        Button(action: {
+                            showChargingModeConfig = true
+                        }) {
+                            Image(systemName: "gear")
+                        }
+                        .buttonStyle(.borderless)
+                        .foregroundColor(.secondary)
+                        .padding(.trailing, 15)
+                        .sheet(isPresented: $showChargingModeConfig) {
+                            ChargingModeConfigurationView()
+                        }
+                    }  // :HStack
+                }  // :VStack
+
+            }  // :ScrollView
+            .navigationTitle("Charging")
+            .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.automatic)
+
+            if model.isChangingCarCharger {
+                HStack {
+                    ProgressView()
+                }.background(Color.black.opacity(0.8))
+            }
+        }  // :ZStack
 
         //}  // :NavigationStack
     }  // :Body

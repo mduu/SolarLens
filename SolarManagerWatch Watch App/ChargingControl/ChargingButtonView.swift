@@ -33,9 +33,7 @@ struct ChargingButtonView: View {
                 getModeImage(for: chargingMode)
                     .padding(.leading, 3)
 
-                Text(
-                    "\(getCharingModeName(for: chargingMode))"
-                ).multilineTextAlignment(.leading)
+                ChargingModelLabelView(chargingMode: chargingMode)
 
                 Spacer(minLength: 0)
             }.frame(alignment: .leading)
@@ -51,30 +49,9 @@ struct ChargingButtonView: View {
         .sheet(isPresented: $showingPopup) {
             ChargingOptionsPopupView(
                 chargingMode: $chargingMode,
-                chargingStation: $chargingStation)
+                chargingStation: $chargingStation
+            )
             .environmentObject(model)
-        }
-    }
-
-    
-    private func getCharingModeName(for mode: ChargingMode) -> String {
-        switch mode {
-        case .withSolarPower:
-            return "Solar only"
-        case .withSolarOrLowTariff:
-            return "Solar & Tariff"
-        case .alwaysCharge:
-            return "Always"
-        case .off:
-            return "Off"
-        case .constantCurrent:
-            return "Constant"
-        case .minimalAndSolar:
-            return "Minimal & Solar"
-        case .minimumQuantity:
-            return "Minimal"
-        case .chargingTargetSoc:
-            return "Car %"
         }
     }
 

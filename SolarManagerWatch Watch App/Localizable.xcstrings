@@ -27,7 +27,16 @@
     "%lld kWh" : {
 
     },
+    "Always" : {
+
+    },
+    "Car %" : {
+
+    },
     "Charging" : {
+
+    },
+    "Constant" : {
 
     },
     "Email" : {
@@ -229,6 +238,15 @@
         }
       }
     },
+    "Minimal" : {
+
+    },
+    "Minimal & Solar" : {
+
+    },
+    "Off" : {
+
+    },
     "Password" : {
       "localizations" : {
         "de" : {
@@ -256,6 +274,9 @@
           }
         }
       }
+    },
+    "Personalize" : {
+
     },
     "Please enter a valid email address" : {
       "localizations" : {
@@ -401,6 +422,9 @@
         }
       }
     },
+    "Solar & Tariff" : {
+
+    },
     "Solar Manger Login" : {
       "localizations" : {
         "de" : {
@@ -428,6 +452,9 @@
           }
         }
       }
+    },
+    "Solar only" : {
+
     },
     "Target date" : {
 
