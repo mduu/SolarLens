@@ -10,6 +10,7 @@ import SwiftUI
 struct ChargingControlView: View {
     @EnvironmentObject var model: BuildingStateViewModel
     @State var newCarCharging: ControlCarChargingRequest? = nil
+    @State var showChargingModeConfig: Bool = false
 
     var body: some View {
         // NavigationStack {
@@ -19,17 +20,37 @@ struct ChargingControlView: View {
                                 .edgesIgnoringSafeArea(.all)
 
                 ScrollView {
-                    ForEach($model.overviewData.chargingStations, id: \.id) {
-                        chargingStation in
-
-                        VStack(alignment: .leading, spacing: 3) {
-                            ChargingStationModeView(
-                                isTheOnlyOne: .constant(
-                                    model.overviewData.chargingStations.count
+                    VStack(spacing: 10) {
+                        ForEach($model.overviewData.chargingStations, id: \.id) {
+                            chargingStation in
+                            
+                            VStack(alignment: .leading, spacing: 3) {
+                                ChargingStationModeView(
+                                    isTheOnlyOne: .constant(
+                                        model.overviewData.chargingStations.count
                                         <= 1),
-                                chargingStation: chargingStation)
-                        }
-                    }  // :ForEach
+                                    chargingStation: chargingStation)
+                            }
+                        }  // :ForEach
+                        
+                        HStack {
+                            Spacer()
+                            
+                            Button(action: {
+                                showChargingModeConfig = true
+                            })
+                            {
+                                Image(systemName: "gear")
+                            }
+                            .buttonStyle(.borderless)
+                            .foregroundColor(.secondary)
+                            .padding( .trailing, 15)
+                            .sheet(isPresented: $showChargingModeConfig)
+                            {
+                                ChargingModeConfigurationView()
+                            }
+                        } // :HStack
+                    } // :VStack
 
                 }  // :ScrollView
                 .navigationTitle("Charging")
