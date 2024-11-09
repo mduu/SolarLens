@@ -32,8 +32,11 @@ class ChargingModeConfiguration: ObservableObject {
         }
     }
 
-    func changeChargingModeVisibillity(mode: ChargingMode, isOn: Bool) {
-        chargingModeVisibillity[mode] = isOn
+    func changeChargingModeVisibillity(modes: [ChargingMode: Bool]) {
+        for mode in modes {
+            chargingModeVisibillity[mode.key] = mode.value
+        }
+        
         if let encodedData = try? JSONEncoder().encode(chargingModeVisibillity) {
             chargingModeVisibillityData = encodedData
         }

@@ -17,7 +17,7 @@ struct ChargingModeConfigurationView: View {
     @State private var modeConstantCurrent: Bool = true
     @State private var modeMinimalAndSolar: Bool = true
     @State private var modeMinimumQuantity: Bool = true
-    @State private var modeChargingTargetSoc: Bool = true
+    @State private var modeChargingTargetSoc: Bool = false
 
     init() {
         let modeVisitability = $chargingModeConfiguration
@@ -71,7 +71,32 @@ struct ChargingModeConfigurationView: View {
                     ChargingModelLabelView(chargingMode: .chargingTargetSoc)
                 }
             }
+            .onChange(of: modeAllwaysOn) { updateSettings() }
+            .onChange(of: modeOff) { updateSettings() }
+            .onChange(of: modeConstantCurrent) { updateSettings() }
+            .onChange(of: modeWithSolarPower) { updateSettings() }
+            .onChange(of: modeMinimalAndSolar) { updateSettings() }
+            .onChange(of: modeWithSolarOrLowTariff) { updateSettings() }
+            .onChange(of: modeMinimumQuantity) { updateSettings() }
+            .onChange(of: modeChargingTargetSoc) { updateSettings() }
         }
+    }
+
+    private func updateSettings() {
+        let modes: [ChargingMode: Bool] = [
+            .alwaysCharge : modeAllwaysOn,
+            .chargingTargetSoc : modeChargingTargetSoc,
+            .constantCurrent : modeConstantCurrent,
+            .minimalAndSolar : modeMinimalAndSolar,
+            .minimumQuantity : modeMinimumQuantity,
+            .off : modeOff,
+            .withSolarPower : modeWithSolarPower,
+            .withSolarOrLowTariff : modeWithSolarOrLowTariff
+        ]
+        
+        chargingModeConfiguration.changeChargingModeVisibillity(modes: modes)
+        
+        print("Visibillities settings updated")
     }
 }
 
