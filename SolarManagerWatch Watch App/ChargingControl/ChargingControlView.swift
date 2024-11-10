@@ -12,6 +12,7 @@ struct ChargingControlView: View {
 
     @State var newCarCharging: ControlCarChargingRequest? = nil
     @State var showChargingModeConfig: Bool = false
+    @State var chargingConfiguration = ChargingModeConfiguration()
 
     var body: some View {
         // NavigationStack {
@@ -34,7 +35,8 @@ struct ChargingControlView: View {
                                 isTheOnlyOne: .constant(
                                     model.overviewData.chargingStations.count
                                         <= 1),
-                                chargingStation: chargingStation)
+                                chargingStation: chargingStation,
+                                chargingModeConfiguration: $chargingConfiguration)
                         }  // :VStack
                     }  // :ForEach
 
@@ -51,10 +53,13 @@ struct ChargingControlView: View {
                         .foregroundColor(.secondary)
                         .padding(.trailing, 15)
                         .sheet(isPresented: $showChargingModeConfig) {
-                            ChargingModeConfigurationView()
-                                .onDisappear {
-                                    model.resumeFetching()
-                                }
+                            ChargingModeConfigurationView(
+                                chargingModeConfiguration:
+                                    $chargingConfiguration
+                            )
+                            .onDisappear {
+                                model.resumeFetching()
+                            }
 
                         }
                     }  // :HStack

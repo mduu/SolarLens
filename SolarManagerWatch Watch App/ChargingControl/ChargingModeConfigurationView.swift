@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 struct ChargingModeConfigurationView: View {
-    @State var chargingModeConfiguration = ChargingModeConfiguration()
+    @Binding var chargingModeConfiguration: ChargingModeConfiguration
 
     var body: some View {
         ScrollView {
@@ -54,5 +54,7 @@ struct ModeToggle: View {
 }
 
 #Preview {
-    ChargingModeConfigurationView()
+    ChargingModeConfigurationView(
+        chargingModeConfiguration: .constant(ChargingModeConfiguration())
+    )
 }
