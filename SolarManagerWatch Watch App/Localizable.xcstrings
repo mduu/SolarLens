@@ -18,6 +18,27 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "%lld %%" : {
+
+    },
+    "%lld A" : {
+
+    },
+    "%lld kWh" : {
+
+    },
+    "Always" : {
+
+    },
+    "Car %" : {
+
+    },
+    "Charging" : {
+
+    },
+    "Constant" : {
+
+    },
     "Email" : {
       "localizations" : {
         "de" : {
@@ -158,6 +179,9 @@
         }
       }
     },
+    "Logged in as:" : {
+
+    },
     "Login" : {
       "localizations" : {
         "de" : {
@@ -214,6 +238,15 @@
         }
       }
     },
+    "Minimal" : {
+
+    },
+    "Minimal & Solar" : {
+
+    },
+    "Off" : {
+
+    },
     "Password" : {
       "localizations" : {
         "de" : {
@@ -241,6 +274,9 @@
           }
         }
       }
+    },
+    "Personalize" : {
+
     },
     "Please enter a valid email address" : {
       "localizations" : {
@@ -348,7 +384,17 @@
       },
       "shouldTranslate" : false
     },
+    "Select target date" : {
+
+    },
+    "Select target time" : {
+
+    },
+    "Set" : {
+
+    },
     "Settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -375,6 +421,9 @@
           }
         }
       }
+    },
+    "Solar & Tariff" : {
+
     },
     "Solar Manger Login" : {
       "localizations" : {
@@ -404,6 +453,15 @@
         }
       }
     },
+    "Solar only" : {
+
+    },
+    "Target date" : {
+
+    },
+    "Target time" : {
+
+    },
     "Try again" : {
       "localizations" : {
         "de" : {
@@ -425,6 +483,9 @@
           }
         }
       }
+    },
+    "Unknown charging mode" : {
+
     },
     "v%@" : {
       "shouldTranslate" : false

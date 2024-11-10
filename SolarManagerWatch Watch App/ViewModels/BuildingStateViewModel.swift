@@ -15,6 +15,9 @@ class BuildingStateViewModel: ObservableObject {
     @Published var loginCredentialsExists: Bool = false
     @Published var didLoginSucceed: Bool? = nil
     @Published var overviewData: OverviewData = .init()
+    @Published var isChangingCarCharger: Bool = false
+    @Published var carChargerSetSuccessfully: Bool? = nil
+    @Published var fetchingIsPaused: Bool = false
 
     private let energyManager: EnergyManager
 
@@ -23,11 +26,13 @@ class BuildingStateViewModel: ObservableObject {
         updateCredentialsExists()
     }
 
-    static func fake(energyManagerClient: EnergyManager)
+    static func fake(overviewData: OverviewData, loggedIn: Bool = true)
         -> BuildingStateViewModel
     {
         let result = BuildingStateViewModel.init(
-            energyManagerClient: energyManagerClient)
+            energyManagerClient: FakeEnergyManager.init(data: overviewData))
+        result.isLoading = false
+        result.loginCredentialsExists = loggedIn
 
         Task {
             await result.fetchServerData()
@@ -35,18 +40,29 @@ class BuildingStateViewModel: ObservableObject {
 
         return result
     }
-    
+
+    func pauseFetching() {
+        fetchingIsPaused = true
+        print("fetching paused")
+    }
+
+    func resumeFetching() {
+        fetchingIsPaused = false
+        print("fetching resumed")
+    }
+
     func tryLogin(email: String, password: String) async {
-        didLoginSucceed = await energyManager.login(username: email, password: password)
+        didLoginSucceed = await energyManager.login(
+            username: email, password: password)
         updateCredentialsExists()
-        
-        if (didLoginSucceed == true) {
+
+        if didLoginSucceed == true {
             resetError()
         }
     }
 
     func fetchServerData() async {
-        if !loginCredentialsExists || isLoading {
+        if !loginCredentialsExists || isLoading || fetchingIsPaused {
             return
         }
 
@@ -65,6 +81,45 @@ class BuildingStateViewModel: ObservableObject {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
             isLoading = false
+        }
+    }
+
+    func setCarCharging(
+        sensorId: String,
+        newCarCharging: ControlCarChargingRequest
+    ) async {
+        guard loginCredentialsExists && !isChangingCarCharger
+        else {
+            print("WARN: Login-Credentials don't exists or is loading already")
+            return
+        }
+
+        carChargerSetSuccessfully = nil
+        isChangingCarCharger = true
+        defer {
+            isChangingCarCharger = false
+        }
+
+        do {
+
+            resetError()
+
+            print("Set car-changing settings \(Date())")
+
+            let result = try await energyManager.setCarChargingMode(
+                sensorId: sensorId,
+                carCharging: newCarCharging)
+
+            print("Car-Charging set at \(Date())")
+
+            // Optimistic UI: Update charging mode in-memory to speed up UI
+            let chargingStation = overviewData.chargingStations
+                .first(where: { $0.id == sensorId })
+            chargingStation?.chargingMode = newCarCharging.chargingMode
+
+            carChargerSetSuccessfully = result
+        } catch {
+            carChargerSetSuccessfully = false
         }
     }
 

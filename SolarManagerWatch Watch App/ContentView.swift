@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = BuildingStateViewModel()
+    @StateObject var viewModel = BuildingStateViewModel()
 
     var body: some View {
 
@@ -17,29 +17,28 @@ struct ContentView: View {
                 .environmentObject(viewModel)
         } else if viewModel.loginCredentialsExists {
 
-            TabView {
-                HStack {
-                    OverviewView()
-                        .environmentObject(viewModel)
-                        .background(Color.black.opacity(1.0))
-                        .onTapGesture {
-                            print("Force refresh")
-                            Task {
-                                await viewModel.fetchServerData()
-                            }
-                        }
-                }
-
-                //                ProductionView()
-                //                    .environmentObject(viewModel)
-                //                ConsumationView()
-                //                    .environmentObject(viewModel)
-                Settings()
+            TabView() {
+                OverviewView()
                     .environmentObject(viewModel)
-            }
+                    .onTapGesture {
+                        print("Force refresh")
+                        Task {
+                            await viewModel.fetchServerData()
+                        }
+                    }
+
+                ChargingControlView()
+                    .environmentObject(viewModel)
+
+                SettingsView()
+                    .environmentObject(viewModel)
+                    .containerBackground(.black, for: .tabView)
+
+            }  // :TabView
             .tabViewStyle(
                 .verticalPage(transitionStyle: .blur)
             )
+
         } else {
             ProgressView()
                 .onAppear {
@@ -53,4 +52,24 @@ struct ContentView: View {
 
 #Preview("Login Form") {
     ContentView()
+}
+
+#Preview("Logged in") {
+    ContentView(
+        viewModel: BuildingStateViewModel.fake(
+            overviewData: .init(
+                currentSolarProduction: 4500,
+                currentOverallConsumption: 400,
+                currentBatteryLevel: 99,
+                currentBatteryChargeRate: 150,
+                currentSolarToGrid: 3600,
+                currentGridToHouse: 0,
+                currentSolarToHouse: 400,
+                solarProductionMax: 11000,
+                hasConnectionError: false,
+                lastUpdated: Date(),
+                isAnyCarCharing: true,
+                chargingStations: []
+            ), loggedIn: true
+        ))
 }

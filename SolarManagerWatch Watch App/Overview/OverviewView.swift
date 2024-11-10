@@ -137,7 +137,7 @@ struct OverviewView: View {
                             model.overviewData.lastUpdated?.formatted(
                                 date: .numeric, time: .standard) ?? "-"
                         )
-                        .font(.system(size: 11))
+                        .font(.system(size: 10))
                         .foregroundColor(.gray)
                     }.padding(.top, 2)
                 }
@@ -162,39 +162,43 @@ struct OverviewView: View {
 #Preview("English") {
     OverviewView()
         .environmentObject(
-            BuildingStateViewModel(
-                energyManagerClient: FakeEnergyManager()
-            ))
-}
-
-struct OverviewView_Preiews: PreviewProvider {
-
-    static var previews: some View {
-        OverviewView()
-            .environmentObject(
-                BuildingStateViewModel.fake(
-                    energyManagerClient: FakeEnergyManager(
-                        data: .init(
-                            currentSolarProduction: 4500,
-                            currentOverallConsumption: 400,
-                            currentBatteryLevel: 99,
-                            currentBatteryChargeRate: 150,
-                            currentSolarToGrid: 3600,
-                            currentGridToHouse: 0,
-                            currentSolarToHouse: 400,
-                            solarProductionMax: 11000,
-                            isAnyCarCharing: true
-                        )
+            BuildingStateViewModel.fake(
+                overviewData: .init(
+                        currentSolarProduction: 4500,
+                        currentOverallConsumption: 400,
+                        currentBatteryLevel: 99,
+                        currentBatteryChargeRate: 150,
+                        currentSolarToGrid: 3600,
+                        currentGridToHouse: 0,
+                        currentSolarToHouse: 400,
+                        solarProductionMax: 11000,
+                        hasConnectionError: false,
+                        lastUpdated: Date(),
+                        isAnyCarCharing: true,
+                        chargingStations: []
                     )
-                ))
-    }
+            )
+        )
 }
 
 #Preview("German") {
     OverviewView()
         .environmentObject(
-            BuildingStateViewModel(
-                energyManagerClient: FakeEnergyManager()
+            BuildingStateViewModel.fake(
+                overviewData: .init(
+                        currentSolarProduction: 4500,
+                        currentOverallConsumption: 400,
+                        currentBatteryLevel: 99,
+                        currentBatteryChargeRate: 150,
+                        currentSolarToGrid: 3600,
+                        currentGridToHouse: 0,
+                        currentSolarToHouse: 400,
+                        solarProductionMax: 11000,
+                        hasConnectionError: false,
+                        lastUpdated: Date(),
+                        isAnyCarCharing: true,
+                        chargingStations: []
+                    )
             )
         )
         .environment(\.locale, Locale(identifier: "DE"))

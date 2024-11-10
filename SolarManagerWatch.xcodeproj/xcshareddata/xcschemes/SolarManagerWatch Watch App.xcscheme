@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1600"
+   LastUpgradeVersion = "1610"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "494882B42CA8443300C59146"
-               BuildableName = "SolarManagerWatch Watch App.app"
-               BlueprintName = "SolarManagerWatch Watch App"
+               BuildableName = "Solar Lens Watch App.app"
+               BlueprintName = "Solar Lens Watch App"
                ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,8 +30,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "494882AE2CA8443300C59146"
-               BuildableName = "SolarManagerWatch.app"
-               BlueprintName = "SolarManagerWatch"
+               BuildableName = "Solar Lens.app"
+               BlueprintName = "Solar Lens"
                ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -59,8 +59,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "494882B42CA8443300C59146"
-            BuildableName = "SolarManagerWatch Watch App.app"
-            BlueprintName = "SolarManagerWatch Watch App"
+            BuildableName = "Solar Lens Watch App.app"
+            BlueprintName = "Solar Lens Watch App"
             ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -76,8 +76,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "494882B42CA8443300C59146"
-            BuildableName = "SolarManagerWatch Watch App.app"
-            BlueprintName = "SolarManagerWatch Watch App"
+            BuildableName = "Solar Lens Watch App.app"
+            BlueprintName = "Solar Lens Watch App"
             ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

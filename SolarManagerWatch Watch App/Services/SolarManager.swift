@@ -15,7 +15,7 @@ actor SolarManager: EnergyManager {
     private var systemInformation: V1User?
     private var sensorInfos: [SensorInfosV1Response]?
     private var sensorInfosUpdatedAt: Date?
-    
+
     func login(username: String, password: String) async -> Bool {
         return await doLogin(email: username, password: password)
     }
@@ -44,7 +44,7 @@ actor SolarManager: EnergyManager {
 
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos)
-            
+
             return OverviewData(
                 currentSolarProduction: chart.production,
                 currentOverallConsumption: chart.consumption,
@@ -63,11 +63,31 @@ actor SolarManager: EnergyManager {
                         where: { $0.direction == .fromPVToConsumer }
                     )?.value ?? 0,
                 solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000,
+                hasConnectionError: false,
                 lastUpdated: Date(),
-                isAnyCarCharing: isAnyCarCharing)
+                isAnyCarCharing: isAnyCarCharing,
+                chargingStations: sensorInfos == nil
+                    ? []
+                    : sensorInfos!
+                        .filter { $0.isCarCharging() }
+                        .map {
+                            let id = $0._id
+                            let streamInfo = streamSensorInfos?.devices.first {
+                                $0._id == id
+                            }
+
+                            return ChargingStation.init(
+                                id: $0._id,
+                                name: $0.device_group,
+                                chargingMode: streamInfo?.currentMode
+                                    ?? ChargingMode.off,
+                                priority: $0.priority,
+                                currentPower: streamInfo?.currentPower ?? 0,
+                                signal: $0.signal)
+                        })
         }
 
-        var errorOverviewData =
+        let errorOverviewData =
             lastOverviewData
             ?? OverviewData(
                 currentSolarProduction: 0,
@@ -77,11 +97,35 @@ actor SolarManager: EnergyManager {
                 currentSolarToGrid: 0,
                 currentGridToHouse: 0,
                 currentSolarToHouse: 0,
-                solarProductionMax: 0)
+                solarProductionMax: 0,
+                hasConnectionError: true,
+                lastUpdated: Date(),
+                isAnyCarCharing: false,
+                chargingStations: [])
 
         errorOverviewData.hasConnectionError = true
 
         return errorOverviewData
+    }
+
+    func setCarChargingMode(
+        sensorId: String,
+        carCharging: ControlCarChargingRequest
+    ) async throws
+        -> Bool
+    {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        do {
+            try await solarManagerApi.putControlCarCharger(
+                sensorId: sensorId,
+                control: carCharging)
+            return true
+        } catch {
+            return false
+        }
     }
 
     private func ensureLoggedIn() async throws {
@@ -128,12 +172,12 @@ actor SolarManager: EnergyManager {
         }
 
         print("Performe login")
-        
+
         let loginSuccess = await doLogin(
             email: credentials.username!,
             password: credentials.password!)
 
-        if (!loginSuccess) {
+        if !loginSuccess {
             throw EnergyManagerClientError.loginFailed
         }
     }
