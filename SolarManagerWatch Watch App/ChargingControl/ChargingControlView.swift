@@ -66,7 +66,6 @@ struct ChargingControlView: View {
                 }  // :VStack
 
             }  // :ScrollView
-            .navigationTitle("Charging")
             .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(.automatic)
 
