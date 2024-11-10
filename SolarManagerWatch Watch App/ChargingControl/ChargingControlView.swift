@@ -35,7 +35,7 @@ struct ChargingControlView: View {
                                     model.overviewData.chargingStations.count
                                         <= 1),
                                 chargingStation: chargingStation)
-                        }
+                        }  // :VStack
                     }  // :ForEach
 
                     HStack {
@@ -43,6 +43,7 @@ struct ChargingControlView: View {
 
                         Button(action: {
                             showChargingModeConfig = true
+                            model.pauseFetching()
                         }) {
                             Image(systemName: "gear")
                         }
@@ -51,6 +52,10 @@ struct ChargingControlView: View {
                         .padding(.trailing, 15)
                         .sheet(isPresented: $showChargingModeConfig) {
                             ChargingModeConfigurationView()
+                                .onDisappear {
+                                    model.resumeFetching()
+                                }
+
                         }
                     }  // :HStack
                 }  // :VStack

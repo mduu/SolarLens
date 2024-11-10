@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 
 class ChargingModeConfiguration: ObservableObject {
-    @AppStorage("chargingModesVisibillity") private var chargingModeVisibillityData:
-        Data?
+    @AppStorage("chargingModesVisibillity") private
+        var chargingModeVisibillityData: Data?
 
     @Published var chargingModeVisibillity: [ChargingMode: Bool] = [
         .alwaysCharge: true,
@@ -24,21 +24,23 @@ class ChargingModeConfiguration: ObservableObject {
     ]
 
     init() {
+        decodeData()
+    }
+
+    func changeChargingModeVisibillity(mode: ChargingMode, newValue: Bool) {
+        chargingModeVisibillity[mode] = newValue
+        if let encodedData = try? JSONEncoder().encode(chargingModeVisibillity)
+        {
+            chargingModeVisibillityData = encodedData
+        }
+    }
+
+    private func decodeData() {
         if let data = chargingModeVisibillityData,
             let decodedData = try? JSONDecoder().decode(
                 [ChargingMode: Bool].self, from: data)
         {
             chargingModeVisibillity = decodedData
-        }
-    }
-
-    func changeChargingModeVisibillity(modes: [ChargingMode: Bool]) {
-        for mode in modes {
-            chargingModeVisibillity[mode.key] = mode.value
-        }
-        
-        if let encodedData = try? JSONEncoder().encode(chargingModeVisibillity) {
-            chargingModeVisibillityData = encodedData
         }
     }
 }

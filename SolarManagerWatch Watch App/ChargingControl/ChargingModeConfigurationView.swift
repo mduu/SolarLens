@@ -6,31 +6,10 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ChargingModeConfigurationView: View {
-    @State private var chargingModeConfiguration = ChargingModeConfiguration()
-
-    @State private var modeAllwaysOn: Bool = true
-    @State private var modeWithSolarPower: Bool = true
-    @State private var modeWithSolarOrLowTariff: Bool = true
-    @State private var modeOff: Bool = true
-    @State private var modeConstantCurrent: Bool = true
-    @State private var modeMinimalAndSolar: Bool = true
-    @State private var modeMinimumQuantity: Bool = true
-    @State private var modeChargingTargetSoc: Bool = false
-
-    init() {
-        let modeVisitability = $chargingModeConfiguration
-            .chargingModeVisibillity.wrappedValue
-        self.modeAllwaysOn = modeVisitability[.alwaysCharge]!
-        self.modeWithSolarPower = modeVisitability[.withSolarPower]!
-        self.modeWithSolarOrLowTariff = modeVisitability[.withSolarOrLowTariff]!
-        self.modeOff = modeVisitability[.off]!
-        self.modeConstantCurrent = modeVisitability[.constantCurrent]!
-        self.modeMinimalAndSolar = modeVisitability[.minimalAndSolar]!
-        self.modeMinimumQuantity = modeVisitability[.minimumQuantity]!
-        self.modeChargingTargetSoc = modeVisitability[.chargingTargetSoc]!
-    }
+    @State var chargingModeConfiguration = ChargingModeConfiguration()
 
     var body: some View {
         ScrollView {
@@ -39,64 +18,38 @@ struct ChargingModeConfigurationView: View {
                     .font(.headline)
                     .foregroundColor(.accent)
 
-                Toggle(isOn: $modeAllwaysOn) {
-                    ChargingModelLabelView(chargingMode: .alwaysCharge)
-                }
+                ForEach(ChargingMode.allCases, id: \.self) { mode in
 
-                Toggle(isOn: $modeWithSolarPower) {
-                    ChargingModelLabelView(chargingMode: .withSolarPower)
-                }
+                    ModeToggle(
+                        chargingModeConfiguration: $chargingModeConfiguration,
+                        chargingMode: mode)
 
-                Toggle(isOn: $modeWithSolarOrLowTariff) {
-                    ChargingModelLabelView(chargingMode: .withSolarOrLowTariff)
-                }
+                }  // :ForEach
 
-                Toggle(isOn: $modeOff) {
-                    ChargingModelLabelView(chargingMode: .off)
-                }
+            }  // :VStack
+        }  // :ScrollView
+    }  // :View
+}
 
-                Toggle(isOn: $modeConstantCurrent) {
-                    ChargingModelLabelView(chargingMode: .constantCurrent)
-                }
+struct ModeToggle: View {
+    @Binding var chargingModeConfiguration: ChargingModeConfiguration
+    var chargingMode: ChargingMode
 
-                Toggle(isOn: $modeMinimalAndSolar) {
-                    ChargingModelLabelView(chargingMode: .minimalAndSolar)
+    var body: some View {
+        Toggle(
+            isOn: Binding(
+                get: {
+                    chargingModeConfiguration.chargingModeVisibillity[
+                        chargingMode] ?? true
+                },
+                set: {
+                    chargingModeConfiguration.changeChargingModeVisibillity(
+                        mode: chargingMode, newValue: $0)
                 }
-
-                Toggle(isOn: $modeMinimumQuantity) {
-                    ChargingModelLabelView(chargingMode: .minimumQuantity)
-                }
-
-                Toggle(isOn: $modeChargingTargetSoc) {
-                    ChargingModelLabelView(chargingMode: .chargingTargetSoc)
-                }
-            }
-            .onChange(of: modeAllwaysOn) { updateSettings() }
-            .onChange(of: modeOff) { updateSettings() }
-            .onChange(of: modeConstantCurrent) { updateSettings() }
-            .onChange(of: modeWithSolarPower) { updateSettings() }
-            .onChange(of: modeMinimalAndSolar) { updateSettings() }
-            .onChange(of: modeWithSolarOrLowTariff) { updateSettings() }
-            .onChange(of: modeMinimumQuantity) { updateSettings() }
-            .onChange(of: modeChargingTargetSoc) { updateSettings() }
+            )
+        ) {
+            ChargingModelLabelView(chargingMode: chargingMode)
         }
-    }
-
-    private func updateSettings() {
-        let modes: [ChargingMode: Bool] = [
-            .alwaysCharge : modeAllwaysOn,
-            .chargingTargetSoc : modeChargingTargetSoc,
-            .constantCurrent : modeConstantCurrent,
-            .minimalAndSolar : modeMinimalAndSolar,
-            .minimumQuantity : modeMinimumQuantity,
-            .off : modeOff,
-            .withSolarPower : modeWithSolarPower,
-            .withSolarOrLowTariff : modeWithSolarOrLowTariff
-        ]
-        
-        chargingModeConfiguration.changeChargingModeVisibillity(modes: modes)
-        
-        print("Visibillities settings updated")
     }
 }
 

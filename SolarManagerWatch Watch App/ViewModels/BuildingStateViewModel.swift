@@ -17,6 +17,7 @@ class BuildingStateViewModel: ObservableObject {
     @Published var overviewData: OverviewData = .init()
     @Published var isChangingCarCharger: Bool = false
     @Published var carChargerSetSuccessfully: Bool? = nil
+    @Published var fetchingIsPaused: Bool = false
 
     private let energyManager: EnergyManager
 
@@ -25,7 +26,9 @@ class BuildingStateViewModel: ObservableObject {
         updateCredentialsExists()
     }
 
-    static func fake(overviewData: OverviewData, loggedIn: Bool = true) -> BuildingStateViewModel {
+    static func fake(overviewData: OverviewData, loggedIn: Bool = true)
+        -> BuildingStateViewModel
+    {
         let result = BuildingStateViewModel.init(
             energyManagerClient: FakeEnergyManager.init(data: overviewData))
         result.isLoading = false
@@ -36,6 +39,16 @@ class BuildingStateViewModel: ObservableObject {
         }
 
         return result
+    }
+
+    func pauseFetching() {
+        fetchingIsPaused = true
+        print("fetching paused")
+    }
+
+    func resumeFetching() {
+        fetchingIsPaused = false
+        print("fetching resumed")
     }
 
     func tryLogin(email: String, password: String) async {
@@ -49,7 +62,7 @@ class BuildingStateViewModel: ObservableObject {
     }
 
     func fetchServerData() async {
-        if !loginCredentialsExists || isLoading {
+        if !loginCredentialsExists || isLoading || fetchingIsPaused {
             return
         }
 
@@ -98,7 +111,7 @@ class BuildingStateViewModel: ObservableObject {
                 carCharging: newCarCharging)
 
             print("Car-Charging set at \(Date())")
-            
+
             // Optimistic UI: Update charging mode in-memory to speed up UI
             let chargingStation = overviewData.chargingStations
                 .first(where: { $0.id == sensorId })
