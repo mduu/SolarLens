@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var model: BuildingStateViewModel
+    @State private var showConfirmation = false
 
     var body: some View {
         ScrollView {
@@ -22,7 +23,16 @@ struct SettingsView: View {
                 .padding(.bottom, 16)
 
                 Button("Log out") {
-                    model.logout()
+                    showConfirmation = true
+                }
+                .confirmationDialog(
+                    "Are you sure to log out?",
+                    isPresented: $showConfirmation
+                ) {
+                    Button("Confirm") {
+                        model.logout()
+                    }
+                    Button("Cancel", role: .cancel) {}
                 }
 
                 HStack {
