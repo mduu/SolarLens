@@ -18,7 +18,7 @@ struct SensorInfosV1Response : Codable {
     var mac: String?
     var createdAt: String?
     var updatedAt: String?
-    //var tags: {}
+    var tag: SensorInfosV1Tag?
     //var data: []
     //var strings: []
     
@@ -29,4 +29,8 @@ struct SensorInfosV1Response : Codable {
     func isBattery() -> Bool {
         return device_type == "device" && type == "Battery"
     }
+}
+
+struct SensorInfosV1Tag: Codable {
+    var name: String
 }

@@ -78,7 +78,7 @@ actor SolarManager: EnergyManager {
 
                             return ChargingStation.init(
                                 id: $0._id,
-                                name: $0.device_group,
+                                name: $0.tag?.name ?? $0.device_group,
                                 chargingMode: streamInfo?.currentMode
                                     ?? ChargingMode.off,
                                 priority: $0.priority,
@@ -216,6 +216,7 @@ actor SolarManager: EnergyManager {
             && Date.now < sensorInfosUpdatedAt!.addingTimeInterval(60)
         {
             print("Reuse existing sensor infos")
+            return;
         }
 
         sensorInfos = try await solarManagerApi.getV1InfoSensors(
