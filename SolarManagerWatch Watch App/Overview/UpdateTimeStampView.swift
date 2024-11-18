@@ -20,18 +20,23 @@ struct UpdateTimeStampView: View {
                         .pulse.wholeSymbol,
                         options: .repeat(.continuous)
                     )
-                    .font(.footnote)
+                    .font(.system(size: 10))
             }  // :if
 
-            Text(
-                updateTimeStamp?.formatted(
-                    date: .numeric, time: .standard) ?? "-"
-            )
-            .font(.system(size: 10))
-            .foregroundColor(isStale ? .red : .gray)
+            Text(GetFormattedTimestamp(timestamp: updateTimeStamp))
+                .font(.system(size: 10))
+                .foregroundColor(isStale ? .red : .gray)
 
         }  // :HStack
-        .padding(.top, 2)
+        .padding(.top, 1)
+    }
+
+    private func GetFormattedTimestamp(timestamp date: Date?) -> String {
+        guard let date else { return "-" }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy HH:mm:ss"
+        return dateFormatter.string(from: date)
     }
 }
 
