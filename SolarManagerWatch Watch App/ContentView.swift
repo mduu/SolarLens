@@ -68,6 +68,7 @@ struct ContentView: View {
                 solarProductionMax: 11000,
                 hasConnectionError: false,
                 lastUpdated: Date(),
+                lastSuccessServerFetch: Date(),
                 isAnyCarCharing: true,
                 chargingStations: []
             ), loggedIn: true

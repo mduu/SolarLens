@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OverviewView: View {
     @EnvironmentObject var model: BuildingStateViewModel
-    
+
     @State private var refreshTimer: Timer?
 
     var body: some View {
@@ -132,21 +132,19 @@ struct OverviewView: View {
                     .padding(.leading, 10)
                     .padding(.trailing, 10)
 
-                    HStack {
-                        Text(
-                            model.overviewData.lastUpdated?.formatted(
-                                date: .numeric, time: .standard) ?? "-"
-                        )
-                        .font(.system(size: 10))
-                        .foregroundColor(.gray)
-                    }.padding(.top, 2)
+                    UpdateTimeStampView(
+                        isStale: $model.overviewData.isStaleData,
+                        updateTimeStamp: $model.overviewData.lastUpdated
+                    )
                 }
                 .onAppear {
                     Task {
                         await model.fetchServerData()
                     }
                     if refreshTimer == nil {
-                        refreshTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) {
+                        refreshTimer = Timer.scheduledTimer(
+                            withTimeInterval: 15, repeats: true
+                        ) {
                             _ in
                             Task {
                                 await model.fetchServerData()
@@ -164,19 +162,44 @@ struct OverviewView: View {
         .environmentObject(
             BuildingStateViewModel.fake(
                 overviewData: .init(
-                        currentSolarProduction: 4500,
-                        currentOverallConsumption: 400,
-                        currentBatteryLevel: 99,
-                        currentBatteryChargeRate: 150,
-                        currentSolarToGrid: 3600,
-                        currentGridToHouse: 0,
-                        currentSolarToHouse: 400,
-                        solarProductionMax: 11000,
-                        hasConnectionError: false,
-                        lastUpdated: Date(),
-                        isAnyCarCharing: true,
-                        chargingStations: []
-                    )
+                    currentSolarProduction: 4500,
+                    currentOverallConsumption: 400,
+                    currentBatteryLevel: 99,
+                    currentBatteryChargeRate: 150,
+                    currentSolarToGrid: 3600,
+                    currentGridToHouse: 0,
+                    currentSolarToHouse: 400,
+                    solarProductionMax: 11000,
+                    hasConnectionError: false,
+                    lastUpdated: Date(),
+                    lastSuccessServerFetch: Date(),
+                    isAnyCarCharing: true,
+                    chargingStations: []
+                )
+            )
+        )
+}
+
+#Preview("Stale data") {
+    OverviewView()
+        .environmentObject(
+            BuildingStateViewModel.fake(
+                overviewData: .init(
+                    currentSolarProduction: 4500,
+                    currentOverallConsumption: 400,
+                    currentBatteryLevel: 99,
+                    currentBatteryChargeRate: 150,
+                    currentSolarToGrid: 3600,
+                    currentGridToHouse: 0,
+                    currentSolarToHouse: 400,
+                    solarProductionMax: 11000,
+                    hasConnectionError: false,
+                    lastUpdated: Calendar.current.date(
+                        byAdding: .minute, value: -40, to: Date()),
+                    lastSuccessServerFetch: Date(),
+                    isAnyCarCharing: false,
+                    chargingStations: []
+                )
             )
         )
 }
@@ -186,19 +209,20 @@ struct OverviewView: View {
         .environmentObject(
             BuildingStateViewModel.fake(
                 overviewData: .init(
-                        currentSolarProduction: 4500,
-                        currentOverallConsumption: 400,
-                        currentBatteryLevel: 99,
-                        currentBatteryChargeRate: 150,
-                        currentSolarToGrid: 3600,
-                        currentGridToHouse: 0,
-                        currentSolarToHouse: 400,
-                        solarProductionMax: 11000,
-                        hasConnectionError: false,
-                        lastUpdated: Date(),
-                        isAnyCarCharing: true,
-                        chargingStations: []
-                    )
+                    currentSolarProduction: 4500,
+                    currentOverallConsumption: 400,
+                    currentBatteryLevel: 99,
+                    currentBatteryChargeRate: 150,
+                    currentSolarToGrid: 3600,
+                    currentGridToHouse: 0,
+                    currentSolarToHouse: 400,
+                    solarProductionMax: 11000,
+                    hasConnectionError: false,
+                    lastUpdated: Date(),
+                    lastSuccessServerFetch: Date(),
+                    isAnyCarCharing: true,
+                    chargingStations: []
+                )
             )
         )
         .environment(\.locale, Locale(identifier: "DE"))

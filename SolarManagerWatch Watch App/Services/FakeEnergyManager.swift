@@ -28,6 +28,7 @@ class FakeEnergyManager: EnergyManager {
                 solarProductionMax: 11000,
                 hasConnectionError: true,
                 lastUpdated: Date(),
+                lastSuccessServerFetch: Date(),
                 isAnyCarCharing: false,
                 chargingStations: [])
     }

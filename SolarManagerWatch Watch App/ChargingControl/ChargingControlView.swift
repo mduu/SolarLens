@@ -95,6 +95,7 @@ struct ChargingControlView: View {
                     solarProductionMax: 11000,
                     hasConnectionError: false,
                     lastUpdated: Date(),
+                    lastSuccessServerFetch: Date(),
                     isAnyCarCharing: false,
                     chargingStations: [
                         .init(

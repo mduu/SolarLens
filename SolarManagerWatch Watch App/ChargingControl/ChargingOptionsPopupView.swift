@@ -376,6 +376,7 @@ struct ChargingOptionsPopupView: View {
                 solarProductionMax: 11000,
                 hasConnectionError: false,
                 lastUpdated: Date(),
+                lastSuccessServerFetch: Date(),
                 isAnyCarCharing: true,
                 chargingStations: []
             )
@@ -408,6 +409,7 @@ struct ChargingOptionsPopupView: View {
                 solarProductionMax: 11000,
                 hasConnectionError: false,
                 lastUpdated: Date(),
+                lastSuccessServerFetch: Date(),
                 isAnyCarCharing: true,
                 chargingStations: []
             )
@@ -440,6 +442,7 @@ struct ChargingOptionsPopupView: View {
                 solarProductionMax: 11000,
                 hasConnectionError: false,
                 lastUpdated: Date(),
+                lastSuccessServerFetch: Date(),
                 isAnyCarCharing: true,
                 chargingStations: []
             )

@@ -44,7 +44,15 @@ actor SolarManager: EnergyManager {
 
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos)
-
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // Set timezone to UTC
+            
+            let lastUpdated = dateFormatter.date(from: chart.lastUpdate)
+            debugPrint(chart.lastUpdate)
+            debugPrint(lastUpdated ?? "nil")
+            
             return OverviewData(
                 currentSolarProduction: chart.production,
                 currentOverallConsumption: chart.consumption,
@@ -64,7 +72,8 @@ actor SolarManager: EnergyManager {
                     )?.value ?? 0,
                 solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000,
                 hasConnectionError: false,
-                lastUpdated: Date(),
+                lastUpdated: lastUpdated,
+                lastSuccessServerFetch: Date(),
                 isAnyCarCharing: isAnyCarCharing,
                 chargingStations: sensorInfos == nil
                     ? []
@@ -100,6 +109,7 @@ actor SolarManager: EnergyManager {
                 solarProductionMax: 0,
                 hasConnectionError: true,
                 lastUpdated: Date(),
+                lastSuccessServerFetch: Date(),
                 isAnyCarCharing: false,
                 chargingStations: [])
 

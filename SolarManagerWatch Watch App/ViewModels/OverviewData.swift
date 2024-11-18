@@ -21,8 +21,10 @@ class OverviewData: ObservableObject {
     @Published var solarProductionMax: Double = 0
     @Published var hasConnectionError: Bool = false
     @Published var lastUpdated: Date? = nil
+    @Published var lastSuccessServerFetch: Date? = nil
     @Published var isAnyCarCharing: Bool = false
     @Published var chargingStations: [ChargingStation] = []
+    @Published var isStaleData: Bool = false
 
     init() {
     }
@@ -38,6 +40,7 @@ class OverviewData: ObservableObject {
         solarProductionMax: Double,
         hasConnectionError: Bool,
         lastUpdated: Date?,
+        lastSuccessServerFetch: Date?,
         isAnyCarCharing: Bool,
         chargingStations: [ChargingStation]
     ) {
@@ -51,8 +54,10 @@ class OverviewData: ObservableObject {
         self.solarProductionMax = solarProductionMax
         self.hasConnectionError = hasConnectionError
         self.lastUpdated = lastUpdated
+        self.lastSuccessServerFetch = lastSuccessServerFetch
         self.isAnyCarCharing = isAnyCarCharing
         self.chargingStations = chargingStations
+        self.isStaleData = getIsStaleData()
     }
 
     func isFlowBatteryToHome() -> Bool {
@@ -73,6 +78,26 @@ class OverviewData: ObservableObject {
 
     func isFlowGridToHouse() -> Bool {
         return currentGridToHouse >= minGridConsumptionTreashold
+    }
+    
+    /**
+     Return <code>true</code> if the fetched server-data is outdated.
+     This indicates a server-side issue in Solar Manager backend.
+     */
+    private func getIsStaleData() -> Bool {
+        guard let lastFetch = lastSuccessServerFetch, let lastUpdate = lastUpdated else {
+            if (lastSuccessServerFetch == nil) {
+                return false
+            }
+            
+            if (lastUpdated == nil) {
+                return true
+            }
+            
+            return false
+        }
+
+        return lastFetch.timeIntervalSince(lastUpdate) > 30 * 60
     }
 }
 
