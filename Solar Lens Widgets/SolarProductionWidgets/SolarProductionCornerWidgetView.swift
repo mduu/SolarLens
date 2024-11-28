@@ -18,25 +18,23 @@ struct SolarProductionCornerWidgetView: View {
     var body: some View {
         let current = Double(currentProduction ?? 0) / 1000
         let max = Double(maxProduction ?? 0) / 1000
-        
-        ZStack {
-            AccessoryWidgetBackground()
-            Image(systemName: "sun.max")
-                .font(.title.bold())
-        }
-        .widgetLabel {
-            Gauge(value: current) {
-                Text("kW")
-            } currentValueLabel: {
-                Text("\(String(format: "%.1f", current))")
-            } minimumValueLabel: {
-                Text("0")
-            } maximumValueLabel: {
-                Text("\(String(format: "%.0f", max))")
+
+        Text("\(String(format: "%.1f", current)) kW")
+            .foregroundColor(renderingMode == .fullColor ? .yellow : nil)
+            .widgetCurvesContent()
+            .widgetLabel {
+                Gauge(value: current) {
+                    Text("kW")
+                } currentValueLabel: {
+                    Text("\(String(format: "%.1f", current))")
+                } minimumValueLabel: {
+                    Text("0")
+                } maximumValueLabel: {
+                    Text("\(String(format: "%.0f", max))")
+                }
+                .gaugeStyle(.automatic)
+                .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
             }
-            .gaugeStyle(.automatic)
-            .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
-        }
     }
 
     func getGaugeStyle() -> Gradient {

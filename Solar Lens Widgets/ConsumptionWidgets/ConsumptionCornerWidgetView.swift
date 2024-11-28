@@ -18,20 +18,19 @@ struct ConsumptionCornerWidgetView: View {
     var body: some View {
         let current = Double(currentConsumption ?? 0) / 1000
 
-        ZStack {
-            AccessoryWidgetBackground()
-            if carCharging ?? false {
-                Image(systemName: "car.side")
-                    .symbolEffect(
-                        .pulse.wholeSymbol, options: .repeat(.continuous))
-            } else {
-                Image(systemName: "house")
+        Text("\(String(format: "%.1f", current)) kW")
+            .foregroundColor(renderingMode == .fullColor ? .green : .primary)
+            .widgetCurvesContent()
+            .widgetLabel {
+                if carCharging ?? false {
+                    Image(systemName: "car.side")
+                        .symbolEffect(
+                            .pulse.wholeSymbol, options: .repeat(.continuous))
+                    Text("Charging")
+                } else {
+                    Image(systemName: "house")
+                }
             }
-        }
-        .widgetLabel {
-            Text("\(String(format: "%.1f", current)) kW")
-                .foregroundColor(renderingMode == .fullColor ? .green : .primary)
-        }
 
     }
 }
