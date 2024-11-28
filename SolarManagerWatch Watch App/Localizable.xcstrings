@@ -85,6 +85,15 @@
         }
       }
     },
+    "☀️ %@" : {
+
+    },
+    "☀️ %lld W" : {
+
+    },
+    "0" : {
+
+    },
     "Always" : {
       "localizations" : {
         "de" : {
@@ -234,6 +243,9 @@
           }
         }
       }
+    },
+    "Current Solar Production" : {
+
     },
     "Email" : {
       "localizations" : {
@@ -783,6 +795,9 @@
         }
       }
     },
+    "Shows the current solar production." : {
+
+    },
     "Solar & Tariff" : {
       "localizations" : {
         "de" : {
@@ -866,6 +881,9 @@
           }
         }
       }
+    },
+    "Solar Production" : {
+
     },
     "Target date" : {
       "localizations" : {

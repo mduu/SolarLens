@@ -5,23 +5,24 @@
 //  Created by Marc Dürst on 05.10.2024.
 //
 
-import KeychainAccess
 import Foundation
+import KeychainAccess
 
 class KeychainHelper {
-    static let serviceName = "com.marcduerst.SolarManagerWatch"
-    static let serviceComment = "SolarManager Watch Login"
-    
+    static let serviceName = "com.marcduerst.SolarManagerWatch.watchkitapp"
+    static let serviceComment = "Solar Lens Login"
+    static let accessGroup = "SolarLensShared"
+
     static let usernameKey = "username"
     static let passwordKey = "password"
     static let accessTokenKey = "accessToken"
     static let refreshTokenKey = "refreshToken"
-    
+
     static var accessToken: String? {
         get { getKeychain()[accessTokenKey] }
         set { getKeychain()[accessTokenKey] = newValue }
     }
-    
+
     static var refreshToken: String? {
         get { getKeychain()[refreshTokenKey] }
         set { getKeychain()[refreshTokenKey] = newValue }
@@ -40,7 +41,7 @@ class KeychainHelper {
 
         return (username, password)
     }
-    
+
     static func deleteCredentials() {
         let keychain = getKeychain()
         keychain[usernameKey] = nil
@@ -50,7 +51,35 @@ class KeychainHelper {
     }
 
     private static func getKeychain() -> Keychain {
-        return Keychain(service: serviceName)
+        let accessGroupWithAppId = "\(Bundle.main.bundleIdentifier!).\(accessGroup)"
+        let shared = Keychain(service: serviceName, accessGroup: accessGroup)
             .comment(serviceComment)
+
+        // Migrate from old Keychain if needed
+        if shared[usernameKey] == nil || shared[passwordKey] == nil {
+            let oldKeychain = getOldKeychain()
+            if oldKeychain["migrated"] != "true"
+                && oldKeychain["username"] != nil
+                && oldKeychain["password"] != nil
+            {
+                shared[usernameKey] = oldKeychain["username"]
+                shared[passwordKey] = oldKeychain["password"]
+                shared[accessTokenKey] = oldKeychain["accessToken"]
+                shared[refreshTokenKey] = oldKeychain["refreshToken"]
+                
+                oldKeychain["migrated"] = "true"
+                oldKeychain["username"] = nil
+                oldKeychain["password"] = nil
+                oldKeychain["accessToken"] = nil
+                oldKeychain["refreshToken"] = nil
+            }
+        }
+
+        return shared
+    }
+
+    private static func getOldKeychain() -> Keychain {
+        return Keychain(service: "com.marcduerst.SolarManagerWatch")
+            .comment("SolarManager Watch Login")
     }
 }

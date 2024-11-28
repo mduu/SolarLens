@@ -45,6 +45,8 @@ struct LoginView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                     
                     TextField("Email", text: $email)
+                        .textContentType(.emailAddress)
+                        .textContentType(.username)
                         .onChange(of: email) { oldValue, newValue in
                             isValidEmail = isValidEmail(newValue)
                         }
@@ -55,6 +57,7 @@ struct LoginView: View {
                         }
                     
                     SecureField("Password", text: $password)
+                        .textContentType(.password)
                         .onChange(of: password) { oldValue, newValue in
                             isValidPasswort = isValidPassword(newValue)
                         }
