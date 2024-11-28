@@ -11,5 +11,6 @@ import SwiftUI
 struct SolarLensWidgets: WidgetBundle {
    var body: some Widget {
        SolarProductionWidget()
+       ConsumptionWidget()
    }
 }
