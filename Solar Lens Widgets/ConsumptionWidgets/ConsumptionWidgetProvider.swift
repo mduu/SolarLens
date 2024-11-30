@@ -32,7 +32,10 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
         return ConsumptionEntry(
             date: Date(),
             currentConsumption: data?.currentOverallConsumption,
-            carCharging: data?.isAnyCarCharing)
+            carCharging: data?.isAnyCarCharing,
+            consumptionFromSolar: data?.currentSolarToHouse,
+            consumptionFromBattery: data?.currentBatteryChargeRate ?? 0 * -1,
+            consumptionFromGrid: data?.currentGridToHouse)
     }
 
     func timeline(
@@ -53,7 +56,10 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
                 ConsumptionEntry(
                     date: Date(),
                     currentConsumption: data?.currentOverallConsumption,
-                    carCharging: data?.isAnyCarCharing))
+                    carCharging: data?.isAnyCarCharing,
+                    consumptionFromSolar: data?.currentSolarToHouse,
+                    consumptionFromBattery: data?.currentBatteryChargeRate ?? 0 * -1,
+                    consumptionFromGrid: data?.currentGridToHouse))
         }
 
         return Timeline(entries: entries, policy: .atEnd)

@@ -12,12 +12,18 @@ struct ConsumptionWidgetView: View {
         case .accessoryCircular:
             ConsumptionCircularWidgetView(
                 currentConsumption: entry.currentConsumption,
-                carCharging: entry.carCharging)
+                carCharging: entry.carCharging,
+                consumptionFromSolar: entry.consumptionFromSolar,
+                consumptionFromBattery: entry.consumptionFromBattery,
+                consumptionFromGrid: entry.consumptionFromGrid)
 
         case .accessoryCorner:
             ConsumptionCornerWidgetView(
                 currentConsumption: entry.currentConsumption,
-                carCharging: entry.carCharging)
+                carCharging: entry.carCharging,
+                consumptionFromSolar: entry.consumptionFromSolar,
+                consumptionFromBattery: entry.consumptionFromBattery,
+                consumptionFromGrid: entry.consumptionFromGrid)
 
         case .accessoryInline:
             if entry.carCharging ?? false {

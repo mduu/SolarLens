@@ -24,7 +24,7 @@ struct ConsumptionWidget: Widget {
         .configurationDisplayName("Consumption")
         .description("Shows the current energy consumption.")
         .supportedFamilies([
-            .accessoryCorner, .accessoryCircular, .accessoryInline, .accessoryInline
+            .accessoryCorner, .accessoryCircular, .accessoryInline, .accessoryRectangular
         ])
     }
 }

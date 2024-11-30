@@ -13,6 +13,9 @@ struct ConsumptionCircularWidgetView: View {
 
     var currentConsumption: Int?
     var carCharging: Bool?
+    var consumptionFromSolar: Int?
+    var consumptionFromBattery: Int?
+    var consumptionFromGrid: Int?
 
     var body: some View {
         let current = Double(currentConsumption ?? 0) / 1000
