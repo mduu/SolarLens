@@ -9,7 +9,6 @@ import SwiftUI
 import WidgetKit
 
 struct ConsumptionWidget: Widget {
-    // Create a unique string to identify the complication.
     let kind: String = "SolarLens-Consumption-Current"
 
     var body: some WidgetConfiguration {

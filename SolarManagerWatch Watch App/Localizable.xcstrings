@@ -88,6 +88,9 @@
         }
       }
     },
+    "%lld W" : {
+
+    },
     "☀️ %@" : {
 
     },
@@ -124,6 +127,9 @@
           }
         }
       }
+    },
+    "App Icon" : {
+
     },
     "Are you sure to log out?" : {
       "localizations" : {
@@ -197,6 +203,9 @@
         }
       }
     },
+    "Charging" : {
+
+    },
     "Confirm" : {
       "localizations" : {
         "de" : {
@@ -246,6 +255,9 @@
           }
         }
       }
+    },
+    "Consumption" : {
+
     },
     "Email" : {
       "localizations" : {

@@ -25,8 +25,6 @@ struct ConsumptionCircularWidgetView: View {
             VStack {
                 if carCharging ?? false {
                     Image(systemName: "car.side")
-                        .symbolEffect(
-                            .pulse.wholeSymbol, options: .repeat(.continuous))
                 } else {
                     Image(systemName: "house")
                 }
@@ -41,27 +39,40 @@ struct ConsumptionCircularWidgetView: View {
 
 #Preview("Zero") {
     ConsumptionCircularWidgetView(
-        currentConsumption: 1230
+        currentConsumption: 1230,
+        carCharging: false,
+        consumptionFromSolar: 1230,
+        consumptionFromBattery: 0,
+        consumptionFromGrid: 0
     )
 }
 
 #Preview("+Car") {
     ConsumptionCircularWidgetView(
         currentConsumption: 1230,
-        carCharging: true
+        carCharging: true,
+        consumptionFromSolar: 1230,
+        consumptionFromBattery: 0,
+        consumptionFromGrid: 0
     )
 }
 
 #Preview("accented") {
     ConsumptionCircularWidgetView(
         currentConsumption: 1230,
-        carCharging: true
+        carCharging: true,
+        consumptionFromSolar: 1230,
+        consumptionFromBattery: 0,
+        consumptionFromGrid: 0
     ).environment(\.widgetRenderingMode, .accented)
 }
 
 #Preview("vibrant") {
     ConsumptionCircularWidgetView(
         currentConsumption: 1230,
-        carCharging: true
+        carCharging: true,
+        consumptionFromSolar: 1230,
+        consumptionFromBattery: 0,
+        consumptionFromGrid: 0
     ).environment(\.widgetRenderingMode, .vibrant)
 }

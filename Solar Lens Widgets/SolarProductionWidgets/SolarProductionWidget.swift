@@ -24,7 +24,7 @@ struct SolarProductionWidget: Widget {
         .configurationDisplayName("Solar Production")
         .description("Shows the current solar production.")
         .supportedFamilies([
-            .accessoryCorner, .accessoryCircular, .accessoryInline, .accessoryInline
+            .accessoryCorner, .accessoryCircular, .accessoryInline, .accessoryRectangular
         ])
     }
 }

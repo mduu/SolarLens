@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ConsumptionWidgetView: View {
     @Environment(\.widgetFamily) private var family
-    @Environment(\.widgetRenderingMode) var renderingMode
 
     var entry: ConsumptionEntry
 
@@ -34,8 +33,6 @@ struct ConsumptionWidgetView: View {
                 Image(systemName: "house")
             }
             Text("\(entry.currentConsumption ?? 0) W")
-                .foregroundColor(
-                    renderingMode == .fullColor ? .green : .primary)
 
         case .accessoryRectangular:
             if entry.carCharging ?? false {
@@ -46,8 +43,6 @@ struct ConsumptionWidgetView: View {
                 Image(systemName: "house")
             }
             Text("\(entry.currentConsumption ?? 0) W")
-                .foregroundColor(
-                    renderingMode == .fullColor ? .green : .primary)
 
         default:
             Image("AppIcon")
@@ -61,5 +56,8 @@ struct ConsumptionWidgetView: View {
         entry: ConsumptionEntry(
             date: Date(),
             currentConsumption: 850,
-            carCharging: true))
+            carCharging: true,
+            consumptionFromSolar: 1100,
+            consumptionFromBattery: 300,
+            consumptionFromGrid: 100))
 }
