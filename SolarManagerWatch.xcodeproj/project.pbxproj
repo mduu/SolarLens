@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		49011F6C2CF919F5004E246F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49011F6B2CF919F5004E246F /* SwiftUI.framework */; };
 		494882B62CA8443300C59146 /* Solar Lens Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 494882B52CA8443300C59146 /* Solar Lens Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		495539B72CECF51A00D2FE19 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1A82CC0389C00A89445 /* WidgetKit.framework */; };
 		495539B82CECF51A00D2FE19 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1AA2CC0389D00A89445 /* SwiftUI.framework */; };
@@ -58,6 +59,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		49011F6B2CF919F5004E246F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.1.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		494882AF2CA8443300C59146 /* Solar Lens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		494882B52CA8443300C59146 /* Solar Lens Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,6 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49011F6C2CF919F5004E246F /* SwiftUI.framework in Frameworks */,
 				495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,6 +188,7 @@
 		49EED1A72CC0389C00A89445 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				49011F6B2CF919F5004E246F /* SwiftUI.framework */,
 				49EED1A82CC0389C00A89445 /* WidgetKit.framework */,
 				49EED1AA2CC0389D00A89445 /* SwiftUI.framework */,
 			);
@@ -558,6 +562,7 @@
 		494882CA2CA8443400C59146 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = UYT5K989XD;
@@ -566,6 +571,7 @@
 				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 			};
@@ -574,6 +580,7 @@
 		494882CB2CA8443400C59146 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = UYT5K989XD;
@@ -582,6 +589,7 @@
 				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
@@ -597,7 +605,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 50;
-				DEVELOPMENT_TEAM = UYT5K989XD;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Widgets";
@@ -611,6 +619,7 @@
 				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -629,7 +638,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 50;
-				DEVELOPMENT_TEAM = UYT5K989XD;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Widgets";
@@ -643,6 +652,7 @@
 				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
