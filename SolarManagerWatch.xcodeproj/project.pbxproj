@@ -83,8 +83,6 @@
 				SolarProductionWidgets/SolarProductionAppIntent.swift,
 				SolarProductionWidgets/SolarProductionCircularWidgetView.swift,
 				SolarProductionWidgets/SolarProductionCornerWidgetView.swift,
-				SolarProductionWidgets/SolarProductionWidget.swift,
-				SolarProductionWidgets/SolarProductionWidgetProvider.swift,
 				SolarProductionWidgets/SolarProductionWidgetView.swift,
 			);
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
@@ -401,7 +399,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -465,7 +463,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;

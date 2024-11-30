@@ -247,9 +247,6 @@
         }
       }
     },
-    "Current Solar Production" : {
-
-    },
     "Email" : {
       "localizations" : {
         "de" : {
@@ -797,9 +794,6 @@
           }
         }
       }
-    },
-    "Shows the current solar production." : {
-
     },
     "Solar & Tariff" : {
       "localizations" : {

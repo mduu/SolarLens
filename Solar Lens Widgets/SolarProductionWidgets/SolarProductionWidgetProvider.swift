@@ -9,7 +9,7 @@ import Foundation
 import WidgetKit
 
 struct SolarProductionWidgetProvider: AppIntentTimelineProvider {
-    let solarManager = SolarManager()
+    let widgetDataSource = SolarLensWidgetDataSource()
 
     func placeholder(in context: Context) -> SolarProductionEntry {
         return .previewData()
@@ -24,10 +24,9 @@ struct SolarProductionWidgetProvider: AppIntentTimelineProvider {
             return .previewData()
         }
 
-        let data = try? await solarManager.fetchOverviewData(
-            lastOverviewData: nil)
+        let data = try? await widgetDataSource.getOverviewData()
         
-        print("Snapshot-Data \(data?.currentSolarProduction ?? 0)")
+        print("SolarProduction Snapshot-Data \(String(describing: data))")
 
         return SolarProductionEntry(
             date: Date(),
@@ -44,10 +43,9 @@ struct SolarProductionWidgetProvider: AppIntentTimelineProvider {
             // A complication with generic data for preview
             entries.append(.previewData())
         } else {
-            let data = try? await solarManager.fetchOverviewData(
-                lastOverviewData: nil)
+            let data = try? await widgetDataSource.getOverviewData()
 
-            print("Timeline-Data \(data?.currentSolarProduction ?? -1)")
+            print("SolarProduction Timeline-Data \(String(describing: data))")
 
             entries.append(
                 SolarProductionEntry(

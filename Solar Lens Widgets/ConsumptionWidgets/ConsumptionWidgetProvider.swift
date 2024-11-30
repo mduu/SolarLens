@@ -9,7 +9,7 @@ import Foundation
 import WidgetKit
 
 struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
-    let solarManager = SolarManager()
+    let widgetDataSource = SolarLensWidgetDataSource()
 
     func placeholder(in context: Context) -> ConsumptionEntry {
         return .previewData()
@@ -24,8 +24,7 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
             return .previewData()
         }
 
-        let data = try? await solarManager.fetchOverviewData(
-            lastOverviewData: nil)
+        let data = try? await widgetDataSource.getOverviewData()
         
         print("Snapshot-Data \(data?.currentOverallConsumption ?? 0)")
 
@@ -47,8 +46,7 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
             // A complication with generic data for preview
             entries.append(.previewData())
         } else {
-            let data = try? await solarManager.fetchOverviewData(
-                lastOverviewData: nil)
+            let data = try? await widgetDataSource.getOverviewData()
 
             print("Timeline-Data \(data?.currentOverallConsumption ?? -1)")
 
