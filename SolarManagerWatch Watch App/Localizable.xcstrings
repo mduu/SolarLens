@@ -975,6 +975,9 @@
         }
       }
     },
+    "unknown" : {
+
+    },
     "Unknown charging mode" : {
       "shouldTranslate" : false
     },

@@ -19,18 +19,22 @@ struct SolarProductionCircularWidgetView: View {
         let current = Double(currentProduction ?? 0) / 1000
         let max = Double(maxProduction ?? 0) / 1000
 
-        Gauge(
-            value: current,
-            in: 0...max
-        ) {
-            Image(systemName: "sun.max")
-        } currentValueLabel: {
-            Text("\(String(format: "%.1f", current))")
-        }
-        .gaugeStyle(.circular)
-        .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
-        .widgetLabel {
-            Text("☀️ \(String(format: "%.1f", current))")
+        ZStack {
+            AccessoryWidgetBackground()
+
+            Gauge(
+                value: current,
+                in: 0...max
+            ) {
+                Image(systemName: "sun.max")
+            } currentValueLabel: {
+                Text("\(String(format: "%.1f", current))")
+            }
+            .gaugeStyle(.circular)
+            .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
+            .widgetLabel {
+                Text("☀️ \(String(format: "%.1f", current))")
+            }
         }
     }
 

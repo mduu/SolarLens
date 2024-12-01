@@ -3,16 +3,36 @@ import WidgetKit
 
 struct GenericWidgetView: View {
     @Environment(\.widgetRenderingMode) var renderingMode
+    @Environment(\.widgetFamily) private var family
+
     var entry: GenericEntry
 
     var body: some View {
-        ZStack {
-            AccessoryWidgetBackground()
-            if renderingMode == .fullColor {
-                Image("solarlens")
-            } else {
-                Image("solarlenstrans")
+        switch family {
+        case .accessoryCorner:
+
+            ZStack {
+                AccessoryWidgetBackground()
+                if renderingMode == .fullColor {
+                    Image("32px")
+                } else {
+                    Image("smalltrans")
+                }
             }
+            
+        case .accessoryCircular:
+
+            ZStack {
+                AccessoryWidgetBackground()
+                if renderingMode == .fullColor {
+                    Image("solarlens")
+                } else {
+                    Image("solarlenstrans")
+                }
+            }
+
+        default:
+            Text("unknown")
         }
     }
 }
