@@ -1,10 +1,3 @@
-//
-//  WidgetDataSource.swift
-//  Solar Lens WidgetsExtension
-//
-//  Created by Marc Dürst on 30.11.2024.
-//
-
 import Foundation
 
 class SolarLensWidgetDataSource {
