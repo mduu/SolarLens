@@ -9,8 +9,8 @@ import SwiftUI
 import WidgetKit
 
 struct SolarProductionCircularWidgetView: View {
-    // Get the rendering mode.
     @Environment(\.widgetRenderingMode) var renderingMode
+    @Environment(\.showsWidgetLabel) private var showsWidgetLabel
 
     var currentProduction: Int?
     var maxProduction: Double?
@@ -22,18 +22,33 @@ struct SolarProductionCircularWidgetView: View {
         ZStack {
             AccessoryWidgetBackground()
 
-            Gauge(
-                value: current,
-                in: 0...max
-            ) {
-                Image(systemName: "sun.max")
-            } currentValueLabel: {
-                Text("\(String(format: "%.1f", current))")
-            }
-            .gaugeStyle(.circular)
-            .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
-            .widgetLabel {
-                Text("☀️ \(String(format: "%.1f", current))")
+            if showsWidgetLabel {
+            
+                ZStack {
+                    AccessoryWidgetBackground()
+                    if renderingMode == .fullColor {
+                        Image("solarlens")
+                    } else {
+                        Image("solarlenstrans")
+                    }
+                }
+                .widgetLabel {
+                    Text("☀️ \(String(format: "%.1f kW", current))")
+                }
+                
+            } else {
+                
+                Gauge(
+                    value: current,
+                    in: 0...max
+                ) {
+                    Image(systemName: "sun.max")
+                } currentValueLabel: {
+                    Text("\(String(format: "%.1f", current))")
+                }
+                .gaugeStyle(.circular)
+                .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
+            
             }
         }
     }

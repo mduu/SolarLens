@@ -20,7 +20,7 @@ struct ConsumptionCornerWidgetView: View {
 
     var body: some View {
         Text(getText())
-            .foregroundColor(renderingMode == .fullColor ? .green : .primary)
+            .foregroundColor(renderingMode == .fullColor ? .teal : .primary)
             .widgetCurvesContent()
             .widgetLabel {
                 Text(getLabelText())
@@ -41,17 +41,17 @@ struct ConsumptionCornerWidgetView: View {
     
     private func getLabelText() -> String {
         var text = "";
-        if consumptionFromSolar ?? 0 > 0 {
+        if consumptionFromSolar ?? 0 > 50 {
             let solarConsumption = Double(consumptionFromSolar!) / 1000
             text = "☀️\(String(format: "%.1f", solarConsumption))"
         }
         
-        if consumptionFromBattery ?? 0 > 0 {
+        if consumptionFromBattery ?? 0 > 50 {
             let batteryConsumption = Double(consumptionFromBattery!) / 1000
             text += "🔋\(String(format: "%.1f", batteryConsumption))"
         }
         
-        if consumptionFromGrid ?? 0 > 0 {
+        if consumptionFromGrid ?? 0 > 50 {
             let gridConsumption = Double(consumptionFromGrid!) / 1000
             text += "🌐\(String(format: "%.1f", gridConsumption))"
         }

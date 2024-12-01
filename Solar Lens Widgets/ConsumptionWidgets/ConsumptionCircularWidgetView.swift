@@ -31,9 +31,29 @@ struct ConsumptionCircularWidgetView: View {
 
                 Text("\(String(format: "%.1f", current))")
                     .foregroundColor(
-                        renderingMode == .fullColor ? .green : .primary)
+                        renderingMode == .fullColor ? .teal : .primary)
             }
+        }.widgetLabel(getLabelText())
+    }
+    
+    private func getLabelText() -> String {
+        var text = "";
+        if consumptionFromSolar ?? 0 > 50 {
+            let solarConsumption = Double(consumptionFromSolar!) / 1000
+            text = "☀️\(String(format: "%.1f", solarConsumption))"
         }
+        
+        if consumptionFromBattery ?? 0 > 50 {
+            let batteryConsumption = Double(consumptionFromBattery!) / 1000
+            text += "🔋\(String(format: "%.1f", batteryConsumption))"
+        }
+        
+        if consumptionFromGrid ?? 0 > 50 {
+            let gridConsumption = Double(consumptionFromGrid!) / 1000
+            text += "🌐\(String(format: "%.1f", gridConsumption))"
+        }
+        
+        return text
     }
 }
 

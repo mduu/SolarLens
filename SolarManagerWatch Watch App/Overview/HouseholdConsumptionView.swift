@@ -11,7 +11,7 @@ struct HouseholdConsumptionView: View {
     @Binding var currentOverallConsumption: Int
     @Binding var isAnyCarCharging: Bool
 
-    @State var circleColor: Color = .green
+    @State var circleColor: Color = .teal
     @State var circleLargeText: String = "-"
     @State var circleSmallText: String? = "kW"
 
