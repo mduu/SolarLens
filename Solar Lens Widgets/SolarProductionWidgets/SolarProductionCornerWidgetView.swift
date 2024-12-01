@@ -23,7 +23,10 @@ struct SolarProductionCornerWidgetView: View {
             .foregroundColor(renderingMode == .fullColor ? .yellow : nil)
             .widgetCurvesContent()
             .widgetLabel {
-                Gauge(value: current) {
+                Gauge(
+                    value: current,
+                    in: 0...max
+                ) {
                     Text("kW")
                 } currentValueLabel: {
                     Text("\(String(format: "%.1f", current))")
