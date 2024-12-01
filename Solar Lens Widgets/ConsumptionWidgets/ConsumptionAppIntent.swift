@@ -25,10 +25,10 @@ struct ConsumptionEntry: TimelineEntry {
     static func previewData() -> ConsumptionEntry {
         .init(
             date: Date(),
-            currentConsumption: 2030,
+            currentConsumption: 5200,
             carCharging: true,
-            consumptionFromSolar: 1230,
+            consumptionFromSolar: 400,
             consumptionFromBattery: 800,
-            consumptionFromGrid: 0)
+            consumptionFromGrid: 4000)
     }
 }

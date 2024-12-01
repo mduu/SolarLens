@@ -56,7 +56,7 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
                     currentConsumption: data?.currentOverallConsumption,
                     carCharging: data?.isAnyCarCharing,
                     consumptionFromSolar: data?.currentSolarToHouse,
-                    consumptionFromBattery: data?.currentBatteryChargeRate ?? 0 * -1,
+                    consumptionFromBattery: Int(data?.currentBatteryChargeRate ?? 0) * -1,
                     consumptionFromGrid: data?.currentGridToHouse))
         }
 
