@@ -26,7 +26,7 @@ struct ConsumptionEntry: TimelineEntry {
         .init(
             date: Date(),
             currentConsumption: 5200,
-            carCharging: true,
+            carCharging: false,
             consumptionFromSolar: 400,
             consumptionFromBattery: 800,
             consumptionFromGrid: 4000)
