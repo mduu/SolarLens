@@ -11,7 +11,7 @@ import KeychainAccess
 class KeychainHelper {
     static let serviceName = "com.marcduerst.SolarManagerWatch.watchkitapp"
     static let serviceComment = "Solar Lens Login"
-    static let accessGroup = "SolarLensShared"
+    static let accessGroup = "com.marcduerst.SolarManagerWatch.watchkitapp.Shared"
 
     static let usernameKey = "username"
     static let passwordKey = "password"
@@ -51,7 +51,6 @@ class KeychainHelper {
     }
 
     private static func getKeychain() -> Keychain {
-        let accessGroupWithAppId = "\(Bundle.main.bundleIdentifier!).\(accessGroup)"
         let shared = Keychain(service: serviceName, accessGroup: accessGroup)
             .comment(serviceComment)
 
@@ -80,6 +79,5 @@ class KeychainHelper {
 
     private static func getOldKeychain() -> Keychain {
         return Keychain(service: "com.marcduerst.SolarManagerWatch")
-            .comment("SolarManager Watch Login")
     }
 }
