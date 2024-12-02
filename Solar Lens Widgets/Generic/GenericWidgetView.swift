@@ -14,9 +14,13 @@ struct GenericWidgetView: View {
             ZStack {
                 AccessoryWidgetBackground()
                 if renderingMode == .fullColor {
-                    Image("32px")
+                    Image("solarlens")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                 } else {
                     Image("smalltrans")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                 }
             }
             
@@ -26,8 +30,12 @@ struct GenericWidgetView: View {
                 AccessoryWidgetBackground()
                 if renderingMode == .fullColor {
                     Image("solarlens")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                 } else {
                     Image("solarlenstrans")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                 }
             }
 

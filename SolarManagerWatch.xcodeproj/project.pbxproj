@@ -80,7 +80,6 @@
 		49F2437C2CF04513009D0E2A /* Exceptions for "Solar Lens Widgets" folder in "Solar Lens Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Assets.xcassets,
 				ConsumptionWidgets/ConsumptionAppIntent.swift,
 				ConsumptionWidgets/ConsumptionCircularWidgetView.swift,
 				ConsumptionWidgets/ConsumptionCornerWidgetView.swift,
