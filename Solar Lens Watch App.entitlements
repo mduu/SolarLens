@@ -4,7 +4,8 @@
 <dict>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>com.marcduerst.SolarManagerWatch.watchkitapp.Shared</string>
+		<string>$(AppIdentifierPrefix)com.marcduerst.SolarManagerWatch.Shared</string>
+		<string>$(AppIdentifierPrefix)com.marcduerst.SolarManagerWatch.watchkitapp</string>
 	</array>
 </dict>
 </plist>
