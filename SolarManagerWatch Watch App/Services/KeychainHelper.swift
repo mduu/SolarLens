@@ -10,8 +10,8 @@ import KeychainAccess
 
 class KeychainHelper {
     static let serviceName = "com.marcduerst.SolarManagerWatch.watchkitapp"
+    static let accessGroup = "UYT5K989XD.com.marcduerst.SolarManagerWatch.Shared"
     static let serviceComment = "Solar Lens Login"
-    static let accessGroup = "com.marcduerst.SolarManagerWatch.watchkitapp.Shared"
 
     static let usernameKey = "username"
     static let passwordKey = "password"
@@ -57,20 +57,14 @@ class KeychainHelper {
         // Migrate from old Keychain if needed
         if shared[usernameKey] == nil || shared[passwordKey] == nil {
             let oldKeychain = getOldKeychain()
-            if oldKeychain["migrated"] != "true"
-                && oldKeychain["username"] != nil
-                && oldKeychain["password"] != nil
+            if oldKeychain["username"] != nil && oldKeychain["password"] != nil
             {
                 shared[usernameKey] = oldKeychain["username"]
                 shared[passwordKey] = oldKeychain["password"]
                 shared[accessTokenKey] = oldKeychain["accessToken"]
                 shared[refreshTokenKey] = oldKeychain["refreshToken"]
                 
-                oldKeychain["migrated"] = "true"
-                oldKeychain["username"] = nil
-                oldKeychain["password"] = nil
-                oldKeychain["accessToken"] = nil
-                oldKeychain["refreshToken"] = nil
+                try! oldKeychain.removeAll()
             }
         }
 
