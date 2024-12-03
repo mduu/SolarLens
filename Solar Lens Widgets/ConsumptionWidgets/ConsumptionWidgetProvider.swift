@@ -60,7 +60,11 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
                     consumptionFromGrid: data?.currentGridToHouse))
         }
 
-        return Timeline(entries: entries, policy: .atEnd)
+        // Update every 5 minutes
+        return Timeline(
+            entries: entries,
+            policy: .after(Date().addingTimeInterval(TimeInterval(60 * 5))))
+
     }
 
     func recommendations() -> [AppIntentRecommendation<

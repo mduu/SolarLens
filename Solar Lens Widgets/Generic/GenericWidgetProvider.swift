@@ -39,7 +39,7 @@ struct GenericWidgetProvider: AppIntentTimelineProvider {
             entries.append(GenericEntry(date: Date()))
         }
 
-        return Timeline(entries: entries, policy: .after(Date().addingTimeInterval(3600)))
+        return Timeline(entries: entries, policy: .never)
     }
 
     func recommendations() -> [AppIntentRecommendation<

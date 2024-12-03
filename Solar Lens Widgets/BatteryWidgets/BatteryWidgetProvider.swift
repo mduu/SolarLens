@@ -54,7 +54,10 @@ struct BatteryWidgetProvider: AppIntentTimelineProvider {
                     currentBatteryChargeRate: data?.currentBatteryChargeRate))
         }
 
-        return Timeline(entries: entries, policy: .atEnd)
+        // Update every 15 minutes
+        return Timeline(
+            entries: entries,
+            policy: .after(Date().addingTimeInterval(TimeInterval(60 * 15))))
     }
 
     func recommendations() -> [AppIntentRecommendation<
