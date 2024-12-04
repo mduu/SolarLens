@@ -22,7 +22,7 @@ struct GenericWidgetView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 }
-            }
+            }.containerBackground(for: .widget) { Color.accentColor }
             
         case .accessoryCircular:
 
@@ -37,22 +37,42 @@ struct GenericWidgetView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 }
-            }
+            }.containerBackground(for: .widget) { Color.accentColor }
 
         default:
             Text("unknown")
+                .containerBackground(for: .widget) { Color.accentColor }
         }
     }
 }
 
-#Preview("FullColor") {
-    GenericWidgetView(
-        entry: .previewData()
-    )
-}
+struct GenericWidgetView_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            // Preview for circular
+            GenericWidgetView(
+                entry: GenericEntry(
+                    date: Date())
+            )
+            .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            .previewDisplayName("Circular")
 
-#Preview("Accented") {
-    GenericWidgetView(
-        entry: .previewData()
-    ).environment(\.widgetRenderingMode, .accented)
+            // Preview for circular
+            GenericWidgetView(
+                entry: GenericEntry(
+                    date: Date())
+            )
+            .environment(\.widgetRenderingMode, .accented)
+            .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            .previewDisplayName("Circular Accented")
+
+            // Preview for corner
+            GenericWidgetView(
+                entry: GenericEntry(
+                    date: Date())
+            )
+            .previewContext(WidgetPreviewContext(family: .accessoryCorner))
+            .previewDisplayName("Corner")
+        }
+    }
 }
