@@ -17,6 +17,7 @@ struct ConsumptionCornerWidgetView: View {
     var consumptionFromSolar: Int?
     var consumptionFromBattery: Int?
     var consumptionFromGrid: Int?
+    var isStaleData: Bool?
 
     var body: some View {
         Text(getText())
@@ -31,7 +32,10 @@ struct ConsumptionCornerWidgetView: View {
     private func getText() -> String {
         let current = Double(currentConsumption ?? 0) / 1000
 
-        var text = "\(String(format: "%.1f", current)) kW";
+        var text = isStaleData ?? false
+            ? "🚫 Stale"
+            : "\(String(format: "%.1f", current))";
+        
         if carCharging ?? false {
             text += " 🚗"
         }

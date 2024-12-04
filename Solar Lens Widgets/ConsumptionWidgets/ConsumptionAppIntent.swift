@@ -21,6 +21,7 @@ struct ConsumptionEntry: TimelineEntry {
     var consumptionFromSolar: Int?
     var consumptionFromBattery: Int?
     var consumptionFromGrid: Int?
+    var isStaleData: Bool?
 
     static func previewData() -> ConsumptionEntry {
         .init(
@@ -29,6 +30,7 @@ struct ConsumptionEntry: TimelineEntry {
             carCharging: false,
             consumptionFromSolar: 400,
             consumptionFromBattery: 800,
-            consumptionFromGrid: 4000)
+            consumptionFromGrid: 4000,
+            isStaleData: false)
     }
 }

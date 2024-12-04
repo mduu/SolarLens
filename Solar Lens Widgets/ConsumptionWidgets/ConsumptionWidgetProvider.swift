@@ -34,7 +34,8 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
             carCharging: data?.isAnyCarCharing,
             consumptionFromSolar: data?.currentSolarToHouse,
             consumptionFromBattery: data?.currentBatteryChargeRate ?? 0 * -1,
-            consumptionFromGrid: data?.currentGridToHouse)
+            consumptionFromGrid: data?.currentGridToHouse,
+            isStaleData: data?.isStaleData)
     }
 
     func timeline(
@@ -57,14 +58,16 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
                     carCharging: data?.isAnyCarCharing,
                     consumptionFromSolar: data?.currentSolarToHouse,
                     consumptionFromBattery: Int(data?.currentBatteryChargeRate ?? 0) * -1,
-                    consumptionFromGrid: data?.currentGridToHouse))
+                    consumptionFromGrid: data?.currentGridToHouse,
+                    isStaleData: data?.isStaleData))
         }
 
         // Update every 5 minutes
+        let currentDate = Date()
+        let fiveMinutesLater = Calendar.current.date(byAdding: .minute, value: 5, to: currentDate)!
         return Timeline(
             entries: entries,
-            policy: .after(Date().addingTimeInterval(TimeInterval(60 * 5))))
-
+            policy: .after(fiveMinutesLater))
     }
 
     func recommendations() -> [AppIntentRecommendation<

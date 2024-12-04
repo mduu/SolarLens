@@ -55,9 +55,11 @@ struct BatteryWidgetProvider: AppIntentTimelineProvider {
         }
 
         // Update every 15 minutes
+        let currentDate = Date()
+        let fiftenMinutesLater = Calendar.current.date(byAdding: .minute, value: 15, to: currentDate)!
         return Timeline(
             entries: entries,
-            policy: .after(Date().addingTimeInterval(TimeInterval(60 * 15))))
+            policy: .after(fiftenMinutesLater))
     }
 
     func recommendations() -> [AppIntentRecommendation<

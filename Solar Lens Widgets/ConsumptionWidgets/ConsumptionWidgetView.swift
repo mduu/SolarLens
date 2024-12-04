@@ -22,7 +22,8 @@ struct ConsumptionWidgetView: View {
                 carCharging: entry.carCharging,
                 consumptionFromSolar: entry.consumptionFromSolar,
                 consumptionFromBattery: entry.consumptionFromBattery,
-                consumptionFromGrid: entry.consumptionFromGrid)
+                consumptionFromGrid: entry.consumptionFromGrid,
+                isStaleData: entry.isStaleData)
 
         case .accessoryInline:
             if entry.carCharging ?? false {
