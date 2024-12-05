@@ -19,10 +19,10 @@
       "shouldTranslate" : false
     },
     "%@ %%" : {
-
+      "shouldTranslate" : false
     },
     "%@ kW" : {
-
+      "shouldTranslate" : false
     },
     "%lld %%" : {
       "localizations" : {
@@ -92,7 +92,7 @@
       }
     },
     "%lld W" : {
-
+      "shouldTranslate" : false
     },
     "%lld%%  %@ kW" : {
       "localizations" : {
@@ -102,19 +102,20 @@
             "value" : "%1$lld%%  %2$@ kW"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "☀️ %@" : {
-
+      "shouldTranslate" : false
     },
     "☀️ %lld W" : {
-
+      "shouldTranslate" : false
     },
     "🔋%@ %%" : {
-
+      "shouldTranslate" : false
     },
     "0" : {
-
+      "shouldTranslate" : false
     },
     "Always" : {
       "localizations" : {
@@ -145,7 +146,26 @@
       }
     },
     "App Icon" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Symbol"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icône de l'application"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icona dell'app"
+          }
+        }
+      }
     },
     "Are you sure to log out?" : {
       "localizations" : {
@@ -270,7 +290,26 @@
       }
     },
     "Consumption" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consommation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumo"
+          }
+        }
+      }
     },
     "Email" : {
       "localizations" : {
@@ -905,7 +944,26 @@
       }
     },
     "Solar Production" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Produktion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production solaire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione solare"
+          }
+        }
+      }
     },
     "Target date" : {
       "localizations" : {
@@ -992,7 +1050,26 @@
       }
     },
     "unknown" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unbekannt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "inconnu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sconosciuto"
+          }
+        }
+      }
     },
     "Unknown charging mode" : {
       "shouldTranslate" : false
