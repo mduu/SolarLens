@@ -134,7 +134,8 @@ struct OverviewView: View {
 
                     UpdateTimeStampView(
                         isStale: $model.overviewData.isStaleData,
-                        updateTimeStamp: $model.overviewData.lastUpdated
+                        updateTimeStamp: $model.overviewData.lastUpdated,
+                        isLoading: $model.isLoading
                     )
                 }
                 .onAppear {
@@ -200,6 +201,30 @@ struct OverviewView: View {
                     isAnyCarCharing: false,
                     chargingStations: []
                 )
+            )
+        )
+}
+
+#Preview("Loading") {
+    OverviewView()
+        .environmentObject(
+            BuildingStateViewModel.fake(
+                overviewData: .init(
+                    currentSolarProduction: 4500,
+                    currentOverallConsumption: 400,
+                    currentBatteryLevel: 99,
+                    currentBatteryChargeRate: 150,
+                    currentSolarToGrid: 3600,
+                    currentGridToHouse: 0,
+                    currentSolarToHouse: 400,
+                    solarProductionMax: 11000,
+                    hasConnectionError: false,
+                    lastUpdated: Date(),
+                    lastSuccessServerFetch: Date(),
+                    isAnyCarCharing: false,
+                    chargingStations: []
+                ),
+                isLoading: true
             )
         )
 }
