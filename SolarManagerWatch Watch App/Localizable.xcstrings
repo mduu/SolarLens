@@ -24,6 +24,9 @@
     "%@ kW" : {
       "shouldTranslate" : false
     },
+    "%@%%" : {
+
+    },
     "%lld %%" : {
       "localizations" : {
         "en" : {

@@ -37,11 +37,25 @@ struct BatteryWidgetView: View {
                         value: Double(entry.currentBatteryLevel ?? 0),
                         total: 100
                     ) {
-                        Image(systemName: GetBatterySymbolName())
                     } currentValueLabel: {
-                        Text(
-                            "\(String(describing: entry.currentBatteryLevel ?? 0)) %"
-                        )
+                        
+                        VStack(spacing: 0) {
+                            Text(
+                                "\(String(describing: entry.currentBatteryLevel ?? 0))%"
+                            )
+                            .foregroundColor(
+                                entry.currentBatteryChargeRate ?? 0 > 0 && renderingMode == .fullColor
+                                ? .orange
+                                : nil)
+                            
+                            if entry.currentBatteryChargeRate ?? 0 < 0 {
+                                Image(systemName: "bolt.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 10)
+                            }
+                        }
+                        
                     }
                     .progressViewStyle(CircularProgressViewStyle())
                     .tint(
@@ -54,7 +68,7 @@ struct BatteryWidgetView: View {
             .containerBackground(for: .widget) { Color.accentColor }
 
         case .accessoryCorner:
-            Text("\(String(describing: entry.currentBatteryLevel ?? 0)) %")
+            Text("\(String(describing: entry.currentBatteryLevel ?? 0))%")
                 .foregroundColor(renderingMode == .fullColor ? .green : nil)
                 .widgetCurvesContent()
                 .widgetLabel {
@@ -115,6 +129,28 @@ struct BatteryWidgetView_Previews: PreviewProvider {
             )
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
+            
+            // Preview for circular
+            BatteryWidgetView(
+                entry: BatteryEntry(
+                    date: Date(),
+                    currentBatteryLevel: 60,
+                    currentBatteryChargeRate: 1234)
+            )
+            .previewContext(
+                WidgetPreviewContext(family: .accessoryCircular))
+            .previewDisplayName("Circular Accent")
+            .environment(\.widgetRenderingMode, .accented)
+            
+            // Preview for circular
+            BatteryWidgetView(
+                entry: BatteryEntry(
+                    date: Date(),
+                    currentBatteryLevel: 60,
+                    currentBatteryChargeRate: -1345)
+            )
+            .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            .previewDisplayName("Charging")
 
             // Preview for inline
             BatteryWidgetView(
