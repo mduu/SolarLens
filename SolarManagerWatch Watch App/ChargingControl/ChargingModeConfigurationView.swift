@@ -5,28 +5,33 @@
 //  Created by Marc Dürst on 09.11.2024.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct ChargingModeConfigurationView: View {
     @Binding var chargingModeConfiguration: ChargingModeConfiguration
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 15) {
+            
+            VStack(alignment: .leading) {
+                
                 Text("Personalize")
                     .font(.headline)
                     .foregroundColor(.accent)
-
-                ForEach(ChargingMode.allCases, id: \.self) { mode in
-
-                    ModeToggle(
-                        chargingModeConfiguration: $chargingModeConfiguration,
-                        chargingMode: mode)
-
-                }  // :ForEach
-
-            }  // :VStack
+                Divider()
+                
+                VStack(spacing: 15) {
+                    
+                    ForEach(ChargingMode.allCases, id: \.self) { mode in
+                        
+                        ModeToggle(
+                            chargingModeConfiguration: $chargingModeConfiguration,
+                            chargingMode: mode)
+                        
+                    }  // :ForEach
+                }  // :VStack
+            } // :VStack
         }  // :ScrollView
     }  // :View
 }
