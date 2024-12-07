@@ -31,12 +31,14 @@ class BuildingStateViewModel: ObservableObject {
     {
         let result = BuildingStateViewModel.init(
             energyManagerClient: FakeEnergyManager.init(data: overviewData))
-        result.isLoading = isLoading
+        result.isLoading = false
         result.loginCredentialsExists = loggedIn
 
         Task {
             await result.fetchServerData()
         }
+        
+        result.isLoading = isLoading
 
         return result
     }
