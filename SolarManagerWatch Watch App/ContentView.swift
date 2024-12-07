@@ -7,8 +7,13 @@
 
 import SwiftUI
 
+enum Tab {
+    case overview, charging, settings
+}
+
 struct ContentView: View {
     @StateObject var viewModel = BuildingStateViewModel()
+    @State private var selectedTab: Tab = .overview
 
     var body: some View {
 
@@ -17,27 +22,43 @@ struct ContentView: View {
                 .environmentObject(viewModel)
         } else if viewModel.loginCredentialsExists {
 
-            TabView() {
-                OverviewView()
-                    .environmentObject(viewModel)
-                    .onTapGesture {
-                        print("Force refresh")
-                        Task {
-                            await viewModel.fetchServerData()
+            NavigationView {
+                TabView(selection: $selectedTab) {
+                    OverviewView()
+                        .environmentObject(viewModel)
+                        .onTapGesture {
+                            print("Force refresh")
+                            Task {
+                                await viewModel.fetchServerData()
+                            }
                         }
-                    }
+                        .tag(Tab.overview)
 
-                ChargingControlView()
-                    .environmentObject(viewModel)
+                    ChargingControlView()
+                        .tag(Tab.charging)
+                        .environmentObject(viewModel)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                HStack {
+                                    Button {
+                                        selectedTab = .overview
+                                    } label: {
+                                        Image(systemName: "chevron.left")
+                                            .foregroundColor(.green)
+                                    }
+                                    
+                                    Text("Charging")
+                                        .foregroundColor(.green)
+                                        .font(.headline)
+                                } // :HStack
+                            } // :ToolbarItem
+                        } // :.toolbar
 
-                SettingsView()
-                    .environmentObject(viewModel)
-                    .containerBackground(.black, for: .tabView)
+                }  // :TabView
+                .tabViewStyle(.verticalPage(transitionStyle: .blur))
 
-            }  // :TabView
-            .tabViewStyle(
-                .verticalPage(transitionStyle: .blur)
-            )
+            }  // :NavigationView
+            .edgesIgnoringSafeArea(.all)
 
         } else {
             ProgressView()

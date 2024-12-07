@@ -13,18 +13,27 @@ struct SettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center) {
+            VStack(alignment: .leading) {
+                
+                Text("Settings")
+                    .font(.headline)
+                    .foregroundColor(.accent)
+                
+                Divider()
+                
                 Text("Logged in as:")
+                    .font(.caption)
                 Text(
                     "\(KeychainHelper.loadCredentials().username ?? "-")"
                 )
-                .font(.subheadline)
-                .foregroundColor(.primary)
-                .padding(.bottom, 16)
-
-                Button("Log out") {
+                .foregroundColor(.accent)
+                .minimumScaleFactor(0.3)
+                
+                Button("Log out", systemImage: "iphone.and.arrow.right.outward") {
                     showConfirmation = true
-                }
+                }.labelStyle(.titleAndIcon)
+                .buttonBorderShape(.roundedRectangle)
+                .foregroundColor(.accentColor)
                 .confirmationDialog(
                     "Are you sure to log out?",
                     isPresented: $showConfirmation
@@ -35,6 +44,12 @@ struct SettingsView: View {
                     Button("Cancel", role: .cancel) {}
                 }
 
+                Divider()
+                
+                Text("Version:")
+                    .font(.caption)
+
+
                 HStack {
                     Text(
                         "v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
@@ -44,10 +59,8 @@ struct SettingsView: View {
                         "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
                     )
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .font(.footnote)
-                .foregroundColor(.gray)
-                .padding(.top, 16)
+                .font(.caption)
+                .foregroundColor(.accent)
             }
         }
     }

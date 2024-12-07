@@ -239,6 +239,9 @@
         }
       }
     },
+    "Charging" : {
+
+    },
     "Confirm" : {
       "localizations" : {
         "de" : {
@@ -859,6 +862,9 @@
         }
       }
     },
+    "Settings" : {
+
+    },
     "Solar & Tariff" : {
       "localizations" : {
         "de" : {
@@ -1076,6 +1082,9 @@
     },
     "v%@" : {
       "shouldTranslate" : false
+    },
+    "Version:" : {
+
     }
   },
   "version" : "1.0"

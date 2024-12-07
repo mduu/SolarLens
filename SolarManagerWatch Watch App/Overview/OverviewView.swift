@@ -11,6 +11,7 @@ struct OverviewView: View {
     @EnvironmentObject var model: BuildingStateViewModel
 
     @State private var refreshTimer: Timer?
+    @State private var showSettings: Bool = false
 
     var body: some View {
         VStack {
@@ -34,7 +35,7 @@ struct OverviewView: View {
                     }
 
                     Spacer()
-                }
+                }  // :VStack
 
                 VStack {
                     Grid {
@@ -126,7 +127,7 @@ struct OverviewView: View {
                                     .isAnyCarCharing
                             )
                         }
-                    }
+                    }  // :Grid
                     .padding(.top, 10)
                     .padding(.bottom, 0)
                     .padding(.leading, 10)
@@ -137,7 +138,7 @@ struct OverviewView: View {
                         updateTimeStamp: $model.overviewData.lastUpdated,
                         isLoading: $model.isLoading
                     )
-                }
+                }  // :VStack
                 .onAppear {
                     Task {
                         await model.fetchServerData()
@@ -150,11 +151,41 @@ struct OverviewView: View {
                             Task {
                                 await model.fetchServerData()
                             }
+                        }  // :refreshTimer
+                    }  // :if
+                }  // :OnAppear
+
+                VStack {
+
+                    Spacer()
+
+                    HStack {
+                        Spacer()
+
+                        Button(action: {
+                            showSettings = true
+                            model.pauseFetching()
+                        }) {
+                            Image(systemName: "gear")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 12, height: 12)
                         }
-                    }
-                }
-            }
-        }
+                        .buttonStyle(.borderless)
+                        .foregroundColor(.primary)
+                        .padding(.trailing, 15)
+                        .sheet(isPresented: $showSettings) {
+                            SettingsView()
+                                .environmentObject(model)
+                                .onDisappear {
+                                    model.resumeFetching()
+                                }
+                        }
+                    }  // :HStack
+
+                }  // :VStack
+            }  // :ZStack
+        }  // :VStack
     }
 }
 
@@ -165,7 +196,7 @@ struct OverviewView: View {
                 overviewData: .init(
                     currentSolarProduction: 4500,
                     currentOverallConsumption: 400,
-                    currentBatteryLevel: 99,
+                    currentBatteryLevel: 78,
                     currentBatteryChargeRate: 150,
                     currentSolarToGrid: 3600,
                     currentGridToHouse: 0,
@@ -212,16 +243,16 @@ struct OverviewView: View {
                 overviewData: .init(
                     currentSolarProduction: 4500,
                     currentOverallConsumption: 400,
-                    currentBatteryLevel: 99,
+                    currentBatteryLevel: 78,
                     currentBatteryChargeRate: 150,
                     currentSolarToGrid: 3600,
-                    currentGridToHouse: 0,
+                    currentGridToHouse: 50,
                     currentSolarToHouse: 400,
                     solarProductionMax: 11000,
                     hasConnectionError: false,
                     lastUpdated: Date(),
                     lastSuccessServerFetch: Date(),
-                    isAnyCarCharing: false,
+                    isAnyCarCharing: true,
                     chargingStations: []
                 ),
                 isLoading: true

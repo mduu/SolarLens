@@ -34,14 +34,14 @@ struct UpdateTimeStampView: View {
             
             if isLoading {
                 HStack {
-                    Spacer()
-                    
                     Image(systemName: "arrow.trianglehead.2.counterclockwise")
                         .symbolEffect(
                             .rotate.byLayer, options: .repeat(.continuous))
                         .font(.system(size: 6))
                         .foregroundColor(.gray)
-                        .padding(.trailing, 20)
+                        .padding(.leading, 20)
+                    
+                    Spacer()
                 } // :HStack
             }
         } // :ZStack
