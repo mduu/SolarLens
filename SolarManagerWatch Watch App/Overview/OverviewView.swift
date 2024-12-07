@@ -169,11 +169,11 @@ struct OverviewView: View {
                             Image(systemName: "gear")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 12, height: 12)
+                                .frame(width: 15, height: 15)
                         }
                         .buttonStyle(.borderless)
                         .foregroundColor(.primary)
-                        .padding(.trailing, 15)
+                        .padding(.trailing, 12)
                         .sheet(isPresented: $showSettings) {
                             SettingsView()
                                 .environmentObject(model)
