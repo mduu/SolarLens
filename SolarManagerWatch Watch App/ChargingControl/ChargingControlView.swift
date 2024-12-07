@@ -15,7 +15,6 @@ struct ChargingControlView: View {
     @State var chargingConfiguration = ChargingModeConfiguration()
 
     var body: some View {
-        // NavigationStack {
         ZStack {
 
             LinearGradient(
@@ -33,10 +32,12 @@ struct ChargingControlView: View {
                         VStack(alignment: .leading, spacing: 3) {
                             ChargingStationModeView(
                                 isTheOnlyOne: .constant(
-                                    model.overviewData.chargingStations.count
+                                    model.overviewData.chargingStations
+                                        .count
                                         <= 1),
                                 chargingStation: chargingStation,
-                                chargingModeConfiguration: $chargingConfiguration)
+                                chargingModeConfiguration:
+                                    $chargingConfiguration)
                         }  // :VStack
                     }  // :ForEach
 
@@ -64,7 +65,6 @@ struct ChargingControlView: View {
                         }
                     }  // :HStack
                 }  // :VStack
-
             }  // :ScrollView
             .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(.automatic)
@@ -75,8 +75,6 @@ struct ChargingControlView: View {
                 }.background(Color.black.opacity(0.8))
             }
         }  // :ZStack
-
-        //}  // :NavigationStack
     }  // :Body
 }  // :View
 
