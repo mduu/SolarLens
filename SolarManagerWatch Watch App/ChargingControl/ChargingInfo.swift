@@ -13,21 +13,23 @@ struct ChargingInfo: View {
 
     var body: some View {
         VStack {
-            HStack(spacing: 10) {
-                HStack {
+            HStack(spacing: 0) {
+                HStack(spacing: 0) {
                     Image(systemName: "timer")
                         .font(.caption)
 
                     if totalChargedToday != nil {
                         kWValueText(
-                            kwValue: Double(totalChargedToday!) / 1000,
-                            unit: "kWh"
+                            kwValue: Double(totalChargedToday!) / 1000
                         )
                     } else {
                         errorImage()
                     }  // :if
                 }
-                .padding(.trailing, 4)
+
+                Divider()
+                    .frame(height: 20)
+                    .padding(.horizontal, 8)
 
                 HStack {
                     Image(systemName: "bolt")
@@ -35,19 +37,21 @@ struct ChargingInfo: View {
 
                     if currentChargingPower != nil {
                         kWValueText(
-                            kwValue: Double(currentChargingPower!) / 1000,
-                            unit: "kW"
+                            kwValue: Double(currentChargingPower!) / 1000
                         )
                     } else {
                         errorImage()
                     }  // :if
 
                 }  // :VStack
+                .padding(.all, 0)
             }  // :HStack
-        }  // :VStack
+            .padding(.all, 0)
+        }  // :Button
+        .padding(.all, 0)
     }  // :body
 
-    private func kWValueText(kwValue: Double, unit: String) -> Text {
+    private func kWValueText(kwValue: Double) -> Text {
         return Text(
             String(format: "%.1f", kwValue)
         )

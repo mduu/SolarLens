@@ -27,11 +27,20 @@ struct ChargingControlView: View {
             ScrollView {
                 VStack {
 
-                    ChargingInfo(
-                        totalChargedToday: .constant(model.chargingInfos?.totalCharedToday),
-                        currentChargingPower: .constant(model.chargingInfos?.currentCharging)
-                    )
-
+                    VStack {
+                        ChargingInfo(
+                            totalChargedToday: .constant(model.chargingInfos?.totalCharedToday),
+                            currentChargingPower: .constant(model.chargingInfos?.currentCharging)
+                        )
+                    }
+                        .padding(.horizontal, 10)
+                        .padding(.bottom, 10)
+                        .onTapGesture {
+                            Task {
+                                await model.fetchChargingInfos()
+                            }
+                        }
+                    
                     VStack(spacing: 10) {
                         ForEach($model.overviewData.chargingStations, id: \.id)
                         {
