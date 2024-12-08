@@ -87,8 +87,6 @@
 				Generic/GenericAppIntent.swift,
 				Generic/GenericWidgetView.swift,
 				SolarProductionWidgets/SolarProductionAppIntent.swift,
-				SolarProductionWidgets/SolarProductionCircularWidgetView.swift,
-				SolarProductionWidgets/SolarProductionCornerWidgetView.swift,
 				SolarProductionWidgets/SolarProductionWidgetView.swift,
 			);
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;

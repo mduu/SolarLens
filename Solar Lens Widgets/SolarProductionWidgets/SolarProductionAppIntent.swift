@@ -15,7 +15,6 @@ struct SolarProductionAppIntent : WidgetConfigurationIntent {
 
 struct SolarProductionEntry: TimelineEntry {
     var date: Date
-    
     var currentProduction: Int?
     var maxProduction: Double?
     
