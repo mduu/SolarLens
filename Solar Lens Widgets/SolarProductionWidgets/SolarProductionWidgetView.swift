@@ -20,14 +20,14 @@ struct SolarProductionWidgetView: View {
         let max = Double(entry.maxProduction ?? 0) / 1000
 
         switch family {
-            
+
         case .accessoryCircular:
-            
+
             ZStack {
                 AccessoryWidgetBackground()
 
                 if showsWidgetLabel {
-                
+
                     ZStack {
                         AccessoryWidgetBackground()
                         if renderingMode == .fullColor {
@@ -35,13 +35,13 @@ struct SolarProductionWidgetView: View {
                         } else {
                             Image("solarlenstrans")
                         }
-                    } // :ZStack
+                    }  // :ZStack
                     .widgetLabel {
                         Text("☀️ \(String(format: "%.1f kW", current))")
-                    } // :widgetLabel
-                    
+                    }  // :widgetLabel
+
                 } else {
-                    
+
                     Gauge(
                         value: current,
                         in: 0...max
@@ -52,15 +52,19 @@ struct SolarProductionWidgetView: View {
                     }
                     .gaugeStyle(.circular)
                     .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
-                
-                } // :else
-            } // :ZStack
+
+                }  // :else
+            }  // :ZStack
             .containerBackground(for: .widget) { Color.accentColor }
 
         case .accessoryCorner:
-            
+
             Text("\(String(format: "%.1f", current)) kW")
-                .foregroundColor(renderingMode == .fullColor ? .yellow : nil)
+                .foregroundColor(
+                    renderingMode == .fullColor
+                        ? current > 100 ? .accent : .gray
+                        : nil
+                )
                 .widgetCurvesContent()
                 .widgetLabel {
                     Gauge(
@@ -77,16 +81,16 @@ struct SolarProductionWidgetView: View {
                     }
                     .gaugeStyle(.automatic)
                     .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
-                } // :widgetLabel
+                }  // :widgetLabel
                 .containerBackground(for: .widget) { Color.accentColor }
 
         case .accessoryInline:
-            
+
             Text("☀️ \(entry.currentProduction ?? 0) W")
                 .containerBackground(for: .widget) { Color.accentColor }
 
         case .accessoryRectangular:
-            
+
             Text("☀️ \(entry.currentProduction ?? 0) W")
                 .containerBackground(for: .widget) { Color.accentColor }
 
@@ -113,7 +117,7 @@ struct SolarProductionWidgetView_Previews: PreviewProvider {
             )
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
-            
+
             // Preview for corner
             SolarProductionWidgetView(
                 entry: SolarProductionEntry.previewData()

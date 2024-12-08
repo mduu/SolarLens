@@ -14,5 +14,6 @@ struct SolarLensWidgets: WidgetBundle {
        ConsumptionWidget()
        GenericWidget()
        BatteryWidget()
+       ProductionAndConsumptionWidget()
    }
 }

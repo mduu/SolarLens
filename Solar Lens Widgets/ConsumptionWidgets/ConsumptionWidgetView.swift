@@ -21,7 +21,7 @@ struct ConsumptionWidgetView: View {
                         Image(systemName: "house")
                     }
 
-                    Text("\(String(format: "%.1f", current))")
+                    Text("\(String(format: "%.1f kW", current))")
                         .foregroundColor(
                             renderingMode == .fullColor ? .teal : .primary)
                 }
@@ -76,7 +76,7 @@ struct ConsumptionWidgetView: View {
         var text =
             entry.isStaleData ?? false
             ? "?"
-            : "\(String(format: "%.1f", current))"
+            : "\(String(format: "%.1f", current)) kW"
         
         if entry.carCharging ?? false {
             text += " 🚙"
