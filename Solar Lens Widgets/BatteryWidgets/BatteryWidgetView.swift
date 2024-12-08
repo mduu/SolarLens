@@ -44,11 +44,11 @@ struct BatteryWidgetView: View {
                                 "\(String(describing: entry.currentBatteryLevel ?? 0))%"
                             )
                             .foregroundColor(
-                                entry.currentBatteryChargeRate ?? 0 > 0 && renderingMode == .fullColor
+                                entry.currentBatteryChargeRate ?? 0 < 0 && renderingMode == .fullColor
                                 ? .orange
                                 : nil)
                             
-                            if entry.currentBatteryChargeRate ?? 0 < 0 {
+                            if entry.currentBatteryChargeRate ?? 0 > 0 {
                                 Image(systemName: "bolt.fill")
                                     .resizable()
                                     .scaledToFit()
@@ -83,7 +83,7 @@ struct BatteryWidgetView: View {
                         )
                     }
                     .progressViewStyle(CircularProgressViewStyle())
-                    .tint(renderingMode == .fullColor ? .green : nil)
+                    .tint(renderingMode == .fullColor ? getColor() : nil)
 
                 }
                 .containerBackground(for: .widget) { Color.accentColor }
@@ -106,7 +106,7 @@ struct BatteryWidgetView: View {
 
     private func GetBatterySymbolName() -> String {
         (entry.currentBatteryChargeRate ?? 0) > 0
-            ? "battery.100percent.bolt"
+            ? "bolt.fill"
             : "battery.100percent"
     }
 
@@ -125,7 +125,7 @@ struct BatteryWidgetView_Previews: PreviewProvider {
                 entry: BatteryEntry(
                     date: Date(),
                     currentBatteryLevel: 60,
-                    currentBatteryChargeRate: 1234)
+                    currentBatteryChargeRate: -1234)
             )
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
@@ -147,7 +147,7 @@ struct BatteryWidgetView_Previews: PreviewProvider {
                 entry: BatteryEntry(
                     date: Date(),
                     currentBatteryLevel: 60,
-                    currentBatteryChargeRate: -1345)
+                    currentBatteryChargeRate: 1345)
             )
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Charging")
