@@ -18,6 +18,7 @@ class BuildingStateViewModel: ObservableObject {
     @Published var isChangingCarCharger: Bool = false
     @Published var carChargerSetSuccessfully: Bool? = nil
     @Published var fetchingIsPaused: Bool = false
+    @Published var chargingInfos: CharingInfoData?
 
     private let energyManager: EnergyManager
 
@@ -77,6 +78,23 @@ class BuildingStateViewModel: ObservableObject {
             overviewData = try await energyManager.fetchOverviewData(
                 lastOverviewData: overviewData)
             print("Server data fetched at \(Date())")
+
+            isLoading = false
+        } catch {
+            self.error = error as? EnergyManagerClientError
+            errorMessage = error.localizedDescription
+            isLoading = false
+        }
+    }
+    
+    func fetchChargingInfos() async {
+        if !loginCredentialsExists || isLoading {
+            return
+        }
+        
+        do {
+            chargingInfos = try await energyManager.fetchChargingData()
+            print("Server charging data fetched at \(Date())")
 
             isLoading = false
         } catch {

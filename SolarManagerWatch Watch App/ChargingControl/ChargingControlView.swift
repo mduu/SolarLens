@@ -25,45 +25,54 @@ struct ChargingControlView: View {
             .edgesIgnoringSafeArea(.all)
 
             ScrollView {
-                VStack(spacing: 10) {
-                    ForEach($model.overviewData.chargingStations, id: \.id) {
-                        chargingStation in
+                VStack {
 
-                        VStack(alignment: .leading, spacing: 3) {
-                            ChargingStationModeView(
-                                isTheOnlyOne: .constant(
-                                    model.overviewData.chargingStations
-                                        .count
-                                        <= 1),
-                                chargingStation: chargingStation,
-                                chargingModeConfiguration:
-                                    $chargingConfiguration)
-                        }  // :VStack
-                    }  // :ForEach
+                    ChargingInfo(
+                        totalChargedToday: .constant(model.chargingInfos?.totalCharedToday),
+                        currentChargingPower: .constant(model.chargingInfos?.currentCharging)
+                    )
 
-                    HStack {
-                        Spacer()
+                    VStack(spacing: 10) {
+                        ForEach($model.overviewData.chargingStations, id: \.id)
+                        {
+                            chargingStation in
 
-                        Button(action: {
-                            showChargingModeConfig = true
-                            model.pauseFetching()
-                        }) {
-                            Image(systemName: "gear")
-                        }
-                        .buttonStyle(.borderless)
-                        .foregroundColor(.secondary)
-                        .padding(.trailing, 15)
-                        .sheet(isPresented: $showChargingModeConfig) {
-                            ChargingModeConfigurationView(
-                                chargingModeConfiguration:
-                                    $chargingConfiguration
-                            )
-                            .onDisappear {
-                                model.resumeFetching()
+                            VStack(alignment: .leading, spacing: 3) {
+                                ChargingStationModeView(
+                                    isTheOnlyOne: .constant(
+                                        model.overviewData.chargingStations
+                                            .count
+                                            <= 1),
+                                    chargingStation: chargingStation,
+                                    chargingModeConfiguration:
+                                        $chargingConfiguration)
+                            }  // :VStack
+                        }  // :ForEach
+
+                        HStack {
+                            Spacer()
+
+                            Button(action: {
+                                showChargingModeConfig = true
+                                model.pauseFetching()
+                            }) {
+                                Image(systemName: "gear")
                             }
+                            .buttonStyle(.borderless)
+                            .foregroundColor(.secondary)
+                            .padding(.trailing, 15)
+                            .sheet(isPresented: $showChargingModeConfig) {
+                                ChargingModeConfigurationView(
+                                    chargingModeConfiguration:
+                                        $chargingConfiguration
+                                )
+                                .onDisappear {
+                                    model.resumeFetching()
+                                }
 
-                        }
-                    }  // :HStack
+                            } // :Sheet
+                        }  // :HStack
+                    }  // :VStack
                 }  // :VStack
             }  // :ScrollView
             .navigationBarTitleDisplayMode(.inline)
@@ -72,9 +81,15 @@ struct ChargingControlView: View {
             if model.isChangingCarCharger {
                 HStack {
                     ProgressView()
-                }.background(Color.black.opacity(0.8))
+                } // :HStack
+                .background(Color.black.opacity(0.8))
             }
         }  // :ZStack
+        .onAppear {
+            Task {
+                await model.fetchChargingInfos()
+            }
+        }
     }  // :Body
 }  // :View
 

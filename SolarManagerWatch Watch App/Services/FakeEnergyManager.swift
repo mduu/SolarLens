@@ -36,6 +36,12 @@ class FakeEnergyManager: EnergyManager {
     func fetchOverviewData(lastOverviewData: OverviewData?) -> OverviewData {
         return data
     }
+    
+    func fetchChargingData() async throws -> CharingInfoData {
+        return CharingInfoData(
+            totalCharedToday: 32400,
+            currentCharging: 6540)
+    }
 
     func setCarChargingMode(
         sensorId: String, carCharging: ControlCarChargingRequest

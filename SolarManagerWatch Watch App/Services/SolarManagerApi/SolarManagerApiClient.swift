@@ -98,6 +98,13 @@ class SolarManagerApi: RestClient {
         return response
     }
     
+    func getV1ConsumptionSensor(sensorId: String, period: Period = .day) async throws -> SensorConsumptionV1Response? {
+        let response: SensorConsumptionV1Response? = try await get(
+            serviceUrl: "/v1/consumption/sensor/\(sensorId)?period=\(period)")
+        
+        return response
+    }
+    
     func putControlCarCharger(sensorId: String, control: ControlCarChargingRequest) async throws -> Void {
         var _: NoContentResponse? = try await put(
             serviceUrl: "/v1/control/car-charger/\(sensorId)",

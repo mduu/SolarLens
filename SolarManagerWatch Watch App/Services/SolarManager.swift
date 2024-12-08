@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import SwiftUICore
 
 actor SolarManager: EnergyManager {
     private var expireAt: Date?
@@ -44,15 +45,15 @@ actor SolarManager: EnergyManager {
 
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos)
-            
+
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-            dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // Set timezone to UTC
-            
+            dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)  // Set timezone to UTC
+
             let lastUpdated = dateFormatter.date(from: chart.lastUpdate)
             debugPrint(chart.lastUpdate)
             debugPrint(lastUpdated ?? "nil")
-            
+
             return OverviewData(
                 currentSolarProduction: chart.production,
                 currentOverallConsumption: chart.consumption,
@@ -116,6 +117,38 @@ actor SolarManager: EnergyManager {
         errorOverviewData.hasConnectionError = true
 
         return errorOverviewData
+    }
+
+    func fetchChargingData() async throws -> CharingInfoData {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        let chargingStationSensorIds = getCharingStationSensorIds()
+        var total: Double? = nil
+        
+        // Get todays charing amount from all charging stations
+        for chargingStationSensorId in chargingStationSensorIds {
+            let chargingStationSensorData = try? await solarManagerApi.getV1ConsumptionSensor(sensorId: chargingStationSensorId)
+            
+            if (chargingStationSensorData != nil) {
+                total = (total ?? 0) + chargingStationSensorData!.totalConsumption
+            }
+        }
+
+        // Get current charging power
+        let overviewData = try? await fetchOverviewData(lastOverviewData: nil)
+        
+        var current: Int? = nil
+        if overviewData != nil {
+            current = overviewData!.chargingStations
+                .map { station in station.currentPower }
+                .reduce(0, +)
+        }
+        
+        print("Got charging data: 24h: \(String(describing: total)), current: \(String(describing: current))")
+        
+        return .init(totalCharedToday: total, currentCharging: current)
     }
 
     func setCarChargingMode(
@@ -226,7 +259,7 @@ actor SolarManager: EnergyManager {
             && Date.now < sensorInfosUpdatedAt!.addingTimeInterval(60)
         {
             print("Reuse existing sensor infos")
-            return;
+            return
         }
 
         sensorInfos = try await solarManagerApi.getV1InfoSensors(
@@ -239,11 +272,7 @@ actor SolarManager: EnergyManager {
         guard streamSensors != nil else { return false }
         guard sensorInfos != nil else { return false }
 
-        let chargingSensorIds =
-            sensorInfos!.filter {
-                $0.type == "Car Charging" && $0.device_type == "device"
-            }
-            .map { $0._id }
+        let chargingSensorIds = getCharingStationSensorIds()
 
         let charingPower = streamSensors!.devices
             .filter { chargingSensorIds.contains($0._id) }
@@ -251,6 +280,14 @@ actor SolarManager: EnergyManager {
             .reduce(0, +)
 
         return charingPower > 0
+    }
+
+    private func getCharingStationSensorIds() -> [String] {
+        return
+            sensorInfos!.filter {
+                $0.type == "Car Charging" && $0.device_type == "device"
+            }
+            .map { $0._id }
     }
 
     private func doLogin(email: String, password: String) async -> Bool {
