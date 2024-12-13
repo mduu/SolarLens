@@ -1,12 +1,8 @@
 import SwiftUI
 
-enum Tab {
-    case overview, charging, solar
-}
-
 struct ContentView: View {
     @StateObject var viewModel = BuildingStateViewModel()
-    @State private var selectedTab: Tab = .overview
+    @State private var selectedTab = 0
 
     var body: some View {
 
@@ -18,6 +14,7 @@ struct ContentView: View {
             NavigationView {
                 TabView(selection: $selectedTab) {
                     OverviewView()
+                        .tag(0)
                         .environmentObject(viewModel)
                         .onTapGesture {
                             print("Force refresh")
@@ -25,61 +22,51 @@ struct ContentView: View {
                                 await viewModel.fetchServerData()
                             }
                         }
-                        .tag(Tab.overview)
 
                     ChargingControlView()
-                        .tag(Tab.charging)
+                        .tag(1)
                         .environmentObject(viewModel)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
-                                HStack {
-                                    Button {
-                                        selectedTab = .overview
-                                    } label: {
-                                        Image(systemName: "chevron.left")
-                                            .foregroundColor(.green)
-                                    }
-                                    
-                                    Text("Charging")
-                                        .foregroundColor(.green)
-                                        .font(.headline)
-                                } // :HStack
-                            } // :ToolbarItem
-                        } // :.toolbar
-                    
+                                Text("Charging")
+                                    .foregroundColor(.green)
+                                    .font(.headline)
+                            }  // :ToolbarItem
+                        }  // :.toolbar
+
                     SolarDetailsView()
-                        .tag(Tab.solar)
+                        .tag(2)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
-                                HStack {
-                                    Button {
-                                        selectedTab = .overview
-                                    } label: {
-                                        Image(systemName: "chevron.left")
-                                            .foregroundColor(.orange)
-                                    }
-                                    
-                                    Text("Solar")
-                                        .foregroundColor(.orange)
-                                        .font(.headline)
-                                } // :HStack
-                            } // :ToolbarItem
-                        } // :.toolbar
+                                Text("Solar")
+                                    .foregroundColor(.orange)
+                                    .font(.headline)
+                            }  // :ToolbarItem
+                        }  // :.toolbar
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
+                .onAppear {
+                    selectedTab = 0
+                    print("!!!!! onApear")
+                }
 
             }  // :NavigationView
             .edgesIgnoringSafeArea(.all)
-
+            .onDisappear {
+                selectedTab = 0
+                print("???? onDisapear")
+            }
         } else {
             ProgressView()
                 .onAppear {
+                    selectedTab = 0
                     Task {
                         await viewModel.fetchServerData()
                     }
                 }
         }
+
     }
 }
 

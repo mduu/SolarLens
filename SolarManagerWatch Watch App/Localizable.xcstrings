@@ -804,6 +804,7 @@
       }
     },
     "Power Production" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -815,6 +816,7 @@
       "shouldTranslate" : false
     },
     "Power-Consumption" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
