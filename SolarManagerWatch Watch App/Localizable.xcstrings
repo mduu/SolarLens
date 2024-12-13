@@ -364,6 +364,28 @@
         }
       }
     },
+    "Forecast" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prognose"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévision"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previsione"
+          }
+        }
+      }
+    },
     "Invalid Email" : {
       "localizations" : {
         "de" : {
@@ -447,6 +469,9 @@
           }
         }
       }
+    },
+    "kWh" : {
+      "shouldTranslate" : false
     },
     "Log out" : {
       "localizations" : {
@@ -902,6 +927,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impostazioni"
+          }
+        }
+      }
+    },
+    "Solar" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solaire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solare"
           }
         }
       }

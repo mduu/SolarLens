@@ -42,6 +42,14 @@ class FakeEnergyManager: EnergyManager {
             totalCharedToday: 32400,
             currentCharging: 6540)
     }
+    
+    func fetchSolarDetails() async throws -> SolarDetailsData {
+        return SolarDetailsData.init(
+            todaySolarProduction: 34321,
+            forecastToday: ForecastItem(min: 2.1, max: 8.7, expected: 6.4),
+            forecastTomorrow: ForecastItem(min: 4.3, max: 10.1, expected: 8.3),
+            forecastDayAfterTomorrow: ForecastItem(min: 1.2, max: 4.3, expected: 3.5))
+    }
 
     func setCarChargingMode(
         sensorId: String, carCharging: ControlCarChargingRequest

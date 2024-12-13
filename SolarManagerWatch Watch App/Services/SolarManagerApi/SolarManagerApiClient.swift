@@ -83,33 +83,67 @@ class SolarManagerApi: RestClient {
 
         return response
     }
-    
-    func getV1InfoSensors(solarManagerId smId: String) async throws -> [SensorInfosV1Response]? {
+
+    func getV1InfoSensors(solarManagerId smId: String) async throws
+        -> [SensorInfosV1Response]?
+    {
         let response: [SensorInfosV1Response]? = try await get(
             serviceUrl: "/v1/info/sensors/\(smId)")
-        
+
         return response
     }
-    
-    func getV1StreamGateway(solarManagerId smId: String) async throws -> StreamSensorsV1Response? {
+
+    func getV1StreamGateway(solarManagerId smId: String) async throws
+        -> StreamSensorsV1Response?
+    {
         let response: StreamSensorsV1Response? = try await get(
             serviceUrl: "/v1/stream/gateway/\(smId)")
-        
+
         return response
     }
-    
-    func getV1ConsumptionSensor(sensorId: String, period: Period = .day) async throws -> SensorConsumptionV1Response? {
+
+    func getV1ConsumptionSensor(sensorId: String, period: Period = .day)
+        async throws -> SensorConsumptionV1Response?
+    {
         let response: SensorConsumptionV1Response? = try await get(
             serviceUrl: "/v1/consumption/sensor/\(sensorId)?period=\(period)")
-        
+
         return response
     }
-    
-    func putControlCarCharger(sensorId: String, control: ControlCarChargingRequest) async throws -> Void {
+
+    func getV1Statistics(
+        solarManagerId smId: String, from: Date, to: Date, accuracy: Accuracy
+    ) async throws -> StatisticsV1Response? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        let fromIso = dateFormatter.string(from: from)
+        let toIso = dateFormatter.string(from: to)
+
+        let response: StatisticsV1Response? = try await get(
+            serviceUrl:
+                "/v1/statistics/gateways/\(smId)?from=\(fromIso)&to=\(toIso)&accuracy=\(accuracy)"
+        )
+
+        return response
+    }
+
+    func getV1ForecastGateway(solarManagerId smId: String) async throws
+        -> [ForecastItemV1Response]?
+    {
+        let response: [ForecastItemV1Response]? = try await get(
+            serviceUrl: "/v1/forecast/gateways/\(smId)")
+
+        return response
+    }
+
+    func putControlCarCharger(
+        sensorId: String, control: ControlCarChargingRequest
+    ) async throws {
         var _: NoContentResponse? = try await put(
             serviceUrl: "/v1/control/car-charger/\(sensorId)",
             requestBody: control)
-        
+
         return
     }
 

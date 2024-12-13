@@ -22,13 +22,16 @@ class BuildingStateViewModel: ObservableObject {
 
     private let energyManager: EnergyManager
 
-    init(energyManagerClient: EnergyManager = SolarManager()) {
+    init(energyManagerClient: EnergyManager = SolarManager.instance) {
         self.energyManager = energyManagerClient
         updateCredentialsExists()
     }
 
-    static func fake(overviewData: OverviewData, loggedIn: Bool = true, isLoading: Bool = false)
-        -> BuildingStateViewModel
+    static func fake(
+        overviewData: OverviewData,
+        loggedIn: Bool = true,
+        isLoading: Bool = false
+    ) -> BuildingStateViewModel
     {
         let result = BuildingStateViewModel.init(
             energyManagerClient: FakeEnergyManager.init(data: overviewData))
@@ -38,7 +41,7 @@ class BuildingStateViewModel: ObservableObject {
         Task {
             await result.fetchServerData()
         }
-        
+
         result.isLoading = isLoading
 
         return result
@@ -86,12 +89,12 @@ class BuildingStateViewModel: ObservableObject {
             isLoading = false
         }
     }
-    
+
     func fetchChargingInfos() async {
         if !loginCredentialsExists || isLoading {
             return
         }
-        
+
         do {
             chargingInfos = try await energyManager.fetchChargingData()
             print("Server charging data fetched at \(Date())")

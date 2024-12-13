@@ -1,14 +1,7 @@
-//
-//  ContentView.swift
-//  SolarManagerWatch Watch App
-//
-//  Created by Marc Dürst on 28.09.2024.
-//
-
 import SwiftUI
 
 enum Tab {
-    case overview, charging, settings
+    case overview, charging, solar
 }
 
 struct ContentView: View {
@@ -49,6 +42,25 @@ struct ContentView: View {
                                     
                                     Text("Charging")
                                         .foregroundColor(.green)
+                                        .font(.headline)
+                                } // :HStack
+                            } // :ToolbarItem
+                        } // :.toolbar
+                    
+                    SolarDetailsView()
+                        .tag(Tab.solar)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                HStack {
+                                    Button {
+                                        selectedTab = .overview
+                                    } label: {
+                                        Image(systemName: "chevron.left")
+                                            .foregroundColor(.orange)
+                                    }
+                                    
+                                    Text("Solar")
+                                        .foregroundColor(.orange)
                                         .font(.headline)
                                 } // :HStack
                             } // :ToolbarItem
