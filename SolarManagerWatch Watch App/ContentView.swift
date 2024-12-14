@@ -28,9 +28,15 @@ struct ContentView: View {
                         .environmentObject(viewModel)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
-                                Text("Charging")
-                                    .foregroundColor(.green)
-                                    .font(.headline)
+                                HStack {
+                                    HomeButton()
+
+                                    Text("Charging")
+                                        .foregroundColor(.green)
+                                        .font(.headline)
+
+                                    Spacer()
+                                }  // :HStack
                             }  // :ToolbarItem
                         }  // :.toolbar
 
@@ -39,11 +45,14 @@ struct ContentView: View {
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 HStack {
+                                    HomeButton()
+
                                     Text("Solar")
                                         .foregroundColor(.orange)
                                         .font(.headline)
+
                                     Spacer()
-                                } // :HStack
+                                }  // :HStack
                             }  // :ToolbarItem
                         }  // :.toolbar
 
@@ -69,7 +78,16 @@ struct ContentView: View {
                     }
                 }
         }
+    }
 
+    fileprivate func HomeButton() -> some View {
+        return Button {
+            selectedTab = 0
+        } label: {
+            Image(systemName: "chevron.up")
+        }
+        .buttonStyle(.plain)
+        .buttonBorderShape(.circle)
     }
 }
 
