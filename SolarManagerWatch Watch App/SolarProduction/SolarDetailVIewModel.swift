@@ -10,15 +10,17 @@ class SolarDetailsViewModel: ObservableObject {
     @Published var solarDetailsData: SolarDetailsData = .init()
 
     private let energyManager: EnergyManager
+    private var solarDetailsLastFetchAt: Date?
 
     init(energyManagerClient: EnergyManager = SolarManager.instance) {
         self.energyManager = energyManagerClient
     }
-    
+
     public static func previewFake() -> SolarDetailsViewModel {
         let fakeEnergyManager = FakeEnergyManager.init()
-        
-        return SolarDetailsViewModel.init(energyManagerClient: fakeEnergyManager)
+
+        return SolarDetailsViewModel.init(
+            energyManagerClient: fakeEnergyManager)
     }
 
     public func fetchSolarDetails() async {
@@ -31,12 +33,21 @@ class SolarDetailsViewModel: ObservableObject {
 
             print("Fetching solar-details server data...")
 
-            overviewData = try await energyManager.fetchOverviewData(
-                lastOverviewData: overviewData)
+            if overviewData.lastUpdated == nil
+                || Date().timeIntervalSince(overviewData.lastUpdated!) > 30
+            {
+                overviewData = try await energyManager.fetchOverviewData(
+                    lastOverviewData: overviewData)
+            }
 
-            let result = try? await energyManager.fetchSolarDetails()
-            if result != nil {
-                solarDetailsData = result!
+            if solarDetailsLastFetchAt == nil
+                || Date().timeIntervalSince(solarDetailsLastFetchAt!) > 60 * 30
+            {
+                let result = try? await energyManager.fetchSolarDetails()
+                if result != nil {
+                    solarDetailsData = result!
+                    solarDetailsLastFetchAt = Date()
+                }
             }
 
             errorMessage = nil
