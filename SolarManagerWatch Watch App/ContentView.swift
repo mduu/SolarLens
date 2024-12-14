@@ -63,11 +63,10 @@ struct ContentView: View {
         
         } else {
             ProgressView()
-                .onAppear {
-                    Task {
-                        await viewModel.fetchServerData()
-                    }
-                }
+                .tint(.accent)
+                .padding()
+                .foregroundStyle(.accent)
+                .background(Color.black.opacity(0.7))
         }
     }
 

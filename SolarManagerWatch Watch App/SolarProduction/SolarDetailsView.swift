@@ -89,6 +89,10 @@ struct SolarDetailsView: View {
 
             if viewModel.isLoading {
                 ProgressView()
+                    .tint(.accent)
+                    .padding()
+                    .foregroundStyle(.accent)
+                    .background(Color.black.opacity(0.7))
             }
 
         }  // :ZStack

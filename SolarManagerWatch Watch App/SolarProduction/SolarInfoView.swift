@@ -22,8 +22,6 @@ struct SolarInfoView: View {
                         kWValueText(
                             kwValue: Double(totalProducedToday!) / 1000
                         )
-                    } else {
-                        progressSymbol()
                     }  // :if
                 }
 
@@ -39,8 +37,6 @@ struct SolarInfoView: View {
                         kWValueText(
                             kwValue: Double(currentProduction!) / 1000
                         )
-                    } else {
-                        progressSymbol()
                     }  // :if
 
                 }  // :VStack
