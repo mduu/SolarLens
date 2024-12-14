@@ -79,6 +79,7 @@ struct SolarDetailsView: View {
                 )
             }  // :VStack
             .padding(.horizontal, 2)
+            .frame(maxHeight: .infinity)
 
             if viewModel.isLoading {
                 ProgressView()
