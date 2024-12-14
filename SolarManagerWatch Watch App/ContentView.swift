@@ -38,9 +38,12 @@ struct ContentView: View {
                         .tag(2)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
-                                Text("Solar")
-                                    .foregroundColor(.orange)
-                                    .font(.headline)
+                                HStack {
+                                    Text("Solar")
+                                        .foregroundColor(.orange)
+                                        .font(.headline)
+                                    Spacer()
+                                } // :HStack
                             }  // :ToolbarItem
                         }  // :.toolbar
 
