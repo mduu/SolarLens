@@ -7,8 +7,17 @@
 
 import Foundation
 
+enum MainTab: Int, Identifiable {
+    case overview
+    case charging
+    case solarProduction
+    
+    var id: Int { rawValue }
+}
+
 @MainActor
 class BuildingStateViewModel: ObservableObject {
+    @Published var selectedMainTab = 0
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var error: EnergyManagerClientError?
@@ -150,6 +159,20 @@ class BuildingStateViewModel: ObservableObject {
         KeychainHelper.deleteCredentials()
         updateCredentialsExists()
         resetError()
+    }
+    
+    func setMainTab(newTab: MainTab) {
+        var newTabIdx = 0
+        
+        switch newTab {
+        case .overview: newTabIdx = 0
+        case .charging: newTabIdx = 1
+        case .solarProduction: newTabIdx = 2
+        }
+        
+        if (selectedMainTab != newTabIdx) {
+            selectedMainTab = newTabIdx
+        }
     }
 
     private func updateCredentialsExists() {

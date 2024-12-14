@@ -46,6 +46,9 @@ struct OverviewView: View {
                                 maximumSolarProduction: $model.overviewData
                                     .solarProductionMax
                             )
+                            .onTapGesture {
+                                model.setMainTab(newTab: .solarProduction)
+                            }
 
                             if model.overviewData.isFlowSolarToGrid() {
                                 Image(systemName: "arrow.right")

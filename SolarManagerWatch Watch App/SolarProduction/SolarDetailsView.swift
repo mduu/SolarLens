@@ -88,7 +88,6 @@ struct SolarDetailsView: View {
         .onAppear {
             Task {
                 await viewModel.fetchSolarDetails()
-
             }
             if refreshTimer == nil {
                 refreshTimer = Timer.scheduledTimer(

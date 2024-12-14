@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var viewModel = BuildingStateViewModel()
-    @State private var selectedTab = 0
 
     var body: some View {
 
@@ -12,9 +11,8 @@ struct ContentView: View {
         } else if viewModel.loginCredentialsExists {
 
             NavigationView {
-                TabView(selection: $selectedTab) {
+                TabView(selection: $viewModel.selectedMainTab) {
                     OverviewView()
-                        .tag(0)
                         .environmentObject(viewModel)
                         .onTapGesture {
                             print("Force refresh")
@@ -22,9 +20,9 @@ struct ContentView: View {
                                 await viewModel.fetchServerData()
                             }
                         }
+                        .tag(0)
 
                     ChargingControlView()
-                        .tag(1)
                         .environmentObject(viewModel)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
@@ -39,9 +37,9 @@ struct ContentView: View {
                                 }  // :HStack
                             }  // :ToolbarItem
                         }  // :.toolbar
+                        .tag(1)
 
                     SolarDetailsView()
-                        .tag(2)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 HStack {
@@ -55,24 +53,17 @@ struct ContentView: View {
                                 }  // :HStack
                             }  // :ToolbarItem
                         }  // :.toolbar
+                        .tag(2)
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
-                .onAppear {
-                    selectedTab = 0
-                    print("!!!!! onApear")
-                }
 
             }  // :NavigationView
             .edgesIgnoringSafeArea(.all)
-            .onDisappear {
-                selectedTab = 0
-                print("???? onDisapear")
-            }
+        
         } else {
             ProgressView()
                 .onAppear {
-                    selectedTab = 0
                     Task {
                         await viewModel.fetchServerData()
                     }
@@ -82,7 +73,7 @@ struct ContentView: View {
 
     fileprivate func HomeButton() -> some View {
         return Button {
-            selectedTab = 0
+            viewModel.setMainTab(newTab: .overview)
         } label: {
             Image(systemName: "chevron.up")
         }
