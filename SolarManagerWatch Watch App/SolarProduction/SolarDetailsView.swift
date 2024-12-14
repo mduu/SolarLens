@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SolarDetailsView: View {
     @StateObject var viewModel = SolarDetailsViewModel()
+    @State private var refreshTimer: Timer?
 
     var body: some View {
         ZStack {
@@ -82,8 +83,20 @@ struct SolarDetailsView: View {
         .onAppear {
             Task {
                 await viewModel.fetchSolarDetails()
+
             }
-        }
+            if refreshTimer == nil {
+                refreshTimer = Timer.scheduledTimer(
+                    withTimeInterval: 15, repeats: true
+                ) {
+                    _ in
+                    print("Refresh solar details")
+                    Task {
+                        await viewModel.fetchSolarDetails()
+                    }
+                }  // :refreshTimer
+            }  // :if
+        }  // :onAppear
     }
 
     private func getDateFormatter() -> DateFormatter {
