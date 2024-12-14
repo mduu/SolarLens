@@ -23,7 +23,7 @@ struct SolarInfoView: View {
                             kwValue: Double(totalProducedToday!) / 1000
                         )
                     } else {
-                        errorImage()
+                        progressSymbol()
                     }  // :if
                 }
 
@@ -40,7 +40,7 @@ struct SolarInfoView: View {
                             kwValue: Double(currentProduction!) / 1000
                         )
                     } else {
-                        errorImage()
+                        progressSymbol()
                     }  // :if
 
                 }  // :VStack
@@ -58,12 +58,9 @@ struct SolarInfoView: View {
         .foregroundColor(.accent)
     }
 
-    private func errorImage() -> some View {
-        return Image(systemName: "exclamationmark.icloud")
-            .foregroundColor(Color.red)
-            .symbolEffect(
-                .pulse.wholeSymbol,
-                options: .repeat(.continuous))
+    private func progressSymbol() -> some View {
+        return Image(systemName: "progress.indicator")
+            .symbolEffect(.rotate.byLayer, options: .repeat(.continuous))
     }
 }
 
