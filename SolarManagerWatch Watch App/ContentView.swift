@@ -20,6 +20,21 @@ struct ContentView: View {
                                 await viewModel.fetchServerData()
                             }
                         }
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                HStack {
+                                    Image("enido")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(height: 15)
+
+                                }  // :HStack
+                                .ignoresSafeArea(.container)
+                                .padding(.top, -18)
+                                .background(.red)
+                            }  // :ToolbarItem
+                            
+                        }  // :.toolbar
                         .tag(0)
 
                     ChargingControlView()
