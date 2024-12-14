@@ -65,21 +65,27 @@ struct SolarDetailsView: View {
                             forecast: $viewModel.solarDetailsData
                                 .forecastDayAfterTomorrow
                         )
-                    }
+                    } // :HStack
                     .frame(maxWidth: .infinity)
-
+                    
                 }  // :if
-
+                
                 Spacer()
-
+            }  // :VStack
+            .padding(.horizontal, 2)
+            .frame(maxHeight: .infinity)
+            
+            VStack {
+                Spacer()
+                
                 UpdateTimeStampView(
                     isStale: $viewModel.overviewData.isStaleData,
                     updateTimeStamp: $viewModel.overviewData.lastUpdated,
                     isLoading: $viewModel.isLoading
                 )
-            }  // :VStack
-            .padding(.horizontal, 2)
-            .frame(maxHeight: .infinity)
+                .padding(.vertical, 4)
+            }
+            .ignoresSafeArea()
 
             if viewModel.isLoading {
                 ProgressView()
