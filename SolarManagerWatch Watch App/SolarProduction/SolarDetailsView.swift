@@ -14,66 +14,71 @@ struct SolarDetailsView: View {
             )
             .edgesIgnoringSafeArea(.all)
 
-            ScrollView {
-                VStack {
-                    let current = Int?(
-                        viewModel.overviewData.currentSolarProduction)
-                    let total = viewModel.solarDetailsData.todaySolarProduction
+            VStack {
+                let current = Int?(
+                    viewModel.overviewData.currentSolarProduction)
+                let total = viewModel.solarDetailsData.todaySolarProduction
 
-                    SolarInfoView(
-                        totalProducedToday: .constant(total),
-                        currentProduction: .constant(current)
-                    )
+                SolarInfoView(
+                    totalProducedToday: .constant(total),
+                    currentProduction: .constant(current)
+                )
 
-                    if viewModel.solarDetailsData.forecastToday != nil
-                        || viewModel.solarDetailsData.forecastTomorrow != nil
-                        || viewModel.solarDetailsData.forecastDayAfterTomorrow
-                            != nil
-                    {
+                if viewModel.solarDetailsData.forecastToday != nil
+                    || viewModel.solarDetailsData.forecastTomorrow != nil
+                    || viewModel.solarDetailsData.forecastDayAfterTomorrow
+                        != nil
+                {
 
-                        Divider()
+                    Divider()
 
-                        Text("Forecast")
-                            .font(.headline)
-                            .padding(.top, 4)
+                    Text("Forecast")
+                        .font(.headline)
+                        .padding(.top, 4)
 
-                        HStack {
-                            ForecastItemView(
-                                date: .constant(
-                                    Calendar.current.startOfDay(for: Date())),
-                                maxProduction: $viewModel.overviewData
-                                    .solarProductionMax,
-                                forecast: $viewModel.solarDetailsData
-                                    .forecastToday
-                            )
+                    HStack {
+                        ForecastItemView(
+                            date: .constant(
+                                Calendar.current.startOfDay(for: Date())),
+                            maxProduction: $viewModel.overviewData
+                                .solarProductionMax,
+                            forecast: $viewModel.solarDetailsData
+                                .forecastToday
+                        )
 
-                            ForecastItemView(
-                                date: .constant(
-                                    Calendar.current.date(
-                                        byAdding: .day, value: 1, to: Date())),
-                                maxProduction: $viewModel.overviewData
-                                    .solarProductionMax,
-                                forecast: $viewModel.solarDetailsData
-                                    .forecastTomorrow
-                            )
+                        ForecastItemView(
+                            date: .constant(
+                                Calendar.current.date(
+                                    byAdding: .day, value: 1, to: Date())),
+                            maxProduction: $viewModel.overviewData
+                                .solarProductionMax,
+                            forecast: $viewModel.solarDetailsData
+                                .forecastTomorrow
+                        )
 
-                            ForecastItemView(
-                                date: .constant(
-                                    Calendar.current.date(
-                                        byAdding: .day, value: 2, to: Date())),
-                                maxProduction: $viewModel.overviewData
-                                    .solarProductionMax,
-                                forecast: $viewModel.solarDetailsData
-                                    .forecastDayAfterTomorrow
-                            )
-                        }
-                        .frame(maxWidth: .infinity)
+                        ForecastItemView(
+                            date: .constant(
+                                Calendar.current.date(
+                                    byAdding: .day, value: 2, to: Date())),
+                            maxProduction: $viewModel.overviewData
+                                .solarProductionMax,
+                            forecast: $viewModel.solarDetailsData
+                                .forecastDayAfterTomorrow
+                        )
+                    }
+                    .frame(maxWidth: .infinity)
 
-                    }  // :if
-                }  // :VStack
-                .padding(.horizontal, 2)
+                }  // :if
 
-            }  // :ScrollView
+                Spacer()
+
+                UpdateTimeStampView(
+                    isStale: $viewModel.overviewData.isStaleData,
+                    updateTimeStamp: $viewModel.overviewData.lastUpdated,
+                    isLoading: $viewModel.isLoading
+                )
+            }  // :VStack
+            .padding(.horizontal, 2)
 
             if viewModel.isLoading {
                 ProgressView()
