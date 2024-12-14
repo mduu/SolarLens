@@ -41,7 +41,7 @@ struct ProductionAndConsumptionWidgetView: View {
             Text("\(String(format: "%.1f kW", current))")
                 .foregroundColor(
                     renderingMode == .fullColor
-                        ? current > 100 ? .accent : .gray
+                        ? current >= 0.1 ? .accent : .gray
                         : nil
                 )
                 .widgetCurvesContent()
@@ -58,12 +58,12 @@ struct ProductionAndConsumptionWidgetView: View {
 
     private func getLabelText() -> String {
         var text = ""
-        
+
         if entry.toBattery ?? 0 > 10 {
             let toBattery =
                 Double(entry.toBattery!) / 1000
             text += "🔋\(String(format: "%.1f", toBattery))"
-        } else if (entry.fromBattery ?? 0 > 10) {
+        } else if entry.fromBattery ?? 0 > 10 {
             let fromBattery =
                 Double(entry.fromBattery!) / 1000
             text += "🔋\(String(format: "%.1f", fromBattery))"
