@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var viewModel = BuildingStateViewModel()
+    @State var showAppRateRequest = AppStoreReviewManager.shared.checkAndRequestReview()
 
     var body: some View {
 
@@ -57,6 +58,10 @@ struct ContentView: View {
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
+                .sheet(isPresented: $showAppRateRequest)
+                {
+                    AppReviewRequestView()
+                }
 
             }  // :NavigationView
             .edgesIgnoringSafeArea(.all)

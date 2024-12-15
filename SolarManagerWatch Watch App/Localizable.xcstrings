@@ -386,6 +386,28 @@
         }
       }
     },
+    "Here is how:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Und so geht es:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voici comment :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ecco come fare:"
+          }
+        }
+      }
+    },
     "Invalid Email" : {
       "localizations" : {
         "de" : {
@@ -803,29 +825,49 @@
         }
       }
     },
-    "Power Production" : {
-      "extractionState" : "stale",
+    "Please rate us! 🌟" : {
       "localizations" : {
-        "en" : {
+        "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Power Production"
+            "state" : "translated",
+            "value" : "Bitte bewerte uns! 🌟"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S'il vous plaît, évaluez-nous ! 🌟"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per favore, votaci! 🌟"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
-    "Power-Consumption" : {
-      "extractionState" : "stale",
+    "Rate app" : {
       "localizations" : {
-        "en" : {
+        "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Power-Consumption"
+            "state" : "translated",
+            "value" : "App bewerten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Évaluer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valuta l'app"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "Select target date" : {
       "localizations" : {
@@ -1117,6 +1159,28 @@
         }
       }
     },
+    "Thank you! 💖" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke 💖"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merci! 💖"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grazie! 💖"
+          }
+        }
+      }
+    },
     "Try again" : {
       "localizations" : {
         "de" : {
@@ -1170,6 +1234,28 @@
     "Unknown charging mode" : {
       "shouldTranslate" : false
     },
+    "Use the App-Store app on your iPhone and search for 'Solar Lens'." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwenden Sie die App-Store-App auf Ihrem iPhone und suchen Sie nach „Solar Lens“."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisez l'application App-Store sur votre iPhone et recherchez “Solar Lens”."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilizza l'app App Store sul tuo iPhone e cerca 'Solar Lens'."
+          }
+        }
+      }
+    },
     "v%@" : {
       "shouldTranslate" : false
     },
@@ -1191,6 +1277,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versione:"
+          }
+        }
+      }
+    },
+    "Your feedback matters! Please consider rating us. Your support helps us improve." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihr Feedback ist uns wichtig! Bitte bewerten Sie uns. Ihre Unterstützung hilft uns, uns zu verbessern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre avis compte ! N'hésitez pas à nous évaluer. Votre soutien nous aide à nous améliorer."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo feedback è importante! Considera di darci una valutazione. Il tuo supporto ci aiuta a migliorare."
           }
         }
       }

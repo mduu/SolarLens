@@ -10,17 +10,18 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var model: BuildingStateViewModel
     @State private var showConfirmation = false
+    @State private var showRateApp = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                
+
                 Text("Settings")
                     .font(.headline)
                     .foregroundColor(.accent)
-                
+
                 Divider()
-                
+
                 Text("Logged in as:")
                     .font(.caption)
                 Text(
@@ -28,27 +29,27 @@ struct SettingsView: View {
                 )
                 .foregroundColor(.accent)
                 .minimumScaleFactor(0.3)
-                
-                Button("Log out", systemImage: "iphone.and.arrow.right.outward") {
+
+                Button("Log out", systemImage: "iphone.and.arrow.right.outward")
+                {
                     showConfirmation = true
                 }.labelStyle(.titleAndIcon)
-                .buttonBorderShape(.roundedRectangle)
-                .foregroundColor(.accentColor)
-                .confirmationDialog(
-                    "Are you sure to log out?",
-                    isPresented: $showConfirmation
-                ) {
-                    Button("Confirm") {
-                        model.logout()
+                    .buttonBorderShape(.roundedRectangle)
+                    .foregroundColor(.accentColor)
+                    .confirmationDialog(
+                        "Are you sure to log out?",
+                        isPresented: $showConfirmation
+                    ) {
+                        Button("Confirm") {
+                            model.logout()
+                        }
+                        Button("Cancel", role: .cancel) {}
                     }
-                    Button("Cancel", role: .cancel) {}
-                }
 
                 Divider()
-                
+
                 Text("Version:")
                     .font(.caption)
-
 
                 HStack {
                     Text(
@@ -58,12 +59,21 @@ struct SettingsView: View {
                     Text(
                         "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
                     )
-                }
+                }  // :HStack
                 .font(.caption)
                 .foregroundColor(.accent)
-            }
-        }
-    }
+
+                Button("Rate app", systemImage: "star.leadinghalf.filled") {
+                    showRateApp = true
+                }.labelStyle(.titleAndIcon)
+                    .buttonBorderShape(.roundedRectangle)
+                    .foregroundColor(.accent)
+                    .sheet(isPresented: $showRateApp) {
+                        AppReviewRequestView()
+                    }
+            }  // :VStack
+        }  // :ScrollView
+    }  // :View
 }
 
 #Preview("English") {

@@ -65,19 +65,19 @@ struct SolarDetailsView: View {
                             forecast: $viewModel.solarDetailsData
                                 .forecastDayAfterTomorrow
                         )
-                    } // :HStack
+                    }  // :HStack
                     .frame(maxWidth: .infinity)
-                    
+
                 }  // :if
-                
+
                 Spacer()
             }  // :VStack
             .padding(.horizontal, 2)
             .frame(maxHeight: .infinity)
-            
+
             VStack {
                 Spacer()
-                
+
                 UpdateTimeStampView(
                     isStale: $viewModel.overviewData.isStaleData,
                     updateTimeStamp: $viewModel.overviewData.lastUpdated,
@@ -100,6 +100,7 @@ struct SolarDetailsView: View {
             Task {
                 await viewModel.fetchSolarDetails()
             }
+
             if refreshTimer == nil {
                 refreshTimer = Timer.scheduledTimer(
                     withTimeInterval: 15, repeats: true
@@ -111,6 +112,8 @@ struct SolarDetailsView: View {
                     }
                 }  // :refreshTimer
             }  // :if
+
+            AppStoreReviewManager.shared.setSolarDetailsShownAtLeastOnce()
         }  // :onAppear
     }
 

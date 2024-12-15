@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum MainTab: Int, Identifiable {
     case overview
@@ -150,6 +151,7 @@ class BuildingStateViewModel: ObservableObject {
             chargingStation?.chargingMode = newCarCharging.chargingMode
 
             carChargerSetSuccessfully = result
+            AppStoreReviewManager.shared.setChargingModeSetAtLeastOnce()
         } catch {
             carChargerSetSuccessfully = false
         }
