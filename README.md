@@ -1,12 +1,12 @@
 <h1>
-  <img src="https://github.com/mduu/SolarManagerWatch/blob/main/marketing/appicon/v2/PNG/32px.png?raw=true" width="32" height="auto" alt="Solar Lens Logo"> Solar Lens
+   Solar Lens
     <a href="https://apple.co/408SKri">
     <img src="marketing/black.svg" width="96" height="auto" alt="Solar Lens Download Button">
   </a>
 </h1>
 
 <a href="https://apple.co/408SKri">
-<img src="marketing/qr_code.png" width="240" height="auto" alt="Solar Lens QR Code">
+<img src="https://github.com/mduu/SolarManagerWatch/blob/main/marketing/appicon/v2/PNG/150px.png?raw=true" width="240" height="auto" alt="Solar Lens QR Code">
 </a>
 
 ## Support
