@@ -179,9 +179,9 @@ actor SolarManager: EnergyManager {
 
         let todayStatistics = try? await todayStatisticsResult
         let forecast = (try? await forecastResult) ?? []
-        
+
         let dailyForecast = calculateForecastsPerDay(data: forecast)
-        
+
         let nowLocal = Date().convertFromUTCToLocalTime()
         let today = Calendar.current.startOfDay(for: nowLocal)
             .convertFromUTCToLocalTime()
@@ -191,10 +191,14 @@ actor SolarManager: EnergyManager {
         let afterTomorrow = Calendar.current.startOfDay(
             for: Calendar.current.date(byAdding: .day, value: 2, to: Date())!
         ).convertFromUTCToLocalTime()
-        
-        let todaysData = dailyForecast[today] ?? ForecastItem(min: 0, max: 0, expected: 0)
-        let tomorrowData = dailyForecast[tomorrow] ?? ForecastItem(min: 0, max: 0, expected: 0)
-        let afterTomorrowData = dailyForecast[afterTomorrow] ?? ForecastItem(min: 0, max: 0, expected: 0)
+
+        let todaysData =
+            dailyForecast[today] ?? ForecastItem(min: 0, max: 0, expected: 0)
+        let tomorrowData =
+            dailyForecast[tomorrow] ?? ForecastItem(min: 0, max: 0, expected: 0)
+        let afterTomorrowData =
+            dailyForecast[afterTomorrow]
+            ?? ForecastItem(min: 0, max: 0, expected: 0)
 
         return SolarDetailsData(
             todaySolarProduction: todayStatistics?.production,
@@ -338,10 +342,12 @@ actor SolarManager: EnergyManager {
 
     private func getCharingStationSensorIds() -> [String] {
         return
-            sensorInfos!.filter {
+            sensorInfos != nil
+            ? sensorInfos!.filter {
                 $0.type == "Car Charging" && $0.device_type == "device"
             }
             .map { $0._id }
+            : []
     }
 
     private func doLogin(email: String, password: String) async -> Bool {
@@ -364,7 +370,8 @@ actor SolarManager: EnergyManager {
         }
     }
 
-    private func calculateForecastsPerDay(data: [ForecastItemV1Response]) -> [Date: ForecastItem?]
+    private func calculateForecastsPerDay(data: [ForecastItemV1Response])
+        -> [Date: ForecastItem?]
     {
         var dailyKWh: [Date: ForecastItem] = [:]
         let calendar = Calendar.current
@@ -376,11 +383,11 @@ actor SolarManager: EnergyManager {
 
             // Accumulate energy consumption for the day
             var forecast = dailyKWh[day]
-            
+
             let minKWh = solarData.min / 1000 / 4
             let maxKWh = solarData.max / 1000 / 4
             let expectedKWh = solarData.expected / 1000 / 4
-            
+
             if forecast == nil {
                 forecast = ForecastItem(
                     min: minKWh,
@@ -394,7 +401,7 @@ actor SolarManager: EnergyManager {
                     expected: forecast!.expected + expectedKWh
                 )
             }
-            
+
             dailyKWh[day] = forecast
         }
 

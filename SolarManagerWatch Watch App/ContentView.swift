@@ -23,22 +23,24 @@ struct ContentView: View {
                         }
                         .tag(0)
 
-                    ChargingControlView()
-                        .environmentObject(viewModel)
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                HStack {
-                                    HomeButton()
-
-                                    Text("Charging")
-                                        .foregroundColor(.green)
-                                        .font(.headline)
-
-                                    Spacer()
-                                }  // :HStack
-                            }  // :ToolbarItem
-                        }  // :.toolbar
-                        .tag(1)
+                    if viewModel.overviewData.hasAnyCarChargingStation {
+                        ChargingControlView()
+                            .environmentObject(viewModel)
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    HStack {
+                                        HomeButton()
+                                        
+                                        Text("Charging")
+                                            .foregroundColor(.green)
+                                            .font(.headline)
+                                        
+                                        Spacer()
+                                    }  // :HStack
+                                }  // :ToolbarItem
+                            }  // :.toolbar
+                            .tag(1)
+                    }
 
                     SolarDetailsView()
                         .toolbar {

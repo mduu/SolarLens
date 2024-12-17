@@ -25,6 +25,7 @@ class OverviewData: ObservableObject {
     @Published var isAnyCarCharing: Bool = false
     @Published var chargingStations: [ChargingStation] = []
     @Published var isStaleData: Bool = false
+    @Published var hasAnyCarChargingStation: Bool = true
 
     init() {
     }
@@ -58,6 +59,7 @@ class OverviewData: ObservableObject {
         self.isAnyCarCharing = isAnyCarCharing
         self.chargingStations = chargingStations
         self.isStaleData = getIsStaleData()
+        self.hasAnyCarChargingStation = chargingStations.count > 0
     }
 
     func isFlowBatteryToHome() -> Bool {
