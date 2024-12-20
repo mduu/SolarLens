@@ -1,10 +1,3 @@
-//
-//  SensorInfosResponse.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 21.10.2024.
-//
-
 struct SensorInfosV1Response : Codable {
     var _id: String
     var device_type: String // device, smart-meter, inverter

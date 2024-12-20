@@ -301,7 +301,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 494882AC2CA8443300C59146 /* Build configuration list for PBXProject "SolarManagerWatch" */;
+			buildConfigurationList = 494882AC2CA8443300C59146 /* Build configuration list for PBXProject "SolarLens" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -523,7 +523,7 @@
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "SolarManagerWatch-Watch-App-Info.plist";
+				INFOPLIST_FILE = "SolarLens-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Watch";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -562,7 +562,7 @@
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "SolarManagerWatch-Watch-App-Info.plist";
+				INFOPLIST_FILE = "SolarLens-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Watch";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -705,7 +705,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		494882AC2CA8443300C59146 /* Build configuration list for PBXProject "SolarManagerWatch" */ = {
+		494882AC2CA8443300C59146 /* Build configuration list for PBXProject "SolarLens" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				494882C32CA8443400C59146 /* Debug */,

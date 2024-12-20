@@ -1,10 +1,3 @@
-//
-//  LoginView.swift
-//  SolarManagerWatch Watch App
-//
-//  Created by Marc Dürst on 06.10.2024.
-//
-
 import SwiftUI
 
 struct LoginView: View {

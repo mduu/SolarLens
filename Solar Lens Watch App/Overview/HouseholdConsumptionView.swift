@@ -1,10 +1,3 @@
-//
-//  HouseholdConsumptionView.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 05.10.2024.
-//
-
 import SwiftUI
 
 struct HouseholdConsumptionView: View {

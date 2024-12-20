@@ -1,10 +1,3 @@
-//
-//  StreamSensorsV1Response.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 21.10.2024.
-//
-
 struct StreamSensorsV1Response : Codable {
     var TimeStamp: String // "2024-10-20T19:14:23.193Z"
     var currentPowerConsumption: Int // Watt

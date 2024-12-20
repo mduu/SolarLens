@@ -1,10 +1,3 @@
-//
-//  SolarManagerClient.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 29.09.2024.
-//
-
 import Combine
 import Foundation
 import SwiftUICore

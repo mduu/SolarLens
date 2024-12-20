@@ -1,10 +1,3 @@
-//
-//  RefreshResponse.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 19.10.2024.
-//
-
 struct RefreshResponse : Codable {
     var accessToken: String
     var refreshToken: String

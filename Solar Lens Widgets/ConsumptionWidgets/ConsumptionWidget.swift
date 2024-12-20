@@ -1,10 +1,3 @@
-//
-//  ConsumptionWidget.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 28.11.2024.
-//
-
 import SwiftUI
 import WidgetKit
 

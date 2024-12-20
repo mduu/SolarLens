@@ -1,10 +1,3 @@
-//
-//  ChargingMode.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 25.10.2024.
-//
-
 enum ChargingMode: Int, Codable, CaseIterable, Identifiable {
     case alwaysCharge = 0
     case withSolarPower = 1

@@ -1,10 +1,3 @@
-//
-//  updateTimeStampView.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 18.11.2024.
-//
-
 import SwiftUI
 
 struct UpdateTimeStampView: View {

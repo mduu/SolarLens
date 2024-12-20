@@ -1,10 +1,3 @@
-//
-//  Settings.swift
-//  SolarManagerWatch Watch App
-//
-//  Created by Marc Dürst on 11.10.2024.
-//
-
 import SwiftUI
 
 struct SettingsView: View {

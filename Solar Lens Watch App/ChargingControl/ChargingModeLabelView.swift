@@ -1,10 +1,3 @@
-//
-//  ChargingModeLabelView.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 09.11.2024.
-//
-
 import SwiftUI
 
 struct ChargingModelLabelView: View {

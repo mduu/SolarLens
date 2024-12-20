@@ -1,10 +1,3 @@
-//
-//  BuildingState.swift
-//  SolarManagerWatch Watch App
-//
-//  Created by Marc Dürst on 29.09.2024.
-//
-
 import Foundation
 import SwiftUI
 

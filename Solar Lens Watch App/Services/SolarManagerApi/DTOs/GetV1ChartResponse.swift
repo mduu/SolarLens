@@ -1,10 +1,3 @@
-//
-//  getV1ChartRequest.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 13.10.2024.
-//
-
 struct GetV1ChartResponse : Codable {
     var lastUpdate: String
     var production: Int

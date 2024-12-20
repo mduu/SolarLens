@@ -1,10 +1,3 @@
-//
-//  SolarLensWidgets.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 23.11.2024.
-//
-
 import SwiftUI
 
 @main

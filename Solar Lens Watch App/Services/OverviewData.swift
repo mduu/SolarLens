@@ -1,10 +1,3 @@
-//
-//  OverviewData.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 05.10.2024.
-//
-
 import Foundation
 
 class OverviewData: ObservableObject {

@@ -1,10 +1,3 @@
-//
-//  ControlCarChargingRequest.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 27.10.2024.
-//
-
 import Foundation
 
 struct ControlCarChargingRequest: Codable {

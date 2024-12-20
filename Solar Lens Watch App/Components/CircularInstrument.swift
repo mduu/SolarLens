@@ -1,10 +1,3 @@
-//
-//  CircularInstrument.swift
-//  SolarManagerWatch Watch App
-//
-//  Created by Marc Dürst on 17.10.2024.
-//
-
 import SwiftUI
 
 struct CircularInstrument: View {

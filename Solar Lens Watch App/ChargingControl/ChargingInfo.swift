@@ -1,10 +1,3 @@
-//
-//  ChargingInfo.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 08.12.2024.
-//
-
 import SwiftUI
 
 struct ChargingInfo: View {

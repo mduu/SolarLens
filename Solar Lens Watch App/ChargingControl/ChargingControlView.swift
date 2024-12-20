@@ -1,10 +1,3 @@
-//
-//  ChargingControlView.swift
-//  SolarManagerWatch Watch App
-//
-//  Created by Marc Dürst on 25.10.2024.
-//
-
 import SwiftUI
 
 struct ChargingControlView: View {

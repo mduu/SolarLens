@@ -1,10 +1,3 @@
-//
-//  GetV2UsersResponse.swift
-//  SolarManagerWatch
-//
-//  Created by Marc Dürst on 13.10.2024.
-//
-
 class V1User : Codable{
     var status: String  // active
     var language: String?  // Deutsch

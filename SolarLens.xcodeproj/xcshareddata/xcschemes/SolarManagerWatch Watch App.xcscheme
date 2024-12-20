@@ -18,7 +18,7 @@
                BlueprintIdentifier = "494882B42CA8443300C59146"
                BuildableName = "Solar Lens Watch App.app"
                BlueprintName = "Solar Lens Watch App"
-               ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
+               ReferencedContainer = "container:SolarLens.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -32,7 +32,7 @@
                BlueprintIdentifier = "494882AE2CA8443300C59146"
                BuildableName = "Solar Lens.app"
                BlueprintName = "Solar Lens"
-               ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
+               ReferencedContainer = "container:SolarLens.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,7 +61,7 @@
             BlueprintIdentifier = "494882B42CA8443300C59146"
             BuildableName = "Solar Lens Watch App.app"
             BlueprintName = "Solar Lens Watch App"
-            ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
+            ReferencedContainer = "container:SolarLens.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -78,7 +78,7 @@
             BlueprintIdentifier = "494882B42CA8443300C59146"
             BuildableName = "Solar Lens Watch App.app"
             BlueprintName = "Solar Lens Watch App"
-            ReferencedContainer = "container:SolarManagerWatch.xcodeproj">
+            ReferencedContainer = "container:SolarLens.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
