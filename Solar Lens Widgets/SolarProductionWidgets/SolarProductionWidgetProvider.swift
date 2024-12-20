@@ -25,13 +25,19 @@ struct SolarProductionWidgetProvider: AppIntentTimelineProvider {
         }
 
         let data = try? await widgetDataSource.getOverviewData()
+        let solarData = try? await widgetDataSource.getSolarProductionData()
         
         print("SolarProduction Snapshot-Data \(String(describing: data))")
 
         return SolarProductionEntry(
             date: Date(),
             currentProduction: data?.currentSolarProduction,
-            maxProduction: data?.solarProductionMax)
+            maxProduction: data?.solarProductionMax,
+            todaySolarProduction: solarData?.todaySolarProduction,
+            forecastToday: solarData?.forecastToday,
+            forecastTomorrow: solarData?.forecastTomorrow,
+            forecastDayAfterTomorrow: solarData?.forecastDayAfterTomorrow
+        )
     }
 
     func timeline(
@@ -44,6 +50,7 @@ struct SolarProductionWidgetProvider: AppIntentTimelineProvider {
             entries.append(.previewData())
         } else {
             let data = try? await widgetDataSource.getOverviewData()
+            let solarData = try? await widgetDataSource.getSolarProductionData()
 
             print("SolarProduction Timeline-Data \(String(describing: data))")
 
@@ -51,7 +58,13 @@ struct SolarProductionWidgetProvider: AppIntentTimelineProvider {
                 SolarProductionEntry(
                     date: Date(),
                     currentProduction: data?.currentSolarProduction,
-                    maxProduction: data?.solarProductionMax))
+                    maxProduction: data?.solarProductionMax,
+                    todaySolarProduction: solarData?.todaySolarProduction,
+                    forecastToday: solarData?.forecastToday,
+                    forecastTomorrow: solarData?.forecastTomorrow,
+                    forecastDayAfterTomorrow: solarData?.forecastDayAfterTomorrow
+                )
+            )
         }
         
         // Update every 5 minutes

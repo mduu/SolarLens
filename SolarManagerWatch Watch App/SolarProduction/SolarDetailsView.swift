@@ -43,7 +43,8 @@ struct SolarDetailsView: View {
                             maxProduction: $viewModel.overviewData
                                 .solarProductionMax,
                             forecast: $viewModel.solarDetailsData
-                                .forecastToday
+                                .forecastToday,
+                            small: .constant(false)
                         )
 
                         ForecastItemView(
@@ -53,7 +54,8 @@ struct SolarDetailsView: View {
                             maxProduction: $viewModel.overviewData
                                 .solarProductionMax,
                             forecast: $viewModel.solarDetailsData
-                                .forecastTomorrow
+                                .forecastTomorrow,
+                            small: .constant(false)
                         )
 
                         ForecastItemView(
@@ -63,7 +65,8 @@ struct SolarDetailsView: View {
                             maxProduction: $viewModel.overviewData
                                 .solarProductionMax,
                             forecast: $viewModel.solarDetailsData
-                                .forecastDayAfterTomorrow
+                                .forecastDayAfterTomorrow,
+                            small: .constant(false)
                         )
                     }  // :HStack
                     .frame(maxWidth: .infinity)

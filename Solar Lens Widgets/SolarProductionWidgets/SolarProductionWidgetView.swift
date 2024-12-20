@@ -91,8 +91,61 @@ struct SolarProductionWidgetView: View {
 
         case .accessoryRectangular:
 
-            Text("☀️ \(entry.currentProduction ?? 0) W")
+            ZStack {
+                
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        .orange.opacity(0.5), .orange.opacity(0.2),
+                    ]), startPoint: .top, endPoint: .bottom
+                )
+                .edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    SolarInfoView(
+                        totalProducedToday: .constant(entry.todaySolarProduction),
+                        currentProduction: .constant(entry.currentProduction)
+                    )
+                    
+                    if entry.forecastToday != nil
+                        || entry.forecastTomorrow != nil
+                        || entry.forecastDayAfterTomorrow
+                        != nil
+                    {
+                        
+                        HStack {
+                            ForecastItemView(
+                                date: .constant(
+                                    Calendar.current.startOfDay(for: Date())),
+                                maxProduction: .constant(entry.maxProduction ?? 0),
+                                forecast: .constant(entry.forecastToday),
+                                small: .constant(true)
+                            )
+                            
+                            ForecastItemView(
+                                date: .constant(
+                                    Calendar.current.date(
+                                        byAdding: .day, value: 1, to: Date())),
+                                maxProduction: .constant(entry.maxProduction ?? 0),
+                                forecast: .constant(entry.forecastTomorrow),
+                                small: .constant(true)
+                            )
+                            
+                            ForecastItemView(
+                                date: .constant(
+                                    Calendar.current.date(
+                                        byAdding: .day, value: 2, to: Date())),
+                                maxProduction: .constant(entry.maxProduction ?? 0),
+                                forecast: .constant(entry.forecastDayAfterTomorrow),
+                                small: .constant(true)
+                            )
+                        }  // :HStack
+                        .frame(maxWidth: .infinity)
+                        
+                    }  // :if
+                }  // :VStack
+                .frame(maxHeight: .infinity)
                 .containerBackground(for: .widget) { Color.accentColor }
+            }
 
         default:
             Image("AppIcon")
@@ -131,6 +184,13 @@ struct SolarProductionWidgetView_Previews: PreviewProvider {
             )
             .previewContext(WidgetPreviewContext(family: .accessoryInline))
             .previewDisplayName("Inline")
+            
+            // Preview for rectangle
+            SolarProductionWidgetView(
+                entry: SolarProductionEntry.previewData()
+            )
+            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+            .previewDisplayName("Rectangular")
         }
     }
 }

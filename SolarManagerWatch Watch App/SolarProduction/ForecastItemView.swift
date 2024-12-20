@@ -4,6 +4,7 @@ struct ForecastItemView: View {
     @Binding var date: Date?
     @Binding var maxProduction: Double
     @Binding var forecast: ForecastItem?
+    @Binding var small: Bool?
 
     var shortDateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -12,6 +13,8 @@ struct ForecastItemView: View {
     }
 
     var body: some View {
+        let isSmall = small ?? false
+        
         ZStack {
             
             RoundedRectangle(cornerRadius: 5)
@@ -25,13 +28,16 @@ struct ForecastItemView: View {
                         date!,
                         formatter: shortDateFormatter
                     )
+                    .font(isSmall ? .system(size: 10) : .body)
 
                     Text("\(forecast?.stringRange ?? "")")
                         .foregroundColor(.accent)
                         .font(.headline)
 
-                    Text("kWh")
-                        .font(.system(size: 10))
+                    if !isSmall {
+                        Text("kWh")
+                            .font(.system(size: 10))
+                    }
 
                 } // :if
             } // :VStack
@@ -42,10 +48,20 @@ struct ForecastItemView: View {
     }
 }
 
-#Preview {
+#Preview("Normal") {
     ForecastItemView(
         date: .constant(Date()),
         maxProduction: .constant(11000),
-        forecast: .constant(ForecastItem(min: 1.0, max: 5.3, expected: 3.4))
+        forecast: .constant(ForecastItem(min: 1.0, max: 5.3, expected: 3.4)),
+        small: .constant(false)
+    )
+}
+
+#Preview("Small") {
+    ForecastItemView(
+        date: .constant(Date()),
+        maxProduction: .constant(11000),
+        forecast: .constant(ForecastItem(min: 1.0, max: 5.3, expected: 3.4)),
+        small: .constant(true)
     )
 }
