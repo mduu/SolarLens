@@ -68,7 +68,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		494E38FA2D11DE7D009CFA76 /* Exceptions for "SolarManagerWatch Watch App" folder in "Solar Lens" target */ = {
+		494E38FA2D11DE7D009CFA76 /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Localizable.xcstrings,
@@ -96,7 +96,7 @@
 			);
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
 		};
-		49F243A42CF1CE5E009D0E2A /* Exceptions for "SolarManagerWatch Watch App" folder in "Solar Lens WidgetsExtension" target */ = {
+		49F243A42CF1CE5E009D0E2A /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Services/ChargingInfoData.swift,
@@ -137,13 +137,13 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		494882B92CA8443300C59146 /* SolarManagerWatch Watch App */ = {
+		494882B92CA8443300C59146 /* Solar Lens Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				494E38FA2D11DE7D009CFA76 /* Exceptions for "SolarManagerWatch Watch App" folder in "Solar Lens" target */,
-				49F243A42CF1CE5E009D0E2A /* Exceptions for "SolarManagerWatch Watch App" folder in "Solar Lens WidgetsExtension" target */,
+				494E38FA2D11DE7D009CFA76 /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens" target */,
+				49F243A42CF1CE5E009D0E2A /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens WidgetsExtension" target */,
 			);
-			path = "SolarManagerWatch Watch App";
+			path = "Solar Lens Watch App";
 			sourceTree = "<group>";
 		};
 		495539B92CECF51A00D2FE19 /* Solar Lens Widgets */ = {
@@ -184,7 +184,7 @@
 			children = (
 				49EDF1372CF58548003C1176 /* Solar Lens Watch App.entitlements */,
 				49EDF1382CF58559003C1176 /* Solar Lens WidgetsExtension.entitlements */,
-				494882B92CA8443300C59146 /* SolarManagerWatch Watch App */,
+				494882B92CA8443300C59146 /* Solar Lens Watch App */,
 				495539B92CECF51A00D2FE19 /* Solar Lens Widgets */,
 				49EED1A72CC0389C00A89445 /* Frameworks */,
 				494882B02CA8443300C59146 /* Products */,
@@ -247,7 +247,7 @@
 				495539C22CECF51C00D2FE19 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				494882B92CA8443300C59146 /* SolarManagerWatch Watch App */,
+				494882B92CA8443300C59146 /* Solar Lens Watch App */,
 			);
 			name = "Solar Lens Watch App";
 			packageProductDependencies = (
@@ -519,7 +519,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 93;
-				DEVELOPMENT_ASSET_PATHS = "\"SolarManagerWatch Watch App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -558,7 +558,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 93;
-				DEVELOPMENT_ASSET_PATHS = "\"SolarManagerWatch Watch App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
