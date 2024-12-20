@@ -12,7 +12,6 @@ struct SolarProductionWidget: Widget {
             provider: SolarProductionWidgetProvider()
         ) { entry in
             SolarProductionWidgetView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Solar Production")
         .description("Shows the current solar production.")
