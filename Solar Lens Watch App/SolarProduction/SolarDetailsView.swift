@@ -19,7 +19,7 @@ struct SolarDetailsView: View {
                     viewModel.overviewData.currentSolarProduction)
                 let total = viewModel.solarDetailsData.todaySolarProduction
 
-                SolarInfoView(
+                SolarTodayInfoView(
                     totalProducedToday: .constant(total),
                     currentProduction: .constant(current)
                 )

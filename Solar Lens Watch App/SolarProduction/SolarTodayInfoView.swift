@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SolarInfoView: View {
+struct SolarTodayInfoView: View {
     @Binding var totalProducedToday: Double?
     @Binding var currentProduction: Int?
 
@@ -61,7 +61,7 @@ struct SolarInfoView: View {
 }
 
 #Preview {
-    SolarInfoView(
+    SolarTodayInfoView(
         totalProducedToday: .constant(2340),
         currentProduction: .constant(1420))
 }

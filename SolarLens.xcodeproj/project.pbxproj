@@ -130,7 +130,7 @@
 				Services/SolarManagerApi/SolarManagerApiClient.swift,
 				Services/SolarManagerApi/SolarManagerApiClientError.swift,
 				SolarProduction/ForecastItemView.swift,
-				SolarProduction/SolarInfoView.swift,
+				SolarProduction/SolarTodayInfoView.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
 		};

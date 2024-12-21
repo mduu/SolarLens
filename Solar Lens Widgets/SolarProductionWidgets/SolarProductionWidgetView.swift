@@ -107,7 +107,7 @@ struct SolarProductionWidgetView: View {
                 }
 
                 VStack {
-                    SolarInfoView(
+                    SolarTodayInfoView(
                         totalProducedToday: .constant(
                             entry.todaySolarProduction),
                         currentProduction: .constant(
