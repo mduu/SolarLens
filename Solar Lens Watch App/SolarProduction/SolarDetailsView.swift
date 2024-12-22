@@ -27,7 +27,7 @@ struct SolarDetailsView: View {
                     )
 
                     Button(action: {
-                        //viewModel.pauseFetching()
+                        viewModel.fetchingIsPaused = true
                         withAnimation {
                             showSolarChart = true
                         }
@@ -35,7 +35,7 @@ struct SolarDetailsView: View {
                         Image(systemName: "chart.line.uptrend.xyaxis.circle")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 15, height: 15)
+                            .frame(width: 20, height: 20)
                             .symbolEffect(.breathe.pulse.byLayer, options: .repeat(.continuous))
                     }
                     .buttonStyle(.borderless)
@@ -44,7 +44,9 @@ struct SolarDetailsView: View {
                     .sheet(isPresented: $showSolarChart) {
                         SolarChartView(
                             maxProductionkW: $viewModel.overviewData.solarProductionMax
-                        )
+                        ).onDisappear {
+                            viewModel.fetchingIsPaused = false
+                        }
                     }
                 }
 

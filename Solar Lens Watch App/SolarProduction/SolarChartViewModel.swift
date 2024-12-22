@@ -4,8 +4,8 @@ import Foundation
 class SolarChartViewModel: ObservableObject {
     @Published var consumptionData: ConsumptionData? = nil
     @Published var isLoading = false
-    @Published var errorMessage: String?
-    @Published var error: EnergyManagerClientError?
+    @Published var errorMessage: String? = nil
+    @Published var error: EnergyManagerClientError? = nil
 
     private let energyManager: EnergyManager
     private var solarChartLastFetchAt: Date?
@@ -43,18 +43,19 @@ class SolarChartViewModel: ObservableObject {
                     hour: 23, minute: 59, second: 59)
                 let toDate = calendar.date(from: endOfDayComponents)!
 
-                let data = try await energyManager.fetchConsumptions(
+                var consumptionData = try await energyManager.fetchConsumptions(
                     from: Calendar.current.startOfDay(for: .now),
                     to: toDate)
-                
-                if data.data.count == 0 {
-                    self.errorMessage = "Failed to fetch consumption data from server."
+
+                if consumptionData.data.count == 0 {
+                    self.errorMessage =
+                        "Failed to fetch consumption data from server."
                     self.error = .invalidData
                     self.isLoading = false
                     return
                 }
 
-                consumptionData = data
+                self.consumptionData = trimEmptyAtDayStart(from: consumptionData)
                 solarChartLastFetchAt = Date()
 
                 print("Fetched consumption data from server successfully.")
@@ -72,5 +73,24 @@ class SolarChartViewModel: ObservableObject {
             errorMessage = error.localizedDescription
             isLoading = false
         }
+    }
+
+    private func trimEmptyAtDayStart(from consumptionData: ConsumptionData)
+        -> ConsumptionData
+    {
+        let data = consumptionData.data
+
+        // Find first non-zero index
+        guard let firstNonZeroIndex = data.firstIndex(where: { $0.productionWatts > 0 })
+        else {
+            return consumptionData
+        }
+
+        // Find last non-zero index, starting from the end
+        let lastNonZeroIndex = data.lastIndex(where: { $0.productionWatts > 0 }) ?? data.endIndex
+        
+        consumptionData.data = Array(data[firstNonZeroIndex...lastNonZeroIndex])
+        
+        return consumptionData
     }
 }

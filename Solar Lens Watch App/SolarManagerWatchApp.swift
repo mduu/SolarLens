@@ -9,6 +9,6 @@ struct SolarManagerWatch_Watch_AppApp: App {
                     AppStoreReviewManager.shared.increaseStartupCount()
                 }
         }
-        //.environment(\.locale, Locale(identifier: "DE"))
+        .environment(\.locale, Locale(identifier: "DE"))
     }
 }

@@ -27,16 +27,12 @@ struct SolarChart: View {
                     y: .value("kW", dataPoint.production)
                 )
                 .interpolationMethod(.cardinal)
-
             }
         }
-        //.chartYScale(domain: 0...maxProductionkW)
-        .chartLegend()
         .chartYAxisLabel("kW")
         .chartYScale(domain: 0...getYMax())
-        .chartXAxisLabel("Time", alignment: .leading)
         .chartXAxis {
-            AxisMarks(values: .stride(by: .hour, count: 1)) { value in
+            AxisMarks {
                 AxisGridLine()
                 AxisValueLabel(format: .dateTime.hour())
             }
@@ -46,15 +42,15 @@ struct SolarChart: View {
     }
 
     private func getYMax() -> Double {
-        let maxProduction =
-            solarProduction.data.max(
-                by: { $0.productionWatts > $1.productionWatts })?
-            .productionWatts
-            ?? 0
+        let maxProduction: Double? = solarProduction.data
+            .map { $0.productionWatts / 1000 }
+            .max()
+
+        guard let maxProduction else { return 2.0 }
 
         return maxProduction <= 0
-            ? maxProductionkW / 1000
-            : maxProduction
+            ? 2.0
+            : maxProduction * 1.1
     }
 }
 

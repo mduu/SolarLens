@@ -364,9 +364,6 @@
         }
       }
     },
-    "Error" : {
-
-    },
     "Forecast" : {
       "localizations" : {
         "de" : {
@@ -659,6 +656,9 @@
           }
         }
       }
+    },
+    "No data" : {
+
     },
     "Off" : {
       "localizations" : {
