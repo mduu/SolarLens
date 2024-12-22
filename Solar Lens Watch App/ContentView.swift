@@ -43,6 +43,7 @@ struct ContentView: View {
                     }
 
                     SolarDetailsView()
+                        .environmentObject(viewModel)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 HStack {

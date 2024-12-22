@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SolarDetailsView: View {
     @StateObject var viewModel = SolarDetailsViewModel()
+    @EnvironmentObject var buildingModel: BuildingStateViewModel
     @State private var refreshTimer: Timer?
     @State private var showSolarChart: Bool = false
 
@@ -28,6 +29,7 @@ struct SolarDetailsView: View {
 
                     Button(action: {
                         viewModel.fetchingIsPaused = true
+                        buildingModel.pauseFetching()
                         withAnimation {
                             showSolarChart = true
                         }
@@ -46,6 +48,7 @@ struct SolarDetailsView: View {
                             maxProductionkW: $viewModel.overviewData.solarProductionMax
                         ).onDisappear {
                             viewModel.fetchingIsPaused = false
+                            buildingModel.pauseFetching()
                         }
                     }
                 }
