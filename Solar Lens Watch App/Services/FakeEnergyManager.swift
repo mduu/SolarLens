@@ -43,6 +43,10 @@ class FakeEnergyManager: EnergyManager {
             forecastTomorrow: ForecastItem(min: 4.3, max: 10.1, expected: 8.3),
             forecastDayAfterTomorrow: ForecastItem(min: 1.2, max: 4.3, expected: 3.5))
     }
+    
+    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
+        return ConsumptionData.fake()
+    }
 
     func setCarChargingMode(
         sensorId: String, carCharging: ControlCarChargingRequest

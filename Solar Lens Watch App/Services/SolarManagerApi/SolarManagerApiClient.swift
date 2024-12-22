@@ -105,13 +105,13 @@ class SolarManagerApi: RestClient {
     }
 
     func getV1Statistics(
-        solarManagerId smId: String, from: Date, to: Date, accuracy: Accuracy
+        solarManagerId smId: String,
+        from: Date,
+        to: Date,
+        accuracy: Accuracy
     ) async throws -> StatisticsV1Response? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = TimeZone.current
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        let fromIso = dateFormatter.string(from: from)
-        let toIso = dateFormatter.string(from: to)
+        let fromIso = RestDateHelper.string(from: from)
+        let toIso = RestDateHelper.string(from: to)
 
         let response: StatisticsV1Response? = try await get(
             serviceUrl:
@@ -126,6 +126,18 @@ class SolarManagerApi: RestClient {
     {
         let response: [ForecastItemV1Response]? = try await get(
             serviceUrl: "/v1/forecast/gateways/\(smId)")
+
+        return response
+    }
+    
+    func getV1GatewayConsumption(solarManagerId smId: String, from: Date, to: Date) async throws
+        -> GatewayIntervalConsumption?
+    {
+        let fromIso = RestDateHelper.string(from: from)
+        let toIso = RestDateHelper.string(from: to)
+
+        let response: GatewayIntervalConsumption? = try await get(
+            serviceUrl: "/v1/consumption/gateway/\(smId)/range?from=\(fromIso)&to=\(toIso)&interval=300")
 
         return response
     }

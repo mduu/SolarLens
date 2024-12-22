@@ -31,30 +31,33 @@ class SolarDetailsViewModel: ObservableObject {
         do {
             isLoading = true
 
-            print("Fetching solar-details server data...")
-
             if overviewData.lastUpdated == nil
                 || Date().timeIntervalSince(overviewData.lastUpdated!) > 30
             {
+                print("Fetching overview-details server data...")
+
                 overviewData = try await energyManager.fetchOverviewData(
                     lastOverviewData: overviewData)
+         
+                print("Server overview-details data fetched at \(Date())")
             }
 
             if solarDetailsLastFetchAt == nil
                 || Date().timeIntervalSince(solarDetailsLastFetchAt!) > 60 * 30
             {
+                print("Fetching solar-details server data...")
+
                 let result = try? await energyManager.fetchSolarDetails()
                 if result != nil {
                     solarDetailsData = result!
                     solarDetailsLastFetchAt = Date()
                 }
+                
+                print("Server solar-details data fetched at \(Date())")
             }
 
             errorMessage = nil
             self.error = nil
-
-            print("Server solar-details data fetched at \(Date())")
-
             isLoading = false
         } catch {
             self.error = error as? EnergyManagerClientError

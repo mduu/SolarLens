@@ -151,7 +151,6 @@ actor SolarManager: EnergyManager {
     }
 
     func fetchSolarDetails() async throws -> SolarDetailsData {
-        try await ensureLoggedIn()
         try await ensureSmId()
 
         let now = Date()
@@ -200,6 +199,29 @@ actor SolarManager: EnergyManager {
             forecastDayAfterTomorrow: afterTomorrowData
         )
 
+    }
+    
+    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
+        try await ensureSmId()
+        
+        let consumptions = try await solarManagerApi.getV1GatewayConsumption(
+            solarManagerId: systemInformation!.sm_id,
+            from: from,
+            to: to)
+        
+        return ConsumptionData(
+            from: RestDateHelper.date(from: consumptions?.from)?.convertFromUTCToLocalTime(),
+            to: RestDateHelper.date(from: consumptions?.to)?.convertFromUTCToLocalTime(),
+            interval: consumptions?.interval ?? 300,
+            data: consumptions?.data
+                .map {
+                    ConsumptionItem.init(
+                        date: RestDateHelper.date(from:$0.date)?.convertFromUTCToLocalTime() ?? Date(),
+                        consumptionWatts: $0.cW,
+                        productionWatts: $0.pW
+                    )
+                }
+            ?? [])
     }
 
     func setCarChargingMode(

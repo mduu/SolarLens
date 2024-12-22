@@ -3,6 +3,7 @@ import SwiftUI
 struct SolarDetailsView: View {
     @StateObject var viewModel = SolarDetailsViewModel()
     @State private var refreshTimer: Timer?
+    @State private var showSolarChart: Bool = false
 
     var body: some View {
         ZStack {
@@ -19,10 +20,33 @@ struct SolarDetailsView: View {
                     viewModel.overviewData.currentSolarProduction)
                 let total = viewModel.solarDetailsData.todaySolarProduction
 
-                SolarTodayInfoView(
-                    totalProducedToday: .constant(total),
-                    currentProduction: .constant(current)
-                )
+                HStack {
+                    SolarTodayInfoView(
+                        totalProducedToday: .constant(total),
+                        currentProduction: .constant(current)
+                    )
+
+                    Button(action: {
+                        //viewModel.pauseFetching()
+                        withAnimation {
+                            showSolarChart = true
+                        }
+                    }) {
+                        Image(systemName: "chart.line.uptrend.xyaxis.circle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                            .symbolEffect(.breathe.pulse.byLayer, options: .repeat(.continuous))
+                    }
+                    .buttonStyle(.borderless)
+                    .foregroundColor(.primary)
+                    .padding(.leading, 20)
+                    .sheet(isPresented: $showSolarChart) {
+                        SolarChartView(
+                            maxProductionkW: $viewModel.overviewData.solarProductionMax
+                        )
+                    }
+                }
 
                 if viewModel.solarDetailsData.forecastToday != nil
                     || viewModel.solarDetailsData.forecastTomorrow != nil

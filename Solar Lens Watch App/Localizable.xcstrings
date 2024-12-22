@@ -364,6 +364,9 @@
         }
       }
     },
+    "Error" : {
+
+    },
     "Forecast" : {
       "localizations" : {
         "de" : {
@@ -1180,6 +1183,9 @@
           }
         }
       }
+    },
+    "Time" : {
+
     },
     "Try again" : {
       "localizations" : {
