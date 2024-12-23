@@ -30,9 +30,8 @@ struct SolarDetailsView: View {
                     Button(action: {
                         viewModel.fetchingIsPaused = true
                         buildingModel.pauseFetching()
-                        withAnimation {
-                            showSolarChart = true
-                        }
+                        print("Show solar chart sheet")
+                        showSolarChart = true
                     }) {
                         Image(systemName: "chart.line.uptrend.xyaxis.circle")
                             .resizable()
@@ -46,9 +45,11 @@ struct SolarDetailsView: View {
                     .sheet(isPresented: $showSolarChart) {
                         SolarChartView(
                             maxProductionkW: $viewModel.overviewData.solarProductionMax
-                        ).onDisappear {
+                        )
+                        .onDisappear {
+                            print("Hide solar chart sheet")
                             viewModel.fetchingIsPaused = false
-                            buildingModel.pauseFetching()
+                            buildingModel.resumeFetching()
                         }
                     }
                 }
@@ -138,7 +139,6 @@ struct SolarDetailsView: View {
                     withTimeInterval: 15, repeats: true
                 ) {
                     _ in
-                    print("Refresh solar details")
                     Task {
                         await viewModel.fetchSolarDetails()
                     }
@@ -147,6 +147,10 @@ struct SolarDetailsView: View {
 
             AppStoreReviewManager.shared.setSolarDetailsShownAtLeastOnce()
         }  // :onAppear
+        .onDisappear() {
+            refreshTimer?.invalidate()
+            refreshTimer = nil
+        }
     }
 
     private func getDateFormatter() -> DateFormatter {

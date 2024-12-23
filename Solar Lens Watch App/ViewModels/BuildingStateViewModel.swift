@@ -99,8 +99,9 @@ class BuildingStateViewModel: ObservableObject {
         }
 
         do {
+            print("\(Date()) - Fetching charing data")
             chargingInfos = try await energyManager.fetchChargingData()
-            print("Server charging data fetched at \(Date())")
+            print("\(Date()) - Server charging data fetched")
 
             isLoading = false
         } catch {

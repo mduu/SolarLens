@@ -204,10 +204,14 @@ actor SolarManager: EnergyManager {
     func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
         try await ensureSmId()
         
+        print("Fetching gateway consumptions&productions ...")
+        
         let consumptions = try await solarManagerApi.getV1GatewayConsumption(
             solarManagerId: systemInformation!.sm_id,
             from: from,
             to: to)
+        
+        print("Fetched gateway consumptions&productions.")
         
         return ConsumptionData(
             from: RestDateHelper.date(from: consumptions?.from)?.convertFromUTCToLocalTime(),
