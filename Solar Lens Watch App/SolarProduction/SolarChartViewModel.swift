@@ -43,7 +43,7 @@ class SolarChartViewModel: ObservableObject {
                     hour: 23, minute: 59, second: 59)
                 let toDate = calendar.date(from: endOfDayComponents)!
 
-                var consumptionData = try await energyManager.fetchConsumptions(
+                let consumptionData = try await energyManager.fetchConsumptions(
                     from: Calendar.current.startOfDay(for: .now),
                     to: toDate)
 
@@ -55,7 +55,7 @@ class SolarChartViewModel: ObservableObject {
                     return
                 }
 
-                self.consumptionData = trimEmptyAtDayStart(from: consumptionData)
+                self.consumptionData = consumptionData
                 solarChartLastFetchAt = Date()
 
                 print("Fetched consumption data from server successfully.")
@@ -73,24 +73,5 @@ class SolarChartViewModel: ObservableObject {
             errorMessage = error.localizedDescription
             isLoading = false
         }
-    }
-
-    private func trimEmptyAtDayStart(from consumptionData: ConsumptionData)
-        -> ConsumptionData
-    {
-        let data = consumptionData.data
-
-        // Find first non-zero index
-        guard let firstNonZeroIndex = data.firstIndex(where: { $0.productionWatts > 0 })
-        else {
-            return consumptionData
-        }
-
-        // Find last non-zero index, starting from the end
-        let lastNonZeroIndex = data.lastIndex(where: { $0.productionWatts > 0 }) ?? data.endIndex
-        
-        consumptionData.data = Array(data[firstNonZeroIndex...lastNonZeroIndex])
-        
-        return consumptionData
     }
 }
