@@ -26,6 +26,7 @@ struct ForecastItemView: View {
                         .frame(
                             width: geometry.size.width,
                             height: geometry.size.height)
+                        .widgetAccentable()
 
                     RoundedRectangle(cornerRadius: 5)
                         .fill(
@@ -53,7 +54,7 @@ struct ForecastItemView: View {
                         .position(
                             x: geometry.size.width / 2,
                             y: geometry.size.height * (1 - getPercentage() / 2))  // Position relative to parent's height
-
+                        .widgetAccentable()
                 }
             }
 
@@ -65,6 +66,7 @@ struct ForecastItemView: View {
                         formatter: shortDateFormatter
                     )
                     .font(isSmall ? .system(size: 10) : .body)
+                    .widgetAccentable()
 
                     Text("\(forecast?.stringRange ?? "")")
                         .foregroundColor(getColor())

@@ -22,6 +22,7 @@ struct SolarTodayInfoView: View {
                         kWValueText(
                             kwValue: Double(totalProducedToday!) / 1000
                         )
+                        .widgetAccentable()
                     }  // :if
                 }
 
@@ -37,6 +38,7 @@ struct SolarTodayInfoView: View {
                         kWValueText(
                             kwValue: Double(currentProduction!) / 1000
                         )
+                        .widgetAccentable()
                     }  // :if
 
                 }  // :VStack

@@ -46,18 +46,21 @@ struct SolarTimelineWidgetView: View {
                         Text(String(format: "%.1f", total))
                             .font(.system(size: 12))
                             .foregroundColor(renderingMode == .fullColor ? .yellow : .primary)
-
+                            .widgetAccentable()
+                        
                         Image(systemName: "bolt")
                             .font(.caption)
                         Text(String(format: "%.1f", current))
                             .font(.system(size: 12))
                             .foregroundColor(renderingMode == .fullColor ? .yellow : .primary)
+                            .widgetAccentable()
                         
                         Image(systemName: "arrow.up.to.line")
                             .font(.caption)
                         Text(String(format: "%.1f", max))
                             .font(.system(size: 12))
                             .foregroundColor(renderingMode == .fullColor ? .yellow : .primary)
+                            .widgetAccentable()
                     }
                     .padding(.top, 3)
                     
