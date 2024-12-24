@@ -64,7 +64,8 @@
             "value" : "%lld A"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%lld kWh" : {
       "localizations" : {
@@ -92,7 +93,8 @@
             "value" : "%lld kWh"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%lld W" : {
       "shouldTranslate" : false
@@ -602,7 +604,26 @@
       }
     },
     "Max today:" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max. Heute:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max aujourd'hui:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max oggi:"
+          }
+        }
+      }
     },
     "Minimal" : {
       "localizations" : {
@@ -661,7 +682,26 @@
       }
     },
     "No data" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Daten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune donnée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun dato"
+          }
+        }
+      }
     },
     "Off" : {
       "localizations" : {
@@ -854,7 +894,26 @@
       }
     },
     "Production" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produktion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune donnée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione"
+          }
+        }
+      }
     },
     "Rate app" : {
       "localizations" : {
@@ -1191,7 +1250,26 @@
       }
     },
     "Time" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo"
+          }
+        }
+      }
     },
     "Try again" : {
       "localizations" : {
