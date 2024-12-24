@@ -83,7 +83,7 @@ struct SolarChart: View {
             AxisMarks { value in
                 AxisGridLine()
                 AxisValueLabel(
-                    format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute()
+                    format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits)
                 )
             }
         }
