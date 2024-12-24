@@ -51,6 +51,13 @@ struct SolarDetailsView: View {
                             viewModel.fetchingIsPaused = false
                             buildingModel.resumeFetching()
                         }
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                    Text("Production")
+                                        .foregroundColor(.accent)
+                                        .font(.headline)
+                            }  // :ToolbarItem
+                        }  // :.toolbar
                     }
                 }
 

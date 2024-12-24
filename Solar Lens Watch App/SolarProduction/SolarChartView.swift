@@ -7,33 +7,39 @@ struct SolarChartView: View {
 
     var body: some View {
         ZStack {
+            
             VStack {
                 if viewModel.error == nil && viewModel.errorMessage == nil {
                     
-                    Text("Solar Production")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .foregroundColor(.accentColor)
-
                     if viewModel.consumptionData != nil {
-                        Text(String(format: "Max today: %.2f kW", getMaxProductionkW()))
-                            .font(.footnote)
                         
                         SolarChart(
                             maxProductionkW: $maxProductionkW,
                             solarProduction: .constant(viewModel.consumptionData!)
                         )
+                        
+                        HStack {
+                            Text("Max today:")
+                                .font(.footnote)
+                            Text(String(format: "%.2f kW", getMaxProductionkW()))
+                                .font(.footnote)
+                                .foregroundColor(.accent)
+                        }
+
                     } else {
+                        
                         Spacer()
                         Text("No data")
                             .font(.footnote)
                         Spacer()
+                        
                     }
                     
-                }
-            }
+                } // :if
+            } // :VStack
             .padding(8)
-            
+            .ignoresSafeArea(edges: .horizontal.union(.bottom))
+
             if viewModel.isLoading {
                 ProgressView()
                     .tint(.accent)
@@ -82,7 +88,7 @@ struct SolarChartView: View {
 
 #Preview {
     SolarChartView(
-        maxProductionkW: .constant(11000)
+        maxProductionkW: .constant(11000),
+        viewModel: SolarChartViewModel.previewFake()
     )
-    .environmentObject(SolarChartViewModel.previewFake())
 }

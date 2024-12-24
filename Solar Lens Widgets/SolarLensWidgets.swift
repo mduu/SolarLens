@@ -8,5 +8,6 @@ struct SolarLensWidgets: WidgetBundle {
        GenericWidget()
        BatteryWidget()
        ProductionAndConsumptionWidget()
+       SolarTimelineidget()
    }
 }

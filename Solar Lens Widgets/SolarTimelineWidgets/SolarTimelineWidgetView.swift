@@ -1,0 +1,106 @@
+//
+//  SolarProductionView.swift
+//  Solar Lens Watch App
+//
+//  Created by Marc Dürst on 23.11.2024.
+//
+
+import SwiftUI
+import WidgetKit
+
+struct SolarTimelineWidgetView: View {
+    @Environment(\.widgetFamily) private var family
+    @Environment(\.widgetRenderingMode) var renderingMode
+    @Environment(\.showsWidgetContainerBackground) var showsWidgetContainerBackground: Bool
+
+    var entry: SolarTimelineEntry
+
+    var body: some View {
+        let current = Double(entry.currentProduction ?? 0) / 1000
+        let max = Double(entry.history?.data.map{ $0.productionWatts }.max() ?? 0) / 1000
+        let absoluteMax = Double(entry.maxProduction ?? 0) / 1000
+        let total = Double(entry.todaySolarProduction ?? 0) / 1000
+
+        switch family {
+
+        case .accessoryRectangular:
+
+            ZStack {
+                if !showsWidgetContainerBackground {
+                    RoundedRectangle(cornerRadius: 15)
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    .orange.opacity(0.5), .orange.opacity(0.2),
+                                ]), startPoint: .top, endPoint: .bottom
+                            )
+                        )
+                        .frame(width: .infinity, height: .infinity)
+                }
+
+                VStack {
+                    
+                    HStack {
+                        Image(systemName: "calendar")
+                            .font(.caption)
+                        Text(String(format: "%.1f", total))
+                            .font(.system(size: 12))
+                            .foregroundColor(.accent)
+
+                        Image(systemName: "bolt")
+                            .font(.caption)
+                        Text(String(format: "%.1f", current))
+                            .font(.system(size: 12))
+                            .foregroundColor(.accent)
+                        
+                        Image(systemName: "arrow.up.to.line")
+                            .font(.caption)
+                        Text(String(format: "%.1f", max))
+                            .font(.system(size: 12))
+                            .foregroundColor(.accent)
+                    }
+                    .padding(.top, 3)
+                    
+                    if let history = entry.history {
+                        SolarChart(
+                            maxProductionkW: .constant(absoluteMax),
+                            solarProduction: .constant(history),
+                            isSmall: true
+                        )
+                        .ignoresSafeArea()
+                        .padding(.horizontal, 6)
+                        .padding(.bottom, 4)
+                        .padding(.top, -20)
+  }
+                    
+                }  // :VStack
+            }  // :ZStack
+            .containerBackground(for: .widget) {
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        .orange.opacity(0.5), .orange.opacity(0.2),
+                    ]), startPoint: .top, endPoint: .bottom
+                )
+            }
+
+        default:
+            Image("AppIcon")
+                .containerBackground(for: .widget) { Color.accentColor }
+        }
+
+    }
+
+}
+
+struct SolarTimelineWidgetView_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            // Preview for rectangle
+            SolarTimelineWidgetView(
+                entry: SolarTimelineEntry.previewData()
+            )
+            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+            .previewDisplayName("Rectangular")
+        }
+    }
+}

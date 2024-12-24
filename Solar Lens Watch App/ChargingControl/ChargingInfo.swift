@@ -8,7 +8,7 @@ struct ChargingInfo: View {
         VStack {
             HStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    Image(systemName: "timer")
+                    Image(systemName: "calendar")
                         .font(.caption)
 
                     if totalChargedToday != nil {

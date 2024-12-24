@@ -11,6 +11,7 @@ struct SolarChart: View {
 
     @Binding var maxProductionkW: Double
     @Binding var solarProduction: ConsumptionData
+    var isSmall: Bool = false
 
     var body: some View {
         let data =
@@ -26,23 +27,71 @@ struct SolarChart: View {
 
         Chart {
             ForEach(data) { dataPoint in
+                AreaMark(
+                    x: .value("Time", dataPoint.time),
+                    y: .value("kW", dataPoint.production)
+                )
+                .interpolationMethod(.cardinal)
+                .foregroundStyle(
+                    .linearGradient(
+                        colors: [
+                            .yellow.opacity(0.5),
+                            .yellow.opacity(0.1),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .lineStyle(
+                    StrokeStyle(lineWidth: 0)
+                )
+
                 LineMark(
                     x: .value("Time", dataPoint.time),
                     y: .value("kW", dataPoint.production)
                 )
                 .interpolationMethod(.cardinal)
+                .lineStyle(
+                    StrokeStyle(lineWidth: 1)
+                )
+            }  // :foreach
+        }
+        .chartYAxis {
+            AxisMarks(preset: .automatic) { value in
+                AxisGridLine()
+                AxisValueLabel {
+                    if let number = value.as(Double.self) {
+                        let max = data.map({ $0.production }).max() ?? 0
+                        let min = data.map({ $0.production }).min() ?? 0
+                        if !isSmall
+                            || abs(min - number) < 0.2
+                            || abs(max - number) < 0.2
+                        {
+                            Text("\(String(format: "%.1f", number))")
+                        }
+                    }
+                }
             }
         }
-        .chartYAxisLabel("kW")
+        .chartYAxisLabel(isSmall ? "" : "kW")
         .chartYScale(domain: 0...getYMax())
         .chartXAxis {
-            AxisMarks {
+            AxisMarks { value in
                 AxisGridLine()
-                AxisValueLabel(format: .dateTime.hour())
+                AxisValueLabel(
+                    format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute()
+                )
             }
         }
-        .foregroundColor(.accent)
+        .frame(maxHeight: .infinity)
+        .foregroundColor(.yellow)
 
+    }
+
+    private func getTimeFormatter() -> DateFormatter {
+        let result = DateFormatter()
+        result.setLocalizedDateFormatFromTemplate("HH:mm")
+        return result
     }
 
     private func getYMax() -> Double {
@@ -69,19 +118,36 @@ struct SolarChart: View {
         var lastNonZeroIndex =
             dataPoints.lastIndex(where: { $0.production > 0 })
             ?? dataPoints.endIndex - 1
-        
+
         if firstNonZeroIndex == lastNonZeroIndex {
             firstNonZeroIndex = dataPoints.startIndex
             lastNonZeroIndex = dataPoints.endIndex - 1
+        }
+
+        if firstNonZeroIndex > 0 {
+            firstNonZeroIndex -= 1
+        }
+
+        if lastNonZeroIndex < dataPoints.endIndex - 1 {
+            firstNonZeroIndex += 1
         }
 
         return Array(dataPoints[firstNonZeroIndex...lastNonZeroIndex])
     }
 }
 
-#Preview {
+#Preview("Normal") {
     SolarChart(
         maxProductionkW: .constant(11000),
         solarProduction: .constant(ConsumptionData.fake())
     )
+}
+
+#Preview("Small") {
+    SolarChart(
+        maxProductionkW: .constant(11000),
+        solarProduction: .constant(ConsumptionData.fake()),
+        isSmall: true
+    )
+    .frame(height: 80)
 }

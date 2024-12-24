@@ -601,6 +601,9 @@
         }
       }
     },
+    "Max today:" : {
+
+    },
     "Minimal" : {
       "localizations" : {
         "de" : {
@@ -849,6 +852,9 @@
           }
         }
       }
+    },
+    "Production" : {
+
     },
     "Rate app" : {
       "localizations" : {

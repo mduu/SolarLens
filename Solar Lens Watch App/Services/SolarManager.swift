@@ -153,17 +153,10 @@ actor SolarManager: EnergyManager {
     func fetchSolarDetails() async throws -> SolarDetailsData {
         try await ensureSmId()
 
-        let now = Date()
-        let calendar = Calendar.current
-        let startOfDay: Date = calendar.date(
-            bySettingHour: 0, minute: 0, second: 0, of: now)!
-        let endOfDay: Date = calendar.date(
-            bySettingHour: 23, minute: 59, second: 59, of: now)!
-
         async let todayStatisticsResult = solarManagerApi.getV1Statistics(
             solarManagerId: systemInformation!.sm_id,
-            from: startOfDay,
-            to: endOfDay,
+            from: Date.todayStartOfDay(),
+            to: Date.todayEndOfDay(),
             accuracy: .high)
 
         async let forecastResult = solarManagerApi.getV1ForecastGateway(
@@ -427,18 +420,4 @@ actor SolarManager: EnergyManager {
         return dailyKWh
     }
 
-}
-
-extension Date {
-    func convertFromUTCToLocalTime() -> Date {
-        let localTimeZone = TimeZone.current
-        let sourceTimeZone = TimeZone(abbreviation: "UTC")!
-
-        let localOffset = localTimeZone.secondsFromGMT(for: self)
-        let utcOffset = sourceTimeZone.secondsFromGMT(for: self)
-
-        let intervalDifference = localOffset - utcOffset
-
-        return Date(timeInterval: TimeInterval(intervalDifference), since: self)
-    }
 }
