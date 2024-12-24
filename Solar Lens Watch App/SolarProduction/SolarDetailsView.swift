@@ -37,14 +37,17 @@ struct SolarDetailsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 20, height: 20)
-                            .symbolEffect(.breathe.pulse.byLayer, options: .repeat(.continuous))
+                            .symbolEffect(
+                                .breathe.pulse.byLayer,
+                                options: .repeat(.continuous))
                     }
                     .buttonStyle(.borderless)
                     .foregroundColor(.primary)
                     .padding(.leading, 20)
                     .sheet(isPresented: $showSolarChart) {
                         SolarChartView(
-                            maxProductionkW: $viewModel.overviewData.solarProductionMax
+                            maxProductionkW: $viewModel.overviewData
+                                .solarProductionMax
                         )
                         .onDisappear {
                             print("Hide solar chart sheet")
@@ -53,9 +56,9 @@ struct SolarDetailsView: View {
                         }
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {
-                                    Text("Production")
-                                        .foregroundColor(.accent)
-                                        .font(.headline)
+                                Text("Production")
+                                    .foregroundColor(.accentColor)
+                                    .font(.headline)
                             }  // :ToolbarItem
                         }  // :.toolbar
                     }
@@ -79,6 +82,12 @@ struct SolarDetailsView: View {
                                 Calendar.current.startOfDay(for: Date())),
                             maxProduction: $viewModel.overviewData
                                 .solarProductionMax,
+                            forecasts: .constant([
+                                viewModel.solarDetailsData.forecastToday,
+                                viewModel.solarDetailsData.forecastTomorrow,
+                                viewModel.solarDetailsData
+                                    .forecastDayAfterTomorrow,
+                            ]),
                             forecast: $viewModel.solarDetailsData
                                 .forecastToday,
                             small: .constant(false)
@@ -90,6 +99,12 @@ struct SolarDetailsView: View {
                                     byAdding: .day, value: 1, to: Date())),
                             maxProduction: $viewModel.overviewData
                                 .solarProductionMax,
+                            forecasts: .constant([
+                                viewModel.solarDetailsData.forecastToday,
+                                viewModel.solarDetailsData.forecastTomorrow,
+                                viewModel.solarDetailsData
+                                    .forecastDayAfterTomorrow,
+                            ]),
                             forecast: $viewModel.solarDetailsData
                                 .forecastTomorrow,
                             small: .constant(false)
@@ -101,6 +116,12 @@ struct SolarDetailsView: View {
                                     byAdding: .day, value: 2, to: Date())),
                             maxProduction: $viewModel.overviewData
                                 .solarProductionMax,
+                            forecasts: .constant([
+                                viewModel.solarDetailsData.forecastToday,
+                                viewModel.solarDetailsData.forecastTomorrow,
+                                viewModel.solarDetailsData
+                                    .forecastDayAfterTomorrow,
+                            ]),
                             forecast: $viewModel.solarDetailsData
                                 .forecastDayAfterTomorrow,
                             small: .constant(false)
@@ -143,7 +164,7 @@ struct SolarDetailsView: View {
 
             if refreshTimer == nil {
                 refreshTimer = Timer.scheduledTimer(
-                    withTimeInterval: 15, repeats: true
+                    withTimeInterval: 60, repeats: true
                 ) {
                     _ in
                     Task {
@@ -154,7 +175,7 @@ struct SolarDetailsView: View {
 
             AppStoreReviewManager.shared.setSolarDetailsShownAtLeastOnce()
         }  // :onAppear
-        .onDisappear() {
+        .onDisappear {
             refreshTimer?.invalidate()
             refreshTimer = nil
         }

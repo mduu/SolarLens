@@ -12,6 +12,7 @@ struct SolarChart: View {
     @Binding var maxProductionkW: Double
     @Binding var solarProduction: ConsumptionData
     var isSmall: Bool = false
+    var isAccent: Bool = false
 
     var body: some View {
         let data =
@@ -27,24 +28,27 @@ struct SolarChart: View {
 
         Chart {
             ForEach(data) { dataPoint in
-                AreaMark(
-                    x: .value("Time", dataPoint.time),
-                    y: .value("kW", dataPoint.production)
-                )
-                .interpolationMethod(.cardinal)
-                .foregroundStyle(
-                    .linearGradient(
-                        colors: [
-                            .yellow.opacity(0.5),
-                            .yellow.opacity(0.1),
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
+                
+                if !isAccent {
+                    AreaMark(
+                        x: .value("Time", dataPoint.time),
+                        y: .value("kW", dataPoint.production)
                     )
-                )
-                .lineStyle(
-                    StrokeStyle(lineWidth: 0)
-                )
+                    .interpolationMethod(.cardinal)
+                    .foregroundStyle(
+                        .linearGradient(
+                            colors: [
+                                .yellow.opacity(0.5),
+                                .yellow.opacity(0.1),
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .lineStyle(
+                        StrokeStyle(lineWidth: 0)
+                    )
+                }
 
                 LineMark(
                     x: .value("Time", dataPoint.time),

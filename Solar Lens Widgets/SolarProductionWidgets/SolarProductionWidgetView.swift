@@ -94,7 +94,7 @@ struct SolarProductionWidgetView: View {
         case .accessoryRectangular:
 
             ZStack {
-                if !showsWidgetContainerBackground {
+                if !showsWidgetContainerBackground && renderingMode == .fullColor {
                     RoundedRectangle(cornerRadius: 15)
                         .fill(
                             LinearGradient(
@@ -126,7 +126,13 @@ struct SolarProductionWidgetView: View {
                                     Calendar.current.startOfDay(for: Date())
                                 ),
                                 maxProduction: .constant(
-                                    entry.maxProduction ?? 0),
+                                    entry.maxProduction ?? 0
+                                ),
+                                forecasts: .constant([
+                                    entry.forecastToday,
+                                    entry.forecastTomorrow,
+                                    entry.forecastDayAfterTomorrow
+                                ]),
                                 forecast: .constant(entry.forecastToday),
                                 small: .constant(true)
                             )
@@ -137,7 +143,15 @@ struct SolarProductionWidgetView: View {
                                         byAdding: .day, value: 1, to: Date()
                                     )),
                                 maxProduction: .constant(
-                                    entry.maxProduction ?? 0),
+                                    entry.maxProduction ?? 0
+                                ),
+                                forecasts: .constant(
+                                    [
+                                        entry.forecastToday,
+                                        entry.forecastTomorrow,
+                                        entry.forecastDayAfterTomorrow
+                                    ]
+                                ),
                                 forecast: .constant(entry.forecastTomorrow),
                                 small: .constant(true)
                             )
@@ -148,7 +162,13 @@ struct SolarProductionWidgetView: View {
                                         byAdding: .day, value: 2, to: Date()
                                     )),
                                 maxProduction: .constant(
-                                    entry.maxProduction ?? 0),
+                                    entry.maxProduction ?? 0
+                                ),
+                                forecasts: .constant([
+                                    entry.forecastToday,
+                                    entry.forecastTomorrow,
+                                    entry.forecastDayAfterTomorrow
+                                ]),
                                 forecast: .constant(
                                     entry.forecastDayAfterTomorrow),
                                 small: .constant(true)

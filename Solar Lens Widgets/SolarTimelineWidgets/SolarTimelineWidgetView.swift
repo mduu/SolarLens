@@ -26,7 +26,7 @@ struct SolarTimelineWidgetView: View {
         case .accessoryRectangular:
 
             ZStack {
-                if !showsWidgetContainerBackground {
+                if !showsWidgetContainerBackground && renderingMode == .fullColor {
                     RoundedRectangle(cornerRadius: 15)
                         .fill(
                             LinearGradient(
@@ -45,19 +45,19 @@ struct SolarTimelineWidgetView: View {
                             .font(.caption)
                         Text(String(format: "%.1f", total))
                             .font(.system(size: 12))
-                            .foregroundColor(.accent)
+                            .foregroundColor(renderingMode == .fullColor ? .yellow : .primary)
 
                         Image(systemName: "bolt")
                             .font(.caption)
                         Text(String(format: "%.1f", current))
                             .font(.system(size: 12))
-                            .foregroundColor(.accent)
+                            .foregroundColor(renderingMode == .fullColor ? .yellow : .primary)
                         
                         Image(systemName: "arrow.up.to.line")
                             .font(.caption)
                         Text(String(format: "%.1f", max))
                             .font(.system(size: 12))
-                            .foregroundColor(.accent)
+                            .foregroundColor(renderingMode == .fullColor ? .yellow : .primary)
                     }
                     .padding(.top, 3)
                     
@@ -65,7 +65,8 @@ struct SolarTimelineWidgetView: View {
                         SolarChart(
                             maxProductionkW: .constant(absoluteMax),
                             solarProduction: .constant(history),
-                            isSmall: true
+                            isSmall: true,
+                            isAccent: renderingMode == .accented
                         )
                         .ignoresSafeArea()
                         .padding(.horizontal, 6)
