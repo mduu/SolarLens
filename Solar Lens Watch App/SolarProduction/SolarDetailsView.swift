@@ -26,12 +26,16 @@ struct SolarDetailsView: View {
                         totalProducedToday: .constant(total),
                         currentProduction: .constant(current)
                     )
+                    
+                    Spacer()
 
                     Button(action: {
                         viewModel.fetchingIsPaused = true
                         buildingModel.pauseFetching()
-                        print("Show solar chart sheet")
-                        showSolarChart = true
+                        
+                        withAnimation {
+                            showSolarChart = true
+                        }
                     }) {
                         Image(systemName: "chart.line.uptrend.xyaxis.circle")
                             .resizable()
@@ -43,7 +47,7 @@ struct SolarDetailsView: View {
                     }
                     .buttonStyle(.borderless)
                     .foregroundColor(.primary)
-                    .padding(.leading, 20)
+                    .padding(.trailing, 12)
                     .sheet(isPresented: $showSolarChart) {
                         SolarChartView(
                             maxProductionkW: $viewModel.overviewData

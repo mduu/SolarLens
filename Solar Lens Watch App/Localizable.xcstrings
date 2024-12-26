@@ -24,6 +24,34 @@
     "%@ kW" : {
       "shouldTranslate" : false
     },
+    "%@ vs. %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ vs. %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ vs. %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ vs. %2$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ vs. %2$@"
+          }
+        }
+      }
+    },
     "%@%%" : {
       "shouldTranslate" : false
     },
@@ -603,24 +631,24 @@
         }
       }
     },
-    "Max today:" : {
+    "Max %@ =" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max. Heute:"
+            "value" : "Max %@ ="
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max aujourd'hui:"
+            "value" : "Max %@ ="
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max oggi:"
+            "value" : "Max %@ ="
           }
         }
       }
@@ -993,6 +1021,17 @@
         }
       }
     },
+    "Series" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serien"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
     "Set" : {
       "localizations" : {
         "de" : {
@@ -1348,28 +1387,6 @@
     },
     "v%@" : {
       "shouldTranslate" : false
-    },
-    "Version:" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version:"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versione:"
-          }
-        }
-      }
     },
     "Your feedback matters! Please consider rating us. Your support helps us improve." : {
       "localizations" : {

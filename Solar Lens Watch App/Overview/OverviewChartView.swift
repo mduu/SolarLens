@@ -1,8 +1,7 @@
 import SwiftUI
 
-struct SolarChartView: View {
-    @Binding var maxProductionkW: Double
-    @StateObject var viewModel = SolarChartViewModel()
+struct OverviewChartView: View {
+    @StateObject var viewModel = OverviewChartViewModel()
     @State private var refreshTimer: Timer?
 
     var body: some View {
@@ -13,9 +12,8 @@ struct SolarChartView: View {
                     
                     if viewModel.consumptionData != nil {
                         
-                        SolarChart(
-                            maxProductionkW: $maxProductionkW,
-                            solarProduction: .constant(viewModel.consumptionData!)
+                        OverviewChart(
+                            consumption: .constant(viewModel.consumptionData!)
                         )
                         
                         HStack {
@@ -24,6 +22,14 @@ struct SolarChartView: View {
                             Text(String(format: "%.2f kWp", getMaxProductionkW()))
                                 .font(.footnote)
                                 .foregroundColor(.yellow)
+                        }
+                        
+                        HStack {
+                            Text("Max \(Image(systemName: "house")) =")
+                                .font(.footnote)
+                            Text(String(format: "%.2f kWp", getMaxConsumptionkW()))
+                                .font(.footnote)
+                                .foregroundColor(.teal)
                         }
 
                     } else {
@@ -84,11 +90,23 @@ struct SolarChartView: View {
 
         return maxProduction
     }
+    
+    private func getMaxConsumptionkW() -> Double {
+        guard let consumptionData = viewModel.consumptionData else { return 0 }
+        guard consumptionData.data.isEmpty == false else { return 0 }
+        
+        let maxConsumption: Double? = consumptionData.data
+            .map { $0.consumptionWatts / 1000 }
+            .max()
+
+        guard let maxConsumption else { return 0 }
+
+        return maxConsumption
+    }
 }
 
 #Preview {
-    SolarChartView(
-        maxProductionkW: .constant(11000),
-        viewModel: SolarChartViewModel.previewFake()
+    OverviewChartView(
+        viewModel: OverviewChartViewModel.previewFake()
     )
 }

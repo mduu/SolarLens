@@ -79,7 +79,8 @@ class ConsumptionData: ObservableObject {
     }
 }
 
-struct ConsumptionItem: Codable {
+struct ConsumptionItem: Codable, Identifiable {
+    var id = UUID()
     var date: Date
     var consumptionWatts: Double
     var productionWatts: Double
