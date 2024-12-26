@@ -99,6 +99,7 @@
 		49F243A42CF1CE5E009D0E2A /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Overview/OverviewChart.swift,
 				Services/ChargingInfoData.swift,
 				Services/ConsumptionData.swift,
 				Services/DateExtensions.swift,
@@ -523,7 +524,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 107;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -540,7 +541,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -562,7 +563,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 107;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -579,7 +580,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -598,14 +599,14 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 107;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				ITSAppUsesNonExemptEncryption = NO;
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -619,14 +620,14 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 107;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				ITSAppUsesNonExemptEncryption = NO;
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -644,7 +645,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 107;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -658,7 +659,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -679,7 +680,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 107;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -693,7 +694,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

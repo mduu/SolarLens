@@ -5,6 +5,7 @@ struct OverviewView: View {
 
     @State private var refreshTimer: Timer?
     @State private var showSettings: Bool = false
+    @State private var showChart: Bool = false
 
     var body: some View {
         VStack {
@@ -156,11 +157,44 @@ struct OverviewView: View {
                     Spacer()
 
                     HStack {
+                        Button(action: {
+                            model.pauseFetching()
+                            withAnimation {
+                                showChart = true
+                            }
+                        }) {
+                            Image(
+                                systemName: "chart.line.uptrend.xyaxis.circle"
+                            )
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                        }
+                        .buttonStyle(.borderless)
+                        .foregroundColor(.primary)
+                        .padding(.leading, 12)
+                        .sheet(isPresented: $showChart) {
+                            OverviewChartView()
+                                .environmentObject(model)
+                                .onDisappear {
+                                    model.resumeFetching()
+                                }
+                                .toolbar {
+                                    ToolbarItem(placement: .topBarTrailing) {
+                                        Text("\(Image(systemName: "sun.max")) vs. \(Image(systemName: "house"))")
+                                            .foregroundColor(.primary)
+                                            .font(.headline)
+                                    }  // :ToolbarItem
+                                }  // :.toolbar
+                        }
+
                         Spacer()
 
                         Button(action: {
-                            showSettings = true
                             model.pauseFetching()
+                            withAnimation {
+                                showSettings = true
+                            }
                         }) {
                             Image(systemName: "gear")
                                 .resizable()
@@ -175,8 +209,15 @@ struct OverviewView: View {
                                 .environmentObject(model)
                                 .onDisappear {
                                     model.resumeFetching()
-                                }
-                        }
+                                } // :SettingsView
+                                .toolbar {
+                                    ToolbarItem(placement: .topBarTrailing) {
+                                        Text("Settings")
+                                            .foregroundColor(.accentColor)
+                                            .font(.headline)
+                                    }  // :ToolbarItem
+                                }  // :.toolbar
+                        } // :sheet
                     }  // :HStack
 
                 }  // :VStack

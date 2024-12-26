@@ -9,12 +9,6 @@ struct SettingsView: View {
         ScrollView {
             VStack(alignment: .leading) {
 
-                Text("Settings")
-                    .font(.headline)
-                    .foregroundColor(.accent)
-
-                Divider()
-
                 Text("Logged in as:")
                     .font(.caption)
                 Text(
@@ -41,29 +35,35 @@ struct SettingsView: View {
 
                 Divider()
 
-                Text("Version:")
-                    .font(.caption)
-
-                HStack {
-                    Text(
-                        "v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
-                    )
-
-                    Text(
-                        "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
-                    )
-                }  // :HStack
-                .font(.caption)
-                .foregroundColor(.accent)
-
                 Button("Rate app", systemImage: "star.leadinghalf.filled") {
                     showRateApp = true
-                }.labelStyle(.titleAndIcon)
-                    .buttonBorderShape(.roundedRectangle)
-                    .foregroundColor(.accent)
-                    .sheet(isPresented: $showRateApp) {
-                        AppReviewRequestView()
-                    }
+                }
+                .labelStyle(.titleAndIcon)
+                .buttonBorderShape(.roundedRectangle)
+                .foregroundColor(.accent)
+                .sheet(isPresented: $showRateApp) {
+                    AppReviewRequestView()
+                }
+
+                HStack {
+                    Spacer()
+                    
+                    HStack {
+
+                        Text(
+                            "v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
+                        )
+
+                        Text(
+                            "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
+                        )
+                    }  // :HStack
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    
+                    Spacer()
+                }
+
             }  // :VStack
         }  // :ScrollView
     }  // :View
