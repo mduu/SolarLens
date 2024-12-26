@@ -32,9 +32,7 @@ struct UpdateTimeStampView: View {
                             .rotate.byLayer, options: .repeat(.continuous))
                         .font(.system(size: 6))
                         .foregroundColor(.gray)
-                        .padding(.leading, 20)
-                    
-                    Spacer()
+                        .padding(.leading, 95)
                 } // :HStack
             }
         } // :ZStack
@@ -65,7 +63,7 @@ struct UpdateTimeStampView: View {
 
 #Preview("IsLoading") {
     UpdateTimeStampView(
-        isStale: .constant(true),
+        isStale: .constant(false),
         updateTimeStamp: .constant(Date()),
         isLoading: .constant(true))
 }
