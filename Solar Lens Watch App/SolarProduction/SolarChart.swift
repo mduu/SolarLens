@@ -105,7 +105,7 @@ struct SolarChart: View {
 
         guard let maxProduction else { return 2.0 }
 
-        return maxProduction <= 0
+        return maxProduction <= 0.005
             ? 2.0
             : maxProduction * 1.1
     }
@@ -115,12 +115,12 @@ struct SolarChart: View {
     {
         // Find first non-zero index
         var firstNonZeroIndex =
-            dataPoints.firstIndex(where: { $0.production > 0 })
+        dataPoints.firstIndex(where: { $0.production > 0.005 })
             ?? dataPoints.startIndex
 
         // Find last non-zero index, starting from the end
         var lastNonZeroIndex =
-            dataPoints.lastIndex(where: { $0.production > 0 })
+            dataPoints.lastIndex(where: { $0.production > 0.005 })
             ?? dataPoints.endIndex - 1
 
         if firstNonZeroIndex == lastNonZeroIndex {
