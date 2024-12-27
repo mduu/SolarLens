@@ -24,35 +24,6 @@
     "%@ kW" : {
       "shouldTranslate" : false
     },
-    "%@ vs. %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ vs. %2$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ vs. %2$@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ vs. %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ vs. %2$@"
-          }
-        }
-      }
-    },
     "%@%%" : {
       "shouldTranslate" : false
     },
@@ -1022,6 +993,28 @@
         }
       }
     },
+    "Self consumption:" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenverbrauch:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoconsommation:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoconsumo:"
+          }
+        }
+      }
+    },
     "Series" : {
       "localizations" : {
         "de" : {
@@ -1312,7 +1305,26 @@
       }
     },
     "Today overview" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagesübersicht"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aujourd'hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panoramica odierna"
+          }
+        }
+      }
     },
     "Try again" : {
       "localizations" : {
