@@ -181,7 +181,7 @@ struct OverviewView: View {
                                 }
                                 .toolbar {
                                     ToolbarItem(placement: .topBarTrailing) {
-                                        Text("\(Image(systemName: "sun.max")) vs. \(Image(systemName: "house"))")
+                                        Text("Today overview")
                                             .foregroundColor(.primary)
                                             .font(.headline)
                                     }  // :ToolbarItem

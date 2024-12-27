@@ -25,6 +25,7 @@
       "shouldTranslate" : false
     },
     "%@ vs. %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1309,6 +1310,9 @@
           }
         }
       }
+    },
+    "Today overview" : {
+
     },
     "Try again" : {
       "localizations" : {
