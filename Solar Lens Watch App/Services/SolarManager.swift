@@ -26,6 +26,13 @@ actor SolarManager: EnergyManager {
         async let streamSensorInfosResult =
             try await solarManagerApi.getV1StreamGateway(
                 solarManagerId: systemInformation!.sm_id)
+        
+        async let todayGatewayStatisticsRsult =
+            try await solarManagerApi.getV1Statistics(
+                solarManagerId: systemInformation!.sm_id,
+                from: Date.todayStartOfDay(),
+                to: Date.todayEndOfDay(),
+                accuracy: .high)
 
         if let chart = try await solarManagerApi.getV1Chart(
             solarManagerId: systemInformation!.sm_id)
@@ -45,6 +52,7 @@ actor SolarManager: EnergyManager {
             debugPrint(lastUpdated ?? "nil")
 
             let streamSensorInfos = try await streamSensorInfosResult
+            let todayGatewayStatistics = try await todayGatewayStatisticsRsult
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos)
 
@@ -88,7 +96,12 @@ actor SolarManager: EnergyManager {
                                 priority: $0.priority,
                                 currentPower: streamInfo?.currentPower ?? 0,
                                 signal: $0.signal)
-                        })
+                        },
+                todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
+                todaySelfConsumptionRate: todayGatewayStatistics?.selfConsumptionRate,
+                todayProduction: todayGatewayStatistics?.production,
+                todayConsumption: todayGatewayStatistics?.consumption
+            )
         }
 
         let errorOverviewData =
@@ -106,7 +119,11 @@ actor SolarManager: EnergyManager {
                 lastUpdated: Date(),
                 lastSuccessServerFetch: Date(),
                 isAnyCarCharing: false,
-                chargingStations: [])
+                chargingStations: [],
+                todaySelfConsumption: nil,
+                todaySelfConsumptionRate: nil,
+                todayProduction: nil,
+                todayConsumption: nil)
 
         errorOverviewData.hasConnectionError = true
 

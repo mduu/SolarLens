@@ -19,6 +19,10 @@ class OverviewData: ObservableObject {
     @Published var chargingStations: [ChargingStation] = []
     @Published var isStaleData: Bool = false
     @Published var hasAnyCarChargingStation: Bool = true
+    @Published var todaySelfConsumption: Double? = nil
+    @Published var todaySelfConsumptionRate: Double? = nil
+    @Published var todayProduction: Double? = nil
+    @Published var todayConsumption: Double? = nil
 
     init() {
     }
@@ -36,8 +40,12 @@ class OverviewData: ObservableObject {
         lastUpdated: Date?,
         lastSuccessServerFetch: Date?,
         isAnyCarCharing: Bool,
-        chargingStations: [ChargingStation]
-    ) {
+        chargingStations: [ChargingStation],
+        todaySelfConsumption: Double? = nil,
+        todaySelfConsumptionRate: Double? = nil,
+        todayProduction: Double? = nil,
+        todayConsumption: Double? = nil
+ ) {
         self.currentSolarProduction = currentSolarProduction
         self.currentOverallConsumption = currentOverallConsumption
         self.currentBatteryLevel = currentBatteryLevel
@@ -53,6 +61,10 @@ class OverviewData: ObservableObject {
         self.chargingStations = chargingStations
         self.isStaleData = getIsStaleData()
         self.hasAnyCarChargingStation = chargingStations.count > 0
+        self.todaySelfConsumption = todaySelfConsumption
+        self.todaySelfConsumptionRate = todaySelfConsumptionRate
+        self.todayProduction = todayProduction
+        self.todayConsumption = todayConsumption
     }
 
     func isFlowBatteryToHome() -> Bool {

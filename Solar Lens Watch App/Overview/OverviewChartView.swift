@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct OverviewChartView: View {
+    @EnvironmentObject var buildingModel: BuildingStateViewModel
     @StateObject var viewModel = OverviewChartViewModel()
     @State private var refreshTimer: Timer?
 
@@ -12,25 +13,43 @@ struct OverviewChartView: View {
                     
                     if viewModel.consumptionData != nil {
                         
-                        OverviewChart(
-                            consumption: .constant(viewModel.consumptionData!)
-                        )
-                        
-                        HStack {
-                            Text("Max \(Image(systemName: "sun.max")) =")
-                                .font(.footnote)
-                            Text(String(format: "%.2f kWp", getMaxProductionkW()))
-                                .font(.footnote)
-                                .foregroundColor(.yellow)
-                        }
-                        
-                        HStack {
-                            Text("Max \(Image(systemName: "house")) =")
-                                .font(.footnote)
-                            Text(String(format: "%.2f kWp", getMaxConsumptionkW()))
-                                .font(.footnote)
-                                .foregroundColor(.teal)
-                        }
+                        ZStack {
+                            
+                            VStack {
+                                OverviewChart(
+                                    consumption: .constant(viewModel.consumptionData!)
+                                )
+                                
+                                HStack {
+                                    Text("Max \(Image(systemName: "sun.max")) =")
+                                        .font(.footnote)
+                                    Text(String(format: "%.2f kWp", getMaxProductionkW()))
+                                        .font(.footnote)
+                                        .foregroundColor(.yellow)
+                                }
+                                
+                                HStack {
+                                    Text("Max \(Image(systemName: "house")) =")
+                                        .font(.footnote)
+                                    Text(String(format: "%.2f kWp", getMaxConsumptionkW()))
+                                        .font(.footnote)
+                                        .foregroundColor(.teal)
+                                }
+                            }
+                            
+                            VStack {
+                                HStack {
+                                    Text("Self consumption:")
+                                        .font(.footnote)
+                                    Text(String(format: "%.0f%%", buildingModel.overviewData.todaySelfConsumptionRate ?? 0))
+                                        .font(.footnote)
+                                        .foregroundColor(.orange)
+                                    Spacer()
+                                }
+                                Spacer()
+                            }
+                            
+                        } // :ZStack
 
                     } else {
                         
@@ -109,4 +128,5 @@ struct OverviewChartView: View {
     OverviewChartView(
         viewModel: OverviewChartViewModel.previewFake()
     )
+    .environmentObject(BuildingStateViewModel.fake(overviewData: OverviewData()))
 }
