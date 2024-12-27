@@ -103,11 +103,9 @@ struct SolarChart: View {
             .map { $0.productionWatts / 1000 }
             .max()
 
-        guard let maxProduction else { return 2.0 }
+        guard let maxProduction, maxProduction > 2 else { return 2.0 }
 
-        return maxProduction <= 0.005
-            ? 2.0
-            : maxProduction * 1.1
+        return maxProduction * 1.1
     }
 
     private func filterRelevantDataPoints(from dataPoints: [SolarDataPoint])
