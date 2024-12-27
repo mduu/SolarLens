@@ -11,7 +11,7 @@ struct OverviewChart: View {
 
         Chart {
             ForEach(consumption.data) { dataPoint in
-                
+
                 if !isAccent {
                     AreaMark(
                         x: .value("Time", dataPoint.date),
@@ -33,11 +33,9 @@ struct OverviewChart: View {
                         StrokeStyle(lineWidth: 0)
                     )
                     .foregroundStyle(by: .value("Series", "Production"))
-                    
+
                 }
 
-                // -- Production --
-                
                 LineMark(
                     x: .value("Time", dataPoint.date),
                     y: .value("kW", dataPoint.productionWatts / 1000)
@@ -49,7 +47,7 @@ struct OverviewChart: View {
                 )
 
                 // -- Consumption --
-                
+
                 if !isAccent {
                     AreaMark(
                         x: .value("Time", dataPoint.date),
@@ -61,7 +59,7 @@ struct OverviewChart: View {
                         .linearGradient(
                             colors: [
                                 .teal.opacity(0.5),
-                                .teal.opacity(0.1)
+                                .teal.opacity(0.1),
                             ],
                             startPoint: .top,
                             endPoint: .bottom
@@ -72,7 +70,7 @@ struct OverviewChart: View {
                     )
                     .foregroundStyle(by: .value("Series", "Consumption"))
                 }
-                
+
                 LineMark(
                     x: .value("Time", dataPoint.date),
                     y: .value("kW", dataPoint.consumptionWatts / 1000)
@@ -80,7 +78,7 @@ struct OverviewChart: View {
                 .foregroundStyle(by: .value("Series", "Consumption"))
                 .interpolationMethod(.cardinal)
                 .lineStyle(
-                    StrokeStyle(lineWidth: 1)
+                    StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
                 )
 
             }  // :foreach
@@ -103,12 +101,11 @@ struct OverviewChart: View {
             }
         }
         .chartForegroundStyleScale([
-                    "Production": Color.yellow,
-                    "Consumption": Color.teal
-                ])
-        .chartLegend()
+            "Production": .yellow,
+            "Consumption": Color.teal,
+        ])
+        .chartLegend(isSmall ? .hidden : .visible)
         .frame(maxHeight: .infinity)
-
     }
 
     private func getTimeFormatter() -> DateFormatter {

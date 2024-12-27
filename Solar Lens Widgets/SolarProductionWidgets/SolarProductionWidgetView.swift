@@ -99,7 +99,7 @@ struct SolarProductionWidgetView: View {
                         .fill(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    .orange.opacity(0.5), .orange.opacity(0.2),
+                                    .orange.opacity(0.5), .orange.opacity(0.3),
                                 ]), startPoint: .top, endPoint: .bottom
                             )
                         )
