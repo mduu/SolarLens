@@ -100,40 +100,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Overview/OverviewChart.swift,
-				Services/ChargingInfoData.swift,
-				Services/ConsumptionData.swift,
-				Services/DateExtensions.swift,
-				Services/EnergyManager.swift,
-				Services/EnergyManagerClientError.swift,
-				Services/FakeEnergyManager.swift,
-				Services/KeychainHelper.swift,
-				Services/OverviewData.swift,
-				Services/Rest/DateHelper.swift,
-				Services/Rest/NoRequestBody.swift,
-				Services/Rest/RestClient.swift,
-				Services/Rest/RestError.swift,
-				Services/SolarDetailsData.swift,
-				Services/SolarManager.swift,
-				Services/SolarManagerApi/DTOs/Accuracy.swift,
-				Services/SolarManagerApi/DTOs/ChargingMode.swift,
-				Services/SolarManagerApi/DTOs/ControlCarChargingRequest.swift,
-				Services/SolarManagerApi/DTOs/ForecastItemV1Response.swift,
-				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
-				Services/SolarManagerApi/DTOs/GetV1ChartResponse.swift,
-				Services/SolarManagerApi/DTOs/GetV1UsersResponse.swift,
-				Services/SolarManagerApi/DTOs/LoginRequest.swift,
-				Services/SolarManagerApi/DTOs/LoginResponse.swift,
-				Services/SolarManagerApi/DTOs/NoContentResponse.swift,
-				Services/SolarManagerApi/DTOs/Period.swift,
-				Services/SolarManagerApi/DTOs/RefreshRequest.swift,
-				Services/SolarManagerApi/DTOs/RefreshResponse.swift,
-				Services/SolarManagerApi/DTOs/SensorConnectionStatus.swift,
-				Services/SolarManagerApi/DTOs/SensorConsumptionV1Response.swift,
-				Services/SolarManagerApi/DTOs/SensorInfosV1Response.swift,
-				Services/SolarManagerApi/DTOs/StatisticsV1Response.swift,
-				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
-				Services/SolarManagerApi/SolarManagerApiClient.swift,
-				Services/SolarManagerApi/SolarManagerApiClientError.swift,
 				SolarProduction/ForecastItemView.swift,
 				SolarProduction/SolarChart.swift,
 				SolarProduction/SolarTodayInfoView.swift,
@@ -143,6 +109,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		4917325C2D1FE4A800CA9EDF /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		494882B92CA8443300C59146 /* Solar Lens Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -188,6 +159,7 @@
 		494882A82CA8443300C59146 = {
 			isa = PBXGroup;
 			children = (
+				4917325C2D1FE4A800CA9EDF /* Shared */,
 				49EDF1372CF58548003C1176 /* Solar Lens Watch App.entitlements */,
 				49EDF1382CF58559003C1176 /* Solar Lens WidgetsExtension.entitlements */,
 				494882B92CA8443300C59146 /* Solar Lens Watch App */,
@@ -253,6 +225,7 @@
 				495539C22CECF51C00D2FE19 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				4917325C2D1FE4A800CA9EDF /* Shared */,
 				494882B92CA8443300C59146 /* Solar Lens Watch App */,
 			);
 			name = "Solar Lens Watch App";
@@ -276,6 +249,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				4917325C2D1FE4A800CA9EDF /* Shared */,
 				495539B92CECF51A00D2FE19 /* Solar Lens Widgets */,
 			);
 			name = "Solar Lens WidgetsExtension";
