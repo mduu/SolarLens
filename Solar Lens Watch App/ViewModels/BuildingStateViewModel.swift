@@ -1,12 +1,12 @@
 import Foundation
 import SwiftUI
 
-enum MainTab: Int, Identifiable {
-    case overview
-    case charging
-    case solarProduction
+enum MainTab: Int, CaseIterable, Identifiable {
+    case overview = 0
+    case charging = 1
+    case solarProduction = 2
     
-    var id: Int { rawValue }
+    var id: Self { self }
 }
 
 @MainActor
