@@ -1,10 +1,8 @@
 import AppIntents
 import Foundation
 
-struct OpenOverview: AppIntent {
+struct OpenOverviewIntent: AppIntent {
     static var title: LocalizedStringResource = "Open Solar Lens overview"
-    static var description = IntentDescription(
-        "Open Solar Lens and show the energy flow overview")
     static var openAppWhenRun: Bool = true
 
     @MainActor
