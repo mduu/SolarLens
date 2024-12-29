@@ -7,15 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		491732652D1FE8C900CA9EDF /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 491732642D1FE8C900CA9EDF /* Intents.framework */; };
+		4917326C2D1FE8C900CA9EDF /* Solar Lens Intents.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 491732632D1FE8C900CA9EDF /* Solar Lens Intents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		494882B62CA8443300C59146 /* Solar Lens Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 494882B52CA8443300C59146 /* Solar Lens Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		495539B72CECF51A00D2FE19 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1A82CC0389C00A89445 /* WidgetKit.framework */; };
 		495539B82CECF51A00D2FE19 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1AA2CC0389D00A89445 /* SwiftUI.framework */; };
 		495539C32CECF51C00D2FE19 /* Solar Lens WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 495B2E1F2CB2AE520089AD1B /* KeychainAccess */; };
+		499E9EE02D2133490093485B /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 499E9EDF2D2133490093485B /* KeychainAccess */; };
 		49F243A62CF1CF39009D0E2A /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 49F243A52CF1CF39009D0E2A /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4917326A2D1FE8C900CA9EDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 494882A92CA8443300C59146 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 491732622D1FE8C900CA9EDF;
+			remoteInfo = "Solar Lens Intents";
+		};
 		494882B72CA8443300C59146 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 494882A92CA8443300C59146 /* Project object */;
@@ -50,6 +60,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				4917326C2D1FE8C900CA9EDF /* Solar Lens Intents.appex in Embed Foundation Extensions */,
 				495539C32CECF51C00D2FE19 /* Solar Lens WidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -58,6 +69,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		491732632D1FE8C900CA9EDF /* Solar Lens Intents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens Intents.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		491732642D1FE8C900CA9EDF /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		494882AF2CA8443300C59146 /* Solar Lens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		494882B52CA8443300C59146 /* Solar Lens Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +81,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		491732702D1FE8C900CA9EDF /* Exceptions for "Solar Lens Intents" folder in "Solar Lens Intents" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 491732622D1FE8C900CA9EDF /* Solar Lens Intents */;
+		};
+		491732792D2047A500CA9EDF /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens Intents" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ViewModels/BuildingStateViewModel.swift,
+			);
+			target = 491732622D1FE8C900CA9EDF /* Solar Lens Intents */;
+		};
 		494E38FA2D11DE7D009CFA76 /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -114,11 +141,20 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		491732662D1FE8C900CA9EDF /* Solar Lens Intents */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				491732702D1FE8C900CA9EDF /* Exceptions for "Solar Lens Intents" folder in "Solar Lens Intents" target */,
+			);
+			path = "Solar Lens Intents";
+			sourceTree = "<group>";
+		};
 		494882B92CA8443300C59146 /* Solar Lens Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				494E38FA2D11DE7D009CFA76 /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens" target */,
 				49F243A42CF1CE5E009D0E2A /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens WidgetsExtension" target */,
+				491732792D2047A500CA9EDF /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens Intents" target */,
 			);
 			path = "Solar Lens Watch App";
 			sourceTree = "<group>";
@@ -135,6 +171,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		491732602D1FE8C900CA9EDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				499E9EE02D2133490093485B /* KeychainAccess in Frameworks */,
+				491732652D1FE8C900CA9EDF /* Intents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		494882B22CA8443300C59146 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -164,6 +209,7 @@
 				49EDF1382CF58559003C1176 /* Solar Lens WidgetsExtension.entitlements */,
 				494882B92CA8443300C59146 /* Solar Lens Watch App */,
 				495539B92CECF51A00D2FE19 /* Solar Lens Widgets */,
+				491732662D1FE8C900CA9EDF /* Solar Lens Intents */,
 				49EED1A72CC0389C00A89445 /* Frameworks */,
 				494882B02CA8443300C59146 /* Products */,
 			);
@@ -175,6 +221,7 @@
 				494882AF2CA8443300C59146 /* Solar Lens.app */,
 				494882B52CA8443300C59146 /* Solar Lens Watch App.app */,
 				495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */,
+				491732632D1FE8C900CA9EDF /* Solar Lens Intents.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -184,6 +231,7 @@
 			children = (
 				49EED1A82CC0389C00A89445 /* WidgetKit.framework */,
 				49EED1AA2CC0389D00A89445 /* SwiftUI.framework */,
+				491732642D1FE8C900CA9EDF /* Intents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -191,6 +239,30 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		491732622D1FE8C900CA9EDF /* Solar Lens Intents */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4917326D2D1FE8C900CA9EDF /* Build configuration list for PBXNativeTarget "Solar Lens Intents" */;
+			buildPhases = (
+				4917325F2D1FE8C900CA9EDF /* Sources */,
+				491732602D1FE8C900CA9EDF /* Frameworks */,
+				491732612D1FE8C900CA9EDF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				4917325C2D1FE4A800CA9EDF /* Shared */,
+				491732662D1FE8C900CA9EDF /* Solar Lens Intents */,
+			);
+			name = "Solar Lens Intents";
+			packageProductDependencies = (
+				499E9EDF2D2133490093485B /* KeychainAccess */,
+			);
+			productName = "Solar Lens Intents";
+			productReference = 491732632D1FE8C900CA9EDF /* Solar Lens Intents.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		494882AE2CA8443300C59146 /* Solar Lens */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 494882C92CA8443400C59146 /* Build configuration list for PBXNativeTarget "Solar Lens" */;
@@ -223,6 +295,7 @@
 			);
 			dependencies = (
 				495539C22CECF51C00D2FE19 /* PBXTargetDependency */,
+				4917326B2D1FE8C900CA9EDF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				4917325C2D1FE4A800CA9EDF /* Shared */,
@@ -267,9 +340,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					491732622D1FE8C900CA9EDF = {
+						CreatedOnToolsVersion = 16.2;
+					};
 					494882AE2CA8443300C59146 = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -304,11 +380,19 @@
 				494882AE2CA8443300C59146 /* Solar Lens */,
 				494882B42CA8443300C59146 /* Solar Lens Watch App */,
 				495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */,
+				491732622D1FE8C900CA9EDF /* Solar Lens Intents */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		491732612D1FE8C900CA9EDF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		494882AD2CA8443300C59146 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -333,6 +417,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4917325F2D1FE8C900CA9EDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		494882B12CA8443300C59146 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -350,6 +441,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4917326B2D1FE8C900CA9EDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 491732622D1FE8C900CA9EDF /* Solar Lens Intents */;
+			targetProxy = 4917326A2D1FE8C900CA9EDF /* PBXContainerItemProxy */;
+		};
 		494882B82CA8443300C59146 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
@@ -363,6 +459,67 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4917326E2D1FE8C900CA9EDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UYT5K989XD;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Solar Lens Intents/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Intents";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.SolarManagerWatch.watchkitapp.Solar-Lens-Intents";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		4917326F2D1FE8C900CA9EDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UYT5K989XD;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Solar Lens Intents/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Intents";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.SolarManagerWatch.watchkitapp.Solar-Lens-Intents";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
 		494882C32CA8443400C59146 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -525,6 +682,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
+				USER_HEADER_SEARCH_PATHS = "Shared/**";
 				VALIDATE_PRODUCT = NO;
 				WATCHOS_DEPLOYMENT_TARGET = 11.0;
 			};
@@ -686,6 +844,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4917326D2D1FE8C900CA9EDF /* Build configuration list for PBXNativeTarget "Solar Lens Intents" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4917326E2D1FE8C900CA9EDF /* Debug */,
+				4917326F2D1FE8C900CA9EDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		494882AC2CA8443300C59146 /* Build configuration list for PBXProject "SolarLens" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -737,6 +904,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		495B2E1F2CB2AE520089AD1B /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		499E9EDF2D2133490093485B /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
