@@ -11,7 +11,7 @@ enum MainTab: Int, Identifiable {
 
 @MainActor
 class BuildingStateViewModel: ObservableObject {
-    @Published var selectedMainTab = 0
+    @Published var selectedMainTab: MainTab = .overview
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var error: EnergyManagerClientError?
@@ -158,16 +158,8 @@ class BuildingStateViewModel: ObservableObject {
     }
     
     func setMainTab(newTab: MainTab) {
-        var newTabIdx = 0
-        
-        switch newTab {
-        case .overview: newTabIdx = 0
-        case .charging: newTabIdx = 1
-        case .solarProduction: newTabIdx = 2
-        }
-        
-        if (selectedMainTab != newTabIdx) {
-            selectedMainTab = newTabIdx
+        if selectedMainTab != newTab {
+            selectedMainTab = newTab
         }
     }
 
