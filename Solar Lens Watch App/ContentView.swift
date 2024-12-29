@@ -21,7 +21,7 @@ struct ContentView: View {
                                 await viewModel.fetchServerData()
                             }
                         }
-                        .tag(0)
+                        .tag(MainTab.overview)
 
                     if viewModel.overviewData.hasAnyCarChargingStation {
                         ChargingControlView()
@@ -39,7 +39,7 @@ struct ContentView: View {
                                     }  // :HStack
                                 }  // :ToolbarItem
                             }  // :.toolbar
-                            .tag(1)
+                            .tag(MainTab.charging)
                     }
 
                     SolarDetailsView()
@@ -57,7 +57,7 @@ struct ContentView: View {
                                 }  // :HStack
                             }  // :ToolbarItem
                         }  // :.toolbar
-                        .tag(2)
+                        .tag(MainTab.solarProduction)
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
