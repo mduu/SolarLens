@@ -13,5 +13,7 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>WKCompanionAppBundleIdentifier</key>
+	<string>com.marcduerst.SolarManagerWatch</string>
 </dict>
 </plist>
