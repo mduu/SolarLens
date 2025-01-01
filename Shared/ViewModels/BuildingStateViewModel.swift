@@ -33,7 +33,8 @@ class BuildingStateViewModel: ObservableObject {
     static func fake(
         overviewData: OverviewData,
         loggedIn: Bool = true,
-        isLoading: Bool = false
+        isLoading: Bool = false,
+        didLoginSucceed: Bool? = nil
     ) -> BuildingStateViewModel
     {
         let result = BuildingStateViewModel.init(
@@ -46,6 +47,7 @@ class BuildingStateViewModel: ObservableObject {
         }
 
         result.isLoading = isLoading
+        result.didLoginSucceed = didLoginSucceed
 
         return result
     }

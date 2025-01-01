@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Solar Lens iOS
-//
-//  Created by Marc Dürst on 31.12.2024.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -18,11 +11,8 @@ struct ContentView: View {
                 .foregroundStyle(.accent)
                 .background(Color.black.opacity(0.7))
         } else if !viewModel.loginCredentialsExists {
-            VStack {
-                Text("No login!")
-                    .foregroundColor(.red)
-                    .font(.title)
-            }
+            LoginView()
+                .environmentObject(viewModel)
         } else {
             VStack {
                 Image(systemName: "globe")
