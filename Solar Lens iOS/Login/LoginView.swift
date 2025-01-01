@@ -1,0 +1,123 @@
+import SwiftUI
+
+struct LoginView: View {
+    @EnvironmentObject var model: BuildingStateViewModel
+
+    @State var email: String = ""
+    @State var password: String = ""
+
+    var body: some View {
+        VStack(alignment: .center) {
+            Image("solarlens")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 150, height: 150)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .padding()
+
+            Text("Solar Lens")
+                .font(.largeTitle)
+                .foregroundColor(.accent)
+
+            TextField("Email", text: $email)
+                .textContentType(.emailAddress)
+                .keyboardType(.emailAddress)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+
+            SecureField("Password", text: $password)
+                .textContentType(.password)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            Text("Pwd: \(password)")
+
+            Button(action: {
+                Task {
+                    await model.tryLogin(
+                        email: email, password: password)
+                }
+            }) {
+                Image(systemName: "person.badge.key.fill")
+                Text("Login")
+            }
+            .font(.title2)
+            .buttonStyle(.borderedProminent)
+            .disabled(isValidLogin())
+
+            if model.didLoginSucceed == false {
+                VStack(alignment: HorizontalAlignment.center, spacing: 8) {
+                    Text("Login failed!")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                        .padding(16)
+
+                    Text(
+                        "Please make sure you are using the correct email and passwort from your Solar Manager login."
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 16)
+                    .font(.subheadline)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                }
+                .background(Color.red)
+                .cornerRadius(8)
+            }
+        }
+        .padding(.horizontal, 30)
+    }
+
+    func isValidLogin() -> Bool {
+        guard !isValidEmail() else { return false }
+        guard !isValidPassword() else { return false }
+        return true
+    }
+
+    func isValidEmail() -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let valid = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+            .evaluate(
+                with: email)
+        return valid
+    }
+
+    func isValidPassword() -> Bool {
+        let valid = password.count > 4
+        return valid
+    }
+}
+
+#Preview("English") {
+    LoginView()
+        .environmentObject(BuildingStateViewModel())
+}
+
+#Preview("Failed") {
+    LoginView()
+        .environmentObject(
+            BuildingStateViewModel.fake(
+                overviewData: .fake(),
+                loggedIn: false,
+                isLoading: false,
+                didLoginSucceed: false
+            )
+        )
+}
+
+#Preview("German") {
+    LoginView()
+        .environmentObject(BuildingStateViewModel())
+        .environment(\.locale, Locale(identifier: "DE"))
+}
+
+#Preview("French") {
+    LoginView()
+        .environmentObject(BuildingStateViewModel())
+        .environment(\.locale, Locale(identifier: "FR"))
+}
+
+#Preview("Italian") {
+    LoginView()
+        .environmentObject(BuildingStateViewModel())
+        .environment(\.locale, Locale(identifier: "IT"))
+}
