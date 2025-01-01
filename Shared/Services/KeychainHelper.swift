@@ -4,12 +4,13 @@ import KeychainAccess
 class KeychainHelper {
     static let serviceName = "com.marcduerst.SolarManagerWatch.watchkitapp"
     static let accessGroup = "UYT5K989XD.com.marcduerst.SolarManagerWatch.Shared"
-    static let serviceComment = "Solar Lens Login"
+    static let serviceComment = "Solar Lens App"
 
     static let usernameKey = "username"
     static let passwordKey = "password"
     static let accessTokenKey = "accessToken"
     static let refreshTokenKey = "refreshToken"
+    static let isSynchronizedKey = "isSynchronized"
 
     static var accessToken: String? {
         get { getKeychain()[accessTokenKey] }
@@ -19,6 +20,17 @@ class KeychainHelper {
     static var refreshToken: String? {
         get { getKeychain()[refreshTokenKey] }
         set { getKeychain()[refreshTokenKey] = newValue }
+    }
+    
+    static var isSynchronized: Bool {
+        get {
+            getKeychain()[isSynchronizedKey] == nil
+            ? false
+            : getKeychain()[isSynchronizedKey]!.lowercased() == "true"
+                ? true
+                : false
+        }
+        set { getKeychain()[isSynchronizedKey] = String(newValue) }
     }
 
     static func saveCredentials(username: String, password: String) {
@@ -31,6 +43,14 @@ class KeychainHelper {
         let keychain = getKeychain()
         let username = keychain[usernameKey]
         let password = keychain[passwordKey]
+        
+        if !isSynchronized {
+            if username != nil {
+                keychain[usernameKey] = username
+                keychain[passwordKey] = password
+            }
+            isSynchronized = true
+        }
 
         return (username, password)
     }
@@ -45,6 +65,7 @@ class KeychainHelper {
 
     private static func getKeychain() -> Keychain {
         let shared = Keychain(service: serviceName, accessGroup: accessGroup)
+            .synchronizable(true)
             .comment(serviceComment)
 
         // Migrate from old Keychain if needed
@@ -60,7 +81,7 @@ class KeychainHelper {
                 try! oldKeychain.removeAll()
             }
         }
-
+        
         return shared
     }
 
