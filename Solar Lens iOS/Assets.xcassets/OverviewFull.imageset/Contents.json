@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "Flux_Dev_a_nice_European_hose_with_a_root_with_mounted_solar_p_1.jpeg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
