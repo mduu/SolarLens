@@ -27,7 +27,8 @@ struct HomeView: View {
                     Image("OverviewFull")
                         .resizable()
                         .scaledToFill()
-                        .saturation(0.6)
+                        .saturation(0.5)
+                        .opacity(0.6)
                         .ignoresSafeArea()
 
                     VStack {
@@ -58,57 +59,129 @@ struct HomeView: View {
 
                     VStack {
 
-                        var solar =
+                        let solar =
                             Double(
                                 viewModel.overviewData.currentSolarProduction)
                             / 1000
                         
-                        var consumption =
+                        let consumption =
                             Double(
                                 viewModel.overviewData.currentOverallConsumption)
                             / 1000
                         
-                        var grid =
+                        let grid =
                             Double(
                                 viewModel.overviewData.currentGridToHouse >= 0
                                 ? viewModel.overviewData.currentGridToHouse
                                 : viewModel.overviewData.currentSolarToGrid)
                             / 1000
                         
-                        var battery = viewModel.overviewData.currentBatteryLevel ?? 0
+                        let battery = viewModel.overviewData.currentBatteryLevel ?? 0
                         
-                        HStack(spacing: 50) {
-                            CircularInstrument(
-                                borderColor: Color.accentColor,
-                                label: "Solar Production",
-                                value: String(format: "%.1f kW", solar)
-                            )
+                        Grid(horizontalSpacing: 2, verticalSpacing: 20) {
+                            GridRow(alignment: .center) {
+                                CircularInstrument(
+                                    borderColor: Color.accentColor,
+                                    label: "Solar Production",
+                                    value: String(format: "%.1f kW", solar)
+                                )
+                                
+                                if viewModel.overviewData.isFlowSolarToGrid() {
+                                    Image(systemName: "arrow.right")
+                                        .foregroundColor(.orange)
+                                        .font(.system(size: 50, weight: .heavy))
+                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .symbolEffect(
+                                            .wiggle.byLayer,
+                                            options: .repeat(.periodic(delay: 0.7)))
+                                } else {
+                                    Text("")
+                                        .frame(minWidth: 50, minHeight: 50)
+                                }
+                                
+                                CircularInstrument(
+                                    borderColor: Color.orange,
+                                    label: "Grid",
+                                    value: String(format: "%.1f kW", grid)
+                                )
+                            }
                             
-                            CircularInstrument(
-                                borderColor: Color.orange,
-                                label: "Grid",
-                                value: String(format: "%.1f kW", grid)
-                            )
-                        }
-                        .padding(.top, 50)
-                        
-                        HStack(spacing: 50) {
-                            CircularInstrument(
-                                borderColor: Color.green,
-                                label: "Battery",
-                                value: String(format: "%.0f %%", battery)
-                            )
-                            
-                            CircularInstrument(
-                                borderColor: Color.teal,
-                                label: "Consumption",
-                                value: String(format: "%.1f kW", consumption)
-                            )
-                        }
-                        .padding(.top, 100)
-                        
-                        Spacer()
+                            GridRow(alignment: .center) {
+                                if viewModel.overviewData.isFlowSolarToBattery() {
+                                    Image(systemName: "arrow.down")
+                                        .foregroundColor(.green.opacity(0.9))
+                                        .font(.system(size: 50, weight: .heavy))
+                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .symbolEffect(
+                                            .wiggle.byLayer,
+                                            options: .repeat(.periodic(delay: 0.7)))
 
+                                } else {
+                                    Text("")
+                                        .frame(minWidth: 50, minHeight: 50)
+                                }
+
+                                if viewModel.overviewData.isFlowSolarToHouse() {
+                                    Image(systemName: "arrow.down.right")
+                                        .foregroundColor(.green)
+                                        .font(.system(size: 50, weight: .heavy))
+                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .symbolEffect(
+                                            .wiggle.byLayer,
+                                            options: .repeat(.periodic(delay: 0.7)))
+                                } else {
+                                    Text("")
+                                        .frame(minWidth: 50, minHeight: 50)
+                                }
+
+                                if viewModel.overviewData.isFlowGridToHouse() {
+                                    Image(systemName: "arrow.down")
+                                        .foregroundColor(.orange)
+                                        .font(.system(size: 50, weight: .heavy))
+                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .symbolEffect(
+                                            .wiggle.byLayer,
+                                            options: .repeat(.periodic(delay: 0.7)))
+                                } else {
+                                    Text("")
+                                        .frame(minWidth: 50, minHeight: 50)
+                                }
+                            }.frame(minWidth: 30, minHeight: 20)
+                            
+                            GridRow(alignment: .center) {
+                                if viewModel.overviewData.currentBatteryLevel != nil {
+                                    CircularInstrument(
+                                        borderColor: Color.green,
+                                        label: "Battery",
+                                        value: String(format: "%.0f %%", battery)
+                                    )
+                                } else {
+                                    Text("")
+                                        .frame(minWidth: 150, minHeight: 150)
+                                }
+                                
+                                if viewModel.overviewData.isFlowBatteryToHome() {
+                                    Image(systemName: "arrow.right")
+                                        .foregroundColor(.green)
+                                        .font(.system(size: 50, weight: .heavy))
+                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .symbolEffect(
+                                            .wiggle.byLayer,
+                                            options: .repeat(.periodic(delay: 0.7)))
+                                } else {
+                                    Text("")
+                                        .frame(minWidth: 50, minHeight: 50)
+                                }
+                                
+                                CircularInstrument(
+                                    borderColor: Color.teal,
+                                    label: "Consumption",
+                                    value: String(format: "%.1f kW", consumption)
+                                )
+                            }
+                            
+                        }
+                        
                     }  // :VStack
                     .padding(.top, 50)
                 }  // :ZStack
