@@ -11,7 +11,7 @@ struct CircularInstrument: View {
     var borderColor: Color
     var label: LocalizedStringResource
     var value: String
-    
+
     var body: some View {
         ZStack {
             Circle()
@@ -25,11 +25,12 @@ struct CircularInstrument: View {
                 Text(label)
                     .font(.system(size: 22, weight: .light))
                     .multilineTextAlignment(.center)
-                
+
                 Text(value)
                     .font(.system(size: 30, weight: .bold))
             }
         }
+        .shadow(radius: 4, x: 4, y: 4)
         .frame(maxWidth: 150, maxHeight: 150)
     }
 }
