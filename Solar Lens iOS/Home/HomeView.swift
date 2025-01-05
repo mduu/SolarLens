@@ -4,6 +4,7 @@ struct HomeView: View {
     @EnvironmentObject var viewModel: BuildingStateViewModel
     @Environment(\.colorScheme) var colorScheme
     @State private var refreshTimer: Timer?
+    @State private var showLogoutConfirmation: Bool = false
 
     var body: some View {
         VStack {
@@ -25,7 +26,7 @@ struct HomeView: View {
                         
                         Image("OverviewFull")
                             .resizable()
-                            .scaledToFill()
+                            .clipped()
                             .saturation(0)
                             .opacity(colorScheme == .light ? 0.1 : 0.4)
                             .ignoresSafeArea()
@@ -49,7 +50,7 @@ struct HomeView: View {
                                     .font(.system(size: 24, weight: .bold))
 
                                 Text("Lens")
-                                    .foregroundColor(.white)
+                                    .foregroundColor(colorScheme == .light ? .black : .white)
                                     .font(.system(size: 24, weight: .bold))
 
                             }
@@ -57,6 +58,30 @@ struct HomeView: View {
                         }  // :HStack
 
                     }  // :VStack
+                    
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            
+                            Button("Log out", systemImage: "iphone.and.arrow.right.outward")
+                            {
+                                showLogoutConfirmation = true
+                            }.labelStyle(.iconOnly)
+                                .buttonStyle(.borderless)
+                                .foregroundColor(.primary)
+                                .font(.system(size: 24))
+                                .confirmationDialog(
+                                    "Are you sure to log out?",
+                                    isPresented: $showLogoutConfirmation
+                                ) {
+                                    Button("Confirm") {
+                                        viewModel.logout()
+                                    }
+                                    Button("Cancel", role: .cancel) {}
+                                }
+                        }.padding().padding(.trailing)
+                    }
 
                     VStack {
 
@@ -105,7 +130,7 @@ struct HomeView: View {
                                     label: "Grid",
                                     value: String(format: "%.1f kW", grid)
                                 )
-                            }
+                            } // :GridRow
                             
                             GridRow(alignment: .center) {
                                 if viewModel.overviewData.isFlowSolarToBattery() {
@@ -147,7 +172,8 @@ struct HomeView: View {
                                     Text("")
                                         .frame(minWidth: 50, minHeight: 50)
                                 }
-                            }.frame(minWidth: 30, minHeight: 20)
+                            } // :GridRow
+                                .frame(minWidth: 30, minHeight: 20)
                             
                             GridRow(alignment: .center) {
                                 if viewModel.overviewData.currentBatteryLevel != nil {
@@ -179,9 +205,9 @@ struct HomeView: View {
                                     label: "Consumption",
                                     value: String(format: "%.1f kW", consumption)
                                 )
-                            }
+                            } // :GridRow
                             
-                        }
+                        } // :Grid
                         
                     }  // :VStack
                     .padding(.top, 50)
