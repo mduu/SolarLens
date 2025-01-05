@@ -77,7 +77,7 @@ struct HomeView: View {
                                 : viewModel.overviewData.currentSolarToGrid)
                             / 1000
                         
-                        let battery = viewModel.overviewData.currentBatteryLevel ?? 0
+                        let battery = Double(viewModel.overviewData.currentBatteryLevel ?? 0)
                         
                         Grid(horizontalSpacing: 2, verticalSpacing: 20) {
                             GridRow(alignment: .center) {
@@ -154,7 +154,7 @@ struct HomeView: View {
                                     CircularInstrument(
                                         borderColor: Color.green,
                                         label: "Battery",
-                                        value: String(format: "%.0f %%", battery)
+                                        value: String(format: "%.0f%%", battery)
                                     )
                                 } else {
                                     Text("")
