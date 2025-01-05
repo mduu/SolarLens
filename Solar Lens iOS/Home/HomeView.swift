@@ -115,7 +115,7 @@ struct HomeView: View {
                                 if viewModel.overviewData.isFlowSolarToGrid() {
                                     Image(systemName: "arrow.right")
                                         .foregroundColor(.orange)
-                                        .font(.system(size: 50, weight: .heavy))
+                                        .font(.system(size: 50, weight: .medium))
                                         .shadow(radius: 4, x: 4, y: 4)
                                         .symbolEffect(
                                             .wiggle.byLayer,
@@ -135,8 +135,8 @@ struct HomeView: View {
                             GridRow(alignment: .center) {
                                 if viewModel.overviewData.isFlowSolarToBattery() {
                                     Image(systemName: "arrow.down")
-                                        .foregroundColor(.green.opacity(0.9))
-                                        .font(.system(size: 50, weight: .heavy))
+                                        .foregroundColor(.green)
+                                        .font(.system(size: 50, weight: .medium))
                                         .shadow(radius: 4, x: 4, y: 4)
                                         .symbolEffect(
                                             .wiggle.byLayer,
@@ -150,7 +150,7 @@ struct HomeView: View {
                                 if viewModel.overviewData.isFlowSolarToHouse() {
                                     Image(systemName: "arrow.down.right")
                                         .foregroundColor(.green)
-                                        .font(.system(size: 50, weight: .heavy))
+                                        .font(.system(size: 50, weight: .medium))
                                         .shadow(radius: 4, x: 4, y: 4)
                                         .symbolEffect(
                                             .wiggle.byLayer,
@@ -163,7 +163,7 @@ struct HomeView: View {
                                 if viewModel.overviewData.isFlowGridToHouse() {
                                     Image(systemName: "arrow.down")
                                         .foregroundColor(.orange)
-                                        .font(.system(size: 50, weight: .heavy))
+                                        .font(.system(size: 50, weight: .medium))
                                         .shadow(radius: 4, x: 4, y: 4)
                                         .symbolEffect(
                                             .wiggle.byLayer,
@@ -190,7 +190,7 @@ struct HomeView: View {
                                 if viewModel.overviewData.isFlowBatteryToHome() {
                                     Image(systemName: "arrow.right")
                                         .foregroundColor(.green)
-                                        .font(.system(size: 50, weight: .heavy))
+                                        .font(.system(size: 50, weight: .medium))
                                         .shadow(radius: 4, x: 4, y: 4)
                                         .symbolEffect(
                                             .wiggle.byLayer,
@@ -210,7 +210,6 @@ struct HomeView: View {
                         } // :Grid
                         
                     }  // :VStack
-                    .padding(.top, 50)
                 }  // :ZStack
             }
         }
