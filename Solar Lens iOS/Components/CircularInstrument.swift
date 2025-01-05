@@ -15,10 +15,11 @@ struct CircularInstrument: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(.white.opacity(0.8))
+                .fill(.white)
+                .opacity(0.8)
                 .overlay(
                     Circle()
-                        .stroke(borderColor, lineWidth: 3)
+                        .stroke(borderColor, lineWidth: 4)
                 )
 
             VStack(alignment: .center) {
@@ -32,7 +33,7 @@ struct CircularInstrument: View {
                     .foregroundColor(.black)
             }
         }
-        .shadow(radius: 4, x: 4, y: 4)
+        .shadow(radius: 3, x: 3, y: 3)
         .frame(maxWidth: 150, maxHeight: 150)
     }
 }
