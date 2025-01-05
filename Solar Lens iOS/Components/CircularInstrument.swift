@@ -25,9 +25,11 @@ struct CircularInstrument: View {
                 Text(label)
                     .font(.system(size: 22, weight: .light))
                     .multilineTextAlignment(.center)
+                    .foregroundColor(.black)
 
                 Text(value)
                     .font(.system(size: 30, weight: .bold))
+                    .foregroundColor(.black)
             }
         }
         .shadow(radius: 4, x: 4, y: 4)

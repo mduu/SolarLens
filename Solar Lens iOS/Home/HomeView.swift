@@ -1,14 +1,8 @@
-//
-//  HomeView.swift
-//  Solar Lens
-//
-//  Created by Marc Dürst on 01.01.2025.
-//
-
 import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var viewModel: BuildingStateViewModel
+    @Environment(\.colorScheme) var colorScheme
     @State private var refreshTimer: Timer?
 
     var body: some View {
@@ -24,12 +18,19 @@ struct HomeView: View {
             } else {
                 ZStack {
 
-                    Image("OverviewFull")
-                        .resizable()
-                        .scaledToFill()
-                        .saturation(0.5)
-                        .opacity(0.6)
-                        .ignoresSafeArea()
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(colorScheme == .light ? .white : .black)
+                            .ignoresSafeArea()
+                        
+                        Image("OverviewFull")
+                            .resizable()
+                            .scaledToFill()
+                            .saturation(0)
+                            .opacity(colorScheme == .light ? 0.1 : 0.4)
+                            .ignoresSafeArea()
+                    }
+                    
 
                     VStack {
                         Spacer()
