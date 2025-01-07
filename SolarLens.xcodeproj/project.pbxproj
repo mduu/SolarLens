@@ -63,6 +63,7 @@
 		494882B52CA8443300C59146 /* Solar Lens Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49892CE42D243FF100478C91 /* Solar Lens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49892EB92D2D906600478C91 /* Solar-Lens-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Solar-Lens-Info.plist"; sourceTree = "<group>"; };
 		49EDF1372CF58548003C1176 /* Solar Lens Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Solar Lens Watch App.entitlements"; sourceTree = "<group>"; };
 		49EDF1382CF58559003C1176 /* Solar Lens WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Solar Lens WidgetsExtension.entitlements"; sourceTree = "<group>"; };
 		49EED1A82CC0389C00A89445 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -176,6 +177,7 @@
 		494882A82CA8443300C59146 = {
 			isa = PBXGroup;
 			children = (
+				49892EB92D2D906600478C91 /* Solar-Lens-Info.plist */,
 				4917325C2D1FE4A800CA9EDF /* Shared */,
 				49EDF1372CF58548003C1176 /* Solar Lens Watch App.entitlements */,
 				49EDF1382CF58559003C1176 /* Solar Lens WidgetsExtension.entitlements */,
@@ -532,7 +534,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 115;
+				CURRENT_PROJECT_VERSION = 118;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -573,7 +575,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 115;
+				CURRENT_PROJECT_VERSION = 118;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -613,7 +615,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 115;
+				CURRENT_PROJECT_VERSION = 118;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -648,7 +650,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 115;
+				CURRENT_PROJECT_VERSION = 118;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -685,11 +687,12 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 115;
+				CURRENT_PROJECT_VERSION = 118;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Solar-Lens-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -722,11 +725,12 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 115;
+				CURRENT_PROJECT_VERSION = 118;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Solar-Lens-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
