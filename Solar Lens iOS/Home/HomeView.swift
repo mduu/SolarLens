@@ -115,8 +115,7 @@ struct HomeView: View {
                                 if viewModel.overviewData.isFlowSolarToGrid() {
                                     Image(systemName: "arrow.right")
                                         .foregroundColor(.orange)
-                                        .font(.system(size: 50, weight: .medium))
-                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .font(.system(size: 50, weight: .light))
                                         .symbolEffect(
                                             .wiggle.byLayer,
                                             options: .repeat(.periodic(delay: 0.7)))
@@ -136,8 +135,7 @@ struct HomeView: View {
                                 if viewModel.overviewData.isFlowSolarToBattery() {
                                     Image(systemName: "arrow.down")
                                         .foregroundColor(.green)
-                                        .font(.system(size: 50, weight: .medium))
-                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .font(.system(size: 50, weight: .light))
                                         .symbolEffect(
                                             .wiggle.byLayer,
                                             options: .repeat(.periodic(delay: 0.7)))
@@ -150,8 +148,7 @@ struct HomeView: View {
                                 if viewModel.overviewData.isFlowSolarToHouse() {
                                     Image(systemName: "arrow.down.right")
                                         .foregroundColor(.green)
-                                        .font(.system(size: 50, weight: .medium))
-                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .font(.system(size: 50, weight: .light))
                                         .symbolEffect(
                                             .wiggle.byLayer,
                                             options: .repeat(.periodic(delay: 0.7)))
@@ -163,8 +160,7 @@ struct HomeView: View {
                                 if viewModel.overviewData.isFlowGridToHouse() {
                                     Image(systemName: "arrow.down")
                                         .foregroundColor(.orange)
-                                        .font(.system(size: 50, weight: .medium))
-                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .font(.system(size: 50, weight: .light))
                                         .symbolEffect(
                                             .wiggle.byLayer,
                                             options: .repeat(.periodic(delay: 0.7)))
@@ -177,21 +173,19 @@ struct HomeView: View {
                             
                             GridRow(alignment: .center) {
                                 if viewModel.overviewData.currentBatteryLevel != nil {
-                                    CircularInstrument(
-                                        borderColor: Color.green,
-                                        label: "Battery",
-                                        value: String(format: "%.0f%%", battery)
+                                    BatteryBoubleView(
+                                        currentBatteryLevel: $viewModel.overviewData.currentBatteryLevel,
+                                        currentChargeRate: $viewModel.overviewData.currentBatteryChargeRate
                                     )
                                 } else {
                                     Text("")
-                                        .frame(minWidth: 150, minHeight: 150)
+                                        .frame(minWidth: 120, minHeight: 120)
                                 }
                                 
                                 if viewModel.overviewData.isFlowBatteryToHome() {
                                     Image(systemName: "arrow.right")
                                         .foregroundColor(.green)
-                                        .font(.system(size: 50, weight: .medium))
-                                        .shadow(radius: 4, x: 4, y: 4)
+                                        .font(.system(size: 50, weight: .light))
                                         .symbolEffect(
                                             .wiggle.byLayer,
                                             options: .repeat(.periodic(delay: 0.7)))
