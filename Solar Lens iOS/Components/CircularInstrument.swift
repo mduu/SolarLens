@@ -24,17 +24,16 @@ struct CircularInstrument: View {
 
             VStack(alignment: .center) {
                 Text(label)
-                    .font(.system(size: 22, weight: .light))
+                    .font(.system(size: 18, weight: .light))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.black)
 
                 Text(value)
-                    .font(.system(size: 30, weight: .bold))
+                    .font(.system(size: 24, weight: .bold))
                     .foregroundColor(.black)
             }
         }
-        .shadow(radius: 3, x: 3, y: 3)
-        .frame(maxWidth: 150, maxHeight: 150)
+        .frame(maxWidth: 120, maxHeight: 120)
     }
 }
 

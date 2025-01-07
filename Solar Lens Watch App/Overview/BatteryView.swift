@@ -44,11 +44,11 @@ struct BatteryView: View {
             return Image(systemName: "battery.100percent.bolt")
         }
 
-        if currentBatteryLevel ?? 0 >= 99 {
+        if currentBatteryLevel ?? 0 >= 95 {
             return Image(systemName: "battery.100percent")
         }
 
-        if currentBatteryLevel ?? 0 >= 75 {
+        if currentBatteryLevel ?? 0 >= 70 {
             return Image(systemName: "battery.75percent")
         }
 
@@ -56,7 +56,7 @@ struct BatteryView: View {
             return Image(systemName: "battery.50percent")
         }
 
-        if currentBatteryLevel ?? 0 >= 25 {
+        if currentBatteryLevel ?? 0 >= 10 {
             return Image(systemName: "battery.25percent")
         }
 
