@@ -27,22 +27,29 @@ struct BatteryBoubleView: View {
         }
         .chartBackground { chartProxy in
           GeometryReader { geometry in
-            if let anchor = chartProxy.plotFrame {
-              let frame = geometry[anchor]
-                VStack {
-                    Text("Battery")
-                        .font(.system(size: 18, weight: .light))
-                        .foregroundColor(.black)
-
-                    Text("\(batteryLevel)%")
-                        .foregroundColor(getColor())
-                        .font(.system(size: 24, weight: .bold))
-
-                    getBatterImage()
-                }
-                .position(x: frame.midX, y: frame.midY)
-                .background(.white)
-            }
+              if let anchor = chartProxy.plotFrame {
+                  let frame = geometry[anchor]
+                  ZStack {
+                      Circle()
+                          .fill(.white)
+                          .opacity(0.8)
+                      
+                      VStack {
+                          Text("Battery")
+                              .font(.system(size: 18, weight: .light))
+                              .foregroundColor(.black)
+                          
+                          Text("\(batteryLevel)%")
+                              .foregroundColor(getColor())
+                              .font(.system(size: 24, weight: .bold))
+                          
+                          getBatterImage()
+                              .foregroundColor(.black)
+                      } // :VStack
+                      .position(x: frame.midX, y: frame.midY)
+                      
+                  } // :ZStack
+              }
           }
         }
         .frame(width: 120, height: 120)
