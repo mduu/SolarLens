@@ -101,17 +101,16 @@ struct HomeView: View {
                                 ? viewModel.overviewData.currentGridToHouse
                                 : viewModel.overviewData.currentSolarToGrid)
                             / 1000
-                        
-                        let battery = Double(viewModel.overviewData.currentBatteryLevel ?? 0)
-                        
+                                                
                         Grid(horizontalSpacing: 2, verticalSpacing: 20) {
                             GridRow(alignment: .center) {
                                 CircularInstrument(
                                     borderColor: Color.accentColor,
                                     label: "Solar Production",
                                     value: String(format: "%.1f kW", solar)
-                                )
-                                
+                                ) {}
+                                .frame(maxWidth: 120, maxHeight: 120)
+
                                 if viewModel.overviewData.isFlowSolarToGrid() {
                                     Image(systemName: "arrow.right")
                                         .foregroundColor(.orange)
@@ -128,7 +127,8 @@ struct HomeView: View {
                                     borderColor: Color.orange,
                                     label: "Grid",
                                     value: String(format: "%.1f kW", grid)
-                                )
+                                ) {}
+                                .frame(maxWidth: 120, maxHeight: 120)
                             } // :GridRow
                             
                             GridRow(alignment: .center) {
@@ -198,8 +198,20 @@ struct HomeView: View {
                                     borderColor: Color.teal,
                                     label: "Consumption",
                                     value: String(format: "%.1f kW", consumption)
-                                )
+                                ) {}
+                                .frame(maxWidth: 120, maxHeight: 120)
                             } // :GridRow
+                            
+                            GridRow {
+                                
+                                Text("")
+                                
+                                Text("")
+                                
+                                ChargingStations(chargingStation: $viewModel.overviewData.chargingStations)
+                                    .frame(maxWidth: 120)
+                                
+                            }
                             
                         } // :Grid
                         

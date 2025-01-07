@@ -41,9 +41,23 @@ class OverviewData: ObservableObject {
             chargingStations: [
                 .init(
                     id: "42",
-                    name: "Keba",
+                    name: "Keba 1",
+                    chargingMode: ChargingMode.withSolarPower,
+                    priority: 0,
+                    currentPower: 0,
+                    signal: SensorConnectionStatus.connected),
+                .init(
+                    id: "43",
+                    name: "Keba 2",
                     chargingMode: ChargingMode.withSolarPower,
                     priority: 1,
+                    currentPower: 11356,
+                    signal: SensorConnectionStatus.connected),
+                .init(
+                    id: "44",
+                    name: "Keba 3",
+                    chargingMode: ChargingMode.withSolarPower,
+                    priority: 2,
                     currentPower: 0,
                     signal: SensorConnectionStatus.connected)
             ]
@@ -134,7 +148,7 @@ class OverviewData: ObservableObject {
     }
 }
 
-class ChargingStation: Observable {
+class ChargingStation: Observable, Identifiable {
     @Published var id: String
     @Published var name: String
     @Published var chargingMode: ChargingMode
