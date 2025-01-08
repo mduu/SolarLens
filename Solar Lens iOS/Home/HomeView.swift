@@ -34,8 +34,6 @@ struct HomeView: View {
                     
 
                     VStack {
-                        Spacer()
-
                         HStack(alignment: .center) {
                             Image("solarlens")
                                 .resizable()
@@ -56,11 +54,11 @@ struct HomeView: View {
                             }
 
                         }  // :HStack
+                        Spacer()
 
                     }  // :VStack
                     
                     VStack {
-                        Spacer()
                         HStack {
                             Spacer()
                             
@@ -81,7 +79,9 @@ struct HomeView: View {
                                     Button("Cancel", role: .cancel) {}
                                 }
                         }.padding().padding(.trailing)
-                    }
+                        
+                        Spacer()
+                    } // :VStack
 
                     VStack {
 
@@ -103,6 +103,12 @@ struct HomeView: View {
                             / 1000
                                                 
                         Grid(horizontalSpacing: 2, verticalSpacing: 20) {
+                            GridRow {
+                                SolarForecast()
+                                    .frame(maxWidth: 150, maxHeight: 100)
+                                                                
+                                Text("")
+                            }
                             GridRow(alignment: .center) {
                                 CircularInstrument(
                                     borderColor: Color.accentColor,
@@ -216,6 +222,9 @@ struct HomeView: View {
                                             .symbolEffect(
                                                 .wiggle.byLayer,
                                                 options: .repeat(.periodic(delay: 0.7)))
+                                    } else {
+                                        Text("")
+                                            .frame(minHeight: 25)
                                     }
                                     
                                     ChargingStations(chargingStation: $viewModel.overviewData.chargingStations)
@@ -226,7 +235,8 @@ struct HomeView: View {
                             
                         } // :Grid
                         
-                    }  // :VStack
+                    } // :VStack
+                    .padding(.top, 70)
                 }  // :ZStack
             }
         }

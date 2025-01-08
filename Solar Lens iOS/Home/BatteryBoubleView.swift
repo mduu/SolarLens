@@ -36,7 +36,7 @@ struct BatteryBoubleView: View {
                       
                       VStack {
                           Text("Battery")
-                              .font(.system(size: 18, weight: .light))
+                              .font(.system(size: 14, weight: .light))
                               .foregroundColor(.black)
                           
                           Text("\(batteryLevel)%")
