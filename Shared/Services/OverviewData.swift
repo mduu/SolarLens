@@ -37,7 +37,7 @@ class OverviewData: ObservableObject {
             hasConnectionError: false,
             lastUpdated: Date(),
             lastSuccessServerFetch: Date(),
-            isAnyCarCharing: false,
+            isAnyCarCharing: true,
             chargingStations: [
                 .init(
                     id: "42",

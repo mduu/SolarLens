@@ -208,8 +208,19 @@ struct HomeView: View {
                                 
                                 Text("")
                                 
-                                ChargingStations(chargingStation: $viewModel.overviewData.chargingStations)
-                                    .frame(maxWidth: 120)
+                                VStack {
+                                    if viewModel.overviewData.isAnyCarCharing {
+                                        Image(systemName: "arrow.down")
+                                            .foregroundColor(.blue)
+                                            .font(.system(size: 25, weight: .light))
+                                            .symbolEffect(
+                                                .wiggle.byLayer,
+                                                options: .repeat(.periodic(delay: 0.7)))
+                                    }
+                                    
+                                    ChargingStations(chargingStation: $viewModel.overviewData.chargingStations)
+                                        .frame(maxWidth: 120)
+                                }
                                 
                             }
                             
