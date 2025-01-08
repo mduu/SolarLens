@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 struct ForecastItemView: View {
     @Binding var date: Date?
@@ -6,6 +7,7 @@ struct ForecastItemView: View {
     @Binding var forecasts: [ForecastItem?]
     @Binding var forecast: ForecastItem?
     @Binding var small: Bool?
+    var intense: Bool = false
 
     var shortDateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -22,7 +24,7 @@ struct ForecastItemView: View {
                 ZStack {
 
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(getColor().opacity(0.1))
+                        .fill(getColor().opacity(intense ? 0.2 : 0.1))
                         .frame(
                             width: geometry.size.width,
                             height: geometry.size.height)
@@ -33,15 +35,15 @@ struct ForecastItemView: View {
                             small ?? false
                                 ? LinearGradient(
                                     gradient: Gradient(colors: [
-                                        getColor().opacity(0.1)
+                                        getColor().opacity(intense ? 0.2 : 0.1)
                                     ]),
                                     startPoint: .top,
                                     endPoint: .bottom
                                 )
                                 : LinearGradient(
                                     gradient: Gradient(colors: [
-                                        getColor().opacity(0.15),
-                                        getColor().opacity(0.01),
+                                        getColor().opacity(intense ? 0.30 : 0.15),
+                                        getColor().opacity(intense ? 0.05 : 0.01),
                                     ]),
                                     startPoint: .top,
                                     endPoint: .bottom
@@ -118,7 +120,7 @@ struct ForecastItemView: View {
             ForecastItem(min: 0.2, max: 0.4, expected: 0.3),
             ForecastItem(min: 3.2, max: 3.4, expected: 3.3),
         ]),
-        forecast: .constant(ForecastItem(min: 1.0, max: 5.3, expected: 3.4)),
+        forecast: .constant(ForecastItem(min: 1.2, max: 1.4, expected: 1.3)),
         small: .constant(true)
     )
 }

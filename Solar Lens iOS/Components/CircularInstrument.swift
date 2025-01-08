@@ -40,7 +40,7 @@ struct CircularInstrument<Content: View>: View {
 
             VStack(alignment: .center) {
                 Text(label)
-                    .font(.system(size: small ? 9 : 18, weight: .light))
+                    .font(.system(size: small ? 7 : 14, weight: .light))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.black)
 
