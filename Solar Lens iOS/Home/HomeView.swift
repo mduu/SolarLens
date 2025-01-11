@@ -115,7 +115,7 @@ struct HomeView: View {
                                     label: "Solar Production",
                                     value: String(format: "%.1f kW", solar)
                                 ) {
-                                    Image(systemName: "sun.max")
+                                    Image(systemName: "sun.max").foregroundColor(.black)
                                 }
                                 .frame(maxWidth: 120, maxHeight: 120)
 
@@ -136,7 +136,7 @@ struct HomeView: View {
                                     label: "Grid",
                                     value: String(format: "%.1f kW", grid)
                                 ) {
-                                    Image(systemName: "network")
+                                    Image(systemName: "network").foregroundColor(.black)
                                 }
                                 .frame(maxWidth: 120, maxHeight: 120)
                             } // :GridRow
@@ -209,7 +209,7 @@ struct HomeView: View {
                                     label: "Consumption",
                                     value: String(format: "%.1f kW", consumption)
                                 ) {
-                                    Image(systemName: "house")
+                                    Image(systemName: "house").foregroundColor(.black)
                                 }
                                 .frame(maxWidth: 120, maxHeight: 120)
                             } // :GridRow
