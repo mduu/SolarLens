@@ -28,7 +28,7 @@ struct ChargingButtonView: View {
                     .padding(.leading, 3)
 
                 ChargingModelLabelView(chargingMode: chargingMode)
-                    .font(.title)
+                    .font(largeButton ? .title : nil)
 
                 Spacer(minLength: 0)
             }.frame(alignment: .leading)
