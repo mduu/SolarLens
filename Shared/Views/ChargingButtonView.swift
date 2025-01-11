@@ -28,20 +28,24 @@ struct ChargingButtonView: View {
                     .padding(.leading, 3)
 
                 ChargingModelLabelView(chargingMode: chargingMode)
-                    .font(largeButton ? .title : nil)
 
                 Spacer(minLength: 0)
-            }.frame(alignment: .leading)
+            }
+            .frame(alignment: .leading)
+            .padding(.all, 0)
         }
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.capsule)
+        .buttonStyle( .automatic )
         .frame(maxWidth: .infinity)
-        .padding(.all, largeButton ? 4 : 0)
+        .padding(.all, largeButton ? 5 : 0)
+        .background(
+            getBackgroundColor(
+                chargingMode: chargingMode,
+                chargingStation: $chargingStation.wrappedValue)
+        )
         .tint(
             getButtonTint(
                 chargingMode: chargingMode,
-                chargingStation: $chargingStation
-                    .wrappedValue)
+                chargingStation: $chargingStation.wrappedValue)
         )
         .sheet(isPresented: $showingPopup) {
             ChargingOptionsPopupView(
@@ -86,9 +90,18 @@ struct ChargingButtonView: View {
         chargingMode: ChargingMode,
         chargingStation: ChargingStation
     ) -> Color? {
-        return (chargingStation.chargingMode == chargingMode)
+        return (chargingStation.chargingMode == chargingMode) && !largeButton
             ? .accent
             : .primary
+    }
+    
+    private func getBackgroundColor(
+        chargingMode: ChargingMode,
+        chargingStation: ChargingStation
+    ) -> Color? {
+        return (chargingStation.chargingMode == chargingMode) && largeButton
+            ? .accent.opacity(0.1)
+            : .clear
     }
 
     private func isSimpleChargingMode(chargingMode: ChargingMode) -> Bool {
@@ -114,4 +127,56 @@ struct ChargingButtonView: View {
                 ControlCarChargingRequest.init(chargingMode: chargingMode))
     }
 
+}
+
+#Preview("Selected") {
+    ChargingButtonView(
+        chargingMode: .constant(.withSolarPower),
+        chargingStation: .constant(
+            ChargingStation(
+                id: "2134",
+                name: "Station 2",
+                chargingMode: .withSolarPower,
+                priority: 1,
+                currentPower: 0,
+                signal: .connected
+            )
+        )
+    )
+    .environmentObject(BuildingStateViewModel.fake(overviewData: OverviewData.fake()))
+}
+
+#Preview("Selected iOS") {
+    ChargingButtonView(
+        chargingMode: .constant(.withSolarPower),
+        chargingStation: .constant(
+            ChargingStation(
+                id: "2134",
+                name: "Station 2",
+                chargingMode: .withSolarPower,
+                priority: 1,
+                currentPower: 0,
+                signal: .connected
+            )
+        ),
+        largeButton: true
+    )
+    .environmentObject(BuildingStateViewModel.fake(overviewData: OverviewData.fake()))
+}
+
+#Preview("Unselected") {
+    ChargingButtonView(
+        chargingMode: .constant(.off),
+        chargingStation: .constant(
+            ChargingStation(
+                id: "2134",
+                name: "Station 2",
+                chargingMode: .withSolarPower,
+                priority: 1,
+                currentPower: 0,
+                signal: .connected
+            )
+        )
+    )
+    .environmentObject(BuildingStateViewModel.fake(overviewData: OverviewData.fake()))
 }
