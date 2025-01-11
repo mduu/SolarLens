@@ -9,6 +9,8 @@ struct ForecastItemView: View {
     @Binding var small: Bool?
     var intense: Bool = false
 
+    @Environment(\.colorScheme) var colorScheme
+
     var shortDateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
@@ -27,7 +29,8 @@ struct ForecastItemView: View {
                         .fill(getColor().opacity(intense ? 0.2 : 0.1))
                         .frame(
                             width: geometry.size.width,
-                            height: geometry.size.height)
+                            height: geometry.size.height
+                        )
                         .widgetAccentable()
 
                     RoundedRectangle(cornerRadius: 5)
@@ -42,8 +45,10 @@ struct ForecastItemView: View {
                                 )
                                 : LinearGradient(
                                     gradient: Gradient(colors: [
-                                        getColor().opacity(intense ? 0.30 : 0.15),
-                                        getColor().opacity(intense ? 0.05 : 0.01),
+                                        getColor().opacity(
+                                            intense ? 0.30 : 0.15),
+                                        getColor().opacity(
+                                            intense ? 0.05 : 0.01),
                                     ]),
                                     startPoint: .top,
                                     endPoint: .bottom
@@ -55,7 +60,8 @@ struct ForecastItemView: View {
                         )
                         .position(
                             x: geometry.size.width / 2,
-                            y: geometry.size.height * (1 - getPercentage() / 2))  // Position relative to parent's height
+                            y: geometry.size.height * (1 - getPercentage() / 2)
+                        )  // Position relative to parent's height
                         .widgetAccentable()
                 }
             }
@@ -71,7 +77,11 @@ struct ForecastItemView: View {
                     .widgetAccentable()
 
                     Text("\(forecast?.stringRange ?? "")")
-                        .foregroundColor(getColor())
+                        .foregroundColor(
+                            colorScheme == .dark
+                                ? getColor()
+                                : .primary
+                        )
                         .font(.headline)
 
                     if !isSmall {
@@ -88,7 +98,7 @@ struct ForecastItemView: View {
     }
 
     private func getColor() -> Color {
-        return small ?? false ? Color.accentColor : Color.yellow
+        return small ?? false ? .accentColor : .yellow
     }
 
     private func getPercentage() -> Double {

@@ -104,7 +104,7 @@ struct HomeView: View {
                                                 
                         Grid(horizontalSpacing: 2, verticalSpacing: 20) {
                             GridRow {
-                                SolarForecast()
+                                SolarForecastView()
                                     .frame(maxWidth: 150, maxHeight: 100)
                                                                 
                                 Text("")
@@ -227,7 +227,7 @@ struct HomeView: View {
                                             .frame(minHeight: 25)
                                     }
                                     
-                                    ChargingStations(chargingStation: $viewModel.overviewData.chargingStations)
+                                    ChargingStationsView(chargingStation: $viewModel.overviewData.chargingStations)
                                         .frame(maxWidth: 120)
                                 }
                                 
