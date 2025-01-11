@@ -4,6 +4,7 @@ struct ChargingButtonView: View {
     @EnvironmentObject var model: BuildingStateViewModel
     @Binding var chargingMode: ChargingMode
     @Binding var chargingStation: ChargingStation
+    var largeButton: Bool = false
 
     @State private var showingPopup = false
 
@@ -27,12 +28,15 @@ struct ChargingButtonView: View {
                     .padding(.leading, 3)
 
                 ChargingModelLabelView(chargingMode: chargingMode)
+                    .font(.title)
 
                 Spacer(minLength: 0)
             }.frame(alignment: .leading)
         }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
         .frame(maxWidth: .infinity)
-        .padding(.all, 0)
+        .padding(.all, largeButton ? 4 : 0)
         .tint(
             getButtonTint(
                 chargingMode: chargingMode,
