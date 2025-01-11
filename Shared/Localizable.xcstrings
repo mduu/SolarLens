@@ -99,6 +99,9 @@
     "%lld W" : {
       "shouldTranslate" : false
     },
+    "%lld%%" : {
+
+    },
     "%lld%%  %@ kW" : {
       "localizations" : {
         "en" : {
@@ -194,6 +197,9 @@
         }
       }
     },
+    "Battery" : {
+
+    },
     "Cancel" : {
       "localizations" : {
         "de" : {
@@ -265,6 +271,9 @@
           }
         }
       }
+    },
+    "Choose charging mode:" : {
+
     },
     "Confirm" : {
       "localizations" : {
@@ -366,6 +375,9 @@
         }
       }
     },
+    "Empty" : {
+
+    },
     "Forecast" : {
       "localizations" : {
         "de" : {
@@ -387,6 +399,12 @@
           }
         }
       }
+    },
+    "Full" : {
+
+    },
+    "Grid" : {
+
     },
     "Here is how:" : {
       "localizations" : {
@@ -496,6 +514,9 @@
     },
     "kWh" : {
       "shouldTranslate" : false
+    },
+    "Lens" : {
+
     },
     "Log out" : {
       "localizations" : {
@@ -915,6 +936,9 @@
         }
       }
     },
+    "Pwd: %@" : {
+
+    },
     "Rate app" : {
       "localizations" : {
         "de" : {
@@ -1125,6 +1149,9 @@
           }
         }
       }
+    },
+    "Solar Lens" : {
+
     },
     "Solar Manger Login" : {
       "localizations" : {

@@ -3,27 +3,7 @@ import SwiftUI
 struct ChargingStationView: View {
     @Binding var station: ChargingStation
     @State var showChargingModeSelection: Bool = false
-    @State var chargingModeConfiguration = ChargingModeConfiguration()
 
-    fileprivate func ChargingModes() -> VStack<ForEach<[ChargingMode], ChargingMode, (some View)?>> {
-        return VStack {
-            ForEach(ChargingMode.allCases, id: \.self) {
-                chargingMode in
-                
-                if chargingModeConfiguration.chargingModeVisibillity[chargingMode] ?? true {
-                    
-                    ChargingButtonView(
-                        chargingMode: .constant(chargingMode),
-                        chargingStation: $station,
-                        largeButton: true
-                    )  // :ChargingButtonView
-                    
-                }  // :if
-            }  // :ForEach
-            
-        } // :VStack
-    }
-    
     var body: some View {
         CircularInstrument(
             borderColor: .blue,
@@ -52,11 +32,12 @@ struct ChargingStationView: View {
         .onTapGesture {
             showChargingModeSelection = true
         }
-        .sheet(isPresented: $showChargingModeSelection)
-        {
-            ChargingModes()
-                .presentationDetents([.height(500)])
-        } // : sheet
+        .sheet(isPresented: $showChargingModeSelection) {
+            ChargingModePickerView(
+                station: $station
+            )
+            .presentationDetents([.height(400)])
+        }  // : sheet
     }
 }
 
