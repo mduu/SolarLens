@@ -114,7 +114,9 @@ struct HomeView: View {
                                     borderColor: Color.accentColor,
                                     label: "Solar Production",
                                     value: String(format: "%.1f kW", solar)
-                                ) {}
+                                ) {
+                                    Image(systemName: "sun.max")
+                                }
                                 .frame(maxWidth: 120, maxHeight: 120)
 
                                 if viewModel.overviewData.isFlowSolarToGrid() {
@@ -133,7 +135,9 @@ struct HomeView: View {
                                     borderColor: Color.orange,
                                     label: "Grid",
                                     value: String(format: "%.1f kW", grid)
-                                ) {}
+                                ) {
+                                    Image(systemName: "network")
+                                }
                                 .frame(maxWidth: 120, maxHeight: 120)
                             } // :GridRow
                             
@@ -204,7 +208,9 @@ struct HomeView: View {
                                     borderColor: Color.teal,
                                     label: "Consumption",
                                     value: String(format: "%.1f kW", consumption)
-                                ) {}
+                                ) {
+                                    Image(systemName: "house")
+                                }
                                 .frame(maxWidth: 120, maxHeight: 120)
                             } // :GridRow
                             
