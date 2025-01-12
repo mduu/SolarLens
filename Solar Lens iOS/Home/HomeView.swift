@@ -82,6 +82,15 @@ struct HomeView: View {
                         
                         Spacer()
                     } // :VStack
+                    
+                    VStack {
+                        Spacer()
+                        UpdateTimeStampView(
+                            isStale: $viewModel.overviewData.isStaleData,
+                            updateTimeStamp: $viewModel.overviewData.lastSuccessServerFetch,
+                            isLoading: $viewModel.isLoading
+                        )
+                    } // :VStack
 
                     VStack {
 
@@ -240,6 +249,8 @@ struct HomeView: View {
                             }
                             
                         } // :Grid
+                        
+                        
                         
                     } // :VStack
                     .padding(.top, 70)
