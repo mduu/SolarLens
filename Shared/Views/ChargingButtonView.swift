@@ -52,6 +52,7 @@ struct ChargingButtonView: View {
                 chargingMode: $chargingMode,
                 chargingStation: $chargingStation
             )
+            .presentationDetents([.height(300)])
             .environmentObject(model)
         }
     }

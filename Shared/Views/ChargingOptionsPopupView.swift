@@ -77,9 +77,10 @@ struct ChargingOptionsPopupView: View {
                     }
                 }) {
                     Image(systemName: "minus")
+                        .frame(height: 30)
                 }
                 .buttonStyle(.bordered)
-                .foregroundColor(.accent)
+                .tint(.accent)
                 .padding()
 
                 Text("\(constantCurrent) A")
@@ -91,9 +92,10 @@ struct ChargingOptionsPopupView: View {
                     }
                 }) {
                     Image(systemName: "plus")
+                        .frame(height: 30)
                 }
                 .buttonStyle(.bordered)
-                .foregroundColor(.accent)
+                .tint(.accent)
                 .padding()
             }
 
@@ -107,9 +109,11 @@ struct ChargingOptionsPopupView: View {
                 }
             }) {
                 Text("Set")
+                    .frame(width: 140, height: 30)
             }
             .buttonStyle(.bordered)
             .foregroundColor(.green)
+            .tint(.green)
             .padding()
         }
     }
@@ -127,9 +131,10 @@ struct ChargingOptionsPopupView: View {
                         }
                     }) {
                         Image(systemName: "minus")
+                            .frame(height: 30)
                     }
-                    .buttonBorderShape(.circle)
-                    .foregroundColor(.accent)
+                    .buttonStyle(.bordered)
+                    .tint(.accent)
                     .padding()
 
                     Text("\(minQuantity) kWh")
@@ -141,9 +146,10 @@ struct ChargingOptionsPopupView: View {
                         }
                     }) {
                         Image(systemName: "plus")
+                            .frame(height: 30)
                     }
-                    .buttonBorderShape(.circle)
-                    .foregroundColor(.accent)
+                    .buttonStyle(.bordered)
+                    .tint(.accent)
                     .padding()
                 }
 
@@ -157,9 +163,10 @@ struct ChargingOptionsPopupView: View {
                             "\($minQuantityDate.wrappedValue.formatted(date: .numeric, time: .omitted))"
                         )
                     }
+                    .frame(minWidth: 140)
                 }
-                .buttonBorderShape(.circle)
-                .foregroundColor(.accentColor)
+                .buttonStyle(.bordered)
+                .tint(.accent)
                 .sheet(isPresented: $showMinCurrentDatePicker) {
                     DatePicker(
                         selection: $minQuantityDate,
@@ -182,9 +189,10 @@ struct ChargingOptionsPopupView: View {
                             "\($minQuantityTime.wrappedValue.formatted(date: .omitted, time: .shortened))"
                         )
                     }
+                    .frame(minWidth: 140)
                 }
-                .buttonBorderShape(.circle)
-                .foregroundColor(.accentColor)
+                .buttonStyle(.bordered)
+                .tint(.accent)
                 .sheet(isPresented: $showMinCurrentTimePicker) {
                     DatePicker(
                         selection: $minQuantityTime,
@@ -211,12 +219,16 @@ struct ChargingOptionsPopupView: View {
                     }
                 }) {
                     Text("Set")
+                        .frame(width: 140, height: 30)
                 }
                 .buttonStyle(.bordered)
-                .foregroundColor(.green)
-                .padding()
-            }
-        }
+                .tint(.green)
+                
+            } // :VStack
+            .frame(maxWidth: .infinity)
+            
+        } // :ScrollView
+        .frame(maxWidth: .infinity)
     }
 
     var targetSoc: some View {
@@ -232,9 +244,10 @@ struct ChargingOptionsPopupView: View {
                         }
                     }) {
                         Image(systemName: "minus")
+                            .frame(height: 30)
                     }
-                    .buttonBorderShape(.circle)
-                    .foregroundColor(.accent)
+                    .buttonStyle(.bordered)
+                    .tint(.accent)
                     .padding()
 
                     Text("\(targetSocPercent) %")
@@ -246,9 +259,10 @@ struct ChargingOptionsPopupView: View {
                         }
                     }) {
                         Image(systemName: "plus")
+                            .frame(height: 30)
                     }
-                    .buttonBorderShape(.circle)
-                    .foregroundColor(.accent)
+                    .buttonStyle(.bordered)
+                    .tint(.accent)
                     .padding()
                 }
 
@@ -262,9 +276,10 @@ struct ChargingOptionsPopupView: View {
                             "\($targetSocDate.wrappedValue.formatted(date: .numeric, time: .omitted))"
                         )
                     }
+                    .frame(width: 140)
                 }
-                .buttonBorderShape(.circle)
-                .foregroundColor(.accentColor)
+                .buttonStyle(.bordered)
+                .tint(.accent)
                 .sheet(isPresented: $showTargetSocDatePicker) {
                     DatePicker(
                         selection: $targetSocDate,
@@ -287,9 +302,10 @@ struct ChargingOptionsPopupView: View {
                             "\($targetSocTime.wrappedValue.formatted(date: .omitted, time: .shortened))"
                         )
                     }
+                    .frame(width: 140)
                 }
-                .buttonBorderShape(.circle)
-                .foregroundColor(.accentColor)
+                .buttonStyle(.bordered)
+                .tint(.accent)
                 .sheet(isPresented: $showTargetSocTimePicker) {
                     DatePicker(
                         selection: $targetSocTime,
@@ -316,10 +332,11 @@ struct ChargingOptionsPopupView: View {
                     }
                 }) {
                     Text("Set")
+                        .frame(width: 140)
                 }
                 .buttonStyle(.bordered)
-                .foregroundColor(.green)
-                .padding()
+                .tint(.green)
+                .frame(height: 40)
             }
         }
     }
