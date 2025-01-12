@@ -73,7 +73,11 @@ struct ForecastItemView: View {
                         date!,
                         formatter: shortDateFormatter
                     )
-                    .font(isSmall ? .system(size: 10) : .body)
+                    #if os(watchOS)
+                        .font(isSmall ? .system(size: 10) : .body)
+                    #else
+                        .font(.system(size: 10))
+                    #endif
                     .widgetAccentable()
 
                     Text("\(forecast?.stringRange ?? "")")
@@ -82,7 +86,11 @@ struct ForecastItemView: View {
                                 ? getColor()
                                 : .primary
                         )
-                        .font(.headline)
+                        #if os(watchOS)
+                            .font(.headline)
+                        #else
+                            .font(.subheadline)
+                        #endif
 
                     if !isSmall {
                         Text("kWh")
