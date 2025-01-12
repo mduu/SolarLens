@@ -36,7 +36,7 @@ struct ChargingStationView: View {
             ChargingModePickerView(
                 station: $station
             )
-            .presentationDetents([.height(400)])
+            .presentationDetents([.height(450)])
         }  // : sheet
     }
 }
