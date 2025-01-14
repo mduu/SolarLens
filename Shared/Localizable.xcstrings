@@ -100,7 +100,7 @@
       "shouldTranslate" : false
     },
     "%lld%%" : {
-
+      "shouldTranslate" : false
     },
     "%lld%%  %@ kW" : {
       "localizations" : {
@@ -198,7 +198,14 @@
       }
     },
     "Battery" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie"
+          }
+        }
+      }
     },
     "Cancel" : {
       "localizations" : {
@@ -273,7 +280,14 @@
       }
     },
     "Choose charging mode:" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademodus wählen:"
+          }
+        }
+      }
     },
     "Confirm" : {
       "localizations" : {
@@ -376,7 +390,14 @@
       }
     },
     "Empty" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer"
+          }
+        }
+      }
     },
     "Forecast" : {
       "localizations" : {
@@ -401,10 +422,64 @@
       }
     },
     "Full" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voll"
+          }
+        }
+      }
+    },
+    "Get current battery level" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktueller Batteriestand anfragen"
+          }
+        }
+      }
+    },
+    "Get current consumption" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktueller Verbrauch abfragen"
+          }
+        }
+      }
+    },
+    "Get current power consumption" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktueller Stromverbrauch abfragen"
+          }
+        }
+      }
+    },
+    "Get current solar production" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Produktion abfragen"
+          }
+        }
+      }
     },
     "Grid" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz"
+          }
+        }
+      }
     },
     "Here is how:" : {
       "localizations" : {
@@ -516,7 +591,7 @@
       "shouldTranslate" : false
     },
     "Lens" : {
-
+      "shouldTranslate" : false
     },
     "Log out" : {
       "localizations" : {
@@ -752,6 +827,16 @@
         }
       }
     },
+    "Open Solar-Lens" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne Solar-Lens"
+          }
+        }
+      }
+    },
     "Password" : {
       "localizations" : {
         "de" : {
@@ -937,7 +1022,14 @@
       }
     },
     "Pwd: %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort: %@"
+          }
+        }
+      }
     },
     "Rate app" : {
       "localizations" : {
@@ -1100,6 +1192,16 @@
         }
       }
     },
+    "Show solar overview" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeige Solar Übersicht"
+          }
+        }
+      }
+    },
     "Solar" : {
       "localizations" : {
         "de" : {
@@ -1151,7 +1253,14 @@
       }
     },
     "Solar Lens" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Lens"
+          }
+        }
+      }
     },
     "Solar Manger Login" : {
       "localizations" : {
