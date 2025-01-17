@@ -471,6 +471,9 @@
         }
       }
     },
+    "Get the current battery level in percent" : {
+
+    },
     "Grid" : {
       "localizations" : {
         "de" : {
