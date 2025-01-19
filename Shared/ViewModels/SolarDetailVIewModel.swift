@@ -13,7 +13,7 @@ class SolarDetailsViewModel: ObservableObject {
     private let energyManager: EnergyManager
     private var solarDetailsLastFetchAt: Date?
 
-    init(energyManagerClient: EnergyManager = SolarManager.instance) {
+    init(energyManagerClient: EnergyManager = SolarManager.instance()) {
         self.energyManager = energyManagerClient
     }
 

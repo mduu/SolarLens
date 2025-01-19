@@ -25,7 +25,7 @@ class BuildingStateViewModel: ObservableObject {
 
     private let energyManager: EnergyManager
 
-    init(energyManagerClient: EnergyManager = SolarManager.instance) {
+    init(energyManagerClient: EnergyManager = SolarManager.instance()) {
         self.energyManager = energyManagerClient
         updateCredentialsExists()
     }

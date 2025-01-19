@@ -100,7 +100,7 @@
       "shouldTranslate" : false
     },
     "%lld%%" : {
-
+      "shouldTranslate" : false
     },
     "%lld%%  %@ kW" : {
       "localizations" : {
@@ -198,7 +198,14 @@
       }
     },
     "Battery" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie"
+          }
+        }
+      }
     },
     "Cancel" : {
       "localizations" : {
@@ -272,8 +279,35 @@
         }
       }
     },
+    "Charging Mode" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademodus"
+          }
+        }
+      }
+    },
+    "Charing Station" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladestation"
+          }
+        }
+      }
+    },
     "Choose charging mode:" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademodus wählen:"
+          }
+        }
+      }
     },
     "Confirm" : {
       "localizations" : {
@@ -321,6 +355,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Corrente costante"
+          }
+        }
+      }
+    },
+    "Constant current" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konstanter Strom"
+          }
+        }
+      }
+    },
+    "Constant current in watts." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konstanter Strom in Watt"
           }
         }
       }
@@ -376,7 +430,14 @@
       }
     },
     "Empty" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer"
+          }
+        }
+      }
     },
     "Forecast" : {
       "localizations" : {
@@ -401,10 +462,74 @@
       }
     },
     "Full" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voll"
+          }
+        }
+      }
+    },
+    "Get current battery level" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktueller Batteriestand anfragen"
+          }
+        }
+      }
+    },
+    "Get current consumption" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktueller Verbrauch abfragen"
+          }
+        }
+      }
+    },
+    "Get current power consumption" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktueller Stromverbrauch abfragen"
+          }
+        }
+      }
+    },
+    "Get current solar production" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Produktion abfragen"
+          }
+        }
+      }
+    },
+    "Get the current battery level in percent" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liefert den aktuellen Ladestand der Batterie"
+          }
+        }
+      }
     },
     "Grid" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz"
+          }
+        }
+      }
     },
     "Here is how:" : {
       "localizations" : {
@@ -516,7 +641,7 @@
       "shouldTranslate" : false
     },
     "Lens" : {
-
+      "shouldTranslate" : false
     },
     "Log out" : {
       "localizations" : {
@@ -702,6 +827,26 @@
         }
       }
     },
+    "Minimum quantity" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindestmenge"
+          }
+        }
+      }
+    },
+    "Minimum quantity in kWh." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindestmenge Strom in kWh"
+          }
+        }
+      }
+    },
     "No data" : {
       "localizations" : {
         "de" : {
@@ -748,6 +893,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Non caricare mai"
+          }
+        }
+      }
+    },
+    "Open Solar-Lens" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne Solar-Lens"
           }
         }
       }
@@ -937,7 +1092,14 @@
       }
     },
     "Pwd: %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort: %@"
+          }
+        }
+      }
     },
     "Rate app" : {
       "localizations" : {
@@ -1039,6 +1201,16 @@
         }
       }
     },
+    "Sensor-ID of the charging station. Leave empty to use the first charging station." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensor-ID der Ladestation. Leerlassen für die erste Ladestation."
+          }
+        }
+      }
+    },
     "Series" : {
       "localizations" : {
         "de" : {
@@ -1078,6 +1250,16 @@
         }
       }
     },
+    "Set charging mode" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademodus setzen"
+          }
+        }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "de" : {
@@ -1096,6 +1278,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impostazioni"
+          }
+        }
+      }
+    },
+    "Show solar overview" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeige Solar Übersicht"
           }
         }
       }
@@ -1151,7 +1343,14 @@
       }
     },
     "Solar Lens" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Lens"
+          }
+        }
+      }
     },
     "Solar Manger Login" : {
       "localizations" : {
@@ -1231,6 +1430,16 @@
         }
       }
     },
+    "Target %" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziel %"
+          }
+        }
+      }
+    },
     "Target date" : {
       "localizations" : {
         "de" : {
@@ -1255,6 +1464,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data di destinazione"
+          }
+        }
+      }
+    },
+    "Target SOC percent (1-100%)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziel Prozent der Ladung (1-100%) des Autos."
           }
         }
       }
@@ -1327,6 +1546,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tempo"
+          }
+        }
+      }
+    },
+    "Time when the charging must be completed." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitpunkt wann das Laden beendet sein muss."
           }
         }
       }
