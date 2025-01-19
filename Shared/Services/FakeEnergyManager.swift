@@ -2,7 +2,17 @@ import Combine
 import Foundation
 
 class FakeEnergyManager: EnergyManager {
+    private static var _instance: FakeEnergyManager? = nil
+    static func instance() -> any EnergyManager {
+        if _instance == nil {
+            _instance = FakeEnergyManager()
+        }
+        return _instance!
+    }
+    
     let data: OverviewData
+    
+    
 
     func login(username: String, password: String) async -> Bool {
         return true

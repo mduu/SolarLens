@@ -12,7 +12,7 @@ struct ChargingButtonView: View {
         Button(action: {
             print("\(chargingMode) pressed")
 
-            if isSimpleChargingMode(chargingMode: chargingMode) {
+            if chargingMode.isSimpleChargingMode() {
                 Task {
                     await setSimpleChargingMode(
                         chargingStation: chargingStation,
@@ -105,19 +105,11 @@ struct ChargingButtonView: View {
             : .clear
     }
 
-    private func isSimpleChargingMode(chargingMode: ChargingMode) -> Bool {
-        return chargingMode == .alwaysCharge
-            || chargingMode == .withSolarPower
-            || chargingMode == .withSolarOrLowTariff
-            || chargingMode == .minimalAndSolar
-            || chargingMode == .off
-    }
-
     private func setSimpleChargingMode(
         chargingStation: ChargingStation,
         chargingMode: ChargingMode
     ) async {
-        guard isSimpleChargingMode(chargingMode: chargingMode) else {
+        guard chargingMode.isSimpleChargingMode() else {
             print("ERROR: \(chargingMode) is not a simple charging mode")
             return
         }

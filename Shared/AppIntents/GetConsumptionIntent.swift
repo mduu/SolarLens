@@ -5,8 +5,8 @@ struct GetConsumptionIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<Double> {
-        let enegeryManager = SolarManager()
-        let overview = try? await enegeryManager.fetchOverviewData(
+        let solarManager = SolarManager.instance()
+        let overview = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
 
         guard let currentConsumption = overview?.currentOverallConsumption

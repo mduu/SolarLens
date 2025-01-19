@@ -7,8 +7,8 @@ struct GetBatteryLevelIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<Int> {
-        let enegeryManager = SolarManager()
-        let solarProduction = try? await enegeryManager.fetchOverviewData(
+        let solarManager = SolarManager.instance()
+        let solarProduction = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
 
         guard let batteryLevel = solarProduction?.currentBatteryLevel else {

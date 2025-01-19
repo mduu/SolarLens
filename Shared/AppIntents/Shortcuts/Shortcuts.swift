@@ -1,7 +1,7 @@
 import AppIntents
 import SwiftUI
 
-struct SolarLensShortcuts: AppShortcutsProvider {    
+struct SolarLensShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: OpenAppIntent(),
@@ -46,6 +46,21 @@ struct SolarLensShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Get current power consumption",
             systemImageName: "poweroutlet.type.n.fill"
+        )
+         
+        AppShortcut(
+            intent: SetChargingModeIntent(),
+            phrases: [
+                "Set charging mode",
+                "Set charging mode to \(\.$chargingMode)",
+                "Set charging mode to \(\.$chargingMode) in \(.applicationName)",
+                "Set charging mode in \(.applicationName)",
+                "Change chrging mode",
+                "Change chrging mode to \(\.$chargingMode)",
+                "Change chrging mode to \(\.$chargingMode) in \(.applicationName)",
+            ],
+            shortTitle: "Set charging mode",
+            systemImageName: "bolt.car"
         )
     }
 }

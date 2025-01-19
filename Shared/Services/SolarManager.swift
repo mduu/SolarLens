@@ -3,14 +3,21 @@ import Foundation
 import SwiftUICore
 
 actor SolarManager: EnergyManager {
+    private static var _instance: EnergyManager? = nil
+    static func instance() -> EnergyManager {
+        if _instance == nil {
+            _instance = SolarManager()
+        }
+        
+        return _instance!
+    }
+    
     private var expireAt: Date?
     private var accessClaims: [String]?
     private var solarManagerApi = SolarManagerApi()
     private var systemInformation: V1User?
     private var sensorInfos: [SensorInfosV1Response]?
     private var sensorInfosUpdatedAt: Date?
-
-    public static let instance = SolarManager()
 
     func login(username: String, password: String) async -> Bool {
         return await doLogin(email: username, password: password)

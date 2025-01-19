@@ -6,8 +6,8 @@ struct GetSolarProductionIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<Double> {
-        let enegeryManager = SolarManager()
-        let solarProduction = try? await enegeryManager.fetchOverviewData(
+        let solarManager = SolarManager.instance()
+        let solarProduction = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
 
         guard let solar = solarProduction?.currentSolarProduction else {
