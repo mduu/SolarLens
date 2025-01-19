@@ -609,6 +609,26 @@
         }
       }
     },
+    "Is any car charging?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ist ein Auto am Laden?"
+          }
+        }
+      }
+    },
+    "Is any car currently charging" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ist aktuell ein Auto am Laden?"
+          }
+        }
+      }
+    },
     "kW" : {
       "localizations" : {
         "de" : {
@@ -1119,6 +1139,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Valuta l'app"
+          }
+        }
+      }
+    },
+    "Returns 'true' if any car is currently charging, otherwise 'false'." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gibt ‘wahr’ zurück wenn aktuell ein Auto lädt, ansonsten wird ‘falsch’ zurückgegeben."
           }
         }
       }

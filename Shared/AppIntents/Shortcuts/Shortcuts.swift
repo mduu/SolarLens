@@ -49,6 +49,17 @@ struct SolarLensShortcuts: AppShortcutsProvider {
         )
          
         AppShortcut(
+            intent: IsAnyCarChargingIntent(),
+            phrases: [
+                "Is any car charging in \(.applicationName)",
+                "Does any car currently charge in \(.applicationName)",
+                "Is any car currently charging in \(.applicationName)"
+            ],
+            shortTitle: "Is any car currently charging",
+            systemImageName: "bolt.car.circle"
+        )
+         
+        AppShortcut(
             intent: SetChargingModeIntent(),
             phrases: [
                 "Set charging mode",
