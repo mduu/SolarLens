@@ -13,7 +13,10 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>WKCompanionAppBundleIdentifier</key>
-	<string>com.marcduerst.SolarManagerWatch</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>GetSolarProductionIntent</string>
+		<string>IntentIntent</string>
+	</array>
 </dict>
 </plist>

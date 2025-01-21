@@ -1,9 +1,7 @@
 import AppIntents
-import SwiftUI
 
 struct GetSolarProductionIntent: AppIntent {
     static var title: LocalizedStringResource = "Get current solar production"
-
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<Double> {
         let solarManager = SolarManager.instance()

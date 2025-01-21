@@ -25,7 +25,7 @@ struct SolarLensShortcuts: AppShortcutsProvider {
         )
         
         AppShortcut(
-            intent: GetSolarProductionIntent(),
+            intent: GetBatteryLevelIntent(),
             phrases: [
                 "What is the battery level",
                 "How much is the current battery level in \(.applicationName)",
@@ -40,6 +40,7 @@ struct SolarLensShortcuts: AppShortcutsProvider {
             intent: GetConsumptionIntent(),
             phrases: [
                 "What is the current power consumption",
+                "What is my current power consumption",
                 "How much is the current power consumption in \(.applicationName)",
                 "What is the current energy consumption in \(.applicationName)",
                 "What is the current power consumption of my house in \(.applicationName)"

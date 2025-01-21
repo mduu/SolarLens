@@ -548,7 +548,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 129;
+				CURRENT_PROJECT_VERSION = 130;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -559,6 +559,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = 2.0.2;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.marcduerst.SolarManagerWatch;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				INFOPLIST_KEY_WKWatchOnly = NO;
 				ITSAppUsesNonExemptEncryption = NO;
@@ -589,7 +590,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 129;
+				CURRENT_PROJECT_VERSION = 130;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -600,6 +601,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = 2.0.2;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.marcduerst.SolarManagerWatch;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				INFOPLIST_KEY_WKWatchOnly = NO;
 				ITSAppUsesNonExemptEncryption = NO;
@@ -629,7 +631,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 129;
+				CURRENT_PROJECT_VERSION = 130;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -664,7 +666,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 129;
+				CURRENT_PROJECT_VERSION = 130;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -701,7 +703,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 129;
+				CURRENT_PROJECT_VERSION = 130;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -709,11 +711,12 @@
 				INFOPLIST_FILE = "Solar-Lens-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSSiriUsageDescription = "We use Siri to handle your voice commends";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -739,7 +742,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 129;
+				CURRENT_PROJECT_VERSION = 130;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -747,11 +750,12 @@
 				INFOPLIST_FILE = "Solar-Lens-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSSiriUsageDescription = "We use Siri to handle your voice commends";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
