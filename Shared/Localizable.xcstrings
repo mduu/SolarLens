@@ -125,6 +125,9 @@
     "0" : {
       "shouldTranslate" : false
     },
+    "A car is currently charging." : {
+
+    },
     "Always" : {
       "localizations" : {
         "de" : {
@@ -553,6 +556,9 @@
         }
       }
     },
+    "I found this information in Solar Manager using Solar Lens" : {
+
+    },
     "Invalid Email" : {
       "localizations" : {
         "de" : {
@@ -866,6 +872,9 @@
           }
         }
       }
+    },
+    "No car is currently charging." : {
+
     },
     "No data" : {
       "localizations" : {
@@ -1557,6 +1566,21 @@
           }
         }
       }
+    },
+    "The battery level of our house is at %lld%%" : {
+
+    },
+    "The charging mode as set to %@" : {
+
+    },
+    "The current overall consumption is %lf kilo watts" : {
+
+    },
+    "The current solar production is %lf kilo watts" : {
+
+    },
+    "There was a problem setting the charging mode." : {
+
     },
     "Time" : {
       "localizations" : {

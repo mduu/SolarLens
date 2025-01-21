@@ -6,7 +6,7 @@ struct IsAnyCarChargingIntent: AppIntent {
         "Returns 'true' if any car is currently charging, otherwise 'false'."
 
     @MainActor
-    func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
+    func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
         let solarManager = SolarManager.instance()
         let solarProduction = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
@@ -16,6 +16,15 @@ struct IsAnyCarChargingIntent: AppIntent {
                 "Could not retrieve if any car is charging")
         }
 
-        return .result(value: isAnyCarCharging)
+        let dialog = IntentDialog(
+            full: isAnyCarCharging
+                ? "A car is currently charging."
+                : "No car is currently charging.",
+            supporting:
+                "I found this information in Solar Manager using Solar Lens",
+            systemImageName: "bolt.car.circle"
+        )
+
+        return .result(value: isAnyCarCharging, dialog: dialog)
     }
 }

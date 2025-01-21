@@ -6,7 +6,9 @@ struct GetBatteryLevelIntent: AppIntent {
         "Get the current battery level in percent"
 
     @MainActor
-    func perform() async throws -> some IntentResult & ReturnsValue<Int> {
+    func perform() async throws -> some IntentResult & ReturnsValue<Int>
+        & ProvidesDialog
+    {
         let solarManager = SolarManager.instance()
         let solarProduction = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
@@ -16,6 +18,13 @@ struct GetBatteryLevelIntent: AppIntent {
                 "Could not retrieve battery level")
         }
 
-        return .result(value: batteryLevel)
+        let dialog = IntentDialog(
+            full: "The battery level of our house is at \(batteryLevel)%",
+            supporting:
+                "I found this information in Solar Manager using Solar Lens",
+            systemImageName: "battery.100percent"
+        )
+
+        return .result(value: batteryLevel, dialog: dialog)
     }
 }

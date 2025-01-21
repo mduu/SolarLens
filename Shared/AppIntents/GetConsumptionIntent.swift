@@ -4,7 +4,9 @@ struct GetConsumptionIntent: AppIntent {
     static var title: LocalizedStringResource = "Get current consumption"
 
     @MainActor
-    func perform() async throws -> some IntentResult & ReturnsValue<Double> {
+    func perform() async throws -> some IntentResult & ReturnsValue<Double>
+        & ProvidesDialog
+    {
         let solarManager = SolarManager.instance()
         let overview = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
@@ -14,9 +16,19 @@ struct GetConsumptionIntent: AppIntent {
             throw IntentError.couldNotGetValue(
                 "Could not retrieve overall consumption")
         }
+        
+        let consumptionKW = Double(currentConsumption / 1000)
+
+        let dialog = IntentDialog(
+            full: "The current overall consumption is \(consumptionKW) kilo watts",
+            supporting:
+                "I found this information in Solar Manager using Solar Lens",
+            systemImageName: "house"
+        )
 
         return .result(
-            value: Double(currentConsumption / 1000)
+            value: Double(currentConsumption / 1000),
+            dialog: dialog
         )
 
     }

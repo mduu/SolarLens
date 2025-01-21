@@ -34,7 +34,9 @@ struct SetChargingModeIntent: AppIntent {
     var targetSocPercent: Int?
 
     @MainActor
-    func perform() async throws -> some IntentResult {
+    func perform() async throws -> some IntentResult & ReturnsValue<Bool>
+        & ProvidesDialog
+    {
         try validateChargingModeParmaeters()
         let solarManager = SolarManager.instance()
         let choosenSensorId = try await getSensorId(energyManager: solarManager)
@@ -59,7 +61,16 @@ struct SetChargingModeIntent: AppIntent {
             sensorId: choosenSensorId,
             carCharging: controlCarChargingRequest)
 
-        return .result()
+        let dialog = IntentDialog(
+            full: success
+                ? LocalizedStringResource(
+                    "The charging mode as set to \(chargingMode)")
+                : LocalizedStringResource(
+                    "There was a problem setting the charging mode."),
+            systemImageName: "bolt.car.circle"
+        )
+
+        return .result(value: success, dialog: dialog)
     }
 
     private func validateChargingModeParmaeters() throws {
