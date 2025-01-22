@@ -21,8 +21,6 @@ struct GetConsumptionIntent: AppIntent {
 
         let dialog = IntentDialog(
             full: "The current overall consumption is \(consumptionKW) kilo watts",
-            supporting:
-                "I found this information in Solar Manager using Solar Lens",
             systemImageName: "house"
         )
 

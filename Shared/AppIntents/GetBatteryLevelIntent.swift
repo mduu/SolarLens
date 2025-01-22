@@ -20,8 +20,6 @@ struct GetBatteryLevelIntent: AppIntent {
 
         let dialog = IntentDialog(
             full: "The battery level of our house is at \(batteryLevel)%",
-            supporting:
-                "I found this information in Solar Manager using Solar Lens",
             systemImageName: "battery.100percent"
         )
 

@@ -18,10 +18,8 @@ struct IsAnyCarChargingIntent: AppIntent {
 
         let dialog = IntentDialog(
             full: isAnyCarCharging
-                ? "A car is currently charging."
-                : "No car is currently charging.",
-            supporting:
-                "I found this information in Solar Manager using Solar Lens",
+                ? LocalizedStringResource("A car is currently charging.")
+                : LocalizedStringResource("No car is currently charging."),
             systemImageName: "bolt.car.circle"
         )
 

@@ -17,8 +17,6 @@ struct GetSolarProductionIntent: AppIntent {
         
         let dialog = IntentDialog(
             full: "The current solar production is \(solarProductionKW) kilo watts",
-            supporting:
-                "I found this information in Solar Manager using Solar Lens",
             systemImageName: "sun.max"
         )
 

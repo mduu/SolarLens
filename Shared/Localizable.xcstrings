@@ -126,7 +126,14 @@
       "shouldTranslate" : false
     },
     "A car is currently charging." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Fahrzeug ist am Laden."
+          }
+        }
+      }
     },
     "Always" : {
       "localizations" : {
@@ -556,9 +563,6 @@
         }
       }
     },
-    "I found this information in Solar Manager using Solar Lens" : {
-
-    },
     "Invalid Email" : {
       "localizations" : {
         "de" : {
@@ -874,7 +878,14 @@
       }
     },
     "No car is currently charging." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuell ist kein Fahrzeug am Laden."
+          }
+        }
+      }
     },
     "No data" : {
       "localizations" : {
@@ -1568,19 +1579,54 @@
       }
     },
     "The battery level of our house is at %lld%%" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Batterie des Hauses ist %lld%% geladen."
+          }
+        }
+      }
     },
     "The charging mode as set to %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Lademodus ist auf “%@“."
+          }
+        }
+      }
     },
     "The current overall consumption is %lf kilo watts" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der aktuelle Stromverbrauch beträgt %lf Kilowatt."
+          }
+        }
+      }
     },
     "The current solar production is %lf kilo watts" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die aktuelle Solar-Produktion beträgt %lf Killowatt."
+          }
+        }
+      }
     },
     "There was a problem setting the charging mode." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es gab ein Problem beim Setzen des Lademodus."
+          }
+        }
+      }
     },
     "Time" : {
       "localizations" : {
