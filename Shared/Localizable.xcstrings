@@ -1598,22 +1598,22 @@
         }
       }
     },
-    "The current overall consumption is %lf kilo watts" : {
+    "The current overall consumption is %@ kilowatts" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der aktuelle Stromverbrauch beträgt %lf Kilowatt."
+            "value" : "Der aktuelle Stromverbrauch beträgt %@ Kilowatt."
           }
         }
       }
     },
-    "The current solar production is %lf kilo watts" : {
+    "The current solar production is %@ kilowatts" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die aktuelle Solar-Produktion beträgt %lf Killowatt."
+            "value" : "Die aktuelle Solar-Produktion beträgt %@ Kilowatt."
           }
         }
       }

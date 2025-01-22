@@ -9,8 +9,8 @@
             "state" : "translated",
             "values" : [
               "Wie hoch ist der Batteriestandl in ${applicationName}",
-              "Wie hoch ist der aktuelle Batteriestand in ${applicationName}",
-              "Wie hoch ist der aktuelle Batteriestand in meinem Haus in ${applicationName}"
+              "Wie hoch ist der Batteriestand meines Hauses in ${applicationName}",
+              "Wie hoch ist der aktuelle Batteriestand des Hauses in ${applicationName}"
             ]
           }
         },
@@ -85,7 +85,8 @@
             "values" : [
               "Lädt ein Auto in ${applicationName}",
               "Ist aktuell ein Auto am Laden in ${applicationName}",
-              "Ist ein Auto am Laden in ${applicationName}"
+              "Ist ein Auto am Laden in ${applicationName}",
+              "Ist ein Fahrzeug am Laden in ${applicationName}"
             ]
           }
         },

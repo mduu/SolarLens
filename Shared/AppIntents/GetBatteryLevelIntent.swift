@@ -10,10 +10,10 @@ struct GetBatteryLevelIntent: AppIntent {
         & ProvidesDialog
     {
         let solarManager = SolarManager.instance()
-        let solarProduction = try? await solarManager.fetchOverviewData(
+        let overview = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
 
-        guard let batteryLevel = solarProduction?.currentBatteryLevel else {
+        guard let batteryLevel = overview?.currentBatteryLevel else {
             throw IntentError.couldNotGetValue(
                 "Could not retrieve battery level")
         }

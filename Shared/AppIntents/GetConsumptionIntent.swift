@@ -17,10 +17,10 @@ struct GetConsumptionIntent: AppIntent {
                 "Could not retrieve overall consumption")
         }
         
-        let consumptionKW = Double(currentConsumption / 1000)
+        let consumptionKW = Double(currentConsumption) / 1000
 
         let dialog = IntentDialog(
-            full: "The current overall consumption is \(consumptionKW) kilo watts",
+            full: "The current overall consumption is \(String(format: "%.1f", consumptionKW)) kilowatts",
             systemImageName: "house"
         )
 

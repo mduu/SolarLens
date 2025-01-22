@@ -13,10 +13,10 @@ struct GetSolarProductionIntent: AppIntent {
                 "Could not get the current solar production")
         }
         
-        let solarProductionKW = Double(solar / 1000)
+        let solarProductionKW = Double(solar) / 1000
         
         let dialog = IntentDialog(
-            full: "The current solar production is \(solarProductionKW) kilo watts",
+            full: "The current solar production is \(String(format: "%.1f", solarProductionKW)) kilowatts",
             systemImageName: "sun.max"
         )
 
