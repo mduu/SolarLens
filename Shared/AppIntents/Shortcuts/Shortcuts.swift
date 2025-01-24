@@ -16,8 +16,8 @@ struct SolarLensShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: GetSolarProductionIntent(),
             phrases: [
-                "How much is the current solar production in \(.applicationName)",
-                "What is the current solar production in \(.applicationName)",
+                "Show solar production in \(.applicationName)",
+                "Show current solar production in \(.applicationName)",
                 "How much power does my house produce in \(.applicationName)",
             ],
             shortTitle: "Get current solar production",
@@ -27,8 +27,8 @@ struct SolarLensShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: GetBatteryLevelIntent(),
             phrases: [
-                "How much is the current battery level in \(.applicationName)",
-                "What is the current battery level in \(.applicationName)",
+                "Show battery level in \(.applicationName)",
+                "Show current battery level in \(.applicationName)",
                 "What is the current battery level of my house in \(.applicationName)",
             ],
             shortTitle: "Get current battery level",
@@ -38,8 +38,8 @@ struct SolarLensShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: GetConsumptionIntent(),
             phrases: [
-                "How much is the current power consumption in \(.applicationName)",
-                "What is the current energy consumption in \(.applicationName)",
+                "Show power consumption in \(.applicationName)",
+                "Show current energy consumption in \(.applicationName)",
                 "What is the current power consumption of my house in \(.applicationName)",
             ],
             shortTitle: "Get current power consumption",

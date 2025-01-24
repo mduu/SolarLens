@@ -1,81 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "How much is the current battery level in ${applicationName}" : {
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "de" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Wie hoch ist der Batteriestandl in ${applicationName}",
-              "Wie hoch ist der Batteriestand meines Hauses in ${applicationName}",
-              "Wie hoch ist der aktuelle Batteriestand des Hauses in ${applicationName}"
-            ]
-          }
-        },
-        "en" : {
-          "stringSet" : {
-            "state" : "new",
-            "values" : [
-              "How much is the current battery level in ${applicationName}",
-              "What is the current battery level in ${applicationName}",
-              "What is the current battery level of my house in ${applicationName}"
-            ]
-          }
-        }
-      }
-    },
-    "How much is the current power consumption in ${applicationName}" : {
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "de" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Wie hoch ist der aktuelle Stromverbrauch in ${applicationName}",
-              "Wie hoch ist der Stromverbrauch in ${applicationName}",
-              "Wie hoch ist der aktuelle Stromverbrauch in meinem Haus in ${applicationName}"
-            ]
-          }
-        },
-        "en" : {
-          "stringSet" : {
-            "state" : "new",
-            "values" : [
-              "How much is the current power consumption in ${applicationName}",
-              "What is the current energy consumption in ${applicationName}",
-              "What is the current power consumption of my house in ${applicationName}"
-            ]
-          }
-        }
-      }
-    },
-    "How much is the current solar production in ${applicationName}" : {
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "de" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Wie hoch ist die aktuelle Solarproduktion in ${applicationName}",
-              "Wie hoch ist die Solarproduktion in ${applicationName}",
-              "Wieviel Strom produziert mein Haus in ${applicationName}"
-            ]
-          }
-        },
-        "en" : {
-          "stringSet" : {
-            "state" : "new",
-            "values" : [
-              "How much is the current solar production in ${applicationName}",
-              "What is the current solar production in ${applicationName}",
-              "How much power does my house produce in ${applicationName}"
-            ]
-          }
-        }
-      }
-    },
     "Is any car charging in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -129,6 +54,55 @@
         }
       }
     },
+    "Show battery level in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Zeige Batteriestand des Hauses ${applicationName}",
+              "Zeige Hausbatterie in  ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Show battery level in ${applicationName}",
+              "Show current battery level in ${applicationName}",
+              "What is the current battery level of my house in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Show power consumption in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Zeige Stromverbrauch in ${applicationName}",
+              "Aktueller Stromverbrauch in ${applicationName}",
+              "Stromverbrauch in ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Show power consumption in ${applicationName}",
+              "Show current energy consumption in ${applicationName}",
+              "What is the current power consumption of my house in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
     "Show solar overview in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -147,6 +121,31 @@
             "values" : [
               "Show solar overview in ${applicationName}",
               "Open solar overview in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Show solar production in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Zeige Solarproduktion in ${applicationName}",
+              "Solarproduktion in ${applicationName}",
+              "Wieviel produzieren wir in ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Show solar production in ${applicationName}",
+              "Show current solar production in ${applicationName}",
+              "How much power does my house produce in ${applicationName}"
             ]
           }
         }

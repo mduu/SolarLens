@@ -19,44 +19,9 @@ struct HomeView: View {
             } else {
                 ZStack {
 
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(colorScheme == .light ? .white : .black)
-                            .ignoresSafeArea()
-                        
-                        Image("OverviewFull")
-                            .resizable()
-                            .clipped()
-                            .saturation(0)
-                            .opacity(colorScheme == .light ? 0.1 : 0.4)
-                            .ignoresSafeArea()
-                    }
-                    
+                    BackgroundView()
 
-                    VStack {
-                        HStack(alignment: .center) {
-                            Image("solarlens")
-                                .resizable()
-                                .scaledToFit()
-                                .cornerRadius(5)
-                                .frame(maxWidth: 50)
-
-                            VStack(alignment: .leading) {
-
-                                Text("Solar")
-                                    .foregroundColor(.accent)
-                                    .font(.system(size: 24, weight: .bold))
-
-                                Text("Lens")
-                                    .foregroundColor(colorScheme == .light ? .black : .white)
-                                    .font(.system(size: 24, weight: .bold))
-
-                            }
-
-                        }  // :HStack
-                        Spacer()
-
-                    }  // :VStack
+                    HeaderView()
                     
                     VStack {
                         HStack {
@@ -249,11 +214,13 @@ struct HomeView: View {
                             }
                             
                         } // :Grid
-                        
-                        
-                        
                     } // :VStack
                     .padding(.top, 70)
+                    
+                    VStack {
+                        Spacer()
+                        SiriDiscoveryView()
+                    }.padding(.bottom, 5)
                 }  // :ZStack
             }
         }
@@ -286,3 +253,7 @@ struct HomeView: View {
             BuildingStateViewModel.fake(
                 overviewData: OverviewData.fake()))
 }
+
+
+
+
