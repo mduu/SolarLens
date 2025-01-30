@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct UpdateTimeStampView: View {
-    @Binding var isStale: Bool
-    @Binding var updateTimeStamp: Date?
-    @Binding var isLoading: Bool
+    var isStale: Bool
+    var updateTimeStamp: Date?
+    var isLoading: Bool
 
     var body: some View {
         ZStack {
@@ -49,21 +49,21 @@ struct UpdateTimeStampView: View {
 
 #Preview("Normal") {
     UpdateTimeStampView(
-        isStale: .constant(false),
-        updateTimeStamp: .constant(Date()),
-        isLoading: .constant(false))
+        isStale: false,
+        updateTimeStamp: Date(),
+        isLoading: false)
 }
 
 #Preview("Stale") {
     UpdateTimeStampView(
-        isStale: .constant(true),
-        updateTimeStamp: .constant(Date()),
-        isLoading: .constant(false))
+        isStale: true,
+        updateTimeStamp: Date(),
+        isLoading: false)
 }
 
 #Preview("IsLoading") {
     UpdateTimeStampView(
-        isStale: .constant(false),
-        updateTimeStamp: .constant(Date()),
-        isLoading: .constant(true))
+        isStale: false,
+        updateTimeStamp: Date(),
+        isLoading: true)
 }

@@ -1,9 +1,9 @@
 import SwiftUICore
 
 struct ChargingStationModeView: View {
-    @Binding var isTheOnlyOne: Bool
-    @Binding var chargingStation: ChargingStation
-    @Binding var chargingModeConfiguration: ChargingModeConfiguration
+    var isTheOnlyOne: Bool
+    var chargingStation: ChargingStation
+    var chargingModeConfiguration: ChargingModeConfiguration
 
     var body: some View {
         VStack {
@@ -18,8 +18,8 @@ struct ChargingStationModeView: View {
                 if chargingModeConfiguration.chargingModeVisibillity[chargingMode] ?? true {
 
                     ChargingButtonView(
-                        chargingMode: .constant(chargingMode),
-                        chargingStation: .constant(chargingStation)
+                        chargingMode: chargingMode,
+                        chargingStation: chargingStation
                     )  // :ChargingButtonView
 
                 }  // :if

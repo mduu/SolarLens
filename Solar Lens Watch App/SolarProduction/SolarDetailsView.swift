@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct SolarDetailsView: View {
+    @Environment(CurrentBuildingState.self) var buildingModel: CurrentBuildingState
     @StateObject var viewModel = SolarDetailsViewModel()
-    @EnvironmentObject var buildingModel: BuildingStateViewModel
     @State private var refreshTimer: Timer?
     @State private var showSolarChart: Bool = false
 
@@ -50,14 +50,8 @@ struct SolarDetailsView: View {
                     .padding(.trailing, 12)
                     .sheet(isPresented: $showSolarChart) {
                         SolarChartView(
-                            maxProductionkW: $viewModel.overviewData
-                                .solarProductionMax
+                            maxProductionkW: $viewModel.overviewData.solarProductionMax
                         )
-                        .onDisappear {
-                            print("Hide solar chart sheet")
-                            viewModel.fetchingIsPaused = false
-                            buildingModel.resumeFetching()
-                        }
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {
                                 Text("Production")
@@ -65,6 +59,11 @@ struct SolarDetailsView: View {
                                     .font(.headline)
                             }  // :ToolbarItem
                         }  // :.toolbar
+                        .onDisappear {
+                            print("Hide solar chart sheet")
+                            viewModel.fetchingIsPaused = false
+                            buildingModel.resumeFetching()
+                        }
                     }
                 }
 
@@ -82,53 +81,52 @@ struct SolarDetailsView: View {
 
                     HStack {
                         ForecastItemView(
-                            date: .constant(
-                                Calendar.current.startOfDay(for: Date())),
-                            maxProduction: $viewModel.overviewData
-                                .solarProductionMax,
-                            forecasts: .constant([
+                            date:
+                                Calendar.current.startOfDay(for: Date()),
+                            maxProduction:
+                                viewModel.overviewData.solarProductionMax,
+                            forecasts: [
                                 viewModel.solarDetailsData.forecastToday,
                                 viewModel.solarDetailsData.forecastTomorrow,
                                 viewModel.solarDetailsData
                                     .forecastDayAfterTomorrow,
-                            ]),
-                            forecast: $viewModel.solarDetailsData
-                                .forecastToday,
-                            small: .constant(false)
+                            ],
+                            forecast:
+                                viewModel.solarDetailsData.forecastToday,
+                            small: false
                         )
 
                         ForecastItemView(
-                            date: .constant(
-                                Calendar.current.date(
-                                    byAdding: .day, value: 1, to: Date())),
-                            maxProduction: $viewModel.overviewData
-                                .solarProductionMax,
-                            forecasts: .constant([
+                            date:
+                                Calendar.current.date(byAdding: .day, value: 1, to: Date()),
+                            maxProduction:
+                                viewModel.overviewData.solarProductionMax,
+                            forecasts: [
                                 viewModel.solarDetailsData.forecastToday,
                                 viewModel.solarDetailsData.forecastTomorrow,
                                 viewModel.solarDetailsData
                                     .forecastDayAfterTomorrow,
-                            ]),
-                            forecast: $viewModel.solarDetailsData
-                                .forecastTomorrow,
-                            small: .constant(false)
+                            ],
+                            forecast:
+                                viewModel.solarDetailsData.forecastTomorrow,
+                            small: false
                         )
 
                         ForecastItemView(
-                            date: .constant(
+                            date:
                                 Calendar.current.date(
-                                    byAdding: .day, value: 2, to: Date())),
-                            maxProduction: $viewModel.overviewData
-                                .solarProductionMax,
-                            forecasts: .constant([
+                                    byAdding: .day, value: 2, to: Date()),
+                            maxProduction:
+                                viewModel.overviewData.solarProductionMax,
+                            forecasts: [
                                 viewModel.solarDetailsData.forecastToday,
                                 viewModel.solarDetailsData.forecastTomorrow,
                                 viewModel.solarDetailsData
                                     .forecastDayAfterTomorrow,
-                            ]),
-                            forecast: $viewModel.solarDetailsData
-                                .forecastDayAfterTomorrow,
-                            small: .constant(false)
+                            ],
+                            forecast:
+                                viewModel.solarDetailsData.forecastDayAfterTomorrow,
+                            small: false
                         )
                     }  // :HStack
                     .frame(maxWidth: .infinity)
@@ -144,9 +142,9 @@ struct SolarDetailsView: View {
                 Spacer()
 
                 UpdateTimeStampView(
-                    isStale: $viewModel.overviewData.isStaleData,
-                    updateTimeStamp: $viewModel.overviewData.lastUpdated,
-                    isLoading: $viewModel.isLoading
+                    isStale: viewModel.overviewData.isStaleData,
+                    updateTimeStamp: viewModel.overviewData.lastUpdated,
+                    isLoading: viewModel.isLoading
                 )
                 .padding(.vertical, 4)
             }

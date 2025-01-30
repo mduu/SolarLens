@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct OverviewChartView: View {
-    @EnvironmentObject var buildingModel: BuildingStateViewModel
-    @StateObject var viewModel = OverviewChartViewModel()
+    @Environment(CurrentBuildingState.self) var buildingModel: CurrentBuildingState
+    @State var viewModel = OverviewChartViewModel()
     @State private var refreshTimer: Timer?
 
     var body: some View {
@@ -17,8 +17,7 @@ struct OverviewChartView: View {
 
                             VStack {
                                 OverviewChart(
-                                    consumption: .constant(
-                                        viewModel.consumptionData!)
+                                    consumption: viewModel.consumptionData!
                                 )
 
                                 HStack {
@@ -155,6 +154,7 @@ struct OverviewChartView: View {
     OverviewChartView(
         viewModel: OverviewChartViewModel.previewFake()
     )
-    .environmentObject(
-        BuildingStateViewModel.fake(overviewData: OverviewData()))
+    .environment(
+        CurrentBuildingState.fake(overviewData: OverviewData())
+    )
 }

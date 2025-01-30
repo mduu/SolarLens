@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var model: BuildingStateViewModel
+    @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
     @State var email: String = ""
     @State var password: String = ""

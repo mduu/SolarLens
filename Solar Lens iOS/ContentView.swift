@@ -1,15 +1,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var viewModel = BuildingStateViewModel()
+    @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
 
     var body: some View {
-        if !viewModel.loginCredentialsExists {
+        if !buildingState.loginCredentialsExists {
             LoginView()
-                .environmentObject(viewModel)
         } else {
             HomeView()
-                .environmentObject(viewModel)
         }
     }
 }

@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct BatteryView: View {
-    @Binding var currentBatteryLevel: Int?
-    @Binding var currentChargeRate: Int?
+    var currentBatteryLevel: Int?
+    var currentChargeRate: Int?
 
     var body: some View {
         HStack {

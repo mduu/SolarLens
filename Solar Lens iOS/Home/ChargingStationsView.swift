@@ -1,18 +1,11 @@
-//
-//  ChargingStations.swift
-//  Solar Lens
-//
-//  Created by Marc Dürst on 07.01.2025.
-//
-
 import SwiftUI
 
 struct ChargingStationsView: View {
-    @Binding var chargingStation: [ChargingStation]
+    var chargingStation: [ChargingStation]
 
     var body: some View {
         let stations = chargingStation.sorted { $0.priority < $1.priority }
-        
+
         HStack {
             ForEach(stations) { station in
                 ChargingStationView(station: .constant(station))
@@ -24,7 +17,7 @@ struct ChargingStationsView: View {
 
 #Preview {
     ChargingStationsView(
-        chargingStation: .constant([
+        chargingStation: [
             ChargingStation(
                 id: "2134",
                 name: "Station 2",
@@ -41,6 +34,6 @@ struct ChargingStationsView: View {
                 currentPower: 5600,
                 signal: .connected
             ),
-        ])
+        ]
     )
 }

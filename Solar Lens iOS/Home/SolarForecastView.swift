@@ -12,55 +12,47 @@ struct SolarForecastView: View {
             
             HStack {
                 ForecastItemView(
-                    date: .constant(
-                        Calendar.current.startOfDay(for: Date())),
-                    maxProduction: $viewModel.overviewData
+                    date: Calendar.current.startOfDay(for: Date()),
+                    maxProduction: viewModel.overviewData
                         .solarProductionMax,
-                    forecasts: .constant([
+                    forecasts: [
                         viewModel.solarDetailsData.forecastToday,
                         viewModel.solarDetailsData.forecastTomorrow,
                         viewModel.solarDetailsData
                             .forecastDayAfterTomorrow,
-                    ]),
-                    forecast: $viewModel.solarDetailsData
-                        .forecastToday,
-                    small: .constant(false),
+                    ],
+                    forecast: viewModel.solarDetailsData.forecastToday,
+                    small: false,
                     intense: true
                 )
                 
                 ForecastItemView(
-                    date: .constant(
-                        Calendar.current.date(
-                            byAdding: .day, value: 1, to: Date())),
-                    maxProduction: $viewModel.overviewData
-                        .solarProductionMax,
-                    forecasts: .constant([
+                    date: Calendar.current.date(
+                            byAdding: .day, value: 1, to: Date()),
+                    maxProduction: viewModel.overviewData.solarProductionMax,
+                    forecasts: [
                         viewModel.solarDetailsData.forecastToday,
                         viewModel.solarDetailsData.forecastTomorrow,
                         viewModel.solarDetailsData
                             .forecastDayAfterTomorrow,
-                    ]),
-                    forecast: $viewModel.solarDetailsData
-                        .forecastTomorrow,
-                    small: .constant(false),
+                    ],
+                    forecast: viewModel.solarDetailsData.forecastTomorrow,
+                    small: false,
                     intense: true
                 )
                 
                 ForecastItemView(
-                    date: .constant(
-                        Calendar.current.date(
-                            byAdding: .day, value: 2, to: Date())),
-                    maxProduction: $viewModel.overviewData
-                        .solarProductionMax,
-                    forecasts: .constant([
+                    date: Calendar.current.date(
+                            byAdding: .day, value: 2, to: Date()),
+                    maxProduction: viewModel.overviewData.solarProductionMax,
+                    forecasts: [
                         viewModel.solarDetailsData.forecastToday,
                         viewModel.solarDetailsData.forecastTomorrow,
                         viewModel.solarDetailsData
                             .forecastDayAfterTomorrow,
-                    ]),
-                    forecast: $viewModel.solarDetailsData
-                        .forecastDayAfterTomorrow,
-                    small: .constant(false),
+                    ],
+                    forecast: viewModel.solarDetailsData.forecastDayAfterTomorrow,
+                    small: false,
                     intense: true
                 )
             } // :HStack

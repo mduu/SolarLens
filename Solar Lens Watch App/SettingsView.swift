@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject var model: BuildingStateViewModel
+    @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
     @State private var showConfirmation = false
     @State private var showRateApp = false
 
@@ -71,41 +71,26 @@ struct SettingsView: View {
 
 #Preview("English") {
     SettingsView()
-        .environmentObject(
-            BuildingStateViewModel(
-                energyManagerClient: FakeEnergyManager()
-            ))
+        .environment(CurrentBuildingState.fake())
 }
 
 #Preview("German") {
 
     SettingsView()
-        .environmentObject(
-            BuildingStateViewModel(
-                energyManagerClient: FakeEnergyManager()
-            )
-        )
+        .environment(CurrentBuildingState.fake())
         .environment(\.locale, Locale(identifier: "DE"))
 }
 
 #Preview("French") {
 
     SettingsView()
-        .environmentObject(
-            BuildingStateViewModel(
-                energyManagerClient: FakeEnergyManager()
-            )
-        )
+        .environment(CurrentBuildingState.fake())
         .environment(\.locale, Locale(identifier: "FR"))
 }
 
 #Preview("Italian") {
 
     SettingsView()
-        .environmentObject(
-            BuildingStateViewModel(
-                energyManagerClient: FakeEnergyManager()
-            )
-        )
+        .environment(CurrentBuildingState.fake())
         .environment(\.locale, Locale(identifier: "IT"))
 }

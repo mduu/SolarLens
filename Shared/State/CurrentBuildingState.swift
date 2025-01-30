@@ -9,35 +9,40 @@ enum MainTab: Int, CaseIterable, Identifiable {
     var id: Self { self }
 }
 
-@MainActor
-class BuildingStateViewModel: ObservableObject {
-    @Published var selectedMainTab: MainTab = .overview
-    @Published var isLoading = false
-    @Published var errorMessage: String?
-    @Published var error: EnergyManagerClientError?
-    @Published var loginCredentialsExists: Bool = false
-    @Published var didLoginSucceed: Bool? = nil
-    @Published var overviewData: OverviewData = .init()
-    @Published var isChangingCarCharger: Bool = false
-    @Published var carChargerSetSuccessfully: Bool? = nil
-    @Published var fetchingIsPaused: Bool = false
-    @Published var chargingInfos: CharingInfoData?
+@Observable
+class CurrentBuildingState {    
+    var selectedMainTab: MainTab = .overview
+    var isLoading = false
+    var errorMessage: String?
+    var error: EnergyManagerClientError?
+    var loginCredentialsExists: Bool = false
+    var didLoginSucceed: Bool? = nil
+    var overviewData: OverviewData = .init()
+    var isChangingCarCharger: Bool = false
+    var carChargerSetSuccessfully: Bool? = nil
+    var fetchingIsPaused: Bool = false
+    var chargingInfos: CharingInfoData?
 
     private let energyManager: EnergyManager
 
-    init(energyManagerClient: EnergyManager = SolarManager.instance()) {
+    init(energyManagerClient: EnergyManager) {
         self.energyManager = energyManagerClient
+        updateCredentialsExists()
+    }
+    
+    init() {
+        self.energyManager = SolarManager.instance()
         updateCredentialsExists()
     }
 
     static func fake(
-        overviewData: OverviewData,
+        overviewData: OverviewData = OverviewData.fake(),
         loggedIn: Bool = true,
         isLoading: Bool = false,
         didLoginSucceed: Bool? = nil
-    ) -> BuildingStateViewModel
+    ) -> CurrentBuildingState
     {
-        let result = BuildingStateViewModel.init(
+        let result = CurrentBuildingState.init(
             energyManagerClient: FakeEnergyManager.init(data: overviewData))
         result.isLoading = false
         result.loginCredentialsExists = loggedIn

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct OverviewView: View {
-    @EnvironmentObject var model: BuildingStateViewModel
+    @Environment(CurrentBuildingState.self) private var model
 
     @State private var refreshTimer: Timer?
     @State private var showSettings: Bool = false
@@ -35,9 +35,9 @@ struct OverviewView: View {
                     Grid {
                         GridRow(alignment: .center) {
                             SolarProductionView(
-                                currentSolarProduction: $model.overviewData
+                                currentSolarProduction: model.overviewData
                                     .currentSolarProduction,
-                                maximumSolarProduction: $model.overviewData
+                                maximumSolarProduction: model.overviewData
                                     .solarProductionMax
                             )
                             .onTapGesture {
@@ -55,9 +55,9 @@ struct OverviewView: View {
                             }
 
                             NetworkConsumptionView(
-                                currentNetworkConsumption: $model.overviewData
+                                currentNetworkConsumption: model.overviewData
                                     .currentGridToHouse,
-                                currentNetworkFeedin: $model.overviewData
+                                currentNetworkFeedin: model.overviewData
                                     .currentSolarToGrid,
                                 isFlowFromNetwork: model.overviewData
                                     .isFlowGridToHouse(),
@@ -101,9 +101,9 @@ struct OverviewView: View {
                         GridRow(alignment: .center) {
 
                             BatteryView(
-                                currentBatteryLevel: $model.overviewData
+                                currentBatteryLevel: model.overviewData
                                     .currentBatteryLevel,
-                                currentChargeRate: $model.overviewData
+                                currentChargeRate: model.overviewData
                                     .currentBatteryChargeRate
                             )
 
@@ -118,9 +118,9 @@ struct OverviewView: View {
                             }
 
                             HouseholdConsumptionView(
-                                currentOverallConsumption: $model.overviewData
+                                currentOverallConsumption: model.overviewData
                                     .currentOverallConsumption,
-                                isAnyCarCharging: $model.overviewData
+                                isAnyCarCharging: model.overviewData
                                     .isAnyCarCharing
                             )
                         }
@@ -131,9 +131,9 @@ struct OverviewView: View {
                     .padding(.trailing, 10)
 
                     UpdateTimeStampView(
-                        isStale: $model.overviewData.isStaleData,
-                        updateTimeStamp: $model.overviewData.lastUpdated,
-                        isLoading: $model.isLoading
+                        isStale: model.overviewData.isStaleData,
+                        updateTimeStamp: model.overviewData.lastUpdated,
+                        isLoading: model.isLoading
                     )
                 }  // :VStack
                 .onAppear {
@@ -175,17 +175,10 @@ struct OverviewView: View {
                         .padding(.leading, 12)
                         .sheet(isPresented: $showChart) {
                             OverviewChartView()
-                                .environmentObject(model)
                                 .onDisappear {
                                     model.resumeFetching()
                                 }
-                                .toolbar {
-                                    ToolbarItem(placement: .topBarTrailing) {
-                                        Text("Today overview")
-                                            .foregroundColor(.primary)
-                                            .font(.headline)
-                                    }  // :ToolbarItem
-                                }  // :.toolbar
+
                         }
 
                         Spacer()
@@ -206,10 +199,9 @@ struct OverviewView: View {
                         .padding(.trailing, 12)
                         .sheet(isPresented: $showSettings) {
                             SettingsView()
-                                .environmentObject(model)
                                 .onDisappear {
                                     model.resumeFetching()
-                                } // :SettingsView
+                                }  // :SettingsView
                                 .toolbar {
                                     ToolbarItem(placement: .topBarTrailing) {
                                         Text("Settings")
@@ -217,9 +209,8 @@ struct OverviewView: View {
                                             .font(.headline)
                                     }  // :ToolbarItem
                                 }  // :.toolbar
-                        } // :sheet
+                        }  // :sheet
                     }  // :HStack
-
                 }  // :VStack
             }  // :ZStack
         }  // :VStack
@@ -228,8 +219,8 @@ struct OverviewView: View {
 
 #Preview("English") {
     OverviewView()
-        .environmentObject(
-            BuildingStateViewModel.fake(
+        .environment(
+            CurrentBuildingState.fake(
                 overviewData: .init(
                     currentSolarProduction: 4500,
                     currentOverallConsumption: 400,
@@ -251,8 +242,8 @@ struct OverviewView: View {
 
 #Preview("Stale data") {
     OverviewView()
-        .environmentObject(
-            BuildingStateViewModel.fake(
+        .environment(
+            CurrentBuildingState.fake(
                 overviewData: .init(
                     currentSolarProduction: 4500,
                     currentOverallConsumption: 400,
@@ -275,8 +266,8 @@ struct OverviewView: View {
 
 #Preview("Loading") {
     OverviewView()
-        .environmentObject(
-            BuildingStateViewModel.fake(
+        .environment(
+            CurrentBuildingState.fake(
                 overviewData: .init(
                     currentSolarProduction: 4500,
                     currentOverallConsumption: 400,
@@ -299,8 +290,8 @@ struct OverviewView: View {
 
 #Preview("German") {
     OverviewView()
-        .environmentObject(
-            BuildingStateViewModel.fake(
+        .environment(
+            CurrentBuildingState.fake(
                 overviewData: .init(
                     currentSolarProduction: 4500,
                     currentOverallConsumption: 400,

@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject var viewModel: BuildingStateViewModel
+    @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @Environment(\.colorScheme) var colorScheme
     @State private var refreshTimer: Timer?
     @State private var showLogoutConfirmation: Bool = false
 
     var body: some View {
         VStack {
-            if viewModel.isLoading
-                && viewModel.overviewData.lastSuccessServerFetch == nil
+            if buildingState.isLoading
+                && buildingState.overviewData.lastSuccessServerFetch == nil
             {
                 ProgressView()
                     .tint(.accent)
@@ -39,7 +39,7 @@ struct HomeView: View {
                                     isPresented: $showLogoutConfirmation
                                 ) {
                                     Button("Confirm") {
-                                        viewModel.logout()
+                                        buildingState.logout()
                                     }
                                     Button("Cancel", role: .cancel) {}
                                 }
@@ -51,9 +51,9 @@ struct HomeView: View {
                     VStack {
                         Spacer()
                         UpdateTimeStampView(
-                            isStale: $viewModel.overviewData.isStaleData,
-                            updateTimeStamp: $viewModel.overviewData.lastSuccessServerFetch,
-                            isLoading: $viewModel.isLoading
+                            isStale: buildingState.overviewData.isStaleData,
+                            updateTimeStamp: buildingState.overviewData.lastSuccessServerFetch,
+                            isLoading: buildingState.isLoading
                         )
                     } // :VStack
 
@@ -61,19 +61,19 @@ struct HomeView: View {
 
                         let solar =
                             Double(
-                                viewModel.overviewData.currentSolarProduction)
+                                buildingState.overviewData.currentSolarProduction)
                             / 1000
                         
                         let consumption =
                             Double(
-                                viewModel.overviewData.currentOverallConsumption)
+                                buildingState.overviewData.currentOverallConsumption)
                             / 1000
                         
                         let grid =
                             Double(
-                                viewModel.overviewData.currentGridToHouse >= 0
-                                ? viewModel.overviewData.currentGridToHouse
-                                : viewModel.overviewData.currentSolarToGrid)
+                                buildingState.overviewData.currentGridToHouse >= 0
+                                ? buildingState.overviewData.currentGridToHouse
+                                : buildingState.overviewData.currentSolarToGrid)
                             / 1000
                                                 
                         Grid(horizontalSpacing: 2, verticalSpacing: 20) {
@@ -93,7 +93,7 @@ struct HomeView: View {
                                 }
                                 .frame(maxWidth: 120, maxHeight: 120)
 
-                                if viewModel.overviewData.isFlowSolarToGrid() {
+                                if buildingState.overviewData.isFlowSolarToGrid() {
                                     Image(systemName: "arrow.right")
                                         .foregroundColor(.orange)
                                         .font(.system(size: 50, weight: .light))
@@ -116,7 +116,7 @@ struct HomeView: View {
                             } // :GridRow
                             
                             GridRow(alignment: .center) {
-                                if viewModel.overviewData.isFlowSolarToBattery() {
+                                if buildingState.overviewData.isFlowSolarToBattery() {
                                     Image(systemName: "arrow.down")
                                         .foregroundColor(.green)
                                         .font(.system(size: 50, weight: .light))
@@ -129,7 +129,7 @@ struct HomeView: View {
                                         .frame(minWidth: 50, minHeight: 50)
                                 }
 
-                                if viewModel.overviewData.isFlowSolarToHouse() {
+                                if buildingState.overviewData.isFlowSolarToHouse() {
                                     Image(systemName: "arrow.down.right")
                                         .foregroundColor(.green)
                                         .font(.system(size: 50, weight: .light))
@@ -141,7 +141,7 @@ struct HomeView: View {
                                         .frame(minWidth: 50, minHeight: 50)
                                 }
 
-                                if viewModel.overviewData.isFlowGridToHouse() {
+                                if buildingState.overviewData.isFlowGridToHouse() {
                                     Image(systemName: "arrow.down")
                                         .foregroundColor(.orange)
                                         .font(.system(size: 50, weight: .light))
@@ -156,17 +156,17 @@ struct HomeView: View {
                                 .frame(minWidth: 30, minHeight: 20)
                             
                             GridRow(alignment: .center) {
-                                if viewModel.overviewData.currentBatteryLevel != nil {
+                                if buildingState.overviewData.currentBatteryLevel != nil {
                                     BatteryBoubleView(
-                                        currentBatteryLevel: $viewModel.overviewData.currentBatteryLevel,
-                                        currentChargeRate: $viewModel.overviewData.currentBatteryChargeRate
+                                        currentBatteryLevel: buildingState.overviewData.currentBatteryLevel,
+                                        currentChargeRate: buildingState.overviewData.currentBatteryChargeRate
                                     )
                                 } else {
                                     Text("")
                                         .frame(minWidth: 120, minHeight: 120)
                                 }
                                 
-                                if viewModel.overviewData.isFlowBatteryToHome() {
+                                if buildingState.overviewData.isFlowBatteryToHome() {
                                     Image(systemName: "arrow.right")
                                         .foregroundColor(.green)
                                         .font(.system(size: 50, weight: .light))
@@ -195,7 +195,7 @@ struct HomeView: View {
                                 Text("")
                                 
                                 VStack {
-                                    if viewModel.overviewData.isAnyCarCharing {
+                                    if buildingState.overviewData.isAnyCarCharing {
                                         Image(systemName: "arrow.down")
                                             .foregroundColor(.blue)
                                             .font(.system(size: 25, weight: .light))
@@ -207,7 +207,7 @@ struct HomeView: View {
                                             .frame(minHeight: 25)
                                     }
                                     
-                                    ChargingStationsView(chargingStation: $viewModel.overviewData.chargingStations)
+                                    ChargingStationsView(chargingStation: buildingState.overviewData.chargingStations)
                                         .frame(maxWidth: 120)
                                 }
                                 
@@ -225,10 +225,10 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            if viewModel.overviewData.lastSuccessServerFetch == nil {
+            if buildingState.overviewData.lastSuccessServerFetch == nil {
                 print("fetch on appear")
                 Task {
-                    await viewModel.fetchServerData()
+                    await buildingState.fetchServerData()
                 }
             }
 
@@ -239,7 +239,7 @@ struct HomeView: View {
                     _ in
                     Task {
                         print("fetch on timer")
-                        await viewModel.fetchServerData()
+                        await buildingState.fetchServerData()
                     }
                 }  // :refreshTimer
             }  // :if
@@ -249,8 +249,8 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .environmentObject(
-            BuildingStateViewModel.fake(
+        .environment(
+            CurrentBuildingState.fake(
                 overviewData: OverviewData.fake()))
 }
 

@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct CircularInstrument: View {
-    @Binding var color: Color
-    @Binding var largeText: String
-    @Binding var smallText: String?
+    var color: Color
+    var largeText: String
+    var smallText: String?
 
     var body: some View {
         ZStack {
@@ -28,7 +28,7 @@ struct CircularInstrument: View {
 
 #Preview {
     CircularInstrument(
-        color: Binding<Color>.constant(.yellow),
-        largeText: Binding<String>.constant("45"),
-        smallText: Binding<String?>.constant("kW"))
+        color: .yellow,
+        largeText: "45",
+        smallText: "kW")
 }

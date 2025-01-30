@@ -3,7 +3,7 @@ import SwiftUI
 
 struct OverviewChart: View {
 
-    @Binding var consumption: ConsumptionData
+    var consumption: ConsumptionData
     var isSmall: Bool = false
     var isAccent: Bool = false
 
@@ -130,13 +130,13 @@ struct OverviewChart: View {
 
 #Preview("Normal") {
     OverviewChart(
-        consumption: .constant(ConsumptionData.fake())
+        consumption: ConsumptionData.fake()
     )
 }
 
 #Preview("Small") {
     OverviewChart(
-        consumption: .constant(ConsumptionData.fake()),
+        consumption: ConsumptionData.fake(),
         isSmall: true
     )
     .frame(height: 80)

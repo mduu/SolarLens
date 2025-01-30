@@ -18,8 +18,8 @@ struct ChargingModePickerView: View {
                 {
 
                     ChargingButtonView(
-                        chargingMode: .constant(chargingMode),
-                        chargingStation: $station,
+                        chargingMode: chargingMode,
+                        chargingStation: station,
                         largeButton: true
                     )  // :ChargingButtonView
 

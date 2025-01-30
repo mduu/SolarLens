@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ChargingControlView: View {
-    @EnvironmentObject var model: BuildingStateViewModel
+    @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
     @State var newCarCharging: ControlCarChargingRequest? = nil
     @State var showChargingModeConfig: Bool = false
@@ -22,32 +22,33 @@ struct ChargingControlView: View {
 
                     VStack {
                         ChargingInfo(
-                            totalChargedToday: .constant(model.chargingInfos?.totalCharedToday),
-                            currentChargingPower: .constant(model.chargingInfos?.currentCharging)
+                            totalChargedToday: .constant(
+                                model.chargingInfos?.totalCharedToday),
+                            currentChargingPower: .constant(
+                                model.chargingInfos?.currentCharging)
                         )
                     }
-                        .padding(.horizontal, 10)
-                        .padding(.bottom, 10)
-                        .onTapGesture {
-                            Task {
-                                await model.fetchChargingInfos()
-                            }
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 10)
+                    .onTapGesture {
+                        Task {
+                            await model.fetchChargingInfos()
                         }
-                    
+                    }
+
                     VStack(spacing: 10) {
-                        ForEach($model.overviewData.chargingStations, id: \.id)
-                        {
+                        ForEach(model.overviewData.chargingStations, id: \.id) {
                             chargingStation in
 
                             VStack(alignment: .leading, spacing: 3) {
                                 ChargingStationModeView(
-                                    isTheOnlyOne: .constant(
-                                        model.overviewData.chargingStations
-                                            .count
-                                            <= 1),
+                                    isTheOnlyOne: model.overviewData
+                                        .chargingStations
+                                        .count
+                                        <= 1,
                                     chargingStation: chargingStation,
                                     chargingModeConfiguration:
-                                        $chargingConfiguration)
+                                        chargingConfiguration)
                             }  // :VStack
                         }  // :ForEach
 
@@ -66,13 +67,13 @@ struct ChargingControlView: View {
                             .sheet(isPresented: $showChargingModeConfig) {
                                 ChargingModeConfigurationView(
                                     chargingModeConfiguration:
-                                        $chargingConfiguration
+                                        chargingConfiguration
                                 )
                                 .onDisappear {
                                     model.resumeFetching()
                                 }
 
-                            } // :Sheet
+                            }  // :Sheet
                         }  // :HStack
                     }  // :VStack
                 }  // :VStack
@@ -83,7 +84,7 @@ struct ChargingControlView: View {
             if model.isChangingCarCharger {
                 HStack {
                     ProgressView()
-                } // :HStack
+                }  // :HStack
                 .background(Color.black.opacity(0.8))
             }
         }  // :ZStack
@@ -97,8 +98,8 @@ struct ChargingControlView: View {
 
 #Preview {
     ChargingControlView()
-        .environmentObject(
-            BuildingStateViewModel.fake(
+        .environment(
+            CurrentBuildingState.fake(
                 overviewData: .init(
                     currentSolarProduction: 4550,
                     currentOverallConsumption: 1200,

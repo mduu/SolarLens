@@ -69,7 +69,7 @@ struct TodayTimelineWidgetView: View {
 
                     if let history = entry.history {
                         OverviewChart(
-                            consumption: .constant(history),
+                            consumption: history,
                             isSmall: true,
                             isAccent: renderingMode == .accented
                         )

@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct ChargingOptionsPopupView: View {
-    @EnvironmentObject var model: BuildingStateViewModel
-    @Binding var chargingMode: ChargingMode
-    @Binding var chargingStation: ChargingStation
+    @Environment(CurrentBuildingState.self) var buildingState:
+        CurrentBuildingState
+    var chargingMode: ChargingMode
+    var chargingStation: ChargingStation
 
     @Environment(\.dismiss) var dismiss
 
@@ -18,7 +19,7 @@ struct ChargingOptionsPopupView: View {
     @State var showMinCurrentTimePicker: Bool = false
     private let minMinQuantity: Int = 1
     private let maxMinQuantity: Int = 100
-    
+
     @State var targetSocPercent: Int = 1
     @State var targetSocDate: Date = Date()
     @State var targetSocTime: Date = Date()
@@ -57,7 +58,7 @@ struct ChargingOptionsPopupView: View {
                     .foregroundColor(.red)
             }
 
-            if model.isChangingCarCharger {
+            if buildingState.isChangingCarCharger {
                 HStack {
                     ProgressView()
                 }.background(Color.black.opacity(0.8))
@@ -101,7 +102,7 @@ struct ChargingOptionsPopupView: View {
 
             Button(action: {
                 Task {
-                    await model.setCarCharging(
+                    await buildingState.setCarCharging(
                         sensorId: chargingStation.id,
                         newCarCharging: .init(
                             constantCurrent: constantCurrent))
@@ -206,7 +207,7 @@ struct ChargingOptionsPopupView: View {
 
                 Button(action: {
                     Task {
-                        await model.setCarCharging(
+                        await buildingState.setCarCharging(
                             sensorId: chargingStation.id,
                             newCarCharging: .init(
                                 minimumChargeQuantityTargetAmount: $minQuantity
@@ -223,11 +224,11 @@ struct ChargingOptionsPopupView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(.green)
-                
-            } // :VStack
+
+            }  // :VStack
             .frame(maxWidth: .infinity)
-            
-        } // :ScrollView
+
+        }  // :ScrollView
         .frame(maxWidth: .infinity)
     }
 
@@ -319,7 +320,7 @@ struct ChargingOptionsPopupView: View {
 
                 Button(action: {
                     Task {
-                        await model.setCarCharging(
+                        await buildingState.setCarCharging(
                             sensorId: chargingStation.id,
                             newCarCharging: .init(
                                 targetSocPercent: $targetSocPercent
@@ -363,18 +364,17 @@ struct ChargingOptionsPopupView: View {
 
 #Preview("Constant Current") {
     ChargingOptionsPopupView(
-        chargingMode: .constant(.constantCurrent),
-        chargingStation: .constant(
-            ChargingStation.init(
-                id: "id-1",
-                name: "Station #1",
-                chargingMode: .withSolarPower,
-                priority: 1,
-                currentPower: 0,
-                signal: .connected))
+        chargingMode: .constantCurrent,
+        chargingStation: ChargingStation.init(
+            id: "id-1",
+            name: "Station #1",
+            chargingMode: .withSolarPower,
+            priority: 1,
+            currentPower: 0,
+            signal: .connected)
     )
-    .environmentObject(
-        BuildingStateViewModel.fake(
+    .environment(
+        CurrentBuildingState.fake(
             overviewData: .init(
                 currentSolarProduction: 4500,
                 currentOverallConsumption: 400,
@@ -396,18 +396,17 @@ struct ChargingOptionsPopupView: View {
 
 #Preview("Min. Qty.") {
     ChargingOptionsPopupView(
-        chargingMode: .constant(.minimumQuantity),
-        chargingStation: .constant(
-            ChargingStation.init(
-                id: "id-1",
-                name: "Station #1",
-                chargingMode: .withSolarPower,
-                priority: 1,
-                currentPower: 0,
-                signal: .connected))
+        chargingMode: .minimumQuantity,
+        chargingStation: ChargingStation.init(
+            id: "id-1",
+            name: "Station #1",
+            chargingMode: .withSolarPower,
+            priority: 1,
+            currentPower: 0,
+            signal: .connected)
     )
-    .environmentObject(
-        BuildingStateViewModel.fake(
+    .environment(
+        CurrentBuildingState.fake(
             overviewData: .init(
                 currentSolarProduction: 4500,
                 currentOverallConsumption: 400,
@@ -429,18 +428,17 @@ struct ChargingOptionsPopupView: View {
 
 #Preview("SOC") {
     ChargingOptionsPopupView(
-        chargingMode: .constant(.chargingTargetSoc),
-        chargingStation: .constant(
-            ChargingStation.init(
-                id: "id-1",
-                name: "Station #1",
-                chargingMode: .withSolarPower,
-                priority: 1,
-                currentPower: 0,
-                signal: .connected))
+        chargingMode: .chargingTargetSoc,
+        chargingStation: ChargingStation.init(
+            id: "id-1",
+            name: "Station #1",
+            chargingMode: .withSolarPower,
+            priority: 1,
+            currentPower: 0,
+            signal: .connected)
     )
-    .environmentObject(
-        BuildingStateViewModel.fake(
+    .environment(
+        CurrentBuildingState.fake(
             overviewData: .init(
                 currentSolarProduction: 4500,
                 currentOverallConsumption: 400,

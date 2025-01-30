@@ -2,8 +2,8 @@ import Charts
 import SwiftUI
 
 struct BatteryBoubleView: View {
-    @Binding var currentBatteryLevel: Int?
-    @Binding var currentChargeRate: Int?
+    var currentBatteryLevel: Int?
+    var currentChargeRate: Int?
     
     var body: some View {
         let batteryLevel: Int = currentBatteryLevel ?? 0
@@ -90,7 +90,7 @@ struct BatteryBoubleView: View {
 
 #Preview {
     BatteryBoubleView(
-        currentBatteryLevel: .constant(33),
-        currentChargeRate: .constant(1234)
+        currentBatteryLevel: 33,
+        currentChargeRate: 1234
     )
 }

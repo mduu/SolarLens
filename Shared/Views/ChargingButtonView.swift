@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct ChargingButtonView: View {
-    @EnvironmentObject var model: BuildingStateViewModel
-    @Binding var chargingMode: ChargingMode
-    @Binding var chargingStation: ChargingStation
+    var chargingMode: ChargingMode
+    var chargingStation: ChargingStation
+
+    @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
     var largeButton: Bool = false
 
     @State private var showingPopup = false
@@ -34,26 +35,25 @@ struct ChargingButtonView: View {
             .frame(alignment: .leading)
             .padding(.all, 0)
         }
-        .buttonStyle( .automatic )
+        .buttonStyle(.automatic)
         .frame(maxWidth: .infinity)
         .padding(.all, largeButton ? 5 : 0)
         .background(
             getBackgroundColor(
                 chargingMode: chargingMode,
-                chargingStation: $chargingStation.wrappedValue)
+                chargingStation: chargingStation)
         )
         .tint(
             getButtonTint(
                 chargingMode: chargingMode,
-                chargingStation: $chargingStation.wrappedValue)
+                chargingStation: chargingStation)
         )
         .sheet(isPresented: $showingPopup) {
             ChargingOptionsPopupView(
-                chargingMode: $chargingMode,
-                chargingStation: $chargingStation
+                chargingMode: chargingMode,
+                chargingStation: chargingStation
             )
             .presentationDetents([.height(300)])
-            .environmentObject(model)
         }
     }
 
@@ -95,7 +95,7 @@ struct ChargingButtonView: View {
             ? .accent
             : .primary
     }
-    
+
     private func getBackgroundColor(
         chargingMode: ChargingMode,
         chargingStation: ChargingStation
@@ -124,52 +124,47 @@ struct ChargingButtonView: View {
 
 #Preview("Selected") {
     ChargingButtonView(
-        chargingMode: .constant(.withSolarPower),
-        chargingStation: .constant(
-            ChargingStation(
-                id: "2134",
-                name: "Station 2",
-                chargingMode: .withSolarPower,
-                priority: 1,
-                currentPower: 0,
-                signal: .connected
-            )
+        chargingMode: .withSolarPower,
+        chargingStation: ChargingStation(
+            id: "2134",
+            name: "Station 2",
+            chargingMode: .withSolarPower,
+            priority: 1,
+            currentPower: 0,
+            signal: .connected
         )
     )
-    .environmentObject(BuildingStateViewModel.fake(overviewData: OverviewData.fake()))
+    .environment(CurrentBuildingState.fake(overviewData: OverviewData.fake()))
 }
 
 #Preview("Selected iOS") {
     ChargingButtonView(
-        chargingMode: .constant(.withSolarPower),
-        chargingStation: .constant(
-            ChargingStation(
-                id: "2134",
-                name: "Station 2",
-                chargingMode: .withSolarPower,
-                priority: 1,
-                currentPower: 0,
-                signal: .connected
-            )
+        chargingMode: .withSolarPower,
+        chargingStation: ChargingStation(
+            id: "2134",
+            name: "Station 2",
+            chargingMode: .withSolarPower,
+            priority: 1,
+            currentPower: 0,
+            signal: .connected
         ),
         largeButton: true
     )
-    .environmentObject(BuildingStateViewModel.fake(overviewData: OverviewData.fake()))
+    .environment(CurrentBuildingState.fake(overviewData: OverviewData.fake()))
 }
 
 #Preview("Unselected") {
     ChargingButtonView(
-        chargingMode: .constant(.off),
-        chargingStation: .constant(
-            ChargingStation(
-                id: "2134",
-                name: "Station 2",
-                chargingMode: .withSolarPower,
-                priority: 1,
-                currentPower: 0,
-                signal: .connected
-            )
+        chargingMode: .off,
+        chargingStation: ChargingStation(
+            id: "2134",
+            name: "Station 2",
+            chargingMode: .withSolarPower,
+            priority: 1,
+            currentPower: 0,
+            signal: .connected
         )
+
     )
-    .environmentObject(BuildingStateViewModel.fake(overviewData: OverviewData.fake()))
+    .environment(CurrentBuildingState.fake(overviewData: OverviewData.fake()))
 }

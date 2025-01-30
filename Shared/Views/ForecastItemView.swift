@@ -2,11 +2,11 @@ import SwiftUI
 import WidgetKit
 
 struct ForecastItemView: View {
-    @Binding var date: Date?
-    @Binding var maxProduction: Double
-    @Binding var forecasts: [ForecastItem?]
-    @Binding var forecast: ForecastItem?
-    @Binding var small: Bool?
+    var date: Date?
+    var maxProduction: Double
+    var forecasts: [ForecastItem?]
+    var forecast: ForecastItem?
+    var small: Bool?
     var intense: Bool = false
 
     @Environment(\.colorScheme) var colorScheme
@@ -117,28 +117,28 @@ struct ForecastItemView: View {
 
 #Preview("Normal") {
     ForecastItemView(
-        date: .constant(Date()),
-        maxProduction: .constant(11000),
-        forecasts: .constant([
+        date: Date(),
+        maxProduction: 11000,
+        forecasts: [
             ForecastItem(min: 1.0, max: 1.4, expected: 1.2),
             ForecastItem(min: 0.2, max: 0.4, expected: 0.3),
             ForecastItem(min: 3.2, max: 3.4, expected: 3.3),
-        ]),
-        forecast: .constant(ForecastItem(min: 1.2, max: 1.4, expected: 1.3)),
-        small: .constant(false)
+        ],
+        forecast: ForecastItem(min: 1.2, max: 1.4, expected: 1.3),
+        small: false
     )
 }
 
 #Preview("Small") {
     ForecastItemView(
-        date: .constant(Date()),
-        maxProduction: .constant(11000),
-        forecasts: .constant([
+        date: Date(),
+        maxProduction: 11000,
+        forecasts: [
             ForecastItem(min: 1.0, max: 1.4, expected: 1.2),
             ForecastItem(min: 0.2, max: 0.4, expected: 0.3),
             ForecastItem(min: 3.2, max: 3.4, expected: 3.3),
-        ]),
-        forecast: .constant(ForecastItem(min: 1.2, max: 1.4, expected: 1.3)),
-        small: .constant(true)
+        ],
+        forecast: ForecastItem(min: 1.2, max: 1.4, expected: 1.3),
+        small: true
     )
 }

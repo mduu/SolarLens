@@ -1,20 +1,24 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var viewModel = BuildingStateViewModel()
-    @State var showAppRateRequest = AppStoreReviewManager.shared.checkAndRequestReview()
+    @Environment(CurrentBuildingState.self) var viewModel: CurrentBuildingState
+    @State var showAppRateRequest = AppStoreReviewManager.shared
+        .checkAndRequestReview()
 
     var body: some View {
 
+        let mainTab = Binding<MainTab>(
+            get: { viewModel.selectedMainTab },
+            set: { viewModel.selectedMainTab = $0 }
+        )
+
         if !viewModel.loginCredentialsExists {
             LoginView()
-                .environmentObject(viewModel)
         } else if viewModel.loginCredentialsExists {
 
             NavigationView {
-                TabView(selection: $viewModel.selectedMainTab) {
+                TabView(selection: mainTab) {
                     OverviewView()
-                        .environmentObject(viewModel)
                         .onTapGesture {
                             print("Force refresh")
                             Task {
@@ -25,16 +29,15 @@ struct ContentView: View {
 
                     if viewModel.overviewData.hasAnyCarChargingStation {
                         ChargingControlView()
-                            .environmentObject(viewModel)
                             .toolbar {
                                 ToolbarItem(placement: .topBarLeading) {
                                     HStack {
                                         HomeButton()
-                                        
+
                                         Text("Charging")
                                             .foregroundColor(.green)
                                             .font(.headline)
-                                        
+
                                         Spacer()
                                     }  // :HStack
                                 }  // :ToolbarItem
@@ -43,7 +46,6 @@ struct ContentView: View {
                     }
 
                     SolarDetailsView()
-                        .environmentObject(viewModel)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 HStack {
@@ -61,14 +63,13 @@ struct ContentView: View {
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
-                .sheet(isPresented: $showAppRateRequest)
-                {
+                .sheet(isPresented: $showAppRateRequest) {
                     AppReviewRequestView()
                 }
 
             }  // :NavigationView
             .edgesIgnoringSafeArea(.all)
-        
+
         } else {
             ProgressView()
                 .tint(.accent)
@@ -94,22 +95,23 @@ struct ContentView: View {
 }
 
 #Preview("Logged in") {
-    ContentView(
-        viewModel: BuildingStateViewModel.fake(
-            overviewData: .init(
-                currentSolarProduction: 4500,
-                currentOverallConsumption: 400,
-                currentBatteryLevel: 99,
-                currentBatteryChargeRate: 150,
-                currentSolarToGrid: 3600,
-                currentGridToHouse: 0,
-                currentSolarToHouse: 400,
-                solarProductionMax: 11000,
-                hasConnectionError: false,
-                lastUpdated: Date(),
-                lastSuccessServerFetch: Date(),
-                isAnyCarCharing: true,
-                chargingStations: []
-            ), loggedIn: true
-        ))
+    ContentView()
+        .environment(
+            CurrentBuildingState.fake(
+                overviewData: .init(
+                    currentSolarProduction: 4500,
+                    currentOverallConsumption: 400,
+                    currentBatteryLevel: 99,
+                    currentBatteryChargeRate: 150,
+                    currentSolarToGrid: 3600,
+                    currentGridToHouse: 0,
+                    currentSolarToHouse: 400,
+                    solarProductionMax: 11000,
+                    hasConnectionError: false,
+                    lastUpdated: Date(),
+                    lastSuccessServerFetch: Date(),
+                    isAnyCarCharing: true,
+                    chargingStations: []
+                ))
+        )
 }

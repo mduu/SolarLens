@@ -122,56 +122,44 @@ struct SolarProductionWidgetView: View {
 
                         HStack {
                             ForecastItemView(
-                                date: .constant(
-                                    Calendar.current.startOfDay(for: Date())
-                                ),
-                                maxProduction: .constant(
-                                    entry.maxProduction ?? 0
-                                ),
-                                forecasts: .constant([
+                                date: Calendar.current.startOfDay(for: Date()),
+                                maxProduction: entry.maxProduction ?? 0,
+                                forecasts: [
                                     entry.forecastToday,
                                     entry.forecastTomorrow,
                                     entry.forecastDayAfterTomorrow
-                                ]),
-                                forecast: .constant(entry.forecastToday),
-                                small: .constant(true)
+                                ],
+                                forecast: entry.forecastToday,
+                                small: true
                             )
 
                             ForecastItemView(
-                                date: .constant(
-                                    Calendar.current.date(
+                                date: Calendar.current.date(
                                         byAdding: .day, value: 1, to: Date()
-                                    )),
-                                maxProduction: .constant(
-                                    entry.maxProduction ?? 0
-                                ),
-                                forecasts: .constant(
-                                    [
+                                    ),
+                                maxProduction: entry.maxProduction ?? 0,
+                                forecasts: [
                                         entry.forecastToday,
                                         entry.forecastTomorrow,
                                         entry.forecastDayAfterTomorrow
-                                    ]
-                                ),
-                                forecast: .constant(entry.forecastTomorrow),
-                                small: .constant(true)
+                                    ],
+                                forecast: entry.forecastTomorrow,
+                                small: true
                             )
 
                             ForecastItemView(
-                                date: .constant(
-                                    Calendar.current.date(
+                                date: Calendar.current.date(
                                         byAdding: .day, value: 2, to: Date()
-                                    )),
-                                maxProduction: .constant(
-                                    entry.maxProduction ?? 0
-                                ),
-                                forecasts: .constant([
+                                    ),
+                                maxProduction:
+                                    entry.maxProduction ?? 0,
+                                forecasts: [
                                     entry.forecastToday,
                                     entry.forecastTomorrow,
                                     entry.forecastDayAfterTomorrow
-                                ]),
-                                forecast: .constant(
-                                    entry.forecastDayAfterTomorrow),
-                                small: .constant(true)
+                                ],
+                                forecast: entry.forecastDayAfterTomorrow,
+                                small: true
                             )
                         }  // :HStack
                         .padding(.bottom, 4)

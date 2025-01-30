@@ -1,15 +1,8 @@
-//
-//  ChargingModeConfiguration.swift
-//  Solar Lens Watch App
-//
-//  Created by Marc Dürst on 09.11.2024.
-//
-
 import Combine
 import SwiftUI
 
 struct ChargingModeConfigurationView: View {
-    @Binding var chargingModeConfiguration: ChargingModeConfiguration
+    var chargingModeConfiguration: ChargingModeConfiguration
 
     var body: some View {
         ScrollView {
@@ -26,7 +19,7 @@ struct ChargingModeConfigurationView: View {
                     ForEach(ChargingMode.allCases, id: \.self) { mode in
                         
                         ModeToggle(
-                            chargingModeConfiguration: $chargingModeConfiguration,
+                            chargingModeConfiguration: chargingModeConfiguration,
                             chargingMode: mode)
                         
                     }  // :ForEach
@@ -37,7 +30,7 @@ struct ChargingModeConfigurationView: View {
 }
 
 struct ModeToggle: View {
-    @Binding var chargingModeConfiguration: ChargingModeConfiguration
+    var chargingModeConfiguration: ChargingModeConfiguration
     var chargingMode: ChargingMode
 
     var body: some View {
@@ -60,6 +53,6 @@ struct ModeToggle: View {
 
 #Preview {
     ChargingModeConfigurationView(
-        chargingModeConfiguration: .constant(ChargingModeConfiguration())
+        chargingModeConfiguration: ChargingModeConfiguration()
     )
 }

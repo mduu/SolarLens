@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct SolarProductionView: View {
-    @Binding var currentSolarProduction: Int
-    @Binding var maximumSolarProduction: Double
+    var currentSolarProduction: Int
+    var maximumSolarProduction: Double
     
     var body: some View {
         VStack() {
@@ -37,25 +37,25 @@ struct SolarProductionView: View {
 
 #Preview("Low PV)") {
     SolarProductionView(
-        currentSolarProduction: .constant(1000),
-        maximumSolarProduction: .constant(11000))
+        currentSolarProduction: 1000,
+        maximumSolarProduction: 11000)
 }
 
 #Preview("Max PV)") {
     SolarProductionView(
-        currentSolarProduction: .constant(11000),
-        maximumSolarProduction: .constant(11000))
+        currentSolarProduction: 11000,
+        maximumSolarProduction: 11000)
 }
 
 
 #Preview("Ver-low PV)") {
     SolarProductionView(
-        currentSolarProduction: .constant(45),
-        maximumSolarProduction: .constant(11000))
+        currentSolarProduction: 45,
+        maximumSolarProduction: 11000)
 }
 
 #Preview("No PV)") {
     SolarProductionView(
-        currentSolarProduction: .constant(0),
-        maximumSolarProduction: .constant(11000))
+        currentSolarProduction: 0,
+        maximumSolarProduction: 11000)
 }

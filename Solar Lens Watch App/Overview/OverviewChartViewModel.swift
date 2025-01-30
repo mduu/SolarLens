@@ -1,11 +1,11 @@
 import Foundation
 
-@MainActor
+@Observable()
 class OverviewChartViewModel: ObservableObject {
-    @Published var consumptionData: ConsumptionData? = nil
-    @Published var isLoading = false
-    @Published var errorMessage: String? = nil
-    @Published var error: EnergyManagerClientError? = nil
+    var consumptionData: ConsumptionData? = nil
+    var isLoading = false
+    var errorMessage: String? = nil
+    var error: EnergyManagerClientError? = nil
 
     private let energyManager: EnergyManager
     private var consumptionChartLastFetchAt: Date?

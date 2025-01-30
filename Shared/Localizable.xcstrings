@@ -1661,6 +1661,7 @@
       }
     },
     "Today overview" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

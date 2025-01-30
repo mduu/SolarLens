@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var model: BuildingStateViewModel
+    @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
     @State var email: String = ""
     @State var password: String = ""
@@ -89,13 +89,13 @@ struct LoginView: View {
 
 #Preview("English") {
     LoginView()
-        .environmentObject(BuildingStateViewModel())
+        .environment(CurrentBuildingState())
 }
 
 #Preview("Failed") {
     LoginView()
-        .environmentObject(
-            BuildingStateViewModel.fake(
+        .environment(
+            CurrentBuildingState.fake(
                 overviewData: .fake(),
                 loggedIn: false,
                 isLoading: false,
@@ -106,18 +106,18 @@ struct LoginView: View {
 
 #Preview("German") {
     LoginView()
-        .environmentObject(BuildingStateViewModel())
+        .environment(CurrentBuildingState())
         .environment(\.locale, Locale(identifier: "DE"))
 }
 
 #Preview("French") {
     LoginView()
-        .environmentObject(BuildingStateViewModel())
+        .environment(CurrentBuildingState())
         .environment(\.locale, Locale(identifier: "FR"))
 }
 
 #Preview("Italian") {
     LoginView()
-        .environmentObject(BuildingStateViewModel())
+        .environment(CurrentBuildingState())
         .environment(\.locale, Locale(identifier: "IT"))
 }

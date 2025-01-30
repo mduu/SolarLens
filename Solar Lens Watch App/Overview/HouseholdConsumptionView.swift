@@ -1,27 +1,23 @@
 import SwiftUI
 
 struct HouseholdConsumptionView: View {
-    @Binding var currentOverallConsumption: Int
-    @Binding var isAnyCarCharging: Bool
+    var currentOverallConsumption: Int?
+    var isAnyCarCharging: Bool
 
-    @State var circleColor: Color = .teal
-    @State var circleLargeText: String = "-"
-    @State var circleSmallText: String? = "kW"
+    let circleColor: Color = .teal
+    let unitText = "kW"
 
     var body: some View {
         VStack(spacing: 0) {
             CircularInstrument(
-                color: $circleColor,
-                largeText: $circleLargeText,
-                smallText: $circleSmallText
+                color: circleColor,
+                largeText: currentOverallConsumption != nil
+                    ? String(
+                        format: "%.1f",
+                        Double(currentOverallConsumption!) / 1000
+                    ) : "-",
+                smallText: unitText
             )
-            .onChange(of: currentOverallConsumption, initial: true) {
-                oldValue, newValue in
-                circleLargeText = String(
-                    format: "%.1f",
-                    Double(newValue) / 1000
-                )
-            }
 
             HStack(alignment: VerticalAlignment.bottom) {
                 Image(systemName: "house")
@@ -31,7 +27,7 @@ struct HouseholdConsumptionView: View {
                             .pulse.wholeSymbol, options: .repeat(.continuous))
                 }
             }
-                .padding(.top, 3)
+            .padding(.top, 3)
 
         }
     }
@@ -39,14 +35,14 @@ struct HouseholdConsumptionView: View {
 
 #Preview("No charing") {
     HouseholdConsumptionView(
-        currentOverallConsumption: Binding.constant(1230),
-        isAnyCarCharging: Binding.constant(false)
+        currentOverallConsumption: 1230,
+        isAnyCarCharging: false
     )
 }
 
 #Preview("Charing") {
     HouseholdConsumptionView(
-        currentOverallConsumption: Binding.constant(1230),
-        isAnyCarCharging: Binding.constant(true)
+        currentOverallConsumption: 1230,
+        isAnyCarCharging: true
     )
 }
