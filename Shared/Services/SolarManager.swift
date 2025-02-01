@@ -1,8 +1,8 @@
 import SwiftUI
 
 actor SolarManager: EnergyManager {
-    private static var _instance: EnergyManager? = nil
-    static func instance() -> EnergyManager {
+    private static var _instance: SolarManager? = nil
+    static func instance() -> SolarManager {
         if _instance == nil {
             _instance = SolarManager()
         }

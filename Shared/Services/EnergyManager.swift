@@ -2,8 +2,6 @@ import Combine
 import Foundation
 
 protocol EnergyManager {
-    static func instance() -> EnergyManager
-    
     func login(username: String, password: String) async -> Bool
 
     func fetchOverviewData(lastOverviewData: OverviewData?) async throws

@@ -1,22 +1,5 @@
 import SwiftUI
 
-struct ForecastItem {
-    var min: Double
-    var max: Double
-    var expected: Double
-    
-    var stringRange: String {
-        let minStr = String(format: "%.0f", min)
-        let maxStr = String(format: "%.0f", max)
-        
-        if minStr == maxStr {
-            return minStr
-        }
-        
-        return "\(minStr)-\(maxStr)"
-    }
-}
-
 @Observable
 class SolarDetailsData {
     var todaySolarProduction: Double?
@@ -34,5 +17,22 @@ class SolarDetailsData {
         self.forecastToday = forecastToday
         self.forecastTomorrow = forecastTomorrow
         self.forecastDayAfterTomorrow = forecastDayAfterTomorrow
+    }
+}
+
+struct ForecastItem {
+    var min: Double
+    var max: Double
+    var expected: Double
+    
+    var stringRange: String {
+        let minStr = String(format: "%.0f", min)
+        let maxStr = String(format: "%.0f", max)
+        
+        if minStr == maxStr {
+            return minStr
+        }
+        
+        return "\(minStr)-\(maxStr)"
     }
 }

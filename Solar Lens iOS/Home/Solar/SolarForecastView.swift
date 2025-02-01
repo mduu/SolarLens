@@ -1,7 +1,12 @@
 import SwiftUI
 
 struct SolarForecastView: View {
-    @State private var viewModel: SolarDetailsViewModel = .init()
+    var solarProductionMax: Double
+    var todaySolarProduction: Double?
+    var forecastToday: ForecastItem?
+    var forecastTomorrow: ForecastItem?
+    var forecastDayAfterTomorrow: ForecastItem?
+    
     @State private var refreshTimer: Timer?
 
     var body: some View {
@@ -13,15 +18,13 @@ struct SolarForecastView: View {
             HStack {
                 ForecastItemView(
                     date: Calendar.current.startOfDay(for: Date()),
-                    maxProduction: viewModel.overviewData
-                        .solarProductionMax,
+                    maxProduction: solarProductionMax,
                     forecasts: [
-                        viewModel.solarDetailsData.forecastToday,
-                        viewModel.solarDetailsData.forecastTomorrow,
-                        viewModel.solarDetailsData
-                            .forecastDayAfterTomorrow,
+                        forecastToday,
+                        forecastTomorrow,
+                        forecastDayAfterTomorrow,
                     ],
-                    forecast: viewModel.solarDetailsData.forecastToday,
+                    forecast: forecastToday,
                     small: false,
                     intense: true
                 )
@@ -29,14 +32,13 @@ struct SolarForecastView: View {
                 ForecastItemView(
                     date: Calendar.current.date(
                             byAdding: .day, value: 1, to: Date()),
-                    maxProduction: viewModel.overviewData.solarProductionMax,
+                    maxProduction: solarProductionMax,
                     forecasts: [
-                        viewModel.solarDetailsData.forecastToday,
-                        viewModel.solarDetailsData.forecastTomorrow,
-                        viewModel.solarDetailsData
-                            .forecastDayAfterTomorrow,
+                        forecastToday,
+                        forecastTomorrow,
+                        forecastDayAfterTomorrow,
                     ],
-                    forecast: viewModel.solarDetailsData.forecastTomorrow,
+                    forecast: forecastTomorrow,
                     small: false,
                     intense: true
                 )
@@ -44,40 +46,30 @@ struct SolarForecastView: View {
                 ForecastItemView(
                     date: Calendar.current.date(
                             byAdding: .day, value: 2, to: Date()),
-                    maxProduction: viewModel.overviewData.solarProductionMax,
+                    maxProduction: solarProductionMax,
                     forecasts: [
-                        viewModel.solarDetailsData.forecastToday,
-                        viewModel.solarDetailsData.forecastTomorrow,
-                        viewModel.solarDetailsData
-                            .forecastDayAfterTomorrow,
+                        forecastToday,
+                        forecastTomorrow,
+                        forecastDayAfterTomorrow,
                     ],
-                    forecast: viewModel.solarDetailsData.forecastDayAfterTomorrow,
+                    forecast: forecastDayAfterTomorrow,
                     small: false,
                     intense: true
                 )
             } // :HStack
         } // :VStack
         .onAppear {
-            Task {
-                await viewModel.fetchSolarDetails()
-            }
-
-            if refreshTimer == nil {
-                refreshTimer = Timer.scheduledTimer(
-                    withTimeInterval: 120, repeats: true
-                ) {
-                    _ in
-                    Task {
-                        await viewModel.fetchSolarDetails()
-                    }
-                }  // :refreshTimer
-            }  // :if
-
             AppStoreReviewManager.shared.setSolarDetailsShownAtLeastOnce()
         }  // :onAppear
     }
 }
 
 #Preview {
-    SolarForecastView()
+    SolarForecastView(
+        solarProductionMax: 11000,
+        todaySolarProduction: 8910,
+        forecastToday: nil,
+        forecastTomorrow: nil,
+        forecastDayAfterTomorrow: nil
+    )
 }

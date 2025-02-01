@@ -3,8 +3,11 @@ import SwiftUI
 struct HomeView: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @Environment(\.colorScheme) var colorScheme
-    @State private var refreshTimer: Timer?
-    @State private var showLogoutConfirmation: Bool = false
+    @Environment(\.energyManager) var energyManager
+    @State var refreshTimer: Timer?
+    @State var solarForecastTimer: Timer?
+    @State var showLogoutConfirmation: Bool = false
+    @State var solarDetailsData: SolarDetailsData?
 
     var body: some View {
         VStack {
@@ -78,8 +81,17 @@ struct HomeView: View {
                                                 
                         Grid(horizontalSpacing: 2, verticalSpacing: 20) {
                             GridRow {
-                                SolarForecastView()
+                                if solarDetailsData != nil
+                                {
+                                    SolarForecastView(
+                                        solarProductionMax: buildingState.overviewData.solarProductionMax,
+                                        todaySolarProduction: solarDetailsData!.todaySolarProduction,
+                                        forecastToday: solarDetailsData!.forecastToday,
+                                        forecastTomorrow: solarDetailsData!.forecastTomorrow,
+                                        forecastDayAfterTomorrow: solarDetailsData!.forecastDayAfterTomorrow
+                                    )
                                     .frame(maxWidth: 150, maxHeight: 100)
+                                }
                                                                 
                                 Text("")
                             }
@@ -225,24 +237,49 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            if buildingState.overviewData.lastSuccessServerFetch == nil {
-                print("fetch on appear")
+            fetchAndStartRefreshTimerForOverviewData()
+            fetchAndStartRefreshTimerForSolarDetailData()
+        }
+    }
+    
+    private func fetchAndStartRefreshTimerForOverviewData() {
+        if buildingState.overviewData.lastSuccessServerFetch == nil {
+            print("initial fetch overview data")
+            Task {
+                await buildingState.fetchServerData()
+            }
+        }
+        
+        if refreshTimer == nil {
+            refreshTimer = Timer.scheduledTimer(
+                withTimeInterval: 15, repeats: true
+            ) {
+                _ in
                 Task {
+                    print("fetch on timer")
                     await buildingState.fetchServerData()
                 }
             }
-
-            if refreshTimer == nil {
-                refreshTimer = Timer.scheduledTimer(
-                    withTimeInterval: 15, repeats: true
-                ) {
-                    _ in
-                    Task {
-                        print("fetch on timer")
-                        await buildingState.fetchServerData()
-                    }
-                }  // :refreshTimer
-            }  // :if
+        }
+    }
+    
+    private func fetchAndStartRefreshTimerForSolarDetailData() {
+        if solarDetailsData == nil {
+            print("fetch solarDetailsData on appear")
+            Task {
+                solarDetailsData = try await energyManager.fetchSolarDetails()
+            }
+        }
+        if solarForecastTimer == nil {
+            solarForecastTimer = Timer.scheduledTimer(
+                withTimeInterval: 300, repeats: true
+            ) {
+                _ in
+                Task { @MainActor in
+                    print("fetch solarDetailsData on timer")
+                    solarDetailsData = try await energyManager.fetchSolarDetails()
+                }
+            }
         }
     }
 }

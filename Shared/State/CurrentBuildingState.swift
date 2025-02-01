@@ -1,14 +1,6 @@
 import Foundation
 import SwiftUI
 
-enum MainTab: Int, CaseIterable, Identifiable {
-    case overview = 0
-    case charging = 1
-    case solarProduction = 2
-    
-    var id: Self { self }
-}
-
 @Observable
 class CurrentBuildingState {    
     var selectedMainTab: MainTab = .overview
@@ -182,4 +174,12 @@ class CurrentBuildingState {
         errorMessage = nil
         error = nil
     }
+}
+
+enum MainTab: Int, CaseIterable, Identifiable {
+    case overview = 0
+    case charging = 1
+    case solarProduction = 2
+    
+    var id: Self { self }
 }

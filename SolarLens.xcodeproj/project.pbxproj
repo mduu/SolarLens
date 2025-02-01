@@ -91,7 +91,6 @@
 				AppIntents/Shortcuts/Shortcuts.swift,
 				Localizable.xcstrings,
 				State/CurrentBuildingState.swift,
-				State/SolarDetailVIewModel.swift,
 				Views/ChargingButtonView.swift,
 				Views/ChargingModeConfiguration.swift,
 				Views/ChargingModeLabelView.swift,
