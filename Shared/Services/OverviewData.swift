@@ -1,28 +1,29 @@
-import Foundation
+import SwiftUI
 
-class OverviewData: ObservableObject {
+@Observable
+class OverviewData {
     private let minGridConsumptionTreashold: Int = 100
     private let minGridIngestionTreashold: Int = 100
 
-    @Published var currentSolarProduction: Int = 0
-    @Published var currentOverallConsumption: Int = 0
-    @Published var currentBatteryLevel: Int? = 0
-    @Published var currentBatteryChargeRate: Int? = 0
-    @Published var currentSolarToGrid: Int = 0
-    @Published var currentGridToHouse: Int = 0
-    @Published var currentSolarToHouse: Int = 0
-    @Published var solarProductionMax: Double = 0
-    @Published var hasConnectionError: Bool = false
-    @Published var lastUpdated: Date? = nil
-    @Published var lastSuccessServerFetch: Date? = nil
-    @Published var isAnyCarCharing: Bool = false
-    @Published var chargingStations: [ChargingStation] = []
-    @Published var isStaleData: Bool = false
-    @Published var hasAnyCarChargingStation: Bool = true
-    @Published var todaySelfConsumption: Double? = nil
-    @Published var todaySelfConsumptionRate: Double? = nil
-    @Published var todayProduction: Double? = nil
-    @Published var todayConsumption: Double? = nil
+    var currentSolarProduction: Int = 0
+    var currentOverallConsumption: Int = 0
+    var currentBatteryLevel: Int? = 0
+    var currentBatteryChargeRate: Int? = 0
+    var currentSolarToGrid: Int = 0
+    var currentGridToHouse: Int = 0
+    var currentSolarToHouse: Int = 0
+    var solarProductionMax: Double = 0
+    var hasConnectionError: Bool = false
+    var lastUpdated: Date? = nil
+    var lastSuccessServerFetch: Date? = nil
+    var isAnyCarCharing: Bool = false
+    var chargingStations: [ChargingStation] = []
+    var isStaleData: Bool = false
+    var hasAnyCarChargingStation: Bool = true
+    var todaySelfConsumption: Double? = nil
+    var todaySelfConsumptionRate: Double? = nil
+    var todayProduction: Double? = nil
+    var todayConsumption: Double? = nil
 
     static func empty() -> OverviewData {
         OverviewData(
@@ -172,13 +173,14 @@ class OverviewData: ObservableObject {
     }
 }
 
-class ChargingStation: Observable, Identifiable {
-    @Published var id: String
-    @Published var name: String
-    @Published var chargingMode: ChargingMode
-    @Published var priority: Int  // lower number is higher Priority (ordering)
-    @Published var currentPower: Int  // Watt
-    @Published var signal: SensorConnectionStatus?
+@Observable
+class ChargingStation: Identifiable {
+    var id: String
+    var name: String
+    var chargingMode: ChargingMode
+    var priority: Int  // lower number is higher Priority (ordering)
+    var currentPower: Int  // Watt
+    var signal: SensorConnectionStatus?
 
     init(
         id: String, name: String, chargingMode: ChargingMode, priority: Int,

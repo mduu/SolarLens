@@ -1,6 +1,4 @@
-import Combine
-import Foundation
-import SwiftUICore
+import SwiftUI
 
 actor SolarManager: EnergyManager {
     private static var _instance: EnergyManager? = nil

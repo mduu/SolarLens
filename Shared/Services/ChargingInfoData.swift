@@ -1,8 +1,9 @@
-import Foundation
+import SwiftUI
 
-class CharingInfoData: ObservableObject {
-    @Published var totalCharedToday: Double? = nil
-    @Published var currentCharging: Int? = nil
+@Observable
+class CharingInfoData {
+    var totalCharedToday: Double? = nil
+    var currentCharging: Int? = nil
     
     init(totalCharedToday: Double?, currentCharging: Int?) {
         self.totalCharedToday = totalCharedToday

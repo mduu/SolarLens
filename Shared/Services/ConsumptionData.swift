@@ -1,6 +1,7 @@
-import Foundation
+import SwiftUI
 
-class ConsumptionData: ObservableObject {
+@Observable
+class ConsumptionData {
     var from: Date?
     var to: Date?
     var interval: Int = 300

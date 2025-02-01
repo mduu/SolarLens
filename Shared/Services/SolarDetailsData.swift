@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 struct ForecastItem {
     var min: Double
@@ -17,11 +17,12 @@ struct ForecastItem {
     }
 }
 
-class SolarDetailsData: ObservableObject {
-    @Published var todaySolarProduction: Double?
-    @Published var forecastToday: ForecastItem?
-    @Published var forecastTomorrow: ForecastItem?
-    @Published var forecastDayAfterTomorrow: ForecastItem?
+@Observable
+class SolarDetailsData {
+    var todaySolarProduction: Double?
+    var forecastToday: ForecastItem?
+    var forecastTomorrow: ForecastItem?
+    var forecastDayAfterTomorrow: ForecastItem?
 
     init(
         todaySolarProduction: Double? = nil,
