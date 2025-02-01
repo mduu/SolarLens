@@ -27,6 +27,7 @@ actor SolarManager: EnergyManager {
         -> OverviewData
     {
         try await ensureLoggedIn()
+        try await ensureSystemInfomation()
         try await ensureSmId()
         try await ensureSensorInfosAreCurrent()
 
@@ -40,6 +41,10 @@ actor SolarManager: EnergyManager {
                 from: Date.todayStartOfDay(),
                 to: Date.todayEndOfDay(),
                 accuracy: .high)
+        
+        guard systemInformation != nil else {
+            return lastOverviewData ?? OverviewData.empty()
+        }
 
         if let chart = try await solarManagerApi.getV1Chart(
             solarManagerId: systemInformation!.sm_id)
@@ -113,24 +118,7 @@ actor SolarManager: EnergyManager {
 
         let errorOverviewData =
             lastOverviewData
-            ?? OverviewData(
-                currentSolarProduction: 0,
-                currentOverallConsumption: 0,
-                currentBatteryLevel: nil,
-                currentBatteryChargeRate: nil,
-                currentSolarToGrid: 0,
-                currentGridToHouse: 0,
-                currentSolarToHouse: 0,
-                solarProductionMax: 0,
-                hasConnectionError: true,
-                lastUpdated: Date(),
-                lastSuccessServerFetch: Date(),
-                isAnyCarCharing: false,
-                chargingStations: [],
-                todaySelfConsumption: nil,
-                todaySelfConsumptionRate: nil,
-                todayProduction: nil,
-                todayConsumption: nil)
+        ?? OverviewData.empty()
 
         errorOverviewData.hasConnectionError = true
 
