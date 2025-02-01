@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SolarForecastView: View {
-    @StateObject private var viewModel: SolarDetailsViewModel = .init()
+    @State private var viewModel: SolarDetailsViewModel = .init()
     @State private var refreshTimer: Timer?
 
     var body: some View {

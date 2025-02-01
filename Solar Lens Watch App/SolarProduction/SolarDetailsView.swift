@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SolarDetailsView: View {
     @Environment(CurrentBuildingState.self) var buildingModel: CurrentBuildingState
-    @StateObject var viewModel = SolarDetailsViewModel()
+    @State var viewModel = SolarDetailsViewModel()
     @State private var refreshTimer: Timer?
     @State private var showSolarChart: Bool = false
 

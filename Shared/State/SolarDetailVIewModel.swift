@@ -1,14 +1,14 @@
 import Foundation
 import SwiftUI
 
-@MainActor
-class SolarDetailsViewModel: ObservableObject {
-    @Published var isLoading = false
-    @Published var fetchingIsPaused: Bool = false
-    @Published var errorMessage: String?
-    @Published var error: EnergyManagerClientError?
-    @Published var overviewData: OverviewData = .init()
-    @Published var solarDetailsData: SolarDetailsData = .init()
+@Observable
+class SolarDetailsViewModel {
+    var isLoading = false
+    var fetchingIsPaused: Bool = false
+    var errorMessage: String?
+    var error: EnergyManagerClientError?
+    var overviewData: OverviewData = .init()
+    var solarDetailsData: SolarDetailsData = .init()
 
     private let energyManager: EnergyManager
     private var solarDetailsLastFetchAt: Date?
