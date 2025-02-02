@@ -64,9 +64,7 @@ struct OverviewChartView: View {
                                     Text("Self consumption:")
                                         .font(.footnote)
                                     Text(
-                                        String(
-                                            format: "%.0f%%",
-                                            selfConsumptionPercentage)
+                                        selfConsumptionPercentage.formatIntoPercentage()
                                     )
                                     .font(.footnote)
                                     .foregroundColor(selfConsumptionColor)

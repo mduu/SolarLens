@@ -226,6 +226,9 @@
         }
       }
     },
+    "Battery level is %@" : {
+
+    },
     "Cancel" : {
       "localizations" : {
         "de" : {
@@ -398,6 +401,9 @@
         }
       }
     },
+    "Consuming %@ kilo-watts from grid" : {
+
+    },
     "Consumption" : {
       "localizations" : {
         "de" : {
@@ -419,6 +425,9 @@
           }
         }
       }
+    },
+    "Current solar production is %@ kilowatts" : {
+
     },
     "Email" : {
       "localizations" : {
@@ -457,6 +466,9 @@
           }
         }
       }
+    },
+    "Exporting %@ kilo-watts to grid" : {
+
     },
     "Forecast" : {
       "localizations" : {
@@ -917,6 +929,9 @@
           }
         }
       }
+    },
+    "No interaction with energy grid" : {
+
     },
     "Off" : {
       "localizations" : {
