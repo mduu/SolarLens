@@ -18,14 +18,15 @@ struct OverviewView: View {
                                 .symbolEffect(
                                     .pulse.wholeSymbol,
                                     options: .repeat(.continuous))
+                                .accessibilityLabel("A connection error occurred!")
                         }
 
                         if model.error != nil {
                             Image(systemName: "exclamationmark.triangle")
                                 .foregroundColor(Color.yellow)
-                                .symbolEffect(
-                                    .breathe.wholeSymbol)
-                        }
+                                .symbolEffect(.breathe.wholeSymbol)
+                                .accessibilityLabel("A general error occurred!")
+  }
                     }
 
                     Spacer()

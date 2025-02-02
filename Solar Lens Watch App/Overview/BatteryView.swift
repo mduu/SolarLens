@@ -14,12 +14,11 @@ struct BatteryView: View {
                         in: 0...100
                     ) {
                     } currentValueLabel: {
-                        Text(
-                            String(
-                                format: "%.0f%%",
-                                Double(currentBatteryLevel ?? 0))
-                        )
+                        let formattedBatteryLevel = currentBatteryLevel.formatIntoPercentage()
+                            
+                        Text(formattedBatteryLevel)
                         .foregroundStyle(getColor())
+                        .accessibilityLabel("Battery level is \(formattedBatteryLevel)")
                     }
                     .gaugeStyle(.accessoryCircular)
                     .tint(Gradient(colors: [.red, .green, .green, .green]))

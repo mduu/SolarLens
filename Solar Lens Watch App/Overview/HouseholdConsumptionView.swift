@@ -12,11 +12,16 @@ struct HouseholdConsumptionView: View {
             CircularInstrument(
                 color: circleColor,
                 largeText: currentOverallConsumption != nil
-                    ? String(
-                        format: "%.1f",
-                        Double(currentOverallConsumption!) / 1000
-                    ) : "-",
+                    ? currentOverallConsumption!.formatWattsAsKiloWatts()
+                    : "-",
                 smallText: unitText
+            )
+            .accessibilityLabel(
+                currentOverallConsumption != nil
+                    ? String(
+                        format: "Total household consumption is %.1f kilo-watt",
+                        currentOverallConsumption!.formatWattsAsKiloWatts()
+                    ) : "No household consumption"
             )
 
             HStack(alignment: VerticalAlignment.bottom) {
@@ -24,7 +29,9 @@ struct HouseholdConsumptionView: View {
                 if isAnyCarCharging {
                     Image(systemName: "car.side")
                         .symbolEffect(
-                            .pulse.wholeSymbol, options: .repeat(.continuous))
+                            .pulse.wholeSymbol, options: .repeat(.continuous)
+                        )
+                        .accessibilityLabel("A car is chariging.")
                 }
             }
             .padding(.top, 3)

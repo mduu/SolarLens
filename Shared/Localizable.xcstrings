@@ -125,6 +125,9 @@
     "0" : {
       "shouldTranslate" : false
     },
+    "A car is chariging." : {
+
+    },
     "A car is currently charging." : {
       "localizations" : {
         "de" : {
@@ -134,6 +137,12 @@
           }
         }
       }
+    },
+    "A connection error occurred!" : {
+
+    },
+    "A general error occurred!" : {
+
     },
     "Always" : {
       "localizations" : {

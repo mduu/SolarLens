@@ -10,26 +10,28 @@ struct NetworkConsumptionView: View {
     private let color: Color = .orange
 
     var body: some View {
+        let fromGridInKW = currentNetworkConsumption.formatWattsAsKiloWatts()
+        let toGridInKW = currentNetworkFeedin.formatWattsAsKiloWatts()
+        let fromToGridInKW = isFlowToNetwork ? toGridInKW : fromGridInKW
+
         VStack(spacing: 1) {
             CircularInstrument(
                 color: getColor(
                     isFlowToNetwork: isFlowToNetwork,
                     isFlowFromNetwork: isFlowFromNetwork),
-                largeText: getLargeText(
-                    fromNetwork: currentNetworkConsumption,
-                    toNetwork: currentNetworkFeedin),
+                largeText: fromToGridInKW,
                 smallText: smallText
             )
+            .accessibilityLabel(
+                isFlowToNetwork
+                    ? "Exporting \(toGridInKW) kilo-watts to grid"
+                    : isFlowFromNetwork
+                        ? "Consuming \(fromGridInKW) kilo-watts from grid"
+                        : "No interaction with energy grid")
 
             Image(systemName: "network")
                 .padding(.top, 3)
         }
-    }
-
-    private func getLargeText(fromNetwork: Int, toNetwork: Int) -> String {
-        String(
-            format: "%.1f",
-            Double(toNetwork > 0 ? toNetwork : fromNetwork) / 1000)
     }
 
     private func getColor(isFlowToNetwork: Bool, isFlowFromNetwork: Bool)

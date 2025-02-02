@@ -13,13 +13,12 @@ struct SolarProductionView: View {
                 Text("kW")
             } currentValueLabel: {
                 Text(
-                    String(
-                        format: "%.1f",
-                        Double(currentSolarProduction) / 1000)
+                    currentSolarProduction.formatWattsAsKiloWatts()
                 )
             }
             .gaugeStyle(.circular)
             .tint(getGaugeStyle())
+            .accessibilityLabel("Current solar production is \(currentSolarProduction.formatWattsAsKiloWatts()) kilowatts")
 
             Image(systemName: "sun.max")
         }
