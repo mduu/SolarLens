@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		493AAD982D58F9DB00591E73 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1A82CC0389C00A89445 /* WidgetKit.framework */; };
-		493AAD992D58F9DB00591E73 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1AA2CC0389D00A89445 /* SwiftUI.framework */; };
 		493AADAA2D58F9DC00591E73 /* Solar Lens iOS WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		493AADDE2D592A9D00591E73 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 493AADDD2D592A9D00591E73 /* SwiftUI.framework */; };
+		493AADE02D592B1C00591E73 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 493AADDF2D592B1C00591E73 /* KeychainAccess */; };
 		495539B72CECF51A00D2FE19 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1A82CC0389C00A89445 /* WidgetKit.framework */; };
 		495539B82CECF51A00D2FE19 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1AA2CC0389D00A89445 /* SwiftUI.framework */; };
 		495539C32CECF51C00D2FE19 /* Solar Lens WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -91,6 +92,8 @@
 /* Begin PBXFileReference section */
 		491732642D1FE8C900CA9EDF /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens iOS WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		493AADDD2D592A9D00591E73 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
+		493AADE12D592B3E00591E73 /* Solar Lens iOS WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Solar Lens iOS WidgetsExtension.entitlements"; sourceTree = "<group>"; };
 		494882B52CA8443300C59146 /* Solar Lens Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		497A38722D53E716003F4EC4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -107,6 +110,72 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+			);
+			target = 493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */;
+		};
+		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Widgets/BatteryWidgets/BatteryAppIntent.swift,
+				Widgets/BatteryWidgets/BatteryWidget.swift,
+				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Widgets/BatteryWidgets/BatteryWidgetView.swift,
+				Widgets/SolarLensWidgetDataSource.swift,
+			);
+			target = 49892CE32D243FF100478C91 /* Solar Lens */;
+		};
+		493AADB22D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Widgets/BatteryWidgets/BatteryWidget.swift,
+				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Widgets/SolarLensWidgetDataSource.swift,
+			);
+			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
+		};
+		493AADB42D59254B00591E73 /* Exceptions for "Shared" folder in "Solar Lens iOS WidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Services/AppStoreReviewManager.swift,
+				Services/ChargingInfoData.swift,
+				Services/ConsumptionData.swift,
+				Services/DateExtensions.swift,
+				Services/EnergyManager.swift,
+				Services/EnergyManagerClientError.swift,
+				Services/FakeEnergyManager.swift,
+				Services/KeychainHelper.swift,
+				Services/OverviewData.swift,
+				Services/Rest/DateHelper.swift,
+				Services/Rest/NoRequestBody.swift,
+				Services/Rest/RestClient.swift,
+				Services/Rest/RestError.swift,
+				Services/SolarDetailsData.swift,
+				Services/SolarManager.swift,
+				Services/SolarManagerApi/DTOs/Accuracy.swift,
+				Services/SolarManagerApi/DTOs/ChargingMode.swift,
+				Services/SolarManagerApi/DTOs/ControlCarChargingRequest.swift,
+				Services/SolarManagerApi/DTOs/ForecastItemV1Response.swift,
+				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
+				Services/SolarManagerApi/DTOs/GetV1ChartResponse.swift,
+				Services/SolarManagerApi/DTOs/GetV1UsersResponse.swift,
+				Services/SolarManagerApi/DTOs/LoginRequest.swift,
+				Services/SolarManagerApi/DTOs/LoginResponse.swift,
+				Services/SolarManagerApi/DTOs/NoContentResponse.swift,
+				Services/SolarManagerApi/DTOs/Period.swift,
+				Services/SolarManagerApi/DTOs/RefreshRequest.swift,
+				Services/SolarManagerApi/DTOs/RefreshResponse.swift,
+				Services/SolarManagerApi/DTOs/SensorConnectionStatus.swift,
+				Services/SolarManagerApi/DTOs/SensorConsumptionV1Response.swift,
+				Services/SolarManagerApi/DTOs/SensorInfosV1Response.swift,
+				Services/SolarManagerApi/DTOs/StatisticsV1Response.swift,
+				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
+				Services/SolarManagerApi/SolarManagerApiClient.swift,
+				Services/SolarManagerApi/SolarManagerApiClientError.swift,
+				Widgets/BatteryWidgets/BatteryAppIntent.swift,
+				Widgets/BatteryWidgets/BatteryWidget.swift,
+				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Widgets/BatteryWidgets/BatteryWidgetView.swift,
+				Widgets/SolarLensWidgetDataSource.swift,
 			);
 			target = 493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */;
 		};
@@ -141,8 +210,6 @@
 		49F2437C2CF04513009D0E2A /* Exceptions for "Solar Lens Widgets" folder in "Solar Lens Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				BatteryWidgets/BatteryAppIntent.swift,
-				BatteryWidgets/BatteryWidgetView.swift,
 				ConsumptionWidgets/ConsumptionAppIntent.swift,
 				ConsumptionWidgets/ConsumptionWidgetView.swift,
 				Generic/GenericAppIntent.swift,
@@ -167,7 +234,10 @@
 		4917325C2D1FE4A800CA9EDF /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */,
+				493AADB22D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens Watch App" target */,
 				49892CFF2D244CEB00478C91 /* Exceptions for "Shared" folder in "Solar Lens WidgetsExtension" target */,
+				493AADB42D59254B00591E73 /* Exceptions for "Shared" folder in "Solar Lens iOS WidgetsExtension" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -209,8 +279,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				493AAD992D58F9DB00591E73 /* SwiftUI.framework in Frameworks */,
+				493AADDE2D592A9D00591E73 /* SwiftUI.framework in Frameworks */,
 				493AAD982D58F9DB00591E73 /* WidgetKit.framework in Frameworks */,
+				493AADE02D592B1C00591E73 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +323,7 @@
 		494882A82CA8443300C59146 = {
 			isa = PBXGroup;
 			children = (
+				493AADE12D592B3E00591E73 /* Solar Lens iOS WidgetsExtension.entitlements */,
 				497A38722D53E716003F4EC4 /* GoogleService-Info.plist */,
 				49892EB92D2D906600478C91 /* Solar-Lens-Info.plist */,
 				4917325C2D1FE4A800CA9EDF /* Shared */,
@@ -280,6 +352,7 @@
 		49EED1A72CC0389C00A89445 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				493AADDD2D592A9D00591E73 /* SwiftUI.framework */,
 				49EED1A82CC0389C00A89445 /* WidgetKit.framework */,
 				49EED1AA2CC0389D00A89445 /* SwiftUI.framework */,
 				491732642D1FE8C900CA9EDF /* Intents.framework */,
@@ -307,6 +380,7 @@
 			);
 			name = "Solar Lens iOS WidgetsExtension";
 			packageProductDependencies = (
+				493AADDF2D592B1C00591E73 /* KeychainAccess */,
 			);
 			productName = "Solar Lens iOS WidgetsExtension";
 			productReference = 493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */;
@@ -538,14 +612,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 137;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens iOS Widgets/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens iOS Widgets";
+				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Widgets iOS";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -553,7 +628,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.SolarManagerWatch.Solar-Lens-iOS-Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -569,14 +644,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 137;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens iOS Widgets/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens iOS Widgets";
+				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Widgets iOS";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -584,7 +660,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.SolarManagerWatch.Solar-Lens-iOS-Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1030,6 +1106,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		493AADDF2D592B1C00591E73 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
 		495B2E1F2CB2AE520089AD1B /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;

@@ -16,8 +16,20 @@ struct BatteryWidget: Widget {
         }
         .configurationDisplayName("Battery Level")
         .description("Shows the current battery level.")
-        .supportedFamilies([
-            .accessoryCorner, .accessoryCircular, .accessoryInline
-        ])
+        .supportedFamilies(getSupportedFamilies())
+    }
+    
+    private func getSupportedFamilies() -> [WidgetFamily] {
+        var families: [WidgetFamily] = [
+            .accessoryCircular,
+            .accessoryInline
+        ]
+        #if os(watchOS)
+        families.append(.accessoryCorner)
+        #else
+        families.append(.systemMedium)
+        families.append(.systemSmall)
+        #endif
+        return families
     }
 }
