@@ -1,10 +1,3 @@
-//
-//  SolarProductionView.swift
-//  Solar Lens Watch App
-//
-//  Created by Marc Dürst on 23.11.2024.
-//
-
 import SwiftUI
 import WidgetKit
 
@@ -22,6 +15,43 @@ struct SolarProductionWidgetView: View {
         let max = Double(entry.maxProduction ?? 0) / 1000
 
         switch family {
+            
+        case .systemSmall:
+            ZStack {
+                AccessoryWidgetBackground()
+
+                VStack {
+                    Text("Solarproduction")
+
+                    Gauge(
+                        value: current,
+                        in: 0...max
+                    ) {
+                        Image(systemName: "sun.max")
+                    } currentValueLabel: {
+                        Text("\(String(format: "%.1f", current))")
+                    }
+                    .gaugeStyle(.accessoryCircular)
+                    .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
+                    
+                    if entry.forecastToday != nil
+                        || entry.forecastTomorrow != nil
+                        || entry.forecastDayAfterTomorrow
+                            != nil
+                    {
+                        ForecastListView(
+                            maxProduction: entry.maxProduction,
+                            forecastToday: entry.forecastToday,
+                            forecastTomorrow: entry.forecastTomorrow,
+                            forecastDayAfterTomorrow: entry.forecastDayAfterTomorrow,
+                            small: true
+                        )
+                        .padding(.bottom, 4)
+                    }  // :if
+                }
+
+            }
+            .containerBackground(.background, for: .widget)
 
         case .accessoryCircular:
 
@@ -52,49 +82,57 @@ struct SolarProductionWidgetView: View {
                     } currentValueLabel: {
                         Text("\(String(format: "%.1f", current))")
                     }
-                    .gaugeStyle(.circular)
+                    #if os(watchOS)
+                        .gaugeStyle(.circular)
+                    #else
+                        .gaugeStyle(.accessoryCircular)
+                    #endif
                     .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
 
                 }  // :else
             }  // :ZStack
-            .containerBackground(for: .widget) { Color.accentColor }
+            .containerBackground(for: .widget) { Color.accent }
 
-        case .accessoryCorner:
+        #if os(watchOS)
+            case .accessoryCorner:
 
-            Text("\(String(format: "%.1f", current)) kW")
-                .foregroundColor(
-                    renderingMode == .fullColor
-                        ? current > 100 ? .accent : .gray
-                        : nil
-                )
-                .widgetCurvesContent()
-                .widgetLabel {
-                    Gauge(
-                        value: current,
-                        in: 0...max
-                    ) {
-                        Text("kW")
-                    } currentValueLabel: {
-                        Text("\(String(format: "%.1f", current))")
-                    } minimumValueLabel: {
-                        Text("0")
-                    } maximumValueLabel: {
-                        Text("\(String(format: "%.0f", max))")
-                    }
-                    .gaugeStyle(.automatic)
-                    .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
-                }  // :widgetLabel
-                .containerBackground(for: .widget) { Color.accentColor }
-
+                Text("\(String(format: "%.1f", current)) kW")
+                    .foregroundColor(
+                        renderingMode == .fullColor
+                            ? current > 100 ? .accent : .gray
+                            : nil
+                    )
+                    .widgetCurvesContent()
+                    .widgetLabel {
+                        Gauge(
+                            value: current,
+                            in: 0...max
+                        ) {
+                            Text("kW")
+                        } currentValueLabel: {
+                            Text("\(String(format: "%.1f", current))")
+                        } minimumValueLabel: {
+                            Text("0")
+                        } maximumValueLabel: {
+                            Text("\(String(format: "%.0f", max))")
+                        }
+                        .gaugeStyle(.automatic)
+                        .tint(
+                            renderingMode == .fullColor ? getGaugeStyle() : nil)
+                    }  // :widgetLabel
+                    .containerBackground(for: .widget) { Color.accentColor }
+        #endif
         case .accessoryInline:
 
             Text("☀️ \(entry.currentProduction ?? 0) W")
                 .containerBackground(for: .widget) { Color.accentColor }
 
-        case .accessoryRectangular:
+        case .accessoryRectangular, .systemMedium:
 
             ZStack {
-                if !showsWidgetContainerBackground && renderingMode == .fullColor {
+                if !showsWidgetContainerBackground
+                    && renderingMode == .fullColor
+                {
                     RoundedRectangle(cornerRadius: 15)
                         .fill(
                             LinearGradient(
@@ -119,54 +157,20 @@ struct SolarProductionWidgetView: View {
                         || entry.forecastDayAfterTomorrow
                             != nil
                     {
-
-                        HStack {
-                            ForecastItemView(
-                                date: Calendar.current.startOfDay(for: Date()),
-                                maxProduction: entry.maxProduction ?? 0,
-                                forecasts: [
-                                    entry.forecastToday,
-                                    entry.forecastTomorrow,
-                                    entry.forecastDayAfterTomorrow
-                                ],
-                                forecast: entry.forecastToday,
-                                small: true
-                            )
-
-                            ForecastItemView(
-                                date: Calendar.current.date(
-                                        byAdding: .day, value: 1, to: Date()
-                                    ),
-                                maxProduction: entry.maxProduction ?? 0,
-                                forecasts: [
-                                        entry.forecastToday,
-                                        entry.forecastTomorrow,
-                                        entry.forecastDayAfterTomorrow
-                                    ],
-                                forecast: entry.forecastTomorrow,
-                                small: true
-                            )
-
-                            ForecastItemView(
-                                date: Calendar.current.date(
-                                        byAdding: .day, value: 2, to: Date()
-                                    ),
-                                maxProduction:
-                                    entry.maxProduction ?? 0,
-                                forecasts: [
-                                    entry.forecastToday,
-                                    entry.forecastTomorrow,
-                                    entry.forecastDayAfterTomorrow
-                                ],
-                                forecast: entry.forecastDayAfterTomorrow,
-                                small: true
-                            )
-                        }  // :HStack
+                        ForecastListView(
+                            maxProduction: entry.maxProduction,
+                            forecastToday: entry.forecastToday,
+                            forecastTomorrow: entry.forecastTomorrow,
+                            forecastDayAfterTomorrow: entry.forecastDayAfterTomorrow,
+                            small: true
+                        )
                         .padding(.bottom, 4)
-
                     }  // :if
                 }  // :VStack
             }  // :ZStack
+            #if os(iOS)
+            .containerBackground(.background, for: .widget)
+            #else
             .containerBackground(for: .widget) {
                 LinearGradient(
                     gradient: Gradient(colors: [
@@ -174,6 +178,7 @@ struct SolarProductionWidgetView: View {
                     ]), startPoint: .top, endPoint: .bottom
                 )
             }
+            #endif
 
         default:
             Image("AppIcon")
@@ -199,12 +204,14 @@ struct SolarProductionWidgetView_Previews: PreviewProvider {
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
 
-            // Preview for corner
-            SolarProductionWidgetView(
-                entry: SolarProductionEntry.previewData()
-            )
-            .previewContext(WidgetPreviewContext(family: .accessoryCorner))
-            .previewDisplayName("Corner")
+            #if os(watchOS)
+                // Preview for corner
+                SolarProductionWidgetView(
+                    entry: SolarProductionEntry.previewData()
+                )
+                .previewContext(WidgetPreviewContext(family: .accessoryCorner))
+                .previewDisplayName("Corner")
+            #endif
 
             // Preview for inline
             SolarProductionWidgetView(
@@ -219,6 +226,23 @@ struct SolarProductionWidgetView_Previews: PreviewProvider {
             )
             .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
             .previewDisplayName("Rectangular")
+
+            #if os(iOS)
+                // Preview for .systemSmall
+                SolarProductionWidgetView(
+                    entry: SolarProductionEntry.previewData()
+                )
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+                .previewDisplayName("Sys Sm.")
+
+                // Preview for .systemMedium
+                SolarProductionWidgetView(
+                    entry: SolarProductionEntry.previewData()
+                )
+                .previewContext(WidgetPreviewContext(family: .systemMedium))
+                .previewDisplayName("Sys Med.")
+
+            #endif
         }
     }
 }

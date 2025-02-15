@@ -176,7 +176,9 @@ struct BatteryWidgetView_Previews: PreviewProvider {
                 )
                 .previewContext(WidgetPreviewContext(family: .accessoryCorner))
                 .previewDisplayName("Corner")
-            #else
+            #endif
+            
+            #if os(iOS)
             // Preview for corner
             BatteryWidgetView(
                 entry: BatteryEntry(

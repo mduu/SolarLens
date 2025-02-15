@@ -116,20 +116,31 @@
 		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Views/Solar/ForecastListView.swift,
+				Views/Solar/SolarTodayInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
 				Widgets/BatteryWidgets/BatteryWidget.swift,
 				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
 				Widgets/BatteryWidgets/BatteryWidgetView.swift,
 				Widgets/SolarLensWidgetDataSource.swift,
+				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
 			);
 			target = 49892CE32D243FF100478C91 /* Solar Lens */;
 		};
 		493AADB22D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Views/Solar/ForecastListView.swift,
 				Widgets/BatteryWidgets/BatteryWidget.swift,
 				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
 				Widgets/SolarLensWidgetDataSource.swift,
+				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
 			);
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
 		};
@@ -171,11 +182,18 @@
 				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
 				Services/SolarManagerApi/SolarManagerApiClient.swift,
 				Services/SolarManagerApi/SolarManagerApiClientError.swift,
+				Views/Solar/ForecastItemView.swift,
+				Views/Solar/ForecastListView.swift,
+				Views/Solar/SolarTodayInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
 				Widgets/BatteryWidgets/BatteryWidget.swift,
 				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
 				Widgets/BatteryWidgets/BatteryWidgetView.swift,
 				Widgets/SolarLensWidgetDataSource.swift,
+				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
 			);
 			target = 493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */;
 		};
@@ -199,10 +217,10 @@
 				AppIntents/Shortcuts/Shortcuts.swift,
 				Localizable.xcstrings,
 				State/CurrentBuildingState.swift,
-				Views/ChargingButtonView.swift,
-				Views/ChargingModeConfiguration.swift,
-				Views/ChargingModeLabelView.swift,
-				Views/ChargingOptionsPopupView.swift,
+				Views/Charging/ChargingButtonView.swift,
+				Views/Charging/ChargingModeConfiguration.swift,
+				Views/Charging/ChargingModeLabelView.swift,
+				Views/Charging/ChargingOptionsPopupView.swift,
 				Views/UpdateTimeStampView.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
@@ -214,8 +232,6 @@
 				ConsumptionWidgets/ConsumptionWidgetView.swift,
 				Generic/GenericAppIntent.swift,
 				Generic/GenericWidgetView.swift,
-				SolarProductionWidgets/SolarProductionAppIntent.swift,
-				SolarProductionWidgets/SolarProductionWidgetView.swift,
 			);
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
 		};
@@ -224,7 +240,6 @@
 			membershipExceptions = (
 				Overview/OverviewChart.swift,
 				SolarProduction/SolarChart.swift,
-				SolarProduction/SolarTodayInfoView.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
 		};

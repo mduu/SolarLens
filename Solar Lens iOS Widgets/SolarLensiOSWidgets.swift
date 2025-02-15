@@ -5,6 +5,7 @@ import SwiftUI
 struct Solar_Lens_iOS_WidgetsBundle: WidgetBundle {
     var body: some Widget {
         BatteryWidget()
+        SolarProductionWidget()
         /*
         Solar_Lens_iOS_Widgets()
         Solar_Lens_iOS_WidgetsControl()

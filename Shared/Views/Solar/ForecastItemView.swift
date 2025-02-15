@@ -106,7 +106,7 @@ struct ForecastItemView: View {
     }
 
     private func getColor() -> Color {
-        return small ?? false ? .accentColor : .yellow
+        return small ?? false ? .accent : .yellow
     }
 
     private func getPercentage() -> Double {
