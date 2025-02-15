@@ -21,9 +21,6 @@
     "%@ %%" : {
       "shouldTranslate" : false
     },
-    "%@ kW" : {
-      "shouldTranslate" : false
-    },
     "%@%%" : {
       "shouldTranslate" : false
     },
@@ -113,16 +110,7 @@
       },
       "shouldTranslate" : false
     },
-    "☀️ %@" : {
-      "shouldTranslate" : false
-    },
-    "☀️ %lld W" : {
-      "shouldTranslate" : false
-    },
     "🔋%@ %%" : {
-      "shouldTranslate" : false
-    },
-    "0" : {
       "shouldTranslate" : false
     },
     "A car is chariging." : {

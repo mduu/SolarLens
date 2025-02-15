@@ -15,8 +15,21 @@ struct SolarProductionWidget: Widget {
         }
         .configurationDisplayName("Solar Production")
         .description("Shows the current solar production.")
-        .supportedFamilies([
-            .accessoryCorner, .accessoryCircular, .accessoryInline, .accessoryRectangular
-        ])
+        .supportedFamilies(getSupportedFamilies())
+    }
+    
+    private func getSupportedFamilies() -> [WidgetFamily] {
+        var families: [WidgetFamily] = [
+            .accessoryCircular,
+            .accessoryInline,
+            .accessoryRectangular
+        ]
+        #if os(watchOS)
+        families.append(.accessoryCorner)
+        #else
+        families.append(.systemMedium)
+        families.append(.systemSmall)
+        #endif
+        return families
     }
 }

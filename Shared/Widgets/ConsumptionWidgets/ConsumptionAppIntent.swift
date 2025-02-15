@@ -1,10 +1,3 @@
-//
-//  SolarProductionAppIntent.swift
-//  Solar Lens Watch App
-//
-//  Created by Marc Dürst on 22.11.2024.
-//
-
 import AppIntents
 import Foundation
 import WidgetKit

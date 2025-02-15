@@ -18,7 +18,7 @@ struct TodayTimelineWidgetView: View {
 
         switch family {
 
-        case .accessoryRectangular:
+        case .accessoryRectangular, .systemSmall, .systemMedium:
 
             ZStack {
                 if !showsWidgetContainerBackground
@@ -68,9 +68,15 @@ struct TodayTimelineWidgetView: View {
                     .padding(.top, 3)
 
                     if let history = entry.history {
+                        #if os(watchOS)
+                        let smallShart = true
+                        #else
+                        let smallShart = family != .systemMedium
+                        #endif
+                        
                         OverviewChart(
                             consumption: history,
-                            isSmall: true,
+                            isSmall: smallShart,
                             isAccent: renderingMode == .accented
                         )
                         .ignoresSafeArea()
@@ -81,13 +87,17 @@ struct TodayTimelineWidgetView: View {
 
                 }  // :VStack
             }  // :ZStack
-            .containerBackground(for: .widget) {
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        .orange.opacity(0.5), .orange.opacity(0.2),
-                    ]), startPoint: .top, endPoint: .bottom
-                )
-            }
+            #if os(iOS)
+                .containerBackground(.background, for: .widget)
+            #else
+                .containerBackground(for: .widget) {
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            .orange.opacity(0.5), .orange.opacity(0.2),
+                        ]), startPoint: .top, endPoint: .bottom
+                    )
+                }
+            #endif
 
         default:
             Image("AppIcon")
@@ -101,6 +111,8 @@ struct TodayTimelineWidgetView: View {
 struct TodayTimelineWidgetView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
+            
+            #if os(watchOS)
             // Preview for rectangle
             TodayTimelineWidgetView(
                 entry: TodayTimelineEntry.previewData()
@@ -119,6 +131,23 @@ struct TodayTimelineWidgetView_Previews: PreviewProvider {
                 )
             )
             .previewDisplayName("Accent")
+            #endif
+            
+            #if os(iOS)
+            
+            TodayTimelineWidgetView(
+                entry: TodayTimelineEntry.previewData()
+            )
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewDisplayName("Sys Sm")
+            
+            TodayTimelineWidgetView(
+                entry: TodayTimelineEntry.previewData()
+            )
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("Sys Med")
+            
+            #endif
         }
     }
 }

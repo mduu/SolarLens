@@ -15,8 +15,20 @@ struct TodayTimelineidget: Widget {
         }
         .configurationDisplayName("Today History")
         .description("Shows todays production and consumption as chart.")
-        .supportedFamilies([
-            .accessoryRectangular
-        ])
+        .supportedFamilies(getSupportedFamilies())
+    }
+
+    private func getSupportedFamilies() -> [WidgetFamily] {
+        var families: [WidgetFamily] = []
+        #if os(iOS)
+            families.append(.systemMedium)
+            families.append(.systemSmall)
+        #endif
+        
+        #if os(watchOS)
+        families.append(.accessoryRectangular)
+        #endif
+        
+        return families
     }
 }
