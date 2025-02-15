@@ -131,6 +131,10 @@
 				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 			);
 			target = 49892CE32D243FF100478C91 /* Solar Lens */;
 		};
@@ -147,6 +151,10 @@
 				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 			);
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
 		};
@@ -188,6 +196,7 @@
 				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
 				Services/SolarManagerApi/SolarManagerApiClient.swift,
 				Services/SolarManagerApi/SolarManagerApiClientError.swift,
+				Views/Overview/OverviewChart.swift,
 				Views/Solar/ForecastItemView.swift,
 				Views/Solar/ForecastListView.swift,
 				Views/Solar/SolarTodayInfoView.swift,
@@ -204,6 +213,10 @@
 				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 			);
 			target = 493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */;
 		};
@@ -246,7 +259,6 @@
 		49F243A42CF1CE5E009D0E2A /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Overview/OverviewChart.swift,
 				SolarProduction/SolarChart.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
