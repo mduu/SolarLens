@@ -6,6 +6,7 @@ struct Solar_Lens_iOS_WidgetsBundle: WidgetBundle {
     var body: some Widget {
         BatteryWidget()
         SolarProductionWidget()
+        ConsumptionWidget()
         /*
         Solar_Lens_iOS_Widgets()
         Solar_Lens_iOS_WidgetsControl()

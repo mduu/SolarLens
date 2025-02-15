@@ -11,7 +11,7 @@ struct ConsumptionWidgetView: View {
         let current = Double(entry.currentConsumption ?? 0) / 1000
 
         switch family {
-        case .accessoryCircular:
+        case .accessoryCircular, .systemSmall:
             ZStack {
                 AccessoryWidgetBackground()
                 VStack {
@@ -29,14 +29,18 @@ struct ConsumptionWidgetView: View {
             .widgetLabel(getLabelText())
             .containerBackground(for: .widget) { Color.accentColor }
 
-        case .accessoryCorner:
-            Text("\(getText())")
-            .foregroundColor(renderingMode == .fullColor ? .teal : .primary)
-            .widgetCurvesContent()
-            .widgetLabel {
-                Text(getLabelText())
-            }
-            .containerBackground(for: .widget) { Color.accentColor }
+        #if os(watchOS)
+            case .accessoryCorner:
+                Text("\(getText())")
+                    .foregroundColor(
+                        renderingMode == .fullColor ? .teal : .primary
+                    )
+                    .widgetCurvesContent()
+                    .widgetLabel {
+                        Text(getLabelText())
+                    }
+                    .containerBackground(for: .widget) { Color.accentColor }
+        #endif
 
         case .accessoryInline:
             HStack {
@@ -51,7 +55,7 @@ struct ConsumptionWidgetView: View {
             }
             .containerBackground(for: .widget) { Color.accentColor }
 
-        case .accessoryRectangular:
+        case .accessoryRectangular, .systemMedium:
             HStack {
                 if entry.carCharging ?? false {
                     Image(systemName: "car.side")
@@ -77,7 +81,7 @@ struct ConsumptionWidgetView: View {
             entry.isStaleData ?? false
             ? "?"
             : "\(String(format: "%.1f", current)) kW"
-        
+
         if entry.carCharging ?? false {
             text += " 🚙"
         }
@@ -136,18 +140,50 @@ struct ConsumptionWidgetView_Previews: PreviewProvider {
             .previewContext(WidgetPreviewContext(family: .accessoryInline))
             .previewDisplayName("Inline")
 
-            // Preview for corner
-            ConsumptionWidgetView(
-                entry: ConsumptionEntry(
-                    date: Date(),
-                    currentConsumption: 850,
-                    carCharging: true,
-                    consumptionFromSolar: 1100,
-                    consumptionFromBattery: 300,
-                    consumptionFromGrid: 100)
-            )
-            .previewContext(WidgetPreviewContext(family: .accessoryCorner))
-            .previewDisplayName("Corner")
+            #if os(watchOS)
+                // Preview for corner
+                ConsumptionWidgetView(
+                    entry: ConsumptionEntry(
+                        date: Date(),
+                        currentConsumption: 850,
+                        carCharging: true,
+                        consumptionFromSolar: 1100,
+                        consumptionFromBattery: 300,
+                        consumptionFromGrid: 100)
+                )
+                .previewContext(WidgetPreviewContext(family: .accessoryCorner))
+                .previewDisplayName("Corner")
+            #endif
+
+            #if os(iOS)
+                // Preview for system small
+                ConsumptionWidgetView(
+                    entry: ConsumptionEntry(
+                        date: Date(),
+                        currentConsumption: 850,
+                        carCharging: true,
+                        consumptionFromSolar: 1100,
+                        consumptionFromBattery: 300,
+                        consumptionFromGrid: 100)
+                )
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+                .previewDisplayName("Sys Sm")
+            #endif
+
+            #if os(iOS)
+                // Preview for system medium
+                ConsumptionWidgetView(
+                    entry: ConsumptionEntry(
+                        date: Date(),
+                        currentConsumption: 850,
+                        carCharging: true,
+                        consumptionFromSolar: 1100,
+                        consumptionFromBattery: 300,
+                        consumptionFromGrid: 100)
+                )
+                .previewContext(WidgetPreviewContext(family: .systemMedium))
+                .previewDisplayName("Sys Med")
+            #endif
         }
     }
 }

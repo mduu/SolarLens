@@ -15,8 +15,21 @@ struct ConsumptionWidget: Widget {
         }
         .configurationDisplayName("Consumption")
         .description("Shows the current energy consumption.")
-        .supportedFamilies([
-            .accessoryCorner, .accessoryCircular, .accessoryInline, .accessoryRectangular
-        ])
+        .supportedFamilies(getSupportedFamilies())
+    }
+    
+    private func getSupportedFamilies() -> [WidgetFamily] {
+        var families: [WidgetFamily] = [
+            .accessoryCircular,
+            .accessoryInline,
+            .accessoryRectangular
+        ]
+        #if os(watchOS)
+        families.append(.accessoryCorner)
+        #else
+        families.append(.systemMedium)
+        families.append(.systemSmall)
+        #endif
+        return families
     }
 }
