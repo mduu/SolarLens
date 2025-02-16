@@ -1,16 +1,19 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(CurrentBuildingState.self) var buildingState:
+        CurrentBuildingState
     @Environment(\.energyManager) var energyManager
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.verticalSizeClass) var verticalSizeClass
     @State var refreshTimer: Timer?
     @State var solarForecastTimer: Timer?
-    @State var showLogoutConfirmation: Bool = false
     @State var solarDetailsData: SolarDetailsData?
 
     var body: some View {
         VStack {
+
             if buildingState.isLoading
                 && buildingState.overviewData.lastSuccessServerFetch == nil
             {
@@ -24,215 +27,55 @@ struct HomeView: View {
 
                     BackgroundView()
 
-                    HeaderView()
-                    
                     VStack {
+                        HeaderView()
+                            .padding(
+                                .top, horizontalSizeClass == .compact ? 60 : 0)
+                        Spacer()
+                        FooterView()
+                    }
+                    .ignoresSafeArea()
+
+                    VStack {
+
                         HStack {
+                            if solarDetailsData != nil {
+                                SolarForecastView(
+                                    solarProductionMax: buildingState
+                                        .overviewData.solarProductionMax,
+                                    todaySolarProduction: solarDetailsData!
+                                        .todaySolarProduction,
+                                    forecastToday: solarDetailsData!
+                                        .forecastToday,
+                                    forecastTomorrow: solarDetailsData!
+                                        .forecastTomorrow,
+                                    forecastDayAfterTomorrow:
+                                        solarDetailsData!
+                                        .forecastDayAfterTomorrow
+                                )
+                                .frame(maxWidth: 180, maxHeight: 120)
+                                .padding(.leading, 5)
+                            }
+
                             Spacer()
-                            
-                            Button("Log out", systemImage: "iphone.and.arrow.right.outward")
-                            {
-                                showLogoutConfirmation = true
-                            }.labelStyle(.iconOnly)
-                                .buttonStyle(.borderless)
-                                .foregroundColor(.primary)
-                                .font(.system(size: 24))
-                                .confirmationDialog(
-                                    "Are you sure to log out?",
-                                    isPresented: $showLogoutConfirmation
-                                ) {
-                                    Button("Confirm") {
-                                        buildingState.logout()
-                                    }
-                                    Button("Cancel", role: .cancel) {}
-                                }
-                        }.padding().padding(.trailing)
-                        
-                        Spacer()
-                    } // :VStack
-                    
-                    VStack {
-                        Spacer()
-                        UpdateTimeStampView(
-                            isStale: buildingState.overviewData.isStaleData,
-                            updateTimeStamp: buildingState.overviewData.lastSuccessServerFetch,
-                            isLoading: buildingState.isLoading
-                        )
-                    } // :VStack
+                        }  // :HStack
+                        .padding()
 
-                    VStack {
+                        EnergyFlow()
 
-                        let solar =
-                            Double(
-                                buildingState.overviewData.currentSolarProduction)
-                            / 1000
-                        
-                        let consumption =
-                            Double(
-                                buildingState.overviewData.currentOverallConsumption)
-                            / 1000
-                        
-                        let grid =
-                            Double(
-                                buildingState.overviewData.currentGridToHouse >= 0
-                                ? buildingState.overviewData.currentGridToHouse
-                                : buildingState.overviewData.currentSolarToGrid)
-                            / 1000
-                                                
-                        Grid(horizontalSpacing: 2, verticalSpacing: 20) {
-                            GridRow {
-                                if solarDetailsData != nil
-                                {
-                                    SolarForecastView(
-                                        solarProductionMax: buildingState.overviewData.solarProductionMax,
-                                        todaySolarProduction: solarDetailsData!.todaySolarProduction,
-                                        forecastToday: solarDetailsData!.forecastToday,
-                                        forecastTomorrow: solarDetailsData!.forecastTomorrow,
-                                        forecastDayAfterTomorrow: solarDetailsData!.forecastDayAfterTomorrow
-                                    )
-                                    .frame(maxWidth: 150, maxHeight: 100)
-                                }
-                                                                
-                                Text("")
-                            }
-                            GridRow(alignment: .center) {
-                                CircularInstrument(
-                                    borderColor: Color.accentColor,
-                                    label: "Solar Production",
-                                    value: String(format: "%.1f kW", solar)
-                                ) {
-                                    Image(systemName: "sun.max").foregroundColor(.black)
-                                }
-                                .frame(maxWidth: 120, maxHeight: 120)
+                        HStack {
 
-                                if buildingState.overviewData.isFlowSolarToGrid() {
-                                    Image(systemName: "arrow.right")
-                                        .foregroundColor(.orange)
-                                        .font(.system(size: 50, weight: .light))
-                                        .symbolEffect(
-                                            .wiggle.byLayer,
-                                            options: .repeat(.periodic(delay: 0.7)))
-                                } else {
-                                    Text("")
-                                        .frame(minWidth: 50, minHeight: 50)
-                                }
-                                
-                                CircularInstrument(
-                                    borderColor: Color.orange,
-                                    label: "Grid",
-                                    value: String(format: "%.1f kW", grid)
-                                ) {
-                                    Image(systemName: "network").foregroundColor(.black)
-                                }
-                                .frame(maxWidth: 120, maxHeight: 120)
-                            } // :GridRow
-                            
-                            GridRow(alignment: .center) {
-                                if buildingState.overviewData.isFlowSolarToBattery() {
-                                    Image(systemName: "arrow.down")
-                                        .foregroundColor(.green)
-                                        .font(.system(size: 50, weight: .light))
-                                        .symbolEffect(
-                                            .wiggle.byLayer,
-                                            options: .repeat(.periodic(delay: 0.7)))
+                            Spacer()
 
-                                } else {
-                                    Text("")
-                                        .frame(minWidth: 50, minHeight: 50)
-                                }
+                            ChargingView(
+                                isVertical: horizontalSizeClass == .compact
+                            )
 
-                                if buildingState.overviewData.isFlowSolarToHouse() {
-                                    Image(systemName: "arrow.down.right")
-                                        .foregroundColor(.green)
-                                        .font(.system(size: 50, weight: .light))
-                                        .symbolEffect(
-                                            .wiggle.byLayer,
-                                            options: .repeat(.periodic(delay: 0.7)))
-                                } else {
-                                    Text("")
-                                        .frame(minWidth: 50, minHeight: 50)
-                                }
+                        }  // :HStack
+                        .padding()
 
-                                if buildingState.overviewData.isFlowGridToHouse() {
-                                    Image(systemName: "arrow.down")
-                                        .foregroundColor(.orange)
-                                        .font(.system(size: 50, weight: .light))
-                                        .symbolEffect(
-                                            .wiggle.byLayer,
-                                            options: .repeat(.periodic(delay: 0.7)))
-                                } else {
-                                    Text("")
-                                        .frame(minWidth: 50, minHeight: 50)
-                                }
-                            } // :GridRow
-                                .frame(minWidth: 30, minHeight: 20)
-                            
-                            GridRow(alignment: .center) {
-                                if buildingState.overviewData.currentBatteryLevel != nil {
-                                    BatteryBoubleView(
-                                        currentBatteryLevel: buildingState.overviewData.currentBatteryLevel,
-                                        currentChargeRate: buildingState.overviewData.currentBatteryChargeRate
-                                    )
-                                } else {
-                                    Text("")
-                                        .frame(minWidth: 120, minHeight: 120)
-                                }
-                                
-                                if buildingState.overviewData.isFlowBatteryToHome() {
-                                    Image(systemName: "arrow.right")
-                                        .foregroundColor(.green)
-                                        .font(.system(size: 50, weight: .light))
-                                        .symbolEffect(
-                                            .wiggle.byLayer,
-                                            options: .repeat(.periodic(delay: 0.7)))
-                                } else {
-                                    Text("")
-                                        .frame(minWidth: 50, minHeight: 50)
-                                }
-                                
-                                CircularInstrument(
-                                    borderColor: Color.teal,
-                                    label: "Consumption",
-                                    value: String(format: "%.1f kW", consumption)
-                                ) {
-                                    Image(systemName: "house").foregroundColor(.black)
-                                }
-                                .frame(maxWidth: 120, maxHeight: 120)
-                            } // :GridRow
-                            
-                            GridRow {
-                                
-                                Text("")
-                                
-                                Text("")
-                                
-                                VStack {
-                                    if buildingState.overviewData.isAnyCarCharing {
-                                        Image(systemName: "arrow.down")
-                                            .foregroundColor(.blue)
-                                            .font(.system(size: 25, weight: .light))
-                                            .symbolEffect(
-                                                .wiggle.byLayer,
-                                                options: .repeat(.periodic(delay: 0.7)))
-                                    } else {
-                                        Text("")
-                                            .frame(minHeight: 25)
-                                    }
-                                    
-                                    ChargingStationsView(chargingStation: buildingState.overviewData.chargingStations)
-                                        .frame(maxWidth: 120)
-                                }
-                                
-                            }
-                            
-                        } // :Grid
-                    } // :VStack
-                    .padding(.top, 70)
-                    
-                    VStack {
-                        Spacer()
-                        SiriDiscoveryView()
-                    }.padding(.bottom, 5)
+                    }  // :VStack
+
                 }  // :ZStack
             }
         }
@@ -241,7 +84,7 @@ struct HomeView: View {
             fetchAndStartRefreshTimerForSolarDetailData()
         }
     }
-    
+
     private func fetchAndStartRefreshTimerForOverviewData() {
         if buildingState.overviewData.lastSuccessServerFetch == nil {
             print("initial fetch overview data")
@@ -249,7 +92,7 @@ struct HomeView: View {
                 await buildingState.fetchServerData()
             }
         }
-        
+
         if refreshTimer == nil {
             refreshTimer = Timer.scheduledTimer(
                 withTimeInterval: 15, repeats: true
@@ -262,7 +105,7 @@ struct HomeView: View {
             }
         }
     }
-    
+
     private func fetchAndStartRefreshTimerForSolarDetailData() {
         if solarDetailsData == nil {
             print("fetch solarDetailsData on appear")
@@ -277,7 +120,8 @@ struct HomeView: View {
                 _ in
                 Task { @MainActor in
                     print("fetch solarDetailsData on timer")
-                    solarDetailsData = try await energyManager.fetchSolarDetails()
+                    solarDetailsData =
+                        try await energyManager.fetchSolarDetails()
                 }
             }
         }
@@ -285,12 +129,10 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
-        .environment(
-            CurrentBuildingState.fake(
-                overviewData: OverviewData.fake()))
+    HomeView(
+        solarDetailsData: SolarDetailsData.fake()
+    )
+    .environment(
+        CurrentBuildingState.fake(
+            overviewData: OverviewData.fake()))
 }
-
-
-
-
