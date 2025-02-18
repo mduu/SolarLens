@@ -29,8 +29,6 @@ struct LoginView: View {
                 .textContentType(.password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             
-            Text("Pwd: \(password)")
-
             Button(action: {
                 Task {
                     await model.tryLogin(
