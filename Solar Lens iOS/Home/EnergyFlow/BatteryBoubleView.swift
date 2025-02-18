@@ -11,7 +11,9 @@ struct BatteryBoubleView: View {
             let batteryLevel: Int = currentBatteryLevel ?? 0
             
             GeometryReader { geometry in
-                let innerRadius = Int(geometry.size.width / 2 - 4)
+                let innerRadius = geometry.size.width > geometry.size.height
+                    ? Int(geometry.size.height / 2 - 4)
+                    : Int(geometry.size.width / 2 - 4)
                 
                 Chart {
                     SectorMark(
@@ -107,7 +109,7 @@ struct BatteryBoubleView: View {
         currentBatteryLevel: 5,
         currentChargeRate: 1234
     )
-    .frame(width: 180, height: 180)
+    .frame(width: 300, height: 290)
 }
 
 #Preview("No Data") {
