@@ -1144,6 +1144,7 @@
       }
     },
     "Pwd: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

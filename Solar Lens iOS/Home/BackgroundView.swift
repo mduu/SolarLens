@@ -2,6 +2,7 @@ import SwiftUI
 
 struct BackgroundView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.verticalSizeClass) var verticalSizeClass
 
     var body: some View {
         ZStack {
@@ -9,7 +10,9 @@ struct BackgroundView: View {
                 .foregroundColor(colorScheme == .light ? .white : .black)
                 .ignoresSafeArea()
             
-            Image("OverviewFull")
+            let backgroundAsset = verticalSizeClass == .compact ? "BackLandscape" : "BackPortrait"
+            
+            Image(backgroundAsset)
                 .resizable()
                 .clipped()
                 .saturation(0)
@@ -17,4 +20,8 @@ struct BackgroundView: View {
                 .ignoresSafeArea()
         }
     }
+}
+
+#Preview {
+    BackgroundView()
 }
