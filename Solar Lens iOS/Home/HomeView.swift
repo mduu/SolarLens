@@ -27,54 +27,101 @@ struct HomeView: View {
 
                     BackgroundView()
 
-                    VStack {
-                        HeaderView()
-                            .padding(
-                                .top, horizontalSizeClass == .compact ? 60 : 0)
-                        Spacer()
-                        FooterView()
-                    }
-                    .ignoresSafeArea()
+                    if verticalSizeClass != .compact {
+                        VStack {
+                            HeaderView()
+                                .padding(.top, 0)
+                            Spacer()
 
-                    VStack {
+                            HStack {
+                                if solarDetailsData != nil {
+                                    SolarForecastView(
+                                        solarProductionMax: buildingState
+                                            .overviewData.solarProductionMax,
+                                        todaySolarProduction: solarDetailsData!
+                                            .todaySolarProduction,
+                                        forecastToday: solarDetailsData!
+                                            .forecastToday,
+                                        forecastTomorrow: solarDetailsData!
+                                            .forecastTomorrow,
+                                        forecastDayAfterTomorrow:
+                                            solarDetailsData!
+                                            .forecastDayAfterTomorrow
+                                    )
+                                    .frame(maxWidth: 180, maxHeight: 120)
+                                    .padding(.leading, 5)
+                                }
 
-                        HStack {
-                            if solarDetailsData != nil {
-                                SolarForecastView(
-                                    solarProductionMax: buildingState
-                                        .overviewData.solarProductionMax,
-                                    todaySolarProduction: solarDetailsData!
-                                        .todaySolarProduction,
-                                    forecastToday: solarDetailsData!
-                                        .forecastToday,
-                                    forecastTomorrow: solarDetailsData!
-                                        .forecastTomorrow,
-                                    forecastDayAfterTomorrow:
-                                        solarDetailsData!
-                                        .forecastDayAfterTomorrow
+                                Spacer()
+                            }  // :HStack
+                            .padding()
+
+                            EnergyFlow()
+                                .padding(.horizontal, 50)
+
+                            HStack {
+
+                                Spacer()
+
+                                ChargingView(
+                                    isVertical: true
                                 )
-                                .frame(maxWidth: 180, maxHeight: 120)
-                                .padding(.leading, 5)
-                            }
+
+                            }  // :HStack
+                            .padding()
 
                             Spacer()
-                        }  // :HStack
-                        .padding()
 
-                        EnergyFlow()
+                            FooterView()
 
+                        }  // :VStack
+                    } else {
                         HStack {
 
-                            Spacer()
+                            VStack {
 
-                            ChargingView(
-                                isVertical: horizontalSizeClass == .compact
-                            )
+                                if solarDetailsData != nil {
+                                    SolarForecastView(
+                                        solarProductionMax: buildingState
+                                            .overviewData.solarProductionMax,
+                                        todaySolarProduction: solarDetailsData!
+                                            .todaySolarProduction,
+                                        forecastToday: solarDetailsData!
+                                            .forecastToday,
+                                        forecastTomorrow: solarDetailsData!
+                                            .forecastTomorrow,
+                                        forecastDayAfterTomorrow:
+                                            solarDetailsData!
+                                            .forecastDayAfterTomorrow
+                                    )
+                                    .frame(maxWidth: 180, maxHeight: 120)
+                                    .padding(.leading, 5)
+                                }
+
+                                Spacer()
+                            }  // :VStack
+                            .padding(.trailing)
+
+                            EnergyFlow()
+
+                            VStack {
+                                HStack(alignment: .center) {
+                                    AppLogo()
+                                    LogoutButtonView()
+                                        .padding(.leading, 5)
+                                }
+                                .padding(.trailing, -30)
+
+                                Spacer()
+
+                                ChargingView(
+                                    isVertical: false
+                                )
+                            }  // :VStack
 
                         }  // :HStack
-                        .padding()
-
-                    }  // :VStack
+                        .padding(.top)
+                    }  // :else
 
                 }  // :ZStack
             }

@@ -61,7 +61,6 @@ struct ChargingView: View {
                             .overviewData.chargingStations,
                         isVertical: isVertical
                     )
-                    .frame(maxHeight: 180)
                 } // :HStack
             }
         }
