@@ -161,7 +161,11 @@ class CurrentBuildingState {
             selectedMainTab = newTab
         }
     }
-
+    
+    func checkForCredentions() {
+        updateCredentialsExists()
+    }
+    
     private func updateCredentialsExists() {
         let credentials = KeychainHelper.loadCredentials()
 

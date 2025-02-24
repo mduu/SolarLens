@@ -4,6 +4,7 @@ struct ContentView: View {
     @Environment(CurrentBuildingState.self) var viewModel: CurrentBuildingState
     @State var showAppRateRequest = AppStoreReviewManager.shared
         .checkAndRequestReview()
+    @State private var loginCredentialsCheckTimer: Timer?
 
     var body: some View {
 
@@ -14,6 +15,22 @@ struct ContentView: View {
 
         if !viewModel.loginCredentialsExists {
             LoginView()
+                .onAppear {
+                    if loginCredentialsCheckTimer == nil {
+                        loginCredentialsCheckTimer = Timer.scheduledTimer(
+                            withTimeInterval: 5, repeats: true
+                        ) {
+                            _ in
+                            Task {
+                                print("Timer check for credentials")
+                                await viewModel.checkForCredentions()
+                                if await viewModel.loginCredentialsExists {
+                                    await disableLoginCredentialsCheckTimer()
+                                }
+                            }
+                        }  // :refreshTimer
+                    }  // :if
+                }
         } else if viewModel.loginCredentialsExists {
 
             NavigationView {
@@ -77,6 +94,12 @@ struct ContentView: View {
                 .foregroundStyle(.accent)
                 .background(Color.black.opacity(0.7))
         }
+    }
+    
+    func disableLoginCredentialsCheckTimer() {
+        loginCredentialsCheckTimer?.invalidate()
+        loginCredentialsCheckTimer = nil
+        print("Disabled loginCredentialsCheckTimer")
     }
 
     fileprivate func HomeButton() -> some View {
