@@ -114,7 +114,26 @@
       "shouldTranslate" : false
     },
     "A car is chariging." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fahrzeug lädt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une voiture est en charge."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un'auto è in carica."
+          }
+        }
+      }
     },
     "A car is currently charging." : {
       "localizations" : {
@@ -123,14 +142,64 @@
             "state" : "translated",
             "value" : "Ein Fahrzeug ist am Laden."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une voiture est en train de charger."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un'auto è attualmente in carica."
+          }
         }
       }
     },
     "A connection error occurred!" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindungsfehler aufgetreten!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une erreur de connexion s'est produite!"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si è verificato un errore di connessione!"
+          }
+        }
+      }
     },
     "A general error occurred!" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allgemeiner Fehler aufgetreten!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une erreur générale s'est produite!"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si è verificato un errore generale!"
+          }
+        }
+      }
     },
     "Always" : {
       "localizations" : {
@@ -211,11 +280,42 @@
             "state" : "translated",
             "value" : "Batterie"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteria"
+          }
         }
       }
     },
     "Battery level is %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteriestand ist %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le niveau de la batterie est de %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il livello della batteria è %@"
+          }
+        }
+      }
     },
     "Cancel" : {
       "localizations" : {
@@ -296,6 +396,18 @@
             "state" : "translated",
             "value" : "Lademodus"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode de charge"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modalità di ricarica"
+          }
         }
       }
     },
@@ -306,6 +418,18 @@
             "state" : "translated",
             "value" : "Ladestation"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Station de recharge"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stazione di Charing"
+          }
         }
       }
     },
@@ -315,6 +439,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lademodus wählen:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez le mode de charge :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli la modalità di ricarica:"
           }
         }
       }
@@ -376,6 +512,18 @@
             "state" : "translated",
             "value" : "Konstanter Strom"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puissance constante"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrente costante"
+          }
         }
       }
     },
@@ -386,11 +534,42 @@
             "state" : "translated",
             "value" : "Konstanter Strom in Watt"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puissance constante en watts"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrente costante in watt."
+          }
         }
       }
     },
     "Consuming %@ kilo-watts from grid" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beziehe %@ kWh vom Netz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consommation de %@ kilowatts du réseau"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumando %@ kilowatt dalla rete"
+          }
+        }
+      }
     },
     "Consumption" : {
       "localizations" : {
@@ -415,7 +594,26 @@
       }
     },
     "Current solar production is %@ kilowatts" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Solarproduktion beträgt %@ kilowatt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La production solaire actuelle est de %@ kilowatts"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La produzione solare attuale è %@ kilowatt"
+          }
+        }
+      }
     },
     "Email" : {
       "localizations" : {
@@ -452,11 +650,42 @@
             "state" : "translated",
             "value" : "Leer"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vide"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuota"
+          }
         }
       }
     },
     "Exporting %@ kilo-watts to grid" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speise %@ kilowatt in das Netz ein"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportation de %@ kilowatts vers le réseau"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esportazione di %@ kilowatt sulla rete"
+          }
+        }
+      }
     },
     "Forecast" : {
       "localizations" : {
@@ -487,6 +716,18 @@
             "state" : "translated",
             "value" : "Voll"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complète"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piena"
+          }
         }
       }
     },
@@ -496,6 +737,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktueller Batteriestand anfragen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir le niveau actuel de la batterie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni il livello attuale della batteria"
           }
         }
       }
@@ -507,6 +760,18 @@
             "state" : "translated",
             "value" : "Aktueller Verbrauch abfragen"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir la consommation actuelle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni il consumo attuale"
+          }
         }
       }
     },
@@ -516,6 +781,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktueller Stromverbrauch abfragen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir la consommation électrique actuelle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni il consumo energetico attuale"
           }
         }
       }
@@ -527,6 +804,18 @@
             "state" : "translated",
             "value" : "Solar Produktion abfragen"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenez la production solaire actuelle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni la produzione solare attuale"
+          }
         }
       }
     },
@@ -537,6 +826,18 @@
             "state" : "translated",
             "value" : "Liefert den aktuellen Ladestand der Batterie"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenez le niveau actuel de la batterie en pourcentage"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni il livello attuale della batteria in percentuale"
+          }
         }
       }
     },
@@ -546,6 +847,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Netz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réseau électrique"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rete Energetica"
           }
         }
       }
@@ -635,6 +948,18 @@
             "state" : "translated",
             "value" : "Ist ein Auto am Laden?"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Est-ce qu'une voiture est en charge?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C'è un'auto in carica?"
+          }
         }
       }
     },
@@ -644,6 +969,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ist aktuell ein Auto am Laden?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Est-ce qu'une voiture est en charge actuellement ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C'è un'auto attualmente in carica?"
           }
         }
       }
@@ -873,6 +1210,18 @@
             "state" : "translated",
             "value" : "Mindestmenge"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quantité minimale"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quantità minima"
+          }
         }
       }
     },
@@ -883,6 +1232,18 @@
             "state" : "translated",
             "value" : "Mindestmenge Strom in kWh"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quantité minimale en kWh."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quantità minima in kWh."
+          }
         }
       }
     },
@@ -892,6 +1253,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktuell ist kein Fahrzeug am Laden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune voiture n'est en charge actuellement."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al momento nessuna auto è in carica."
           }
         }
       }
@@ -919,7 +1292,26 @@
       }
     },
     "No interaction with energy grid" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Netzbezug oder -export"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune interaction avec le réseau électrique"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna interazione con la rete energetica"
+          }
+        }
+      }
     },
     "Off" : {
       "localizations" : {
@@ -956,8 +1348,15 @@
             "state" : "translated",
             "value" : "Öffne Solar-Lens"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir la lentille solaire"
+          }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "Password" : {
       "localizations" : {
@@ -1143,17 +1542,6 @@
         }
       }
     },
-    "Pwd: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passwort: %@"
-          }
-        }
-      }
-    },
     "Rate app" : {
       "localizations" : {
         "de" : {
@@ -1182,6 +1570,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gibt ‘wahr’ zurück wenn aktuell ein Auto lädt, ansonsten wird ‘falsch’ zurückgegeben."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renvoie “true” si une voiture est en cours de charge, sinon “false”."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restituisce 'true' se un'auto è attualmente in carica, altrimenti 'false'."
           }
         }
       }
@@ -1271,6 +1671,18 @@
             "state" : "translated",
             "value" : "Sensor-ID der Ladestation. Leerlassen für die erste Ladestation."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID du capteur de la borne de recharge. Laissez vide pour utiliser la première borne de recharge."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID sensore della stazione di ricarica. Lasciare vuoto per utilizzare la prima stazione di ricarica."
+          }
         }
       }
     },
@@ -1320,6 +1732,18 @@
             "state" : "translated",
             "value" : "Lademodus setzen"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Définir le mode de charge"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imposta la modalità di ricarica"
+          }
         }
       }
     },
@@ -1351,6 +1775,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zeige Solar Übersicht"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher l'aperçu solaire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra panoramica solare"
           }
         }
       }
@@ -1412,8 +1848,15 @@
             "state" : "translated",
             "value" : "Solar Lens"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Lens"
+          }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "Solar Manger Login" : {
       "localizations" : {
@@ -1500,6 +1943,18 @@
             "state" : "translated",
             "value" : "Ziel %"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cible %"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fine %"
+          }
         }
       }
     },
@@ -1537,6 +1992,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ziel Prozent der Ladung (1-100%) des Autos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pourcentage SOC cible (1-100%)."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Percentuale SOC target (1-100%)."
           }
         }
       }
@@ -1598,6 +2065,18 @@
             "state" : "translated",
             "value" : "Der Batterie des Hauses ist %lld%% geladen."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le niveau de la batterie de notre maison est à %lld%%"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il livello della batteria della nostra casa è a %lld%%"
+          }
         }
       }
     },
@@ -1607,6 +2086,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Der Lademodus ist auf “%@“."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le mode de charge est défini sur %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La modalità di ricarica è impostata su %@"
           }
         }
       }
@@ -1618,6 +2109,18 @@
             "state" : "translated",
             "value" : "Der aktuelle Stromverbrauch beträgt %@ Kilowatt."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La consommation globale actuelle est de %@ kilowatts"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il consumo energetico attuale è di %@ kilowatt."
+          }
         }
       }
     },
@@ -1628,6 +2131,18 @@
             "state" : "translated",
             "value" : "Die aktuelle Solar-Produktion beträgt %@ Kilowatt."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La production solaire actuelle est de %@ kilowatts"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La produzione solare attuale è di %@ kilowatt."
+          }
         }
       }
     },
@@ -1637,6 +2152,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Es gab ein Problem beim Setzen des Lademodus."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il y a eu un problème lors du réglage du mode de charge."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’è un problema durante l'impostazione della modalità di ricarica."
           }
         }
       }
@@ -1670,28 +2197,17 @@
             "state" : "translated",
             "value" : "Zeitpunkt wann das Laden beendet sein muss."
           }
-        }
-      }
-    },
-    "Today overview" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tagesübersicht"
-          }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aujourd'hui"
+            "value" : "Moment auquel la charge doit être terminée."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Panoramica odierna"
+            "value" : "Ora in cui la ricarica deve essere completata."
           }
         }
       }

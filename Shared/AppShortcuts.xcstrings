@@ -24,6 +24,26 @@
               "Is any car currently charging in ${applicationName}"
             ]
           }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Est-ce qu'une voiture se recharge dans ${applicationName}",
+              "Est-ce qu'une voiture se recharge actuellement dans ${applicationName}",
+              "Est-ce qu'une voiture est actuellement en charge dans ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "C'è un'auto in carica in ${applicationName}?",
+              "C'è un'auto che si ricarica attualmente in ${applicationName}?",
+              "C'è un'auto attualmente in carica in ${applicationName}?"
+            ]
+          }
         }
       }
     },
@@ -51,6 +71,28 @@
               "Change charging mode in ${applicationName}"
             ]
           }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Définissez le mode de charge sur ${chargingMode} dans ${applicationName}",
+              "Définir le mode de charge dans ${applicationName}",
+              "Changer le mode de charge en ${chargingMode} dans ${applicationName}",
+              "Changer le mode de charge dans ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Imposta la modalità di ricarica su ${chargingMode} in ${applicationName}",
+              "Imposta la modalità di ricarica in ${applicationName}",
+              "Cambia la modalità di ricarica in ${chargingMode} in ${applicationName}",
+              "Cambia la modalità di ricarica in ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -73,6 +115,26 @@
               "Show battery level in ${applicationName}",
               "Show current battery level in ${applicationName}",
               "What is the current battery level of my house in ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Afficher le niveau de la batterie dans ${applicationName}",
+              "Afficher le niveau actuel de la batterie dans ${applicationName}",
+              "Quel est le niveau actuel de la batterie de ma maison à ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Mostra il livello della batteria in ${applicationName}",
+              "Mostra il livello attuale della batteria in ${applicationName}",
+              "Qual è il livello attuale della batteria della mia casa in ${applicationName}"
             ]
           }
         }
@@ -100,6 +162,26 @@
               "What is the current power consumption of my house in ${applicationName}"
             ]
           }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Afficher la consommation d'énergie dans ${applicationName}",
+              "Afficher la consommation d'énergie actuelle dans ${applicationName}",
+              "Quelle est la consommation électrique actuelle de ma maison à ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Mostra il consumo energetico in ${applicationName}",
+              "Mostra il consumo energetico attuale in ${applicationName}",
+              "Qual è il consumo energetico attuale della mia casa in ${applicationName}"
+            ]
+          }
         }
       }
     },
@@ -121,6 +203,24 @@
             "values" : [
               "Show solar overview in ${applicationName}",
               "Open solar overview in ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Afficher l'aperçu solaire dans ${applicationName}",
+              "Ouvrir l'aperçu solaire dans ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Mostra panoramica solare in ${applicationName}",
+              "Apri la panoramica solare in ${applicationName}"
             ]
           }
         }
@@ -146,6 +246,26 @@
               "Show solar production in ${applicationName}",
               "Show current solar production in ${applicationName}",
               "How much power does my house produce in ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Afficher la production solaire dans ${applicationName}",
+              "Afficher la production solaire actuelle dans ${applicationName}",
+              "Quelle est la quantité d'énergie produite par ma maison en ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Mostra la produzione solare in ${applicationName}",
+              "Mostra la produzione solare attuale in ${applicationName}",
+              "Quanta energia produce la mia casa in ${applicationName}"
             ]
           }
         }
