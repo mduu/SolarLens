@@ -30,4 +30,14 @@ struct ProductionAndConsumptionEntry: TimelineEntry {
             carCharging: carCharging
         )
     }
+    
+    static func previewDataBatteryOnly() -> ProductionAndConsumptionEntry {
+        .init(
+            date: Date(),
+            currentProduction: 0,
+            maxProduction: 11000,
+            isStaleData: false,
+            fromBattery: 1460
+        )
+    }
 }

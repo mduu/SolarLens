@@ -63,7 +63,7 @@ struct ProductionAndConsumptionWidgetView: View {
             let toBattery =
                 Double(entry.toBattery!) / 1000
             text += "🔋\(String(format: "%.1f", toBattery))"
-        } else if entry.toBattery == 0 && entry.fromBattery ?? 0 > 0 {
+        } else if entry.fromBattery ?? 0 > 0 {
             let fromBattery =
                 Double(entry.fromBattery!) / 1000
             text += "🔋 -\(String(format: "%.1f", fromBattery))"
@@ -106,12 +106,22 @@ struct ProductionAndConsumptionWidgetView_Previews: PreviewProvider {
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
 
-            // Preview for corner
-            ProductionAndConsumptionWidgetView(
-                entry: ProductionAndConsumptionEntry.previewData()
-            )
-            .previewContext(WidgetPreviewContext(family: .accessoryCorner))
-            .previewDisplayName("Corner")
+            #if os(watchOS)
+
+                // Preview for corner
+                ProductionAndConsumptionWidgetView(
+                    entry: ProductionAndConsumptionEntry.previewData()
+                )
+                .previewContext(WidgetPreviewContext(family: .accessoryCorner))
+                .previewDisplayName("Corner")
+
+                // Preview for corner
+                ProductionAndConsumptionWidgetView(
+                    entry: ProductionAndConsumptionEntry.previewDataBatteryOnly()
+                )
+                .previewContext(WidgetPreviewContext(family: .accessoryCorner))
+                .previewDisplayName("Corner bat. only")
+            #endif
         }
     }
 }
