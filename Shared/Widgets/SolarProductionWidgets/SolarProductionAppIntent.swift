@@ -30,7 +30,7 @@ struct SolarProductionEntry: TimelineEntry {
             todaySolarProduction: 6530,
             forecastToday: ForecastItem(min: 1, max: 4, expected: 3.2),
             forecastTomorrow: ForecastItem(min: 4, max: 5, expected: 6.98),
-            forecastDayAfterTomorrow: ForecastItem(min: 5, max: 7, expected: 7.98)
+            forecastDayAfterTomorrow: ForecastItem(min: 25, max: 44, expected: 7.98)
         )
     }
 }

@@ -89,7 +89,7 @@ struct ForecastItemView: View {
                         #if os(watchOS)
                             .font(.headline)
                         #else
-                            .font(.caption)
+                            .font(isSmall ? .system(size: 11) : .caption2)
                         #endif
 
                     if !isSmall {
