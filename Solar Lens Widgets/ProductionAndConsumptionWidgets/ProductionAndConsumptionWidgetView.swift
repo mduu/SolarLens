@@ -63,7 +63,7 @@ struct ProductionAndConsumptionWidgetView: View {
             let toBattery =
                 Double(entry.toBattery!) / 1000
             text += "🔋\(String(format: "%.1f", toBattery))"
-        } else if entry.toBattery ?? 0 <= 0 && entry.fromBattery ?? 0 > 0 {
+        } else if entry.fromBattery ?? 0 > 10 {
             let fromBattery =
                 Double(entry.fromBattery!) / 1000
             text += "🔋 -\(String(format: "%.1f", fromBattery))"
@@ -77,7 +77,7 @@ struct ProductionAndConsumptionWidgetView: View {
         if entry.toGrid ?? 0 > 10 {
             let toGrid = Double(entry.toGrid!) / 1000
             text += "🌐\(String(format: "%.1f", toGrid))"
-        } else if entry.toGrid ?? 0 <= 0 && entry.fromGrid ?? 0 > 0 {
+        } else if entry.fromGrid ?? 0 > 10 {
             let fromGrid = Double(entry.fromGrid!) / 1000
             text += "🌐 -\(String(format: "%.1f", fromGrid))"
         }
