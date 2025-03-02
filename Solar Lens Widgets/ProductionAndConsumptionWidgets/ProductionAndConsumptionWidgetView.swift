@@ -58,6 +58,11 @@ struct ProductionAndConsumptionWidgetView: View {
 
     private func getLabelText() -> String {
         var text = ""
+        
+        if entry.toHouse ?? 0 > 10 {
+            let toHouse = Double(entry.toHouse!) / 1000
+            text += "🏠\(String(format: "%.1f", toHouse))"
+        }
 
         if entry.toBattery ?? 0 > 10 {
             let toBattery =
@@ -67,11 +72,6 @@ struct ProductionAndConsumptionWidgetView: View {
             let fromBattery =
                 Double(entry.fromBattery!) / 1000
             text += "🔋 -\(String(format: "%.1f", fromBattery))"
-        }
-
-        if entry.toHouse ?? 0 > 10 {
-            let toHouse = Double(entry.toHouse!) / 1000
-            text += "🏠\(String(format: "%.1f", toHouse))"
         }
 
         if entry.toGrid ?? 0 > 10 {
@@ -85,8 +85,8 @@ struct ProductionAndConsumptionWidgetView: View {
         if entry.carCharging ?? false {
             text += " 🚙"
         }
-
-        return text
+        
+        return text == "" ? " " : text
     }
 
     func getGaugeStyle() -> Gradient {

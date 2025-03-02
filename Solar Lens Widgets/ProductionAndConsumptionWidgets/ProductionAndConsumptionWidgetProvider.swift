@@ -29,7 +29,11 @@ struct ProductionAndConsumptionWidgetProvider: AppIntentTimelineProvider {
             isStaleData: data?.isStaleData,
             toBattery: max(0, data?.currentBatteryChargeRate ?? 0),
             toGrid: data?.currentSolarToGrid,
-            toHouse: data?.currentSolarToHouse,
+            toHouse: (data?.currentSolarToHouse ?? 0)
+                + (data?.currentGridToHouse ?? 0)
+                + (min(data?.currentBatteryChargeRate ?? 0, 0) * -1),
+            fromBattery: min(0, data?.currentBatteryChargeRate ?? 0) * -1,
+            fromGrid: data?.currentGridToHouse,
             carCharging: data?.isAnyCarCharing
         )
     }
@@ -56,8 +60,10 @@ struct ProductionAndConsumptionWidgetProvider: AppIntentTimelineProvider {
                     isStaleData: data?.isStaleData,
                     toBattery: max(0, data?.currentBatteryChargeRate ?? 0),
                     toGrid: data?.currentSolarToGrid,
-                    toHouse: data?.currentSolarToHouse,
-                    fromBattery: max(0, (data?.currentBatteryChargeRate ?? 0 * -1)),
+                    toHouse: (data?.currentSolarToHouse ?? 0)
+                        + (data?.currentGridToHouse ?? 0)
+                        + (min(data?.currentBatteryChargeRate ?? 0, 0) * -1),
+                    fromBattery: min(0, data?.currentBatteryChargeRate ?? 0) * -1,
                     fromGrid: data?.currentGridToHouse,
                     carCharging: data?.isAnyCarCharing
                 )
