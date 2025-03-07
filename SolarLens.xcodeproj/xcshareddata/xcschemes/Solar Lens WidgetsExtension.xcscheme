@@ -75,12 +75,21 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
+            BlueprintIdentifier = "495539B52CECF51A00D2FE19"
+            BuildableName = "Solar Lens WidgetsExtension.appex"
+            BlueprintName = "Solar Lens WidgetsExtension"
+            ReferencedContainer = "container:SolarLens.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
             BlueprintIdentifier = "494882B42CA8443300C59146"
             BuildableName = "Solar Lens Watch App.app"
             BlueprintName = "Solar Lens Watch App"
             ReferencedContainer = "container:SolarLens.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCWidgetKind"
