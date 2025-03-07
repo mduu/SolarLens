@@ -5,7 +5,7 @@ struct GridBoubleView: View {
     
     var body: some View {
         CircularInstrument(
-            borderColor: Color.orange,
+            borderColor: gridInKwh != 0 ? .orange : .gray,
             label: "Grid",
             value: String(format: "%.1f kW", gridInKwh)
         ) {

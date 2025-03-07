@@ -70,7 +70,7 @@ struct EnergyFlow: View {
                 ArrowBatteryToHouse(isActive: buildingState.overviewData.isFlowBatteryToHome())
                     .frame(width: 50, height: 50)
 
-                ConsumptionBoubleView(gridInKwh: consumption)
+                ConsumptionBoubleView(totalConsumptionInKwh: consumption)
                     .frame(maxWidth: .infinity)
             }
             .frame(maxHeight: .infinity)

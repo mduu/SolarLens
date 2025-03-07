@@ -5,7 +5,7 @@ struct SolarBoubleView: View {
     
     var body: some View {
         CircularInstrument(
-            borderColor: Color.accentColor,
+            borderColor: solarInKwh != 0 ? .accentColor : .gray,
             label: "Solar Production",
             value: String(format: "%.1f kW", solarInKwh)
         ) {

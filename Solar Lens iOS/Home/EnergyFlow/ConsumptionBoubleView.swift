@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct ConsumptionBoubleView: View {
-    var gridInKwh: Double
+    var totalConsumptionInKwh: Double
     
     var body: some View {
         CircularInstrument(
-            borderColor: Color.teal,
+            borderColor: totalConsumptionInKwh != 0 ? .teal : .gray,
             label: "Consumption",
             value: String(
-                format: "%.1f kW", gridInKwh)
+                format: "%.1f kW", totalConsumptionInKwh)
         ) {
             Image(systemName: "house")
                 .foregroundColor(.black)
@@ -17,6 +17,6 @@ struct ConsumptionBoubleView: View {
 }
 
 #Preview {
-    ConsumptionBoubleView(gridInKwh: 4.5)
+    ConsumptionBoubleView(totalConsumptionInKwh: 4.5)
         .frame(width: 150, height: 150)
 }
