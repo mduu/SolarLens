@@ -19,8 +19,7 @@ struct EnergyFlow: View {
 
         let grid =
             Double(
-                buildingState.overviewData.currentGridToHouse
-                    >= 0
+                buildingState.overviewData.isFlowGridToHouse()
                     ? buildingState.overviewData
                         .currentGridToHouse
                     : buildingState.overviewData
@@ -45,14 +44,20 @@ struct EnergyFlow: View {
             .frame(maxHeight: .infinity)
 
             GridRow {
-                ArrowSolarToBattery(isActive: buildingState.overviewData.isFlowSolarToBattery())
-                    .frame(width: 50, height: 50)
+                ArrowSolarToBattery(
+                    isActive: buildingState.overviewData.isFlowSolarToBattery()
+                )
+                .frame(width: 50, height: 50)
 
-                ArrowSolarToHouse(isActive: buildingState.overviewData.isFlowSolarToHouse())
-                    .frame(width: 50, height: 50)
+                ArrowSolarToHouse(
+                    isActive: buildingState.overviewData.isFlowSolarToHouse()
+                )
+                .frame(width: 50, height: 50)
 
-                ArrowGridToHouse(isActive: buildingState.overviewData.isFlowGridToHouse())
-                    .frame(width: 50, height: 50)
+                ArrowGridToHouse(
+                    isActive: buildingState.overviewData.isFlowGridToHouse()
+                )
+                .frame(width: 50, height: 50)
             }
             .frame(height: 50)
 
@@ -67,8 +72,10 @@ struct EnergyFlow: View {
                 )
                 .frame(maxWidth: .infinity)
 
-                ArrowBatteryToHouse(isActive: buildingState.overviewData.isFlowBatteryToHome())
-                    .frame(width: 50, height: 50)
+                ArrowBatteryToHouse(
+                    isActive: buildingState.overviewData.isFlowBatteryToHome()
+                )
+                .frame(width: 50, height: 50)
 
                 ConsumptionBoubleView(totalConsumptionInKwh: consumption)
                     .frame(maxWidth: .infinity)
@@ -86,6 +93,35 @@ struct EnergyFlow: View {
         .environment(
             CurrentBuildingState.fake(
                 overviewData: OverviewData.fake()))
+}
+
+#Preview("Large, To Grid") {
+    EnergyFlow()
+        .environment(
+            CurrentBuildingState.fake(
+                overviewData: .init(
+                    currentSolarProduction: 4550,
+                    currentOverallConsumption: 1000,
+                    currentBatteryLevel: 100,
+                    currentBatteryChargeRate: 0,
+                    currentSolarToGrid: 2550,
+                    currentGridToHouse: 0,
+                    currentSolarToHouse: 1000,
+                    solarProductionMax: 11000,
+                    hasConnectionError: false,
+                    lastUpdated: Date(),
+                    lastSuccessServerFetch: Date(),
+                    isAnyCarCharing: false,
+                    chargingStations: [
+                        .init(
+                            id: "42",
+                            name: "Keba 1",
+                            chargingMode: ChargingMode.withSolarPower,
+                            priority: 0,
+                            currentPower: 0,
+                            signal: SensorConnectionStatus.connected)
+                    ]
+                )))
 
 }
 
