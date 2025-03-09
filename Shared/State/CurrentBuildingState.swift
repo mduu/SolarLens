@@ -184,6 +184,7 @@ enum MainTab: Int, CaseIterable, Identifiable {
     case overview = 0
     case charging = 1
     case solarProduction = 2
+    case consumption = 3
     
     var id: Self { self }
 }

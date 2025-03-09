@@ -77,6 +77,22 @@ struct ContentView: View {
                             }  // :ToolbarItem
                         }  // :.toolbar
                         .tag(MainTab.solarProduction)
+                    
+                    ConsumptionPageView()
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                HStack {
+                                    HomeButton()
+
+                                    Text("Consumption")
+                                        .foregroundColor(.cyan)
+                                        .font(.headline)
+
+                                    Spacer()
+                                }  // :HStack
+                            }  // :ToolbarItem
+                        }  // :.toolbar
+                        .tag(MainTab.consumption)
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
