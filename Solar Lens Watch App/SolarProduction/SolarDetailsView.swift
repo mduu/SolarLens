@@ -192,4 +192,5 @@ struct SolarDetailsView: View {
 
 #Preview("Normal") {
     SolarDetailsView(viewModel: SolarDetailsViewModel.previewFake())
+        .environment(CurrentBuildingState.fake())
 }

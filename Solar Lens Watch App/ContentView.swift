@@ -113,11 +113,7 @@ struct ContentView: View {
     }
 }
 
-#Preview("Login Form") {
-    ContentView()
-}
-
-#Preview("Logged in") {
+#Preview("Default") {
     ContentView()
         .environment(
             CurrentBuildingState.fake(
@@ -137,4 +133,11 @@ struct ContentView: View {
                     chargingStations: []
                 ))
         )
+}
+
+#Preview("Login Form") {
+    ContentView()
+        .environment(CurrentBuildingState.fake(
+            loggedIn: false
+        ))
 }
