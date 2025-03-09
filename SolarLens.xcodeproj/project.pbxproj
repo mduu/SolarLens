@@ -624,7 +624,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 150;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens iOS Widgets/Info.plist";
@@ -636,7 +636,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.SolarManagerWatch.Solar-Lens-iOS-Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -656,7 +656,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 150;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens iOS Widgets/Info.plist";
@@ -668,7 +668,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.SolarManagerWatch.Solar-Lens-iOS-Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -684,6 +684,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_VERSION = 3.0.0;
+				APP_VERSION_BUILDNO = 151;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -752,6 +754,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_VERSION = 3.0.0;
+				APP_VERSION_BUILDNO = 151;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -816,7 +820,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 150;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
@@ -836,7 +840,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -860,7 +864,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 150;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
@@ -880,7 +884,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -903,7 +907,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 150;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -918,7 +922,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -939,7 +943,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 150;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -954,7 +958,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.watchkitapp.Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -977,7 +981,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 150;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
@@ -997,7 +1001,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1018,7 +1022,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 150;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
@@ -1038,7 +1042,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
