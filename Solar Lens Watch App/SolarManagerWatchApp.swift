@@ -1,5 +1,4 @@
 import SwiftUI
-import FirebaseCore
 
 @main
 struct SolarManagerWatch_Watch_AppApp: App {
@@ -21,6 +20,6 @@ struct SolarManagerWatch_Watch_AppApp: App {
 
 class AppDelegate: NSObject, WKApplicationDelegate {
     func applicationDidFinishLaunching() {
-        FirebaseApp.configure()
+        // TODO Code here
     }
 }

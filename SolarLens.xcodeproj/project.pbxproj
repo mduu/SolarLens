@@ -15,15 +15,6 @@
 		495539B82CECF51A00D2FE19 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1AA2CC0389D00A89445 /* SwiftUI.framework */; };
 		495539C32CECF51C00D2FE19 /* Solar Lens WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 495B2E1F2CB2AE520089AD1B /* KeychainAccess */; };
-		497A38732D53E716003F4EC4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 497A38722D53E716003F4EC4 /* GoogleService-Info.plist */; };
-		497A38742D53E716003F4EC4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 497A38722D53E716003F4EC4 /* GoogleService-Info.plist */; };
-		497A38752D53E716003F4EC4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 497A38722D53E716003F4EC4 /* GoogleService-Info.plist */; };
-		497A38782D53E8AE003F4EC4 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 497A38772D53E8AE003F4EC4 /* FirebaseAnalytics */; };
-		497A387A2D53E8AE003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 497A38792D53E8AE003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport */; };
-		497A387C2D53E8AE003F4EC4 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 497A387B2D53E8AE003F4EC4 /* FirebaseCrashlytics */; };
-		497A387E2D53EB43003F4EC4 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 497A387D2D53EB43003F4EC4 /* FirebaseAnalytics */; };
-		497A38802D53EB51003F4EC4 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 497A387F2D53EB51003F4EC4 /* FirebaseCrashlytics */; };
-		497A38822D53EB60003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 497A38812D53EB60003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		49892CF32D2442FA00478C91 /* Solar Lens Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 494882B52CA8443300C59146 /* Solar Lens Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		49892CF82D24431700478C91 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 49892CF72D24431700478C91 /* KeychainAccess */; };
 		49F243A62CF1CF39009D0E2A /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 49F243A52CF1CF39009D0E2A /* KeychainAccess */; };
@@ -96,7 +87,6 @@
 		493AADE12D592B3E00591E73 /* Solar Lens iOS WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Solar Lens iOS WidgetsExtension.entitlements"; sourceTree = "<group>"; };
 		494882B52CA8443300C59146 /* Solar Lens Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		497A38722D53E716003F4EC4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		49892CE42D243FF100478C91 /* Solar Lens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49892EB92D2D906600478C91 /* Solar-Lens-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Solar-Lens-Info.plist"; sourceTree = "<group>"; };
 		49EDF1372CF58548003C1176 /* Solar Lens Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Solar Lens Watch App.entitlements"; sourceTree = "<group>"; };
@@ -324,10 +314,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				497A38802D53EB51003F4EC4 /* FirebaseCrashlytics in Frameworks */,
-				497A387E2D53EB43003F4EC4 /* FirebaseAnalytics in Frameworks */,
 				495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */,
-				497A38822D53EB60003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,9 +332,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				497A38782D53E8AE003F4EC4 /* FirebaseAnalytics in Frameworks */,
-				497A387C2D53E8AE003F4EC4 /* FirebaseCrashlytics in Frameworks */,
-				497A387A2D53E8AE003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				49892CF82D24431700478C91 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -359,7 +343,6 @@
 			isa = PBXGroup;
 			children = (
 				493AADE12D592B3E00591E73 /* Solar Lens iOS WidgetsExtension.entitlements */,
-				497A38722D53E716003F4EC4 /* GoogleService-Info.plist */,
 				49892EB92D2D906600478C91 /* Solar-Lens-Info.plist */,
 				4917325C2D1FE4A800CA9EDF /* Shared */,
 				49EDF1372CF58548003C1176 /* Solar Lens Watch App.entitlements */,
@@ -442,9 +425,6 @@
 			name = "Solar Lens Watch App";
 			packageProductDependencies = (
 				495B2E1F2CB2AE520089AD1B /* KeychainAccess */,
-				497A387D2D53EB43003F4EC4 /* FirebaseAnalytics */,
-				497A387F2D53EB51003F4EC4 /* FirebaseCrashlytics */,
-				497A38812D53EB60003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport */,
 			);
 			productName = "SolarManagerWatch Watch App";
 			productReference = 494882B52CA8443300C59146 /* Solar Lens Watch App.app */;
@@ -497,9 +477,6 @@
 			name = "Solar Lens";
 			packageProductDependencies = (
 				49892CF72D24431700478C91 /* KeychainAccess */,
-				497A38772D53E8AE003F4EC4 /* FirebaseAnalytics */,
-				497A38792D53E8AE003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport */,
-				497A387B2D53E8AE003F4EC4 /* FirebaseCrashlytics */,
 			);
 			productName = "Solar Lens iOS";
 			productReference = 49892CE42D243FF100478C91 /* Solar Lens.app */;
@@ -543,7 +520,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */,
-				497A38762D53E8AE003F4EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 494882B02CA8443300C59146 /* Products */;
@@ -570,7 +546,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				497A38742D53E716003F4EC4 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,7 +553,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				497A38752D53E716003F4EC4 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -586,7 +560,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				497A38732D53E716003F4EC4 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,10 +714,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -812,7 +785,7 @@
 				COPY_PHASE_STRIP = YES;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -853,7 +826,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Watch";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = 2.0.2;
+				INFOPLIST_KEY_NSHumanReadableCopyright = 3.0.0;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.marcduerst.SolarManagerWatch;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
@@ -869,6 +842,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -887,6 +861,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 150;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -895,7 +870,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Watch";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = 2.0.2;
+				INFOPLIST_KEY_NSHumanReadableCopyright = 3.0.0;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.marcduerst.SolarManagerWatch;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
@@ -911,6 +886,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -964,6 +940,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 150;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -1025,6 +1002,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1039,8 +1017,9 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS/Solar Lens iOS.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 150;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_PREVIEWS = YES;
@@ -1130,14 +1109,6 @@
 				kind = branch;
 			};
 		};
-		497A38762D53E8AE003F4EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.8.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1150,36 +1121,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
-		};
-		497A38772D53E8AE003F4EC4 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 497A38762D53E8AE003F4EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		497A38792D53E8AE003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 497A38762D53E8AE003F4EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsWithoutAdIdSupport;
-		};
-		497A387B2D53E8AE003F4EC4 /* FirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 497A38762D53E8AE003F4EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCrashlytics;
-		};
-		497A387D2D53EB43003F4EC4 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 497A38762D53E8AE003F4EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		497A387F2D53EB51003F4EC4 /* FirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 497A38762D53E8AE003F4EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCrashlytics;
-		};
-		497A38812D53EB60003F4EC4 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 497A38762D53E8AE003F4EC4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsWithoutAdIdSupport;
 		};
 		49892CF72D24431700478C91 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
