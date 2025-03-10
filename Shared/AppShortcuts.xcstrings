@@ -76,9 +76,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Définissez le mode de charge sur ${chargingMode} dans ${applicationName}",
+              "Définir le mode de charge sur ${chargingMode} dans ${applicationName}",
               "Définir le mode de charge dans ${applicationName}",
-              "Changer le mode de charge en ${chargingMode} dans ${applicationName}",
+              "Changer le mode de charge sur ${chargingMode} dans ${applicationName}",
               "Changer le mode de charge dans ${applicationName}"
             ]
           }
@@ -124,7 +124,7 @@
             "values" : [
               "Afficher le niveau de la batterie dans ${applicationName}",
               "Afficher le niveau actuel de la batterie dans ${applicationName}",
-              "Quel est le niveau actuel de la batterie de ma maison à ${applicationName}"
+              "Quel est le niveau actuel de la batterie de ma maison dans ${applicationName}"
             ]
           }
         },
@@ -169,7 +169,7 @@
             "values" : [
               "Afficher la consommation d'énergie dans ${applicationName}",
               "Afficher la consommation d'énergie actuelle dans ${applicationName}",
-              "Quelle est la consommation électrique actuelle de ma maison à ${applicationName}"
+              "Quelle est la consommation électrique actuelle de ma maison dans ${applicationName}"
             ]
           }
         },
@@ -255,7 +255,7 @@
             "values" : [
               "Afficher la production solaire dans ${applicationName}",
               "Afficher la production solaire actuelle dans ${applicationName}",
-              "Quelle est la quantité d'énergie produite par ma maison en ${applicationName}"
+              "Quelle est la quantité d'énergie produite par ma maison dans ${applicationName}"
             ]
           }
         },
