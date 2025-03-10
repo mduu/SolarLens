@@ -276,6 +276,10 @@ class Device: Identifiable {
         self.signal = signal
         self.hasError = hasError
     }
+    
+    func hasPower() -> Bool {
+        return currentPowerInWatts > 10 || currentPowerInWatts < -10
+    }
 }
 
 extension Device {

@@ -863,9 +863,6 @@
         }
       }
     },
-    "Hello, World!" : {
-
-    },
     "Here is how:" : {
       "localizations" : {
         "de" : {

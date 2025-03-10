@@ -15,8 +15,10 @@ struct ConsumptionPageView: View {
             .edgesIgnoringSafeArea(.all)
             
             VStack {
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                DeviceListView(devices: buildingModel.overviewData.devices)
             } // :VStack
+            .padding(.leading, 2)
+            .padding(.trailing, 10)
         } // :ZStack
     }
 }
