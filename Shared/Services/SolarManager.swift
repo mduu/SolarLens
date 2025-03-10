@@ -6,10 +6,10 @@ actor SolarManager: EnergyManager {
         if _instance == nil {
             _instance = SolarManager()
         }
-        
+
         return _instance!
     }
-    
+
     private var expireAt: Date?
     private var accessClaims: [String]?
     private var solarManagerApi = SolarManagerApi()
@@ -32,14 +32,14 @@ actor SolarManager: EnergyManager {
         async let streamSensorInfosResult =
             try await solarManagerApi.getV1StreamGateway(
                 solarManagerId: systemInformation!.sm_id)
-        
+
         async let todayGatewayStatisticsRsult =
             try await solarManagerApi.getV1Statistics(
                 solarManagerId: systemInformation!.sm_id,
                 from: Date.todayStartOfDay(),
                 to: Date.todayEndOfDay(),
                 accuracy: .high)
-        
+
         guard systemInformation != nil else {
             return lastOverviewData ?? OverviewData.empty()
         }
@@ -107,8 +107,29 @@ actor SolarManager: EnergyManager {
                                 currentPower: streamInfo?.currentPower ?? 0,
                                 signal: $0.signal)
                         },
+                devices: sensorInfos == nil
+                    ? []
+                    : sensorInfos!
+                        .filter { $0.isDevice() }
+                        .map {
+                            let id = $0._id
+                            let streamInfo = streamSensorInfos?.devices.first {
+                                $0._id == id
+                            }
+
+                            return Device.init(
+                                id: $0._id,
+                                deviceType: Device.mapStringToDeviceType(stringValue: $0.type),
+                                name: $0.tag?.name ?? $0.device_group,
+                                priority: $0.priority,
+                                currentPowerInWatts: streamInfo?.currentPower ?? 0,
+                                color: $0.tag?.color,
+                                signal: $0.signal,
+                                hasError: $0.errorCodes.count == 0)
+                        },
                 todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
-                todaySelfConsumptionRate: todayGatewayStatistics?.selfConsumptionRate,
+                todaySelfConsumptionRate: todayGatewayStatistics?
+                    .selfConsumptionRate,
                 todayProduction: todayGatewayStatistics?.production,
                 todayConsumption: todayGatewayStatistics?.consumption
             )
@@ -116,7 +137,7 @@ actor SolarManager: EnergyManager {
 
         let errorOverviewData =
             lastOverviewData
-        ?? OverviewData.empty()
+            ?? OverviewData.empty()
 
         errorOverviewData.hasConnectionError = true
 
@@ -203,32 +224,36 @@ actor SolarManager: EnergyManager {
         )
 
     }
-    
-    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
+
+    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData
+    {
         try await ensureSmId()
-        
+
         print("Fetching gateway consumptions&productions ...")
-        
+
         let consumptions = try await solarManagerApi.getV1GatewayConsumption(
             solarManagerId: systemInformation!.sm_id,
             from: from,
             to: to)
-        
+
         print("Fetched gateway consumptions&productions.")
-        
+
         return ConsumptionData(
-            from: RestDateHelper.date(from: consumptions?.from)?.convertFromUTCToLocalTime(),
-            to: RestDateHelper.date(from: consumptions?.to)?.convertFromUTCToLocalTime(),
+            from: RestDateHelper.date(from: consumptions?.from)?
+                .convertFromUTCToLocalTime(),
+            to: RestDateHelper.date(from: consumptions?.to)?
+                .convertFromUTCToLocalTime(),
             interval: consumptions?.interval ?? 300,
             data: consumptions?.data
                 .map {
                     ConsumptionItem.init(
-                        date: RestDateHelper.date(from:$0.date)?.convertFromUTCToLocalTime() ?? Date(),
+                        date: RestDateHelper.date(from: $0.date)?
+                            .convertFromUTCToLocalTime() ?? Date(),
                         consumptionWatts: $0.cW,
                         productionWatts: $0.pW
                     )
                 }
-            ?? [])
+                ?? [])
     }
 
     func setCarChargingMode(
@@ -366,7 +391,7 @@ actor SolarManager: EnergyManager {
         return
             sensorInfos != nil
             ? sensorInfos!.filter {
-                $0.type == "Car Charging" && $0.device_type == "device"
+                $0.type == "Car Charging" && $0.device_type == .device
             }
             .map { $0._id }
             : []

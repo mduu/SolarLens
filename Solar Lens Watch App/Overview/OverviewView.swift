@@ -124,6 +124,9 @@ struct OverviewView: View {
                                 isAnyCarCharging: model.overviewData
                                     .isAnyCarCharing
                             )
+                            .onTapGesture {
+                                model.setMainTab(newTab: .consumption)
+                            }
                         }
                     }  // :Grid
                     .padding(.top, 10)
@@ -235,7 +238,8 @@ struct OverviewView: View {
                     lastUpdated: Date(),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: true,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 )
             )
         )
@@ -259,7 +263,8 @@ struct OverviewView: View {
                         byAdding: .minute, value: -40, to: Date()),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: false,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 )
             )
         )
@@ -282,7 +287,8 @@ struct OverviewView: View {
                     lastUpdated: Date(),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: true,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 ),
                 isLoading: true
             )
@@ -306,7 +312,8 @@ struct OverviewView: View {
                     lastUpdated: Date(),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: true,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 )
             )
         )

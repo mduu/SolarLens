@@ -182,6 +182,7 @@
 				Services/SolarManagerApi/DTOs/SensorConnectionStatus.swift,
 				Services/SolarManagerApi/DTOs/SensorConsumptionV1Response.swift,
 				Services/SolarManagerApi/DTOs/SensorInfosV1Response.swift,
+				Services/SolarManagerApi/DTOs/SensorType.swift,
 				Services/SolarManagerApi/DTOs/StatisticsV1Response.swift,
 				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
 				Services/SolarManagerApi/SolarManagerApiClient.swift,

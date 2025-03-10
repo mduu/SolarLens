@@ -388,7 +388,8 @@ struct ChargingOptionsPopupView: View {
                 lastUpdated: Date(),
                 lastSuccessServerFetch: Date(),
                 isAnyCarCharing: true,
-                chargingStations: []
+                chargingStations: [],
+                devices: []
             )
         )
     )
@@ -420,7 +421,8 @@ struct ChargingOptionsPopupView: View {
                 lastUpdated: Date(),
                 lastSuccessServerFetch: Date(),
                 isAnyCarCharing: true,
-                chargingStations: []
+                chargingStations: [],
+                devices: []
             )
         )
     )
@@ -452,7 +454,8 @@ struct ChargingOptionsPopupView: View {
                 lastUpdated: Date(),
                 lastSuccessServerFetch: Date(),
                 isAnyCarCharing: true,
-                chargingStations: []
+                chargingStations: [],
+                devices: []
             )
         )
     )

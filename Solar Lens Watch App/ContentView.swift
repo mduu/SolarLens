@@ -146,7 +146,8 @@ struct ContentView: View {
                     lastUpdated: Date(),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: true,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 ))
         )
 }

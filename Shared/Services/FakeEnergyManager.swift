@@ -33,7 +33,8 @@ class FakeEnergyManager: EnergyManager {
                 lastUpdated: Date(),
                 lastSuccessServerFetch: Date(),
                 isAnyCarCharing: false,
-                chargingStations: [])
+                chargingStations: [],
+                devices: [])
     }
 
     func fetchOverviewData(lastOverviewData: OverviewData?) -> OverviewData {

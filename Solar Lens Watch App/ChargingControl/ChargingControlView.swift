@@ -121,7 +121,8 @@ struct ChargingControlView: View {
                             priority: 1,
                             currentPower: 0,
                             signal: SensorConnectionStatus.connected)
-                    ]
+                    ],
+                    devices: []
                 )
             ))
 }

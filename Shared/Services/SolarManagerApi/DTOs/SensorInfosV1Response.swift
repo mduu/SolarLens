@@ -1,7 +1,7 @@
 struct SensorInfosV1Response : Codable {
     var _id: String
-    var device_type: String // device, smart-meter, inverter
-    var type: String // Battery, Smart Meter, Car Charging, Inverter
+    var device_type: SensorType // device, smart-meter, inverter
+    var type: String // Battery, Car Charging, Energy Measurement
     var device_group: String // Name of the device
     var priority: Int
     var signal: SensorConnectionStatus
@@ -16,14 +16,19 @@ struct SensorInfosV1Response : Codable {
     //var strings: []
     
     func isCarCharging() -> Bool {
-        return device_type == "device" && type == "Car Charging"
+        return isDevice() && type == "Car Charging"
     }
     
     func isBattery() -> Bool {
-        return device_type == "device" && type == "Battery"
+        return isDevice() && type == "Battery"
+    }
+    
+    func isDevice() -> Bool {
+        return device_type == .device
     }
 }
 
 struct SensorInfosV1Tag: Codable {
     var name: String
+    var color: String?
 }
