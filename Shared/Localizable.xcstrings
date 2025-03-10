@@ -168,7 +168,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une erreur de connexion s'est produite!"
+            "value" : "Une erreur de connexion s'est produite !"
           }
         },
         "it" : {
@@ -190,7 +190,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une erreur générale s'est produite!"
+            "value" : "Une erreur générale s'est produite !"
           }
         },
         "it" : {
@@ -443,8 +443,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez le mode de charge :"
+            "state" : "translated", 
+            "value" : "Choisir le mode de charge :"
           }
         },
         "it" : {
@@ -632,7 +632,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adresse e-mail"
+            "value" : "Adresse email"
           }
         },
         "it" : {
@@ -808,7 +808,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Obtenez la production solaire actuelle"
+            "value" : "Obtenir la production solaire actuelle"
           }
         },
         "it" : {
@@ -830,7 +830,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Obtenez le niveau actuel de la batterie en pourcentage"
+            "value" : "Obtenir le niveau actuel de la batterie en pourcentage"
           }
         },
         "it" : {
@@ -902,7 +902,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adresse e-mail invalide"
+            "value" : "Adresse email invalide"
           }
         },
         "it" : {
@@ -952,7 +952,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Est-ce qu'une voiture est en charge?"
+            "value" : "Est-ce qu'une voiture est en charge ?"
           }
         },
         "it" : {
@@ -1058,7 +1058,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistré comme"
+            "value" : "Connecté comme"
           }
         },
         "it" : {
@@ -1114,7 +1114,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connexion échouée!"
+            "value" : "Connexion échouée !"
           }
         },
         "it" : {
@@ -1352,7 +1352,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvrir la lentille solaire"
+            "value" : "Ouvrir Solar-Lens"
           }
         }
       },
@@ -1431,7 +1431,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Veuillez saisir une adresse e-mail valide"
+            "value" : "Saisir une adresse e-mail valide."
           }
         },
         "it" : {
@@ -1459,7 +1459,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Veuillez saisir un mot de passe valide"
+            "value" : "Saisir un mot de passe valide."
           }
         },
         "it" : {
@@ -1603,7 +1603,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionnez la date cible"
+            "value" : "Sélectionner la date cible"
           }
         },
         "it" : {
@@ -1631,7 +1631,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionnez l'heure cible"
+            "value" : "Sélectionner l'heure cible"
           }
         },
         "it" : {
@@ -1714,7 +1714,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ensemble"
+            "value" : "Configurer"
           }
         },
         "it" : {
@@ -2047,7 +2047,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Merci! 💖"
+            "value" : "Merci ! 💖"
           }
         },
         "it" : {
@@ -2276,7 +2276,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utilisez l'application App-Store sur votre iPhone et recherchez “Solar Lens”."
+            "value" : "Utiliser l'application AppStore sur votre iPhone et rechercher “Solar Lens”."
           }
         },
         "it" : {
