@@ -5,15 +5,14 @@ struct DeviceListView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            
+
             Text("Devices")
                 .font(.headline)
                 .foregroundColor(.cyan)
-            
-            ScrollView {
-                ForEach(devices.sorted(by: {$0.priority < $1.priority})) { device in
-                    DeviceItemView(device: device)
-                }
+
+            ForEach(devices.sorted(by: { $0.priority < $1.priority })) {
+                device in
+                DeviceItemView(device: device)
             }
         }
     }

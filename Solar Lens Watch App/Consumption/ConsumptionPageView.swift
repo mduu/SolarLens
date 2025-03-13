@@ -15,22 +15,26 @@ struct ConsumptionPageView: View {
             )
             .edgesIgnoringSafeArea(.all)
 
-            VStack {
-                
-                ConsumptionTodayInfoView(
-                    totalConsumpedToday: buildingModel.overviewData
-                        .todayConsumption,
-                    currentConsumption: buildingModel.overviewData
-                        .currentOverallConsumption)
-                
-                Divider()
+            ScrollView {
 
-                DeviceListView(
-                    devices: buildingModel.overviewData.devices)
-                
-            }  // :VStack
-            .padding(.leading, 2)
-            .padding(.trailing, 10)
+                VStack {
+
+                    ConsumptionTodayInfoView(
+                        totalConsumpedToday: buildingModel.overviewData
+                            .todayConsumption,
+                        currentConsumption: buildingModel.overviewData
+                            .currentOverallConsumption)
+
+                    Divider()
+
+                    DeviceListView(
+                        devices: buildingModel.overviewData.devices)
+
+                }  // :VStack
+                .padding(.leading, 2)
+                .padding(.trailing, 10)
+
+            }  // :ScrollView
         }  // :ZStack
     }
 }
