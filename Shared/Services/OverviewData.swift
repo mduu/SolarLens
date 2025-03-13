@@ -89,7 +89,7 @@ class OverviewData {
             devices: [
                 Device.init(
                     id: "42",
-                    deviceType: .CarCharging,
+                    deviceType: .carCharging,
                     name: "Keba 1",
                     priority: 1,
                     currentPowerInWatts: 11356,
@@ -98,7 +98,7 @@ class OverviewData {
                     hasError: false),
                 Device.init(
                     id: "43",
-                    deviceType: .CarCharging,
+                    deviceType: .carCharging,
                     name: "Keba 2",
                     priority: 3,
                     currentPowerInWatts: 0,
@@ -107,7 +107,7 @@ class OverviewData {
                     hasError: false),
                 Device.init(
                     id: "44",
-                    deviceType: .CarCharging,
+                    deviceType: .carCharging,
                     name: "Keba 3",
                     priority: 4,
                     currentPowerInWatts: 0,
@@ -116,7 +116,7 @@ class OverviewData {
                     hasError: true),
                 Device.init(
                     id: "10",
-                    deviceType: .Battery,
+                    deviceType: .battery,
                     name: "Main Bat.",
                     priority: 2,
                     currentPowerInWatts: 0,
@@ -125,7 +125,7 @@ class OverviewData {
                     hasError: false),
                 Device.init(
                     id: "20",
-                    deviceType: .EnergyMeasurement,
+                    deviceType: .energyMeasurement,
                     name: "Home-Office",
                     priority: 5,
                     currentPowerInWatts: 12,
@@ -293,11 +293,11 @@ extension Device {
 
         switch value {
         case "energy measurement":
-            return .EnergyMeasurement
+            return .energyMeasurement
         case "battery":
-            return .Battery
+            return .battery
         case "car charging":
-            return .CarCharging
+            return .carCharging
         default:
             return .other
         }
@@ -306,8 +306,8 @@ extension Device {
 }
 
 public enum DeviceType {
-    case CarCharging
-    case Battery
-    case EnergyMeasurement
+    case carCharging
+    case battery
+    case energyMeasurement
     case other
 }

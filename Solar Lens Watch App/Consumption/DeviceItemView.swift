@@ -5,36 +5,46 @@ struct DeviceItemView: View {
 
     var body: some View {
         HStack {
-            VStack {
+            VStack(alignment: .center) {
+                DeviceIconView(device: device)
+            }
+            .frame(minWidth: 30)
+            .frame(maxWidth: 30)
+            .frame(width: 30)
+            .scaledToFit()
+
+            VStack(alignment: .leading) {
                 HStack {
                     Text(device.name).foregroundColor(.primary)
-                    
+
                     Spacer()
                 }  // :HStack
-                
+
                 HStack {
-                    if device.hasPower() {
-                        Text(
-                            String(
-                                format: "%.2f kW",
-                                Double(device.currentPowerInWatts) / 1000)
-                        )
+                    let text =
+                        device.hasPower()
+                        ? String(
+                            format: "%.2f kW",
+                            Double(device.currentPowerInWatts) / 1000)
+                        : ""
+                    
+                    Text(text)
                         .foregroundColor(.cyan)
                         .font(.footnote)
-                    }
-                    
+
                     Spacer()
                 }
-                
+
             }  // :VStack
-            
+            .padding(.trailing, 4)
+
             Button(action: {
                 // TODO Add action code
             }) {
                 Image(
                     systemName: device.priority > 1
-                    ? "arrow.up.circle"
-                    : "arrow.down.circle"
+                        ? "arrow.up.circle"
+                        : "arrow.down.circle"
                 )
                 .resizable()
                 .scaledToFit()
@@ -43,8 +53,8 @@ struct DeviceItemView: View {
             .buttonStyle(.borderless)
             .buttonBorderShape(.circle)
             .foregroundColor(.primary)
-            
-        } // :HStack
+
+        }  // :HStack
         .frame(minHeight: 50)
         .padding(3)
         .background(
@@ -59,7 +69,7 @@ struct DeviceItemView: View {
         DeviceItemView(
             device: .init(
                 id: "1",
-                deviceType: .Battery,
+                deviceType: .battery,
                 name: "Battery",
                 priority: 1,
                 currentPowerInWatts: -540)
@@ -73,8 +83,8 @@ struct DeviceItemView: View {
         DeviceItemView(
             device: .init(
                 id: "2",
-                deviceType: .Battery,
-                name: "Battery",
+                deviceType: .other,
+                name: "Some device",
                 priority: 2,
                 currentPowerInWatts: 0)
         )

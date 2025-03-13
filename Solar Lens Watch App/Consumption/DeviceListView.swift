@@ -22,13 +22,13 @@ struct DeviceListView: View {
     DeviceListView(
         devices: [
             Device.init(
-                id: "1", deviceType: .Battery, name: "Battery", priority: 1,
+                id: "1", deviceType: .battery, name: "Battery", priority: 1,
                 currentPowerInWatts: 4500),
             Device.init(
-                id: "2", deviceType: .CarCharging, name: "Charging #1",
+                id: "2", deviceType: .carCharging, name: "Charging #1",
                 priority: 2),
             Device.init(
-                id: "3", deviceType: .EnergyMeasurement, name: "Home-Office",
+                id: "3", deviceType: .energyMeasurement, name: "Home-Office",
                 priority: 3),
         ]
     )
