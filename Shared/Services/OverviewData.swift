@@ -132,7 +132,9 @@ class OverviewData {
                     color: "#aaff06",
                     signal: SensorConnectionStatus.connected,
                     hasError: false)
-            ]
+            ],
+            todayProduction: 23393,
+            todayConsumption: 4300
         )
     }
 

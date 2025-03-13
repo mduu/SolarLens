@@ -615,6 +615,9 @@
         }
       }
     },
+    "Devices" : {
+
+    },
     "Email" : {
       "localizations" : {
         "de" : {
