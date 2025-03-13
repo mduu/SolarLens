@@ -16,7 +16,7 @@ struct LoginView: View {
                 .shadow(radius: 5)
                 .padding()
 
-            Text("Solar Lens")
+            Text(verbatim: "Solar Lens")
                 .font(.largeTitle)
                 .foregroundColor(.accent)
 
