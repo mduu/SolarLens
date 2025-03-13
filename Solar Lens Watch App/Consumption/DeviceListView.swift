@@ -6,9 +6,17 @@ struct DeviceListView: View {
     var body: some View {
         VStack(alignment: .leading) {
 
-            Text("Devices")
-                .font(.headline)
-                .foregroundColor(.cyan)
+            HStack {
+                Text("Devices")
+                    .font(.headline)
+                    .foregroundColor(.cyan)
+
+                Spacer()
+
+                Text("Prio.")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+            }
 
             ForEach(devices.sorted(by: { $0.priority < $1.priority })) {
                 device in
