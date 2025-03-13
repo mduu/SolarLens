@@ -13,11 +13,11 @@ struct AppLogo: View {
 
             VStack(alignment: .leading) {
 
-                Text("Solar")
+                Text(verbatim: "Solar")
                     .foregroundColor(.accent)
                     .font(.system(size: 24, weight: .bold))
 
-                Text("Lens")
+                Text(verbatim: "Lens")
                     .foregroundColor(
                         colorScheme == .light ? .black : .white
                     )

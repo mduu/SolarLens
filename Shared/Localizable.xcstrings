@@ -443,7 +443,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated", 
+            "state" : "translated",
             "value" : "Choisir le mode de charge :"
           }
         },
@@ -1014,9 +1014,6 @@
       }
     },
     "kWh" : {
-      "shouldTranslate" : false
-    },
-    "Lens" : {
       "shouldTranslate" : false
     },
     "Log out" : {
@@ -1840,23 +1837,6 @@
           }
         }
       }
-    },
-    "Solar Lens" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solar Lens"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solar Lens"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "Solar Manger Login" : {
       "localizations" : {
