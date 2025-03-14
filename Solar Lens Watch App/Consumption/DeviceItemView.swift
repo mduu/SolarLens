@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DeviceItemView: View {
     var device: Device
+    var onSetNewPriority: (_ deviceId: String, _ newPriority: Int) -> Void
 
     var body: some View {
         HStack {
@@ -27,7 +28,7 @@ struct DeviceItemView: View {
                             format: "%.2f kW",
                             Double(device.currentPowerInWatts) / 1000)
                         : ""
-                    
+
                     Text(text)
                         .foregroundColor(.cyan)
                         .font(.footnote)
@@ -39,7 +40,13 @@ struct DeviceItemView: View {
             .padding(.trailing, 4)
 
             Button(action: {
-                // TODO Add action code
+                let newPriortiy =
+                    device.priority == 1
+                    ? device.priority + 1
+                    : device.priority - 1
+
+                onSetNewPriority(device.id, newPriortiy)
+
             }) {
                 Image(
                     systemName: device.priority > 1
@@ -73,7 +80,8 @@ struct DeviceItemView: View {
                 name: "Battery",
                 priority: 1,
                 currentPowerInWatts: -540)
-        )
+        ) { deviceId, newPriority in
+        }
     }.background(Color.cyan.opacity(0.1))
         .frame(maxHeight: 60)
 }
@@ -87,7 +95,8 @@ struct DeviceItemView: View {
                 name: "Some device",
                 priority: 2,
                 currentPowerInWatts: 0)
-        )
+        ) { deviceId, newPriority in
+        }
     }.background(Color.cyan.opacity(0.1))
         .frame(maxHeight: 60)
 }

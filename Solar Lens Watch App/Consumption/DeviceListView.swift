@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DeviceListView: View {
     var devices: [Device]
+    var onSetNewPriority: (_ deviceId: String, _ newPriority: Int) -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,7 +21,9 @@ struct DeviceListView: View {
 
             ForEach(devices.sorted(by: { $0.priority < $1.priority })) {
                 device in
-                DeviceItemView(device: device)
+                DeviceItemView(device: device) { deviceId, newPriority in
+                    self.onSetNewPriority(deviceId, newPriority)
+                }
             }
         }
     }
@@ -39,5 +42,6 @@ struct DeviceListView: View {
                 id: "3", deviceType: .energyMeasurement, name: "Home-Office",
                 priority: 3),
         ]
-    )
+    ) { deviceId, newPriority in
+    }
 }

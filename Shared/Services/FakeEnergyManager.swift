@@ -65,4 +65,10 @@ class FakeEnergyManager: EnergyManager {
         print("setCarChargingMode: \(carCharging)")
         return true
     }
+    
+    func setSensorPriority(sensorId: String, priority: Int) async throws -> Bool {
+        print("setSensorPriority: Sensor=\(sensorId), New Prio=\(priority)")
+        return true
+    }
+
 }

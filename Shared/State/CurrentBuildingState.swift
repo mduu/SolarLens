@@ -12,6 +12,8 @@ class CurrentBuildingState {
     var overviewData: OverviewData = .init()
     var isChangingCarCharger: Bool = false
     var carChargerSetSuccessfully: Bool? = nil
+    var isChangingSensorPriority: Bool = false
+    var sensorPrioritySetSuccessfully: Bool? = nil
     var fetchingIsPaused: Bool = false
     var chargingInfos: CharingInfoData?
 
@@ -147,6 +149,39 @@ class CurrentBuildingState {
             AppStoreReviewManager.shared.setChargingModeSetAtLeastOnce()
         } catch {
             carChargerSetSuccessfully = false
+        }
+    }
+    
+    func setSensorPriority(sensorId: String, newPriority: Int) async {
+        guard loginCredentialsExists && !isChangingSensorPriority
+        else {
+            print("WARN: Login-Credentials don't exists or is loading already")
+            return
+        }
+        
+        isChangingSensorPriority = true
+        defer {
+            isChangingSensorPriority = false
+        }
+        
+        do {
+
+            resetError()
+
+            print("\(Date()): Set sensor \(sensorId) to priority \(newPriority)")
+
+            let result = try await energyManager.setSensorPriority(
+                sensorId: sensorId,
+                priority: newPriority)
+
+            print("\(Date()): Sensor \(sensorId) priority se to \(newPriority).")
+
+            await fetchServerData()
+
+            sensorPrioritySetSuccessfully = true
+            AppStoreReviewManager.shared.setChargingModeSetAtLeastOnce()
+        } catch {
+            sensorPrioritySetSuccessfully = false
         }
     }
 

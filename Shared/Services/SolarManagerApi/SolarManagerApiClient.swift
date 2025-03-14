@@ -129,15 +129,19 @@ class SolarManagerApi: RestClient {
 
         return response
     }
-    
-    func getV1GatewayConsumption(solarManagerId smId: String, from: Date, to: Date) async throws
+
+    func getV1GatewayConsumption(
+        solarManagerId smId: String, from: Date, to: Date
+    ) async throws
         -> GatewayIntervalConsumption?
     {
         let fromIso = RestDateHelper.string(from: from)
         let toIso = RestDateHelper.string(from: to)
 
         let response: GatewayIntervalConsumption? = try await get(
-            serviceUrl: "/v1/consumption/gateway/\(smId)/range?from=\(fromIso)&to=\(toIso)&interval=300")
+            serviceUrl:
+                "/v1/consumption/gateway/\(smId)/range?from=\(fromIso)&to=\(toIso)&interval=300"
+        )
 
         return response
     }
@@ -148,6 +152,16 @@ class SolarManagerApi: RestClient {
         var _: NoContentResponse? = try await put(
             serviceUrl: "/v1/control/car-charger/\(sensorId)",
             requestBody: control)
+
+        return
+    }
+
+    func putConfigurationSensorPriority(
+        sensorId: String, priority: PutSensorPriorityRequest
+    ) async throws {
+        var _: NoContentResponse? = try await put(
+            serviceUrl: "/v1/configure/sensor-priority/\(sensorId)",
+            requestBody: priority)
 
         return
     }

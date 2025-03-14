@@ -275,6 +275,24 @@ actor SolarManager: EnergyManager {
             return false
         }
     }
+    
+    func setSensorPriority(
+        sensorId: String,
+        priority: Int
+    ) async throws -> Bool {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        do {
+            try await solarManagerApi.putConfigurationSensorPriority(
+                sensorId: sensorId,
+                priority: .init(priority: priority))
+            return true
+        } catch {
+            return false
+        }
+    }
 
     private func ensureLoggedIn() async throws {
         let accessToken = KeychainHelper.accessToken

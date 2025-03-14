@@ -177,6 +177,7 @@
 				Services/SolarManagerApi/DTOs/LoginResponse.swift,
 				Services/SolarManagerApi/DTOs/NoContentResponse.swift,
 				Services/SolarManagerApi/DTOs/Period.swift,
+				Services/SolarManagerApi/DTOs/PutSensorPriorityRequest.swift,
 				Services/SolarManagerApi/DTOs/RefreshRequest.swift,
 				Services/SolarManagerApi/DTOs/RefreshResponse.swift,
 				Services/SolarManagerApi/DTOs/SensorConnectionStatus.swift,
