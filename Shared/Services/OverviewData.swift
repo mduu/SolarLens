@@ -282,6 +282,10 @@ class Device: Identifiable {
     func hasPower() -> Bool {
         return currentPowerInWatts > 10 || currentPowerInWatts < -10
     }
+    
+    func isConsumingDevice() -> Bool {
+        return deviceType != .battery
+    }
 }
 
 extension Device {

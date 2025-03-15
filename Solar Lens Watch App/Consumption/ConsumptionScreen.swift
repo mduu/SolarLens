@@ -73,17 +73,18 @@ struct ConsumptionScreen: View {
             }
         }
         .sheet(isPresented: $showDetail) {
-            ConsumptionDetailSheet()
-                .scrollDisabled(true)
-                .scrollClipDisabled()
-                .scrollIndicators(.never)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Text("Consumption")
-                            .foregroundColor(.cyan)
-                            .font(.headline)
-                    }  // :ToolbarItem
-                }  // :.toolbar
+            ConsumptionDetailSheet(
+                totalCurrentConsumptionInWatt: buildingState.overviewData
+                    .currentOverallConsumption,
+                devices: buildingState.overviewData.devices
+            )
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Text("Consumption")
+                        .foregroundColor(.cyan)
+                        .font(.headline)
+                }  // :ToolbarItem
+            }  // :.toolbar
         }
     }
 }
