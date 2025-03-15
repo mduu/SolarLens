@@ -596,6 +596,9 @@
         }
       }
     },
+    "Current consumption" : {
+
+    },
     "Current solar production is %@ kilowatts" : {
       "localizations" : {
         "de" : {
@@ -2278,6 +2281,9 @@
     },
     "v%@" : {
       "shouldTranslate" : false
+    },
+    "Watts" : {
+
     },
     "Your feedback matters! Please consider rating us. Your support helps us improve." : {
       "localizations" : {

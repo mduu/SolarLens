@@ -15,19 +15,26 @@ struct ConsumptionPieChart: View {
     var body: some View {
         let allConsumptions: [DeviceConsumption] = getAllConsumptions()
 
-        Chart {
+        Chart(allConsumptions, id: \.id) { device in
 
             // Draw filled, semi-transparent sectors
-            ForEach(allConsumptions) { device in
-                SectorMark(
-                    angle: .value("Watts", device.consumptionInWatt),
-                    innerRadius: .ratio(0.5),
-                    angularInset: 1.0  // Increased inset creates a border effect
-                )
-                .foregroundStyle(.cyan.opacity(0.4))
+            SectorMark(
+                angle: .value("Watts", device.consumptionInWatt),
+                innerRadius: .ratio(0.5),
+                angularInset: 2.0  // Increased inset creates a border effect
+            )
+            .cornerRadius(5)
+            .annotation(position: .overlay) {
+                Text("\(Int(device.consumptionInWatt))W")
+                    .font(.caption)
+                    .foregroundColor(.primary)
             }
+            .foregroundStyle(
+                (Color.init(rgbString: device.color) ?? Color.cyan).opacity(0.7)
+            )
 
         }
+        .chartLegend(.visible)
 
     }
 

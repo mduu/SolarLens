@@ -80,7 +80,7 @@ struct ConsumptionScreen: View {
             )
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Text("Consumption")
+                    Text("Current consumption")
                         .foregroundColor(.cyan)
                         .font(.headline)
                 }  // :ToolbarItem
