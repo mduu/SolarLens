@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct ConsumptionPageView: View {
+struct ConsumptionScreen: View {
     @Environment(CurrentBuildingState.self) var buildingState:
         CurrentBuildingState
-    @State private var refreshTimer: Timer?
+    @State private var showDetail: Bool = false
 
     var body: some View {
         ZStack {
@@ -19,15 +19,25 @@ struct ConsumptionPageView: View {
 
                 VStack {
 
-                    ConsumptionTodayInfoView(
-                        totalConsumpedToday: buildingState.overviewData
-                            .todayConsumption,
-                        currentConsumption: buildingState.overviewData
-                            .currentOverallConsumption)
+                    HStack {
+                        ConsumptionTodayInfoView(
+                            totalConsumpedToday: buildingState.overviewData
+                                .todayConsumption,
+                            currentConsumption: buildingState.overviewData
+                                .currentOverallConsumption
+                        )
+                        .frame(maxWidth: .infinity, alignment: .center)
+
+                        RoundChartButton {
+                            showDetail = true
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom, 4)
 
                     Divider()
 
-                    DeviceListView(
+                    DeviceList(
                         devices: buildingState.overviewData.devices
                     ) { deviceId, newPriority in
                         print(
@@ -62,11 +72,24 @@ struct ConsumptionPageView: View {
                 await buildingState.fetchServerData()
             }
         }
+        .sheet(isPresented: $showDetail) {
+            ConsumptionDetailSheet()
+                .scrollDisabled(true)
+                .scrollClipDisabled()
+                .scrollIndicators(.never)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Text("Consumption")
+                            .foregroundColor(.cyan)
+                            .font(.headline)
+                    }  // :ToolbarItem
+                }  // :.toolbar
+        }
     }
 }
 
 #Preview {
-    ConsumptionPageView()
+    ConsumptionScreen()
         .environment(
             CurrentBuildingState.fake()
         )

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DeviceListView: View {
+struct DeviceList: View {
     var devices: [Device]
     var onSetNewPriority: (_ deviceId: String, _ newPriority: Int) -> Void
 
@@ -21,7 +21,7 @@ struct DeviceListView: View {
 
             ForEach(devices.sorted(by: { $0.priority < $1.priority })) {
                 device in
-                DeviceItemView(device: device) { deviceId, newPriority in
+                DeviceRow(device: device) { deviceId, newPriority in
                     self.onSetNewPriority(deviceId, newPriority)
                 }
             }
@@ -30,7 +30,7 @@ struct DeviceListView: View {
 }
 
 #Preview {
-    DeviceListView(
+    DeviceList(
         devices: [
             Device.init(
                 id: "1", deviceType: .battery, name: "Battery", priority: 1,

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DeviceItemView: View {
+struct DeviceRow: View {
     var device: Device
     var onSetNewPriority: (_ deviceId: String, _ newPriority: Int) -> Void
 
@@ -73,7 +73,7 @@ struct DeviceItemView: View {
 
 #Preview("First") {
     VStack {
-        DeviceItemView(
+        DeviceRow(
             device: .init(
                 id: "1",
                 deviceType: .battery,
@@ -88,7 +88,7 @@ struct DeviceItemView: View {
 
 #Preview("Other") {
     VStack {
-        DeviceItemView(
+        DeviceRow(
             device: .init(
                 id: "2",
                 deviceType: .other,
