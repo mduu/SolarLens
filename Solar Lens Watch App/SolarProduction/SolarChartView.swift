@@ -14,8 +14,8 @@ struct SolarChartView: View {
                     if viewModel.consumptionData != nil {
                         
                         SolarChart(
-                            maxProductionkW: $maxProductionkW,
-                            solarProduction: .constant(viewModel.consumptionData!)
+                            maxProductionkW: maxProductionkW,
+                            solarProduction: viewModel.consumptionData!
                         )
                         
                         HStack {
