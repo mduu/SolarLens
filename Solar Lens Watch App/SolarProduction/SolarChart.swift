@@ -9,8 +9,8 @@ struct SolarDataPoint: Identifiable {
 
 struct SolarChart: View {
 
-    @Binding var maxProductionkW: Double
-    @Binding var solarProduction: ConsumptionData
+    var maxProductionkW: Double
+    var solarProduction: ConsumptionData
     var isSmall: Bool = false
     var isAccent: Bool = false
 
