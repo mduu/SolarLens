@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SolarChartView: View {
     @Binding var maxProductionkW: Double
-    @StateObject var viewModel = SolarChartViewModel()
+    @State var viewModel = SolarChartViewModel()
     @State private var refreshTimer: Timer?
 
     var body: some View {
