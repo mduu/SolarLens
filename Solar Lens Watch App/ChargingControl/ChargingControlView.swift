@@ -78,8 +78,6 @@ struct ChargingControlView: View {
                     }  // :VStack
                 }  // :VStack
             }  // :ScrollView
-            .navigationBarTitleDisplayMode(.inline)
-            .scrollContentBackground(.automatic)
 
             if model.isChangingCarCharger {
                 HStack {
