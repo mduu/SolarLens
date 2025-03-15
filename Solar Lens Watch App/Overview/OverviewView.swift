@@ -17,8 +17,10 @@ struct OverviewView: View {
                                 .foregroundColor(Color.red)
                                 .symbolEffect(
                                     .pulse.wholeSymbol,
-                                    options: .repeat(.continuous))
-                                .accessibilityLabel("A connection error occurred!")
+                                    options: .repeat(.continuous)
+                                )
+                                .accessibilityLabel(
+                                    "A connection error occurred!")
                         }
 
                         if model.error != nil {
@@ -26,7 +28,7 @@ struct OverviewView: View {
                                 .foregroundColor(Color.yellow)
                                 .symbolEffect(.breathe.wholeSymbol)
                                 .accessibilityLabel("A general error occurred!")
-  }
+                        }
                     }
 
                     Spacer()
