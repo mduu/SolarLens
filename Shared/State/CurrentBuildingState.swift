@@ -3,7 +3,6 @@ import SwiftUI
 
 @Observable
 class CurrentBuildingState {    
-    var selectedMainTab: MainTab = .overview
     var isLoading = false
     var errorMessage: String?
     var error: EnergyManagerClientError?
@@ -71,22 +70,32 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
     func fetchServerData() async {
         if !loginCredentialsExists || isLoading || fetchingIsPaused {
             return
         }
 
         do {
-            isLoading = true
-            resetError()
+            withTransaction(Transaction(animation: nil)) {
+                isLoading = true
+                resetError()
+            }
 
             print("Fetching server data...")
 
-            overviewData = try await energyManager.fetchOverviewData(
+            let newData = try await energyManager.fetchOverviewData(
                 lastOverviewData: overviewData)
+            
+            withTransaction(Transaction(animation: nil)) {
+                overviewData = newData;
+            }
+            
             print("Server data fetched at \(Date())")
 
-            isLoading = false
+            withTransaction(Transaction(animation: nil)) {
+                isLoading = false
+            }
         } catch {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
@@ -94,6 +103,7 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
     func fetchChargingInfos() async {
         if !loginCredentialsExists || isLoading {
             return
@@ -191,12 +201,6 @@ class CurrentBuildingState {
         resetError()
     }
     
-    func setMainTab(newTab: MainTab) {
-        if selectedMainTab != newTab {
-            selectedMainTab = newTab
-        }
-    }
-    
     func checkForCredentions() {
         updateCredentialsExists()
     }
@@ -213,13 +217,4 @@ class CurrentBuildingState {
         errorMessage = nil
         error = nil
     }
-}
-
-enum MainTab: Int, CaseIterable, Identifiable {
-    case overview = 0
-    case charging = 1
-    case solarProduction = 2
-    case consumption = 3
-    
-    var id: Self { self }
 }

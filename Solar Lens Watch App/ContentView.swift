@@ -1,17 +1,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(CurrentBuildingState.self) var viewModel: CurrentBuildingState
+    @Environment(CurrentBuildingState.self) var viewModel
+    @Environment(NavigationState.self) var navigationState
     @State var showAppRateRequest = AppStoreReviewManager.shared
         .checkAndRequestReview()
     @State private var loginCredentialsCheckTimer: Timer?
 
     var body: some View {
-
-        let mainTab = Binding<MainTab>(
-            get: { viewModel.selectedMainTab },
-            set: { viewModel.selectedMainTab = $0 }
-        )
 
         if !viewModel.loginCredentialsExists {
             LoginView()
@@ -34,7 +30,12 @@ struct ContentView: View {
         } else if viewModel.loginCredentialsExists {
 
             NavigationView {
-                TabView(selection: mainTab) {
+                TabView(
+                    selection: Binding(
+                        get: { navigationState.selectedTab },
+                        set: { navigationState.selectedTab = $0 }
+                    )
+                ) {
                     OverviewView()
                         .onTapGesture {
                             print("Force refresh")
@@ -42,7 +43,7 @@ struct ContentView: View {
                                 await viewModel.fetchServerData()
                             }
                         }
-                        .tag(MainTab.overview)
+                        .tag(0)
 
                     if viewModel.overviewData.hasAnyCarChargingStation {
                         ChargingControlView()
@@ -59,7 +60,7 @@ struct ContentView: View {
                                     }  // :HStack
                                 }  // :ToolbarItem
                             }  // :.toolbar
-                            .tag(MainTab.charging)
+                            .tag(1)
                     }
 
                     SolarDetailsView()
@@ -76,9 +77,9 @@ struct ContentView: View {
                                 }  // :HStack
                             }  // :ToolbarItem
                         }  // :.toolbar
-                        .tag(MainTab.solarProduction)
-                    
-                    ConsumptionPageView()
+                        .tag(2)
+
+                    ConsumptionScreen()
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 HStack {
@@ -92,7 +93,7 @@ struct ContentView: View {
                                 }  // :HStack
                             }  // :ToolbarItem
                         }  // :.toolbar
-                        .tag(MainTab.consumption)
+                        .tag(3)
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
@@ -111,7 +112,7 @@ struct ContentView: View {
                 .background(Color.black.opacity(0.7))
         }
     }
-    
+
     func disableLoginCredentialsCheckTimer() {
         loginCredentialsCheckTimer?.invalidate()
         loginCredentialsCheckTimer = nil
@@ -120,7 +121,7 @@ struct ContentView: View {
 
     fileprivate func HomeButton() -> some View {
         return Button {
-            viewModel.setMainTab(newTab: .overview)
+            navigationState.navigate(to: .overview)
         } label: {
             Image(systemName: "chevron.up")
         }
@@ -154,7 +155,8 @@ struct ContentView: View {
 
 #Preview("Login Form") {
     ContentView()
-        .environment(CurrentBuildingState.fake(
-            loggedIn: false
-        ))
+        .environment(
+            CurrentBuildingState.fake(
+                loggedIn: false
+            ))
 }

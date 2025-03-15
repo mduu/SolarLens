@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OverviewView: View {
     @Environment(CurrentBuildingState.self) private var model
+    @Environment(NavigationState.self) private var navigationState
 
     @State private var refreshTimer: Timer?
     @State private var showSettings: Bool = false
@@ -44,7 +45,7 @@ struct OverviewView: View {
                                     .solarProductionMax
                             )
                             .onTapGesture {
-                                model.setMainTab(newTab: .solarProduction)
+                                navigationState.navigate(to: .solarProduction)
                             }
 
                             if model.overviewData.isFlowSolarToGrid() {
@@ -127,7 +128,7 @@ struct OverviewView: View {
                                     .isAnyCarCharing
                             )
                             .onTapGesture {
-                                model.setMainTab(newTab: .consumption)
+                                navigationState.navigate(to: .consumption)
                             }
                         }
                     }  // :Grid
