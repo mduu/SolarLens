@@ -26,46 +26,21 @@ struct SolarDetailsView: View {
                         totalProducedToday: .constant(total),
                         currentProduction: .constant(current)
                     )
-                    
-                    Spacer()
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 4)
 
-                    Button(action: {
+                    RoundChartButton {
                         viewModel.fetchingIsPaused = true
                         buildingModel.pauseFetching()
                         
                         withAnimation {
                             showSolarChart = true
                         }
-                    }) {
-                        Image(systemName: "chart.line.uptrend.xyaxis.circle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                            .symbolEffect(
-                                .breathe.pulse.byLayer,
-                                options: .repeat(.continuous))
                     }
-                    .buttonStyle(.borderless)
-                    .foregroundColor(.primary)
-                    .padding(.trailing, 12)
-                    .sheet(isPresented: $showSolarChart) {
-                        SolarChartView(
-                            maxProductionkW: $viewModel.overviewData.solarProductionMax
-                        )
-                        .toolbar {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Text("Production")
-                                    .foregroundColor(.accentColor)
-                                    .font(.headline)
-                            }  // :ToolbarItem
-                        }  // :.toolbar
-                        .onDisappear {
-                            print("Hide solar chart sheet")
-                            viewModel.fetchingIsPaused = false
-                            buildingModel.resumeFetching()
-                        }
-                    }
+                    
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 4)
 
                 if viewModel.solarDetailsData.forecastToday != nil
                     || viewModel.solarDetailsData.forecastTomorrow != nil
@@ -135,8 +110,9 @@ struct SolarDetailsView: View {
 
                 Spacer()
             }  // :VStack
-            .padding(.horizontal, 2)
             .frame(maxHeight: .infinity)
+            .padding(.leading, 2)
+            .padding(.trailing, 10)
 
             VStack {
                 Spacer()
@@ -181,6 +157,24 @@ struct SolarDetailsView: View {
             refreshTimer?.invalidate()
             refreshTimer = nil
         }
+        .sheet(isPresented: $showSolarChart) {
+            SolarChartView(
+                maxProductionkW: $viewModel.overviewData.solarProductionMax
+            )
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Text("Production")
+                        .foregroundColor(.accentColor)
+                        .font(.headline)
+                }  // :ToolbarItem
+            }  // :.toolbar
+            .onDisappear {
+                print("Hide solar chart sheet")
+                viewModel.fetchingIsPaused = false
+                buildingModel.resumeFetching()
+            }
+        }
+        
     }
 
     private func getDateFormatter() -> DateFormatter {
