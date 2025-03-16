@@ -7,11 +7,13 @@ struct ConsumptionDetailSheet: View {
     var devices: [Device]
     
     var body: some View {
-        HStack {
-            ConsumptionPieChart(
-                totalCurrentConsumptionInWatt: totalCurrentConsumptionInWatt,
-                deviceConsumptions: getDeviceConsumptions()
-            )
+        ScrollView {
+            HStack {
+                ConsumptionPieChart(
+                    totalCurrentConsumptionInWatt: totalCurrentConsumptionInWatt,
+                    deviceConsumptions: getDeviceConsumptions()
+                )
+            }
         }
     }
     
@@ -48,6 +50,13 @@ struct ConsumptionDetailSheet: View {
                 priority: 1000,
                 color: "#7799ff"
             ),
+            .init(
+                id: "3",
+                deviceType: .energyMeasurement,
+                name: "Office",
+                priority: 500,
+                color: "#7711ff"
+            )
         ]
     )
 }

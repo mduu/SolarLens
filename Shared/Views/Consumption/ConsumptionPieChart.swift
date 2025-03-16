@@ -31,82 +31,85 @@ struct ConsumptionPieChart: View {
     var body: some View {
         let allConsumptions: [DeviceConsumption] = getAllConsumptions()
 
-        VStack {
+        ScrollView {
 
-            ZStack {
-
-                Chart(allConsumptions, id: \.id) { device in
-
-                    // Draw filled, semi-transparent sectors
-                    SectorMark(
-                        angle: .value("Watts", device.consumptionInWatt),
-                        innerRadius: .ratio(0.6),
-                        outerRadius: .ratio(1),
-                        angularInset: 2.0  // Increased inset creates a border effect
-                    )
-                    .cornerRadius(0)
-                    .opacity(0.4)
-                    .foregroundStyle(device.color2)
-                    .annotation(position: .overlay) {
-                        Group {
-                            if device.consumptionInWatt > 20 {
-                                Text(
-                                    device.consumptionInWatt
-                                        .formatWattsAsKiloWatts()
-                                )
-                                .font(.system(size: 10))
-                                .foregroundColor(device.color2)
+            HStack {
+                ZStack {
+                    
+                    Chart(allConsumptions, id: \.id) { device in
+                        
+                        // Draw filled, semi-transparent sectors
+                        SectorMark(
+                            angle: .value("Watts", device.consumptionInWatt),
+                            innerRadius: .ratio(0.6),
+                            outerRadius: .ratio(1),
+                            angularInset: 2.0  // Increased inset creates a border effect
+                        )
+                        .cornerRadius(0)
+                        .opacity(0.4)
+                        .foregroundStyle(device.color2)
+                        .annotation(position: .overlay) {
+                            Group {
+                                if device.consumptionInWatt > 20 {
+                                    Text(
+                                        device.consumptionInWatt
+                                            .formatWattsAsKiloWatts()
+                                    )
+                                    .font(.system(size: 10))
+                                    .foregroundColor(device.color2)
+                                }
                             }
                         }
                     }
-                }
-
-                Chart(allConsumptions, id: \.id) { device in
-
-                    // Draw the outer ring of the donuts
-                    SectorMark(
-                        angle: .value("Watts", device.consumptionInWatt),
-                        innerRadius: .ratio(0.96),
-                        outerRadius: .ratio(1),
-                        angularInset: 2.0  // Increased inset creates a border effect
-                    )
-                    .cornerRadius(5)
-                    .opacity(1)
-                    .foregroundStyle(device.color2)
-
-                }
-                .chartLegend(.visible)
-                .chartBackground(alignment: .center) { chart in
-                    VStack {
-                        Text("Total").foregroundColor(.cyan).bold()
-                        Text(
-                            totalCurrentConsumptionInWatt.formatWattsAsKiloWatts()
+                    
+                    Chart(allConsumptions, id: \.id) { device in
+                        
+                        // Draw the outer ring of the donuts
+                        SectorMark(
+                            angle: .value("Watts", device.consumptionInWatt),
+                            innerRadius: .ratio(0.96),
+                            outerRadius: .ratio(1),
+                            angularInset: 2.0  // Increased inset creates a border effect
                         )
+                        .cornerRadius(5)
+                        .opacity(1)
+                        .foregroundStyle(device.color2)
+                        
                     }
-                }
-
-            }
+                    .chartLegend(.visible)
+                    .chartBackground(alignment: .center) { chart in
+                        VStack {
+                            Text("Total").foregroundColor(.cyan).bold()
+                            Text(
+                                totalCurrentConsumptionInWatt.formatWattsAsKiloWatts()
+                            )
+                        }
+                    }
+                    
+                } // :ZStack
+            } // :HStack
 
             HStack(alignment: .center) {
-                FlowLayout(spacing: 3) {
+                FlowLayout(spacing: 5) {
 
                     ForEach(allConsumptions) { consumption in
                         HStack {
                             Rectangle()
-                                .frame(width: 6, height: 6)
+                                .frame(width: 10, height: 10)
                                 .foregroundColor(consumption.color2)
-                                .cornerRadius(3)
+                                .cornerRadius(2)
                             Text(consumption.name)
                                 .foregroundColor(consumption.color2)
                         }
                     }
 
-                }
-            }
-            .frame(maxHeight: 20)
+                } // :FlowLayout
+            } // :HStack
+            //.frame(maxHeight: 20)
             .padding()
             .ignoresSafeArea()
-        }
+            
+        } // :VStack
 
     }
 
