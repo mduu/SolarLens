@@ -45,17 +45,16 @@ struct ConsumptionPieChart: View {
                         angularInset: 2.0  // Increased inset creates a border effect
                     )
                     .cornerRadius(0)
-                    .opacity(0.2)
+                    .opacity(0.4)
                     .foregroundStyle(device.color2)
                     .annotation(position: .overlay) {
-                        VStack {
                             Text(
                                 device.consumptionInWatt
                                     .formatWattsAsKiloWatts()
                             )
                             .font(.system(size: 10))
                             .foregroundColor(device.color2)
-                        }
+                            .hidden(device.consumptionInWatt < 20)
                     }
                 }
 
