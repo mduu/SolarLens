@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OverviewView: View {
     @Environment(CurrentBuildingState.self) private var model
+    @Environment(NavigationState.self) private var navigationState
 
     @State private var refreshTimer: Timer?
     @State private var showSettings: Bool = false
@@ -17,8 +18,10 @@ struct OverviewView: View {
                                 .foregroundColor(Color.red)
                                 .symbolEffect(
                                     .pulse.wholeSymbol,
-                                    options: .repeat(.continuous))
-                                .accessibilityLabel("A connection error occurred!")
+                                    options: .repeat(.continuous)
+                                )
+                                .accessibilityLabel(
+                                    "A connection error occurred!")
                         }
 
                         if model.error != nil {
@@ -26,7 +29,7 @@ struct OverviewView: View {
                                 .foregroundColor(Color.yellow)
                                 .symbolEffect(.breathe.wholeSymbol)
                                 .accessibilityLabel("A general error occurred!")
-  }
+                        }
                     }
 
                     Spacer()
@@ -42,7 +45,7 @@ struct OverviewView: View {
                                     .solarProductionMax
                             )
                             .onTapGesture {
-                                model.setMainTab(newTab: .solarProduction)
+                                navigationState.navigate(to: .solarProduction)
                             }
 
                             if model.overviewData.isFlowSolarToGrid() {
@@ -124,6 +127,9 @@ struct OverviewView: View {
                                 isAnyCarCharging: model.overviewData
                                     .isAnyCarCharing
                             )
+                            .onTapGesture {
+                                navigationState.navigate(to: .consumption)
+                            }
                         }
                     }  // :Grid
                     .padding(.top, 10)
@@ -235,7 +241,8 @@ struct OverviewView: View {
                     lastUpdated: Date(),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: true,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 )
             )
         )
@@ -259,7 +266,8 @@ struct OverviewView: View {
                         byAdding: .minute, value: -40, to: Date()),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: false,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 )
             )
         )
@@ -282,7 +290,8 @@ struct OverviewView: View {
                     lastUpdated: Date(),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: true,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 ),
                 isLoading: true
             )
@@ -306,7 +315,8 @@ struct OverviewView: View {
                     lastUpdated: Date(),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: true,
-                    chargingStations: []
+                    chargingStations: [],
+                    devices: []
                 )
             )
         )

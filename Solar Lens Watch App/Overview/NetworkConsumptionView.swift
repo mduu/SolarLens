@@ -28,6 +28,7 @@ struct NetworkConsumptionView: View {
                     : isFlowFromNetwork
                         ? "Consuming \(fromGridInKW) kilo-watts from grid"
                         : "No interaction with energy grid")
+            .padding(4)
 
             Image(systemName: "network")
                 .padding(.top, 3)

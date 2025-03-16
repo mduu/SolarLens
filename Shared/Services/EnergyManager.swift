@@ -16,4 +16,8 @@ protocol EnergyManager {
     func setCarChargingMode(
         sensorId: String, carCharging: ControlCarChargingRequest
     ) async throws -> Bool
+    
+    func setSensorPriority(
+        sensorId: String, priority: Int
+    ) async throws -> Bool
 }

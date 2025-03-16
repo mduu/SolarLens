@@ -18,6 +18,7 @@ class OverviewData {
     var lastSuccessServerFetch: Date? = nil
     var isAnyCarCharing: Bool = false
     var chargingStations: [ChargingStation] = []
+    var devices: [Device] = []
     var isStaleData: Bool = false
     var hasAnyCarChargingStation: Bool = true
     var todaySelfConsumption: Double? = nil
@@ -40,6 +41,7 @@ class OverviewData {
             lastSuccessServerFetch: Date(),
             isAnyCarCharing: false,
             chargingStations: [],
+            devices: [],
             todaySelfConsumption: nil,
             todaySelfConsumptionRate: nil,
             todayProduction: nil,
@@ -66,24 +68,73 @@ class OverviewData {
                     id: "42",
                     name: "Keba 1",
                     chargingMode: ChargingMode.withSolarPower,
-                    priority: 0,
-                    currentPower: 0,
+                    priority: 1,
+                    currentPower: 11356,
                     signal: SensorConnectionStatus.connected),
                 .init(
                     id: "43",
                     name: "Keba 2",
                     chargingMode: ChargingMode.withSolarPower,
-                    priority: 1,
-                    currentPower: 11356,
+                    priority: 2,
+                    currentPower: 0,
                     signal: SensorConnectionStatus.connected),
                 .init(
                     id: "44",
                     name: "Keba 3",
                     chargingMode: ChargingMode.withSolarPower,
-                    priority: 2,
+                    priority: 3,
                     currentPower: 0,
                     signal: SensorConnectionStatus.connected),
-            ]
+            ],
+            devices: [
+                Device.init(
+                    id: "42",
+                    deviceType: .carCharging,
+                    name: "Keba 1",
+                    priority: 1,
+                    currentPowerInWatts: 11356,
+                    color: "#ff00ff",
+                    signal: SensorConnectionStatus.connected,
+                    hasError: false),
+                Device.init(
+                    id: "43",
+                    deviceType: .carCharging,
+                    name: "Keba 2",
+                    priority: 3,
+                    currentPowerInWatts: 0,
+                    color: "#ff00af",
+                    signal: SensorConnectionStatus.connected,
+                    hasError: false),
+                Device.init(
+                    id: "44",
+                    deviceType: .carCharging,
+                    name: "Keba 3",
+                    priority: 4,
+                    currentPowerInWatts: 0,
+                    color: "#ff000f",
+                    signal: SensorConnectionStatus.notConnected,
+                    hasError: true),
+                Device.init(
+                    id: "10",
+                    deviceType: .battery,
+                    name: "Main Bat.",
+                    priority: 2,
+                    currentPowerInWatts: 0,
+                    color: "#ffff06",
+                    signal: SensorConnectionStatus.connected,
+                    hasError: false),
+                Device.init(
+                    id: "20",
+                    deviceType: .energyMeasurement,
+                    name: "Home-Office",
+                    priority: 5,
+                    currentPowerInWatts: 12,
+                    color: "#aaff06",
+                    signal: SensorConnectionStatus.connected,
+                    hasError: false)
+            ],
+            todayProduction: 23393,
+            todayConsumption: 4300
         )
     }
 
@@ -104,6 +155,7 @@ class OverviewData {
         lastSuccessServerFetch: Date?,
         isAnyCarCharing: Bool,
         chargingStations: [ChargingStation],
+        devices: [Device],
         todaySelfConsumption: Double? = nil,
         todaySelfConsumptionRate: Double? = nil,
         todayProduction: Double? = nil,
@@ -122,6 +174,7 @@ class OverviewData {
         self.lastSuccessServerFetch = lastSuccessServerFetch
         self.isAnyCarCharing = isAnyCarCharing
         self.chargingStations = chargingStations
+        self.devices = devices
         self.isStaleData = getIsStaleData()
         self.hasAnyCarChargingStation = chargingStations.count > 0
         self.todaySelfConsumption = todaySelfConsumption
@@ -193,4 +246,72 @@ class ChargingStation: Identifiable {
         self.currentPower = currentPower
         self.signal = signal
     }
+}
+
+@Observable
+class Device: Identifiable {
+    var id: String
+    var deviceType: DeviceType = .other
+    var name: String = ""
+    var priority: Int
+    var currentPowerInWatts: Int = 0
+    var color: String?
+    var signal: SensorConnectionStatus
+    var hasError: Bool = false
+
+    init(
+        id: String,
+        deviceType: DeviceType,
+        name: String = "",
+        priority: Int,
+        currentPowerInWatts: Int = 0,
+        color: String? = nil,
+        signal: SensorConnectionStatus = .connected,
+        hasError: Bool = false
+    ) {
+        self.id = id
+        self.deviceType = deviceType
+        self.name = name
+        self.priority = priority
+        self.currentPowerInWatts = currentPowerInWatts
+        self.color = color
+        self.signal = signal
+        self.hasError = hasError
+    }
+    
+    func hasPower() -> Bool {
+        return currentPowerInWatts > 10 || currentPowerInWatts < -10
+    }
+    
+    func isConsumingDevice() -> Bool {
+        return deviceType != .battery
+    }
+}
+
+extension Device {
+
+    static func mapStringToDeviceType(stringValue: String?) -> DeviceType {
+        guard let value = stringValue?.lowercased() else {
+            return .other
+        }
+
+        switch value {
+        case "energy measurement":
+            return .energyMeasurement
+        case "battery":
+            return .battery
+        case "car charging":
+            return .carCharging
+        default:
+            return .other
+        }
+    }
+
+}
+
+public enum DeviceType {
+    case carCharging
+    case battery
+    case energyMeasurement
+    case other
 }

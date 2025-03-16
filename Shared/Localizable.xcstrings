@@ -593,6 +593,9 @@
         }
       }
     },
+    "Current consumption" : {
+
+    },
     "Current solar production is %@ kilowatts" : {
       "localizations" : {
         "de" : {
@@ -614,6 +617,9 @@
           }
         }
       }
+    },
+    "Devices" : {
+
     },
     "Email" : {
       "localizations" : {
@@ -1517,6 +1523,9 @@
         }
       }
     },
+    "Prio." : {
+
+    },
     "Production" : {
       "localizations" : {
         "de" : {
@@ -2192,6 +2201,9 @@
         }
       }
     },
+    "Total" : {
+
+    },
     "Try again" : {
       "localizations" : {
         "de" : {
@@ -2269,6 +2281,9 @@
     },
     "v%@" : {
       "shouldTranslate" : false
+    },
+    "Watts" : {
+
     },
     "Your feedback matters! Please consider rating us. Your support helps us improve." : {
       "localizations" : {

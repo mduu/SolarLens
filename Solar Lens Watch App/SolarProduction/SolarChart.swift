@@ -9,8 +9,8 @@ struct SolarDataPoint: Identifiable {
 
 struct SolarChart: View {
 
-    @Binding var maxProductionkW: Double
-    @Binding var solarProduction: ConsumptionData
+    var maxProductionkW: Double
+    var solarProduction: ConsumptionData
     var isSmall: Bool = false
     var isAccent: Bool = false
 
@@ -140,15 +140,15 @@ struct SolarChart: View {
 
 #Preview("Normal") {
     SolarChart(
-        maxProductionkW: .constant(11000),
-        solarProduction: .constant(ConsumptionData.fake())
+        maxProductionkW: 11000,
+        solarProduction: ConsumptionData.fake()
     )
 }
 
 #Preview("Small") {
     SolarChart(
-        maxProductionkW: .constant(11000),
-        solarProduction: .constant(ConsumptionData.fake()),
+        maxProductionkW: 11000,
+        solarProduction: ConsumptionData.fake(),
         isSmall: true
     )
     .frame(height: 80)

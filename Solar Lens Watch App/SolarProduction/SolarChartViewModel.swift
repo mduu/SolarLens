@@ -1,11 +1,11 @@
 import Foundation
 
-@MainActor
-class SolarChartViewModel: ObservableObject {
-    @Published var consumptionData: ConsumptionData? = nil
-    @Published var isLoading = false
-    @Published var errorMessage: String? = nil
-    @Published var error: EnergyManagerClientError? = nil
+@Observable
+class SolarChartViewModel {
+    var consumptionData: ConsumptionData? = nil
+    var isLoading = false
+    var errorMessage: String? = nil
+    var error: EnergyManagerClientError? = nil
 
     private let energyManager: EnergyManager
     private var solarChartLastFetchAt: Date?
@@ -20,6 +20,7 @@ class SolarChartViewModel: ObservableObject {
         return SolarChartViewModel.init(energyManagerClient: fakeEnergyManager)
     }
 
+    @MainActor
     public func fetch() async {
         if isLoading {
             return

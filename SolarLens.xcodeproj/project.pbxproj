@@ -106,6 +106,9 @@
 		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Views/Consumption/ConsumptionPieChart.swift,
+				Views/FlowLayout.swift,
+				Views/RoundChartButton.swift,
 				Views/Solar/ForecastListView.swift,
 				Views/Solar/SolarTodayInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
@@ -177,11 +180,13 @@
 				Services/SolarManagerApi/DTOs/LoginResponse.swift,
 				Services/SolarManagerApi/DTOs/NoContentResponse.swift,
 				Services/SolarManagerApi/DTOs/Period.swift,
+				Services/SolarManagerApi/DTOs/PutSensorPriorityRequest.swift,
 				Services/SolarManagerApi/DTOs/RefreshRequest.swift,
 				Services/SolarManagerApi/DTOs/RefreshResponse.swift,
 				Services/SolarManagerApi/DTOs/SensorConnectionStatus.swift,
 				Services/SolarManagerApi/DTOs/SensorConsumptionV1Response.swift,
 				Services/SolarManagerApi/DTOs/SensorInfosV1Response.swift,
+				Services/SolarManagerApi/DTOs/SensorType.swift,
 				Services/SolarManagerApi/DTOs/StatisticsV1Response.swift,
 				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
 				Services/SolarManagerApi/SolarManagerApiClient.swift,
@@ -234,6 +239,9 @@
 				Views/Charging/ChargingModeConfiguration.swift,
 				Views/Charging/ChargingModeLabelView.swift,
 				Views/Charging/ChargingOptionsPopupView.swift,
+				Views/Consumption/ConsumptionPieChart.swift,
+				Views/FlowLayout.swift,
+				Views/RoundChartButton.swift,
 				Views/UpdateTimeStampView.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
@@ -684,8 +692,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.0.1;
-				APP_VERSION_BUILDNO = 152;
+				APP_VERSION = 3.1.0;
+				APP_VERSION_BUILDNO = 155;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -719,10 +727,11 @@
 				COPY_PHASE_STRIP = NO;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FUSE_BUILD_SCRIPT_PHASES = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -755,8 +764,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.0.1;
-				APP_VERSION_BUILDNO = 152;
+				APP_VERSION = 3.1.0;
+				APP_VERSION_BUILDNO = 155;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -794,6 +803,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FUSE_BUILD_SCRIPT_PHASES = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

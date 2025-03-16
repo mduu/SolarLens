@@ -5,6 +5,7 @@ struct SolarManagerWatch_Watch_AppApp: App {
     @WKApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @State var currentBuildingState = CurrentBuildingState(energyManagerClient: SolarManager.instance())
+    @State var navigationState = NavigationState()
     
     var body: some Scene {
         WindowGroup {
@@ -13,6 +14,7 @@ struct SolarManagerWatch_Watch_AppApp: App {
                     AppStoreReviewManager.shared.increaseStartupCount()
                 }
                 .environment(currentBuildingState)
+                .environment(navigationState)
         }
         //.environment(\.locale, Locale(identifier: "DE"))
     }

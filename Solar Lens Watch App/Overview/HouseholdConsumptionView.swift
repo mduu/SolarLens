@@ -23,6 +23,9 @@ struct HouseholdConsumptionView: View {
                         currentOverallConsumption!.formatWattsAsKiloWatts()
                     ) : "No household consumption"
             )
+            .padding(5)
+            .background(Color.gray.opacity(0.3))
+            .cornerRadius(30)
 
             HStack(alignment: VerticalAlignment.bottom) {
                 Image(systemName: "house")
@@ -37,6 +40,7 @@ struct HouseholdConsumptionView: View {
             .padding(.top, 3)
 
         }
+
     }
 }
 

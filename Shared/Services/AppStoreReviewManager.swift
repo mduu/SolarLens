@@ -5,6 +5,8 @@ class AppStoreReviewManager {
     @AppStorage("startupCount") private var startupCount = 0
     @AppStorage("chargingModeSetAtLeastOnce") private
         var chargingModeSetAtLeastOnce = false
+    @AppStorage("chargingModeSetAtLeastOnce") private
+        var sensorPrioritySetAtLeastOnce = false
     @AppStorage("solarDetailsShownAtLeastOnce") private
         var solarDetailsShownAtLeastOnce = false
     @AppStorage("lastTimeReviewRequested") private
@@ -18,6 +20,10 @@ class AppStoreReviewManager {
 
     func setChargingModeSetAtLeastOnce() {
         chargingModeSetAtLeastOnce = true
+    }
+    
+    func setSensorPriorityAtLeastOnce() {
+        sensorPrioritySetAtLeastOnce = true
     }
 
     func setSolarDetailsShownAtLeastOnce() {
@@ -48,7 +54,8 @@ class AppStoreReviewManager {
 
         return startupCount > 5
             && (chargingModeSetAtLeastOnce
-                || solarDetailsShownAtLeastOnce)
+                || solarDetailsShownAtLeastOnce
+                || sensorPrioritySetAtLeastOnce)
             && isDateAtLeastSixMonthsAgo(lastTime)
     }
 

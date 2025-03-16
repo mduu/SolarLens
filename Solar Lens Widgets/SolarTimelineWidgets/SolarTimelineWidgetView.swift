@@ -59,8 +59,8 @@ struct SolarTimelineWidgetView: View {
                     
                     if let history = entry.history {
                         SolarChart(
-                            maxProductionkW: .constant(absoluteMax),
-                            solarProduction: .constant(history),
+                            maxProductionkW: absoluteMax,
+                            solarProduction: history,
                             isSmall: true,
                             isAccent: renderingMode == .accented
                         )

@@ -3,7 +3,6 @@ import SwiftUI
 
 @Observable
 class CurrentBuildingState {    
-    var selectedMainTab: MainTab = .overview
     var isLoading = false
     var errorMessage: String?
     var error: EnergyManagerClientError?
@@ -12,6 +11,8 @@ class CurrentBuildingState {
     var overviewData: OverviewData = .init()
     var isChangingCarCharger: Bool = false
     var carChargerSetSuccessfully: Bool? = nil
+    var isChangingSensorPriority: Bool = false
+    var sensorPrioritySetSuccessfully: Bool? = nil
     var fetchingIsPaused: Bool = false
     var chargingInfos: CharingInfoData?
 
@@ -69,22 +70,32 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
     func fetchServerData() async {
         if !loginCredentialsExists || isLoading || fetchingIsPaused {
             return
         }
 
         do {
-            isLoading = true
-            resetError()
+            withTransaction(Transaction(animation: nil)) {
+                isLoading = true
+                resetError()
+            }
 
             print("Fetching server data...")
 
-            overviewData = try await energyManager.fetchOverviewData(
+            let newData = try await energyManager.fetchOverviewData(
                 lastOverviewData: overviewData)
+            
+            withTransaction(Transaction(animation: nil)) {
+                overviewData = newData;
+            }
+            
             print("Server data fetched at \(Date())")
 
-            isLoading = false
+            withTransaction(Transaction(animation: nil)) {
+                isLoading = false
+            }
         } catch {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
@@ -92,6 +103,7 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
     func fetchChargingInfos() async {
         if !loginCredentialsExists || isLoading {
             return
@@ -149,17 +161,44 @@ class CurrentBuildingState {
             carChargerSetSuccessfully = false
         }
     }
+    
+    func setSensorPriority(sensorId: String, newPriority: Int) async {
+        guard loginCredentialsExists && !isChangingSensorPriority
+        else {
+            print("WARN: Login-Credentials don't exists or is loading already")
+            return
+        }
+        
+        isChangingSensorPriority = true
+        defer {
+            isChangingSensorPriority = false
+        }
+        
+        do {
+
+            resetError()
+
+            print("\(Date()): Set sensor \(sensorId) to priority \(newPriority)")
+
+            let result = try await energyManager.setSensorPriority(
+                sensorId: sensorId,
+                priority: newPriority)
+
+            print("\(Date()): Sensor \(sensorId) priority se to \(newPriority).")
+
+            await fetchServerData()
+
+            sensorPrioritySetSuccessfully = true
+            AppStoreReviewManager.shared.setChargingModeSetAtLeastOnce()
+        } catch {
+            sensorPrioritySetSuccessfully = false
+        }
+    }
 
     func logout() {
         KeychainHelper.deleteCredentials()
         updateCredentialsExists()
         resetError()
-    }
-    
-    func setMainTab(newTab: MainTab) {
-        if selectedMainTab != newTab {
-            selectedMainTab = newTab
-        }
     }
     
     func checkForCredentions() {
@@ -178,12 +217,4 @@ class CurrentBuildingState {
         errorMessage = nil
         error = nil
     }
-}
-
-enum MainTab: Int, CaseIterable, Identifiable {
-    case overview = 0
-    case charging = 1
-    case solarProduction = 2
-    
-    var id: Self { self }
 }

@@ -78,8 +78,6 @@ struct ChargingControlView: View {
                     }  // :VStack
                 }  // :VStack
             }  // :ScrollView
-            .navigationBarTitleDisplayMode(.inline)
-            .scrollContentBackground(.automatic)
 
             if model.isChangingCarCharger {
                 HStack {
@@ -121,7 +119,8 @@ struct ChargingControlView: View {
                             priority: 1,
                             currentPower: 0,
                             signal: SensorConnectionStatus.connected)
-                    ]
+                    ],
+                    devices: []
                 )
             ))
 }

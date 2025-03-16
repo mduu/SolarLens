@@ -120,7 +120,8 @@ struct EnergyFlow: View {
                             priority: 0,
                             currentPower: 0,
                             signal: SensorConnectionStatus.connected)
-                    ]
+                    ],
+                    devices: []
                 )))
 
 }
