@@ -48,13 +48,16 @@ struct ConsumptionPieChart: View {
                     .opacity(0.4)
                     .foregroundStyle(device.color2)
                     .annotation(position: .overlay) {
-                            Text(
-                                device.consumptionInWatt
-                                    .formatWattsAsKiloWatts()
-                            )
-                            .font(.system(size: 10))
-                            .foregroundColor(device.color2)
-                            .hidden(device.consumptionInWatt < 20)
+                        Group {
+                            if device.consumptionInWatt > 20 {
+                                Text(
+                                    device.consumptionInWatt
+                                        .formatWattsAsKiloWatts()
+                                )
+                                .font(.system(size: 10))
+                                .foregroundColor(device.color2)
+                            }
+                        }
                     }
                 }
 
