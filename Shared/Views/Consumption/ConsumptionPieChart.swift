@@ -40,7 +40,7 @@ struct ConsumptionPieChart: View {
                     // Draw filled, semi-transparent sectors
                     SectorMark(
                         angle: .value("Watts", device.consumptionInWatt),
-                        innerRadius: .ratio(0.5),
+                        innerRadius: .ratio(0.6),
                         outerRadius: .ratio(1),
                         angularInset: 2.0  // Increased inset creates a border effect
                     )
