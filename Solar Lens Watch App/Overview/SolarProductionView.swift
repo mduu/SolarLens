@@ -19,7 +19,10 @@ struct SolarProductionView: View {
             .gaugeStyle(.circular)
             .tint(getGaugeStyle())
             .accessibilityLabel("Current solar production is \(currentSolarProduction.formatWattsAsKiloWatts()) kilowatts")
-
+            .padding(3)
+            .background(Color.gray.opacity(0.3))
+            .cornerRadius(30)
+            
             Image(systemName: "sun.max")
         }
     }

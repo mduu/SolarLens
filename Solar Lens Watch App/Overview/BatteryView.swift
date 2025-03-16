@@ -22,6 +22,7 @@ struct BatteryView: View {
                     }
                     .gaugeStyle(.accessoryCircular)
                     .tint(Gradient(colors: [.red, .green, .green, .green]))
+                    .padding(4)
 
                     getBatterImage()
                 }
