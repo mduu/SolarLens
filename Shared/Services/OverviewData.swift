@@ -280,7 +280,7 @@ class Device: Identifiable {
     }
     
     func hasPower() -> Bool {
-        return currentPowerInWatts > 10 || currentPowerInWatts < -10
+        return currentPowerInWatts > 9 || currentPowerInWatts < -9
     }
     
     func isConsumingDevice() -> Bool {

@@ -7,7 +7,7 @@ struct ConsumptionDetailSheet: View {
     var devices: [Device]
     
     var body: some View {
-        VStack {
+        HStack {
             ConsumptionPieChart(
                 totalCurrentConsumptionInWatt: totalCurrentConsumptionInWatt,
                 deviceConsumptions: getDeviceConsumptions()
@@ -18,6 +18,7 @@ struct ConsumptionDetailSheet: View {
     func getDeviceConsumptions() -> [DeviceConsumption] {
         return devices
             .filter({ $0.isConsumingDevice() })
+            .filter({ $0.hasPower() })
             .map {
                 DeviceConsumption.init(
                     id: $0.id,

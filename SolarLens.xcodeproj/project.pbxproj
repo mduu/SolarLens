@@ -107,6 +107,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Views/Consumption/ConsumptionPieChart.swift,
+				Views/FlowLayout.swift,
 				Views/RoundChartButton.swift,
 				Views/Solar/ForecastListView.swift,
 				Views/Solar/SolarTodayInfoView.swift,
@@ -239,6 +240,7 @@
 				Views/Charging/ChargingModeLabelView.swift,
 				Views/Charging/ChargingOptionsPopupView.swift,
 				Views/Consumption/ConsumptionPieChart.swift,
+				Views/FlowLayout.swift,
 				Views/RoundChartButton.swift,
 				Views/UpdateTimeStampView.swift,
 			);

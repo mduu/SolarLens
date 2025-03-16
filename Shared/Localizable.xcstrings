@@ -110,9 +110,6 @@
       },
       "shouldTranslate" : false
     },
-    "%lldW" : {
-
-    },
     "🔋%@ %%" : {
       "shouldTranslate" : false
     },
@@ -2203,6 +2200,9 @@
           }
         }
       }
+    },
+    "Total" : {
+
     },
     "Try again" : {
       "localizations" : {
