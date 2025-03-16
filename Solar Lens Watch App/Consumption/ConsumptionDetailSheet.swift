@@ -23,7 +23,8 @@ struct ConsumptionDetailSheet: View {
                 DeviceConsumption.init(
                     id: $0.id,
                     name: $0.name,
-                    consumptionInWatt: $0.currentPowerInWatts
+                    consumptionInWatt: $0.currentPowerInWatts,
+                    color: $0.color
                 )
             }
     }
