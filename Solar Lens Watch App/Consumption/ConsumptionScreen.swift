@@ -52,6 +52,13 @@ struct ConsumptionScreen: View {
                         print(
                             "Prio of device \(deviceId) set to \(newPriority).")
                     }
+                    
+                    UpdateTimeStampView(
+                        isStale: buildingState.overviewData.isStaleData,
+                        updateTimeStamp: buildingState.overviewData.lastUpdated,
+                        isLoading: buildingState.isLoading
+                    )
+                    .padding(.vertical, 4)
 
                 }  // :VStack
                 .padding(.leading, 2)
