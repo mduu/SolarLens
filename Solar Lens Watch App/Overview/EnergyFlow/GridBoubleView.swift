@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct NetworkConsumptionView: View {
+struct GridBoubleView: View {
     var currentNetworkConsumption: Int
     var currentNetworkFeedin: Int
     var isFlowFromNetwork: Bool
@@ -29,6 +29,7 @@ struct NetworkConsumptionView: View {
                         ? "Consuming \(fromGridInKW) kilo-watts from grid"
                         : "No interaction with energy grid")
             .padding(4)
+            .frame(width: 50, height: 50)
 
             Image(systemName: "network")
                 .padding(.top, 3)
@@ -45,7 +46,7 @@ struct NetworkConsumptionView: View {
 }
 
 #Preview("Consume from grid") {
-    NetworkConsumptionView(
+    GridBoubleView(
         currentNetworkConsumption: 2300,
         currentNetworkFeedin: 0,
         isFlowFromNetwork: true,
@@ -54,7 +55,7 @@ struct NetworkConsumptionView: View {
 }
 
 #Preview("Feed-in to grid") {
-    NetworkConsumptionView(
+    GridBoubleView(
         currentNetworkConsumption: 0,
         currentNetworkFeedin: 3200,
         isFlowFromNetwork: false,
@@ -63,7 +64,7 @@ struct NetworkConsumptionView: View {
 }
 
 #Preview("No grid") {
-    NetworkConsumptionView(
+    GridBoubleView(
         currentNetworkConsumption: 0,
         currentNetworkFeedin: 0,
         isFlowFromNetwork: true,

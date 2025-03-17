@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HouseholdConsumptionView: View {
+struct ConsumptionBoubleView: View {
     var currentOverallConsumption: Int?
     var isAnyCarCharging: Bool
 
@@ -23,9 +23,10 @@ struct HouseholdConsumptionView: View {
                         currentOverallConsumption!.formatWattsAsKiloWatts()
                     ) : "No household consumption"
             )
-            .padding(5)
+            .frame(width: 39, height: 39)
+            .padding(3)
             .background(Color.gray.opacity(0.3))
-            .cornerRadius(30)
+            .cornerRadius(25)
 
             HStack(alignment: VerticalAlignment.bottom) {
                 Image(systemName: "house")
@@ -45,15 +46,17 @@ struct HouseholdConsumptionView: View {
 }
 
 #Preview("No charing") {
-    HouseholdConsumptionView(
+    ConsumptionBoubleView(
         currentOverallConsumption: 1230,
         isAnyCarCharging: false
     )
+    .frame(width: 50, height: 50)
 }
 
 #Preview("Charing") {
-    HouseholdConsumptionView(
+    ConsumptionBoubleView(
         currentOverallConsumption: 1230,
         isAnyCarCharging: true
     )
+    .frame(width: 50, height: 50)
 }

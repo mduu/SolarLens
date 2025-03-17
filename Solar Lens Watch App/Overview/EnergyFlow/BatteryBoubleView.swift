@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct BatteryView: View {
+struct BatteryBoubleView: View {
     var currentBatteryLevel: Int?
     var currentChargeRate: Int?
 
@@ -27,7 +27,7 @@ struct BatteryView: View {
                     getBatterImage()
                 }
             }
-        }.frame(minWidth: 50)
+        }
     }
         
 

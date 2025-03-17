@@ -18,5 +18,5 @@ struct ConsumptionBoubleView: View {
 
 #Preview {
     ConsumptionBoubleView(totalConsumptionInKwh: 4.5)
-        .frame(width: 150, height: 150)
+        .frame(width: 50, height: 50)
 }

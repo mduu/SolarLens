@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SolarProductionView: View {
+struct SolarBoubleView: View {
     var currentSolarProduction: Int
     var maximumSolarProduction: Double
     
@@ -38,26 +38,26 @@ struct SolarProductionView: View {
 }
 
 #Preview("Low PV)") {
-    SolarProductionView(
+    SolarBoubleView(
         currentSolarProduction: 1000,
         maximumSolarProduction: 11000)
 }
 
 #Preview("Max PV)") {
-    SolarProductionView(
+    SolarBoubleView(
         currentSolarProduction: 11000,
         maximumSolarProduction: 11000)
 }
 
 
 #Preview("Ver-low PV)") {
-    SolarProductionView(
+    SolarBoubleView(
         currentSolarProduction: 45,
         maximumSolarProduction: 11000)
 }
 
 #Preview("No PV)") {
-    SolarProductionView(
+    SolarBoubleView(
         currentSolarProduction: 0,
         maximumSolarProduction: 11000)
 }

@@ -9,7 +9,6 @@ struct CircularInstrument: View {
         ZStack {
             Circle()
                 .stroke(color, lineWidth: 4)
-                .frame(maxWidth: 45)
             VStack {
                 Text(largeText)
                     .fontWeight(.bold)
@@ -31,4 +30,5 @@ struct CircularInstrument: View {
         color: .yellow,
         largeText: "45",
         smallText: "kW")
+    .frame(width: 45, height: 45)
 }
