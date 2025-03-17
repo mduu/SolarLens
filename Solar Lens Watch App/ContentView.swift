@@ -36,7 +36,7 @@ struct ContentView: View {
                         set: { navigationState.selectedTab = $0 }
                     )
                 ) {
-                    OverviewView()
+                    OverviewScreen()
                         .onTapGesture {
                             print("Force refresh")
                             Task {

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OverviewView: View {
+struct OverviewScreen: View {
     @Environment(CurrentBuildingState.self) private var model
     @Environment(NavigationState.self) private var navigationState
 
@@ -225,7 +225,7 @@ struct OverviewView: View {
 }
 
 #Preview("English") {
-    OverviewView()
+    OverviewScreen()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: .init(
@@ -250,7 +250,7 @@ struct OverviewView: View {
 }
 
 #Preview("Stale data") {
-    OverviewView()
+    OverviewScreen()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: .init(
@@ -276,7 +276,7 @@ struct OverviewView: View {
 }
 
 #Preview("Loading") {
-    OverviewView()
+    OverviewScreen()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: .init(
@@ -302,7 +302,7 @@ struct OverviewView: View {
 }
 
 #Preview("German") {
-    OverviewView()
+    OverviewScreen()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: .init(
