@@ -246,6 +246,7 @@ struct OverviewView: View {
                 )
             )
         )
+        .environment(NavigationState.init())
 }
 
 #Preview("Stale data") {
@@ -271,6 +272,7 @@ struct OverviewView: View {
                 )
             )
         )
+        .environment(NavigationState.init())
 }
 
 #Preview("Loading") {
@@ -296,6 +298,7 @@ struct OverviewView: View {
                 isLoading: true
             )
         )
+        .environment(NavigationState.init())
 }
 
 #Preview("German") {
@@ -320,5 +323,6 @@ struct OverviewView: View {
                 )
             )
         )
+        .environment(NavigationState.init())
         .environment(\.locale, Locale(identifier: "DE"))
 }
