@@ -58,13 +58,14 @@ struct ConsumptionScreen: View {
                         updateTimeStamp: buildingState.overviewData.lastUpdated,
                         isLoading: buildingState.isLoading
                     )
-                    .padding(.vertical, 4)
+                    .padding(.top, 4)
 
                 }  // :VStack
                 .padding(.leading, 2)
                 .padding(.trailing, 10)
 
             }  // :ScrollView
+            .padding(.bottom, -20)
 
             if buildingState.isChangingSensorPriority {
                 HStack {
