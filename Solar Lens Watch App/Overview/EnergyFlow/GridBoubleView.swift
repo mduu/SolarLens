@@ -28,8 +28,15 @@ struct GridBoubleView: View {
                     : isFlowFromNetwork
                         ? "Consuming \(fromGridInKW) kilo-watts from grid"
                         : "No interaction with energy grid")
+            .modifier(
+                ConditionalFrame(
+                    widthSmallWatch: 40,
+                    heightSmallWatch: 40,
+                    widthLargeWatch: 46,
+                    heightLargeWatch: 46
+                )
+            )
             .padding(3)
-            .frame(width: 50, height: 50)
 
             Image(systemName: "network")
                 .padding(.top, 3)

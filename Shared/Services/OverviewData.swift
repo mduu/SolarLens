@@ -49,14 +49,14 @@ class OverviewData {
         )
     }
 
-    static func fake() -> OverviewData {
+    static func fake(batteryToHouse: Bool = false) -> OverviewData {
         .init(
             currentSolarProduction: 4550,
             currentOverallConsumption: 1200,
             currentBatteryLevel: 78,
-            currentBatteryChargeRate: 3400,
-            currentSolarToGrid: 10,
-            currentGridToHouse: 0,
+            currentBatteryChargeRate: batteryToHouse ? -4301 : 3400,
+            currentSolarToGrid: 500,
+            currentGridToHouse: 600,
             currentSolarToHouse: 1200,
             solarProductionMax: 11000,
             hasConnectionError: false,

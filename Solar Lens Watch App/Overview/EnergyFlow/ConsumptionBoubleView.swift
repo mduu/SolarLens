@@ -23,10 +23,17 @@ struct ConsumptionBoubleView: View {
                         currentOverallConsumption!.formatWattsAsKiloWatts()
                     ) : "No household consumption"
             )
-            .frame(width: 39, height: 39)
+            .modifier(
+                ConditionalFrame(
+                    widthSmallWatch: 40,
+                    heightSmallWatch: 40,
+                    widthLargeWatch: 46,
+                    heightLargeWatch: 46
+                )
+            )
             .padding(3)
             .background(Color.gray.opacity(0.3))
-            .cornerRadius(25)
+            .cornerRadius(22)
 
             HStack(alignment: VerticalAlignment.bottom) {
                 Image(systemName: "house")

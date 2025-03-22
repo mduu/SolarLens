@@ -9,7 +9,7 @@ struct EnergyFlowView: View {
 
         Grid {
 
-            GridRow {
+            GridRow(alignment: .top) {
                 SolarBoubleView(
                     currentSolarProduction: buildingState.overviewData
                         .currentSolarProduction,
@@ -25,7 +25,7 @@ struct EnergyFlowView: View {
                     isActive: buildingState.overviewData
                         .isFlowSolarToGrid()
                 )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: 30, maxHeight: 30)
 
                 GridBoubleView(
                     currentNetworkConsumption: buildingState.overviewData
@@ -53,9 +53,14 @@ struct EnergyFlowView: View {
                     isActive: buildingState.overviewData.isFlowGridToHouse()
                 )
             }
-            .frame(minHeight: 30)
+            .modifier(
+                ConditionalMinHeight(
+                    minHeightSmallWatch: 30,
+                    minHeightLargeWatch: 45
+                )
+            )
 
-            GridRow {
+            GridRow(alignment: .top) {
                 BatteryBoubleView(
                     currentBatteryLevel: buildingState.overviewData
                         .currentBatteryLevel,
@@ -67,7 +72,7 @@ struct EnergyFlowView: View {
                 ArrowBatteryToHouse(
                     isActive: buildingState.overviewData.isFlowBatteryToHome()
                 )
-                .frame(maxHeight: .infinity)
+                .frame(maxHeight: 30)
 
                 ConsumptionBoubleView(
                     currentOverallConsumption: buildingState.overviewData
@@ -87,11 +92,20 @@ struct EnergyFlowView: View {
     }
 }
 
-#Preview {
+#Preview("Default") {
     EnergyFlowView()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: OverviewData.fake())
+        )
+        .environment(NavigationState.init())
+}
+
+#Preview("Battery to house") {
+    EnergyFlowView()
+        .environment(
+            CurrentBuildingState.fake(
+                overviewData: OverviewData.fake(batteryToHouse: true))
         )
         .environment(NavigationState.init())
 }
