@@ -14,7 +14,7 @@ struct GridBoubleView: View {
         let toGridInKW = currentNetworkFeedin.formatWattsAsKiloWatts()
         let fromToGridInKW = isFlowToNetwork ? toGridInKW : fromGridInKW
 
-        VStack(spacing: 1) {
+        VStack(spacing: 0) {
             CircularInstrument(
                 color: getColor(
                     isFlowToNetwork: isFlowToNetwork,
@@ -28,7 +28,7 @@ struct GridBoubleView: View {
                     : isFlowFromNetwork
                         ? "Consuming \(fromGridInKW) kilo-watts from grid"
                         : "No interaction with energy grid")
-            .padding(4)
+            .padding(3)
             .frame(width: 50, height: 50)
 
             Image(systemName: "network")
