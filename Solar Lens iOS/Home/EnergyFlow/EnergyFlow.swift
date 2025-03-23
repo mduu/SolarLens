@@ -29,8 +29,12 @@ struct EnergyFlow: View {
         Grid {
 
             GridRow {
-                SolarBoubleView(solarInKwh: solar)
-                    .frame(maxWidth: .infinity)
+                SolarBoubleView(
+                    solarInKwh: solar,
+                    todaySolarProductionInWh: buildingState
+                        .overviewData.todayProduction
+                )
+                .frame(maxWidth: .infinity)
 
                 ArrowSolarToGrid(
                     isActive: buildingState.overviewData
