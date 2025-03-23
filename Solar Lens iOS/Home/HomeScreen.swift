@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HomeView: View {
+struct HomeScreen: View {
     @Environment(CurrentBuildingState.self) var buildingState:
         CurrentBuildingState
     @Environment(\.energyManager) var energyManager
@@ -176,7 +176,7 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(
+    HomeScreen(
         solarDetailsData: SolarDetailsData.fake()
     )
     .environment(

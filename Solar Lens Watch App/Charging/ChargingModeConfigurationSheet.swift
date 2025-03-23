@@ -1,7 +1,7 @@
 import Combine
 import SwiftUI
 
-struct ChargingModeConfigurationView: View {
+struct ChargingModeConfigurationSheet: View {
     var chargingModeConfiguration: ChargingModeConfiguration
 
     var body: some View {
@@ -52,7 +52,7 @@ struct ModeToggle: View {
 }
 
 #Preview {
-    ChargingModeConfigurationView(
+    ChargingModeConfigurationSheet(
         chargingModeConfiguration: ChargingModeConfiguration()
     )
 }

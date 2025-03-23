@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ChargingControlView: View {
+struct ChargingScreen: View {
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
     @State var newCarCharging: ControlCarChargingRequest? = nil
@@ -65,7 +65,7 @@ struct ChargingControlView: View {
                             .foregroundColor(.secondary)
                             .padding(.trailing, 15)
                             .sheet(isPresented: $showChargingModeConfig) {
-                                ChargingModeConfigurationView(
+                                ChargingModeConfigurationSheet(
                                     chargingModeConfiguration:
                                         chargingConfiguration
                                 )
@@ -95,7 +95,7 @@ struct ChargingControlView: View {
 }  // :View
 
 #Preview {
-    ChargingControlView()
+    ChargingScreen()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: .init(

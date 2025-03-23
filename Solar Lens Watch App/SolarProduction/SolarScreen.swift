@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct SolarDetailsView: View {
+struct SolarScreen: View {
     @Environment(CurrentBuildingState.self) var buildingModel: CurrentBuildingState
-    @State var viewModel = SolarDetailsViewModel()
+    @State var viewModel = SolarScreenViewModel()
     @State private var refreshTimer: Timer?
     @State private var showSolarChart: Bool = false
 
@@ -185,6 +185,6 @@ struct SolarDetailsView: View {
 }
 
 #Preview("Normal") {
-    SolarDetailsView(viewModel: SolarDetailsViewModel.previewFake())
+    SolarScreen(viewModel: SolarScreenViewModel.previewFake())
         .environment(CurrentBuildingState.fake())
 }

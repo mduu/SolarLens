@@ -5,9 +5,9 @@ struct ContentView: View {
 
     var body: some View {
         if !buildingState.loginCredentialsExists {
-            LoginView()
+            LoginScreen()
         } else {
-            HomeView()
+            HomeScreen()
         }
     }
 }

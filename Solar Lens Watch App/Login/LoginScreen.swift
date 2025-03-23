@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct LoginView: View {
+struct LoginScreen: View {
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
     @State var email: String = "marc@marcduerst.com"
@@ -83,20 +83,20 @@ struct LoginView: View {
 }
 
 #Preview("English") {
-    LoginView()
+    LoginScreen()
 }
 
 #Preview("German") {
-    LoginView()
+    LoginScreen()
         .environment(\.locale, Locale(identifier: "DE"))
 }
 
 #Preview("French") {
-    LoginView()
+    LoginScreen()
         .environment(\.locale, Locale(identifier: "FR"))
 }
 
 #Preview("Italian") {
-    LoginView()
+    LoginScreen()
         .environment(\.locale, Locale(identifier: "IT"))
 }

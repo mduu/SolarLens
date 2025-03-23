@@ -10,7 +10,7 @@ struct ContentView: View {
     var body: some View {
 
         if !viewModel.loginCredentialsExists {
-            LoginView()
+            LoginScreen()
                 .onAppear {
                     if loginCredentialsCheckTimer == nil {
                         loginCredentialsCheckTimer = Timer.scheduledTimer(
@@ -46,7 +46,7 @@ struct ContentView: View {
                         .tag(0)
 
                     if viewModel.overviewData.hasAnyCarChargingStation {
-                        ChargingControlView()
+                        ChargingScreen()
                             .toolbar {
                                 ToolbarItem(placement: .topBarLeading) {
                                     HStack {
@@ -63,7 +63,7 @@ struct ContentView: View {
                             .tag(1)
                     }
 
-                    SolarDetailsView()
+                    SolarScreen()
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 HStack {

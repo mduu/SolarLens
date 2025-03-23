@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 @Observable
-class SolarDetailsViewModel {
+class SolarScreenViewModel {
     var isLoading = false
     var fetchingIsPaused: Bool = false
     var errorMessage: String?
@@ -17,10 +17,10 @@ class SolarDetailsViewModel {
         self.energyManager = energyManagerClient
     }
 
-    public static func previewFake() -> SolarDetailsViewModel {
+    public static func previewFake() -> SolarScreenViewModel {
         let fakeEnergyManager = FakeEnergyManager.init()
 
-        return SolarDetailsViewModel.init(
+        return SolarScreenViewModel.init(
             energyManagerClient: fakeEnergyManager)
     }
 
