@@ -30,7 +30,7 @@ struct EnergyFlow: View {
 
             GridRow {
                 SolarBoubleView(
-                    solarInKwh: solar,
+                    currentSolarProductionInKwh: solar,
                     todaySolarProductionInWh: buildingState
                         .overviewData.todayProduction
                 )
@@ -81,8 +81,12 @@ struct EnergyFlow: View {
                 )
                 .frame(width: 50, height: 50)
 
-                ConsumptionBoubleView(totalConsumptionInKwh: consumption)
-                    .frame(maxWidth: .infinity)
+                ConsumptionBoubleView(
+                    currentConsumptionInKwh: consumption,
+                    todayConsumptionInWh: buildingState.overviewData
+                        .todayConsumption
+                )
+                .frame(maxWidth: .infinity)
             }
             .frame(maxHeight: .infinity)
 
@@ -132,7 +136,7 @@ struct EnergyFlow: View {
 
 #Preview("Small") {
     EnergyFlow()
-        .frame(maxWidth: 250, maxHeight: 250)
+        .frame(maxWidth: 300, maxHeight: 300)
         .environment(
             CurrentBuildingState.fake(
                 overviewData: OverviewData.fake()))
