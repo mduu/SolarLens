@@ -106,54 +106,75 @@
 		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Views/Consumption/ConsumptionPieChart.swift,
-				Views/FlowLayout.swift,
-				Views/RoundChartButton.swift,
-				Views/Solar/ForecastListView.swift,
-				Views/Solar/SolarTodayInfoView.swift,
-				Widgets/BatteryWidgets/BatteryAppIntent.swift,
-				Widgets/BatteryWidgets/BatteryWidget.swift,
-				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
-				Widgets/BatteryWidgets/BatteryWidgetView.swift,
-				Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
-				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
-				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
-				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
-				Widgets/SolarLensWidgetDataSource.swift,
-				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
+				Components/RoundChartButton.swift,
+				Features/Consumption/ConsumptionPieChart.swift,
+				Features/Solar/ForecastListView.swift,
+				Features/Solar/SolarTodayInfoView.swift,
+				Features/Widgets/BatteryWidgets/BatteryAppIntent.swift,
+				Features/Widgets/BatteryWidgets/BatteryWidget.swift,
+				Features/Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Features/Widgets/BatteryWidgets/BatteryWidgetView.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Features/Widgets/SolarLensWidgetDataSource.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
+				Layouts/FlowLayout.swift,
 			);
 			target = 49892CE32D243FF100478C91 /* Solar Lens */;
 		};
 		493AADB22D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Views/Solar/ForecastListView.swift,
-				Widgets/BatteryWidgets/BatteryWidget.swift,
-				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
-				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
-				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
-				Widgets/SolarLensWidgetDataSource.swift,
-				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
+				Features/Solar/ForecastListView.swift,
+				Features/Widgets/BatteryWidgets/BatteryWidget.swift,
+				Features/Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
+				Features/Widgets/SolarLensWidgetDataSource.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 			);
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
 		};
 		493AADB42D59254B00591E73 /* Exceptions for "Shared" folder in "Solar Lens iOS WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Features/Overview/OverviewChart.swift,
+				Features/Solar/ForecastItemView.swift,
+				Features/Solar/ForecastListView.swift,
+				Features/Solar/SolarTodayInfoView.swift,
+				Features/Widgets/BatteryWidgets/BatteryAppIntent.swift,
+				Features/Widgets/BatteryWidgets/BatteryWidget.swift,
+				Features/Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Features/Widgets/BatteryWidgets/BatteryWidgetView.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
+				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Features/Widgets/SolarLensWidgetDataSource.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 				Services/AppStoreReviewManager.swift,
 				Services/ChargingInfoData.swift,
 				Services/ConsumptionData.swift,
@@ -191,27 +212,6 @@
 				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
 				Services/SolarManagerApi/SolarManagerApiClient.swift,
 				Services/SolarManagerApi/SolarManagerApiClientError.swift,
-				Views/Overview/OverviewChart.swift,
-				Views/Solar/ForecastItemView.swift,
-				Views/Solar/ForecastListView.swift,
-				Views/Solar/SolarTodayInfoView.swift,
-				Widgets/BatteryWidgets/BatteryAppIntent.swift,
-				Widgets/BatteryWidgets/BatteryWidget.swift,
-				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
-				Widgets/BatteryWidgets/BatteryWidgetView.swift,
-				Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
-				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
-				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
-				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
-				Widgets/SolarLensWidgetDataSource.swift,
-				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
-				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
-				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 			);
 			target = 493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */;
 		};
@@ -233,16 +233,16 @@
 				AppIntents/OpenAppIntent.swift,
 				AppIntents/SetChargingModeIntent.swift,
 				AppIntents/Shortcuts/Shortcuts.swift,
+				Components/RoundChartButton.swift,
+				Components/UpdateTimeStampView.swift,
+				Features/Consumption/Charging/ChargingButtonView.swift,
+				Features/Consumption/Charging/ChargingModeConfiguration.swift,
+				Features/Consumption/Charging/ChargingModeLabelView.swift,
+				Features/Consumption/Charging/ChargingOptionsPopupView.swift,
+				Features/Consumption/ConsumptionPieChart.swift,
+				Layouts/FlowLayout.swift,
 				Localizable.xcstrings,
 				State/CurrentBuildingState.swift,
-				Views/Charging/ChargingButtonView.swift,
-				Views/Charging/ChargingModeConfiguration.swift,
-				Views/Charging/ChargingModeLabelView.swift,
-				Views/Charging/ChargingOptionsPopupView.swift,
-				Views/Consumption/ConsumptionPieChart.swift,
-				Views/FlowLayout.swift,
-				Views/RoundChartButton.swift,
-				Views/UpdateTimeStampView.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
 		};
@@ -498,7 +498,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					493AAD962D58F9DB00591E73 = {
 						CreatedOnToolsVersion = 16.2;
@@ -729,7 +729,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = NO;
+				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				FUSE_BUILD_SCRIPT_PHASES = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -858,7 +858,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -902,7 +901,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1018,7 +1016,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
-				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
