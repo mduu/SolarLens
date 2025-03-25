@@ -273,6 +273,9 @@
         }
       }
     },
+    "Autarchy: %@" : {
+
+    },
     "Battery" : {
       "localizations" : {
         "de" : {

@@ -84,7 +84,8 @@ struct EnergyFlow: View {
                 ConsumptionBoubleView(
                     currentConsumptionInKwh: consumption,
                     todayConsumptionInWh: buildingState.overviewData
-                        .todayConsumption
+                        .todayConsumption,
+                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
                 )
                 .frame(maxWidth: .infinity)
             }
@@ -129,7 +130,8 @@ struct EnergyFlow: View {
                             currentPower: 0,
                             signal: SensorConnectionStatus.connected)
                     ],
-                    devices: []
+                    devices: [],
+                    todayAutarchyDegree: 78
                 )))
 
 }
