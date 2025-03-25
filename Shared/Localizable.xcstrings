@@ -273,7 +273,7 @@
         }
       }
     },
-    "Autarchy: %@" : {
+    "Autarky: %@" : {
 
     },
     "Battery" : {
@@ -1729,6 +1729,9 @@
           }
         }
       }
+    },
+    "Self consumption: %@" : {
+
     },
     "Sensor-ID of the charging station. Leave empty to use the first charging station." : {
       "localizations" : {
