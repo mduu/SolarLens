@@ -11,6 +11,25 @@ struct ConsumptionBoubleView: View {
 
         ZStack {
 
+            if todayAutarchyDegree != nil {
+                VStack(alignment: .center) {
+                    GeometryReader { proxy in
+                        let radius =
+                        proxy.size.width < proxy.size.height
+                        ? proxy.size.width / 2
+                        : proxy.size.height / 2
+                        
+                        let offsetY = (proxy.size.height / 2) - radius - 30
+                        
+                        Text("Autarky: \(percent)")
+                            .font(.subheadline)
+                            .frame(width: proxy.size.width)
+                            .multilineTextAlignment(.center)
+                            .offset(y: offsetY)
+                    }
+                }
+            }
+
             CircularInstrument(
                 borderColor: currentConsumptionInKwh != 0 ? .teal : .gray,
                 label: "Consumption",
@@ -26,8 +45,6 @@ struct ConsumptionBoubleView: View {
                         TodayValue(valueInWh: todayConsumptionInWh!)
                             .padding(.top, 6)
                     }
-                    
-                    Text("Autarchy: \(percent)")
                 }
             }
         }
@@ -48,5 +65,5 @@ struct ConsumptionBoubleView: View {
         todayConsumptionInWh: 34595,
         todayAutarchyDegree: 88
     )
-    .frame(width: 150, height: 150)
+    .frame(width: 150, height: 250)
 }
