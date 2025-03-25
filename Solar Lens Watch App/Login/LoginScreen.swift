@@ -3,8 +3,8 @@ import SwiftUI
 struct LoginScreen: View {
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
-    @State var email: String = "marc@marcduerst.com"
-    @State var password: String = "Bobago26woti$"
+    @State var email: String = ""
+    @State var password: String = ""
     @State var isValidEmail = false
     @State var isValidPasswort = false
 
