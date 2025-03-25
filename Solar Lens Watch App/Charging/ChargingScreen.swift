@@ -120,7 +120,8 @@ struct ChargingScreen: View {
                             currentPower: 0,
                             signal: SensorConnectionStatus.connected)
                     ],
-                    devices: []
+                    devices: [],
+                    todayAutarchyDegree: 78
                 )
             ))
 }

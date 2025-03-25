@@ -23,8 +23,12 @@ class OverviewData {
     var hasAnyCarChargingStation: Bool = true
     var todaySelfConsumption: Double? = nil
     var todaySelfConsumptionRate: Double? = nil
+    var todayAutarchyDegree: Double? = nil
     var todayProduction: Double? = nil
     var todayConsumption: Double? = nil
+    var todayGridImported: Double? = nil
+    var todayGridExported: Double? = nil
+    var todayBatteryCharged: Double? = nil
 
     static func empty() -> OverviewData {
         OverviewData(
@@ -44,8 +48,12 @@ class OverviewData {
             devices: [],
             todaySelfConsumption: nil,
             todaySelfConsumptionRate: nil,
+            todayAutarchyDegree: nil,
             todayProduction: nil,
-            todayConsumption: nil
+            todayConsumption: nil,
+            todayGridImported: nil,
+            todayGridExported: nil,
+            todayBatteryCharged: nil
         )
     }
 
@@ -133,8 +141,14 @@ class OverviewData {
                     signal: SensorConnectionStatus.connected,
                     hasError: false)
             ],
+            todaySelfConsumption: 4340,
+            todaySelfConsumptionRate: 89,
+            todayAutarchyDegree: 93,
             todayProduction: 23393,
-            todayConsumption: 4300
+            todayConsumption: 4300,
+            todayGridImported: 25403,
+            todayGridExported: 28838,
+            todayBatteryCharged: 23480
         )
     }
 
@@ -158,8 +172,12 @@ class OverviewData {
         devices: [Device],
         todaySelfConsumption: Double? = nil,
         todaySelfConsumptionRate: Double? = nil,
+        todayAutarchyDegree: Double? = nil,
         todayProduction: Double? = nil,
-        todayConsumption: Double? = nil
+        todayConsumption: Double? = nil,
+        todayGridImported: Double? = nil,
+        todayGridExported: Double? = nil,
+        todayBatteryCharged: Double? = nil
     ) {
         self.currentSolarProduction = currentSolarProduction
         self.currentOverallConsumption = currentOverallConsumption
@@ -179,8 +197,12 @@ class OverviewData {
         self.hasAnyCarChargingStation = chargingStations.count > 0
         self.todaySelfConsumption = todaySelfConsumption
         self.todaySelfConsumptionRate = todaySelfConsumptionRate
+        self.todayAutarchyDegree = todayAutarchyDegree
         self.todayProduction = todayProduction
         self.todayConsumption = todayConsumption
+        self.todayGridImported = todayGridImported
+        self.todayGridExported = todayGridExported
+        self.todayBatteryCharged = todayBatteryCharged
     }
 
     func isFlowBatteryToHome() -> Bool {

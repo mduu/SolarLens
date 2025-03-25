@@ -1,10 +1,3 @@
-//
-//  CircularInstrument.swift
-//  Solar Lens
-//
-//  Created by Marc Dürst on 03.01.2025.
-//
-
 import SwiftUI
 
 struct CircularInstrument<Content: View>: View {
