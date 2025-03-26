@@ -15,6 +15,12 @@
     "#%@" : {
       "shouldTranslate" : false
     },
+    "%" : {
+
+    },
+    "%.0f%%" : {
+
+    },
     "%@" : {
       "shouldTranslate" : false
     },
@@ -273,7 +279,7 @@
         }
       }
     },
-    "Autarky: %@" : {
+    "Autarky:" : {
 
     },
     "Battery" : {
@@ -661,6 +667,9 @@
           }
         }
       }
+    },
+    "Efficiency" : {
+
     },
     "Email" : {
       "localizations" : {
@@ -1729,9 +1738,6 @@
           }
         }
       }
-    },
-    "Self consumption: %@" : {
-
     },
     "Sensor-ID of the charging station. Leave empty to use the first charging station." : {
       "localizations" : {

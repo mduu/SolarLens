@@ -32,9 +32,7 @@ struct EnergyFlow: View {
                 SolarBoubleView(
                     currentSolarProductionInKwh: solar,
                     todaySolarProductionInWh: buildingState
-                        .overviewData.todayProduction,
-                    todaySelfConsumptionRate: buildingState
-                        .overviewData.todaySelfConsumptionRate
+                        .overviewData.todayProduction
                 )
                 .frame(maxWidth: .infinity)
 
@@ -86,8 +84,7 @@ struct EnergyFlow: View {
                 ConsumptionBoubleView(
                     currentConsumptionInKwh: consumption,
                     todayConsumptionInWh: buildingState.overviewData
-                        .todayConsumption,
-                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
+                        .todayConsumption
                 )
                 .frame(maxWidth: .infinity)
             }

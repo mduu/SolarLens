@@ -24,6 +24,7 @@ struct LoginScreen: View {
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .autocapitalization(.none)
 
             SecureField("Password", text: $password)
                 .textContentType(.password)

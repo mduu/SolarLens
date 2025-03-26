@@ -33,7 +33,7 @@ struct HomeScreen: View {
                                 .padding(.top, 0)
                             Spacer()
 
-                            HStack {
+                            HStack(alignment: .bottom) {
                                 if solarDetailsData != nil {
                                     SolarForecastView(
                                         solarProductionMax: buildingState
@@ -52,7 +52,11 @@ struct HomeScreen: View {
                                     .padding(.leading, 5)
                                 }
 
-                                Spacer()
+                                EfficiencyInfoView(
+                                    todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
+                                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
+                                )
+                                .frame(maxWidth: 180, maxHeight: 120)
                             }  // :HStack
                             .padding()
 

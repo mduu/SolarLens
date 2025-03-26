@@ -6,8 +6,8 @@ struct TodayValue: View {
     var body: some View {
         HStack(alignment: .top, spacing: 3) {
             Image(systemName: "calendar")
-                .font(.caption)
-            
+                .font(.system(size: 12, weight: .bold, design: .default))
+
             HStack(alignment: .firstTextBaseline, spacing: 1) {
                 Text(String(format: "%.1f", Double(valueInWh) / 1000))
                     .font(.system(size: 12, weight: .bold, design: .default))
