@@ -7,48 +7,38 @@ struct EfficiencyInfoView: View {
     var todayAutarchyDegree: Double?
 
     var body: some View {
-        VStack {
-            Text("Efficiency")
-                .font(.headline)
-                .foregroundColor(.accent)
+        Grid {
+            GridRow(alignment: .top) {
+                Text("Self consumption:")
+                    .font(.caption2)
+                
+                Text("Autarky:")
+                    .font(.caption2)
+            }
             
-            GeometryReader { geometry in
-                HStack(alignment: .top, spacing: 0) {
-                    VStack {
-                        Text("Self consumption:")
-                            .font(.caption2)
-                        
-                        let selfConsumption = todaySelfConsumptionRate ?? 0
-                        
-                        MiniDonut(
-                            percentage: selfConsumption,
-                            color: selfConsumption > 60 ? .green : .orange
-                        )
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    }
-                    .frame(width: geometry.size.width / 2)
-                    .frame(maxHeight: .infinity)
+            GridRow {
+                Group {
+                    let selfConsumption = todaySelfConsumptionRate ?? 0
                     
-                    VStack {
-                        Text("Autarky:")
-                            .font(.caption2)
-                        
-                        let autarky = todayAutarchyDegree ?? 0
-                        
-                        MiniDonut(
-                            percentage: autarky,
-                            color: autarky > 60 ? .green : .orange
-                        )
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    }
-                    .frame(width: geometry.size.width / 2)
-                    .frame(maxHeight: .infinity)
+                    MiniDonut(
+                        percentage: selfConsumption,
+                        color: selfConsumption > 60 ? .green : .orange
+                    )
+                    .frame(maxWidth: 40)
                 }
-                .padding()
-                .background(.accent.opacity(0.1))
-                .cornerRadius(10)
+                
+                Group {
+                    let autarky = todayAutarchyDegree ?? 0
+                    
+                    MiniDonut(
+                        percentage: autarky,
+                        color: autarky > 60 ? .green : .orange
+                    )
+                    .frame(maxWidth: 40)
+                }
             }
         }
+        .frame(maxHeight: 100)
     }
 }
 

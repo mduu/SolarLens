@@ -56,7 +56,7 @@ struct HomeScreen: View {
                                     todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
                                     todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
                                 )
-                                .frame(maxWidth: 180, maxHeight: 120)
+                                .frame(maxWidth: 180, maxHeight: 90)
                             }  // :HStack
                             .padding()
 

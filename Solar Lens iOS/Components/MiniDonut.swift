@@ -7,11 +7,11 @@ struct MiniDonut: View {
 
     var body: some View {
         GeometryReader { geometry in
-            
-            let innerRadius = geometry.size.width > geometry.size.height
+
+            let innerRadius =
+                geometry.size.width > geometry.size.height
                 ? Int(geometry.size.height / 2 - 4)
                 : Int(geometry.size.width / 2 - 4)
-
 
             Chart {
                 SectorMark(
@@ -21,7 +21,7 @@ struct MiniDonut: View {
                 )
                 .cornerRadius(5)
                 .foregroundStyle(color)
-                
+
                 SectorMark(
                     angle: .value("Empty", percentage..<100),
                     innerRadius: MarkDimension(integerLiteral: innerRadius),
@@ -34,19 +34,14 @@ struct MiniDonut: View {
                 GeometryReader { geometry in
                     if let anchor = chartProxy.plotFrame {
                         let frame = geometry[anchor]
-                        ZStack {
-                            Circle()
-                                .fill(.white)
-                                .opacity(0.8)
-                            
-                            VStack {
-                                Text("\(String(format: "%.0f", percentage))%")
-                                    .foregroundColor(color)
-                                    .font(.system(size: 18, weight: .bold))
-                            } // :VStack
-                            .position(x: frame.midX, y: frame.midY)
-                            
-                        } // :ZStack
+
+                        VStack {
+                            Text("\(String(format: "%.0f", percentage))%")
+                                .foregroundColor(color)
+                                .font(.system(size: 10, weight: .bold))
+                        }  // :VStack
+                        .position(x: frame.midX, y: frame.midY)
+
                     }
                 }
             }
@@ -55,9 +50,9 @@ struct MiniDonut: View {
 }
 
 #Preview {
-    MiniDonut(percentage: 66, color: .green)
-        .frame(width: 70, height: 70)
-    
+    MiniDonut(percentage: 100, color: .green)
+        .frame(width: 40, height: 40)
+
     MiniDonut(percentage: 35, color: .orange)
-        .frame(width: 70, height: 70)
+        .frame(width: 40, height: 40)
 }
