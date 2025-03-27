@@ -1,7 +1,7 @@
 struct SensorInfosV1Response : Codable {
     var _id: String
-    var device_type: SensorType // device, smart-meter, inverter
-    var type: String // Battery, Car Charging, Energy Measurement
+    var device_type: String // device, smart-meter, inverter, car
+    var type: String // Battery, Car Charging, Energy Measurement, Heatpump, Car
     var device_group: String // Name of the device
     var priority: Int
     var signal: SensorConnectionStatus
@@ -15,16 +15,34 @@ struct SensorInfosV1Response : Codable {
     //var data: []
     //var strings: []
     
+    /// Map the string value to a proper enum
+    var deviceType: SensorType {
+        
+        switch device_type.lowercased() {
+        case "device":
+            return .device
+        case "car":
+            return .car
+        case "inverter":
+            return .inverter
+        case "smart-meter":
+            return .smartMeter
+        default:
+            return .other
+        }
+    }
+    
     func isCarCharging() -> Bool {
-        return isDevice() && type == "Car Charging"
+        return isDevice() && type.caseInsensitiveCompare("Car Charging") == .orderedSame
     }
     
     func isBattery() -> Bool {
-        return isDevice() && type == "Battery"
+        return isDevice() && type
+            .caseInsensitiveCompare("Battery") == .orderedSame
     }
     
     func isDevice() -> Bool {
-        return device_type == .device
+        return deviceType == .device
     }
 }
 

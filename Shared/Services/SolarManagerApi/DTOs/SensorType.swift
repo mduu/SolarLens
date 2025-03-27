@@ -1,5 +1,7 @@
 enum SensorType: String, Codable {
-    case device = "device"
-    case smartMeter = "smart-meter"
-    case inverter = "inverter"
+    case device
+    case smartMeter
+    case inverter
+    case car
+    case other
 }

@@ -119,10 +119,12 @@ actor SolarManager: EnergyManager {
 
                             return Device.init(
                                 id: $0._id,
-                                deviceType: Device.mapStringToDeviceType(stringValue: $0.type),
+                                deviceType: Device.mapStringToDeviceType(
+                                    stringValue: $0.type),
                                 name: $0.tag?.name ?? $0.device_group,
                                 priority: $0.priority,
-                                currentPowerInWatts: streamInfo?.currentPower ?? 0,
+                                currentPowerInWatts: streamInfo?.currentPower
+                                    ?? 0,
                                 color: $0.tag?.color,
                                 signal: $0.signal,
                                 hasError: $0.errorCodes.count == 0)
@@ -275,7 +277,7 @@ actor SolarManager: EnergyManager {
             return false
         }
     }
-    
+
     func setSensorPriority(
         sensorId: String,
         priority: Int
@@ -408,10 +410,9 @@ actor SolarManager: EnergyManager {
     private func getCharingStationSensorIds() -> [String] {
         return
             sensorInfos != nil
-            ? sensorInfos!.filter {
-                $0.type == "Car Charging" && $0.device_type == .device
-            }
-            .map { $0._id }
+            ? sensorInfos!
+                .filter { $0.isCarCharging() }
+                .map { $0._id }
             : []
     }
 
