@@ -1,4 +1,4 @@
-// 
+//
 
 import SwiftUI
 
@@ -7,35 +7,52 @@ struct EfficiencyInfoView: View {
     var todayAutarchyDegree: Double?
 
     var body: some View {
-        Grid {
-            GridRow(alignment: .top) {
-                Text("Self consumption:")
-                    .font(.caption2)
-                
-                Text("Autarky:")
-                    .font(.caption2)
+        let selfConsumption = todaySelfConsumptionRate ?? 0
+        let autarky = todayAutarchyDegree ?? 0
+
+        VStack {
+
+            ZStack {
+                MiniDonut(
+                    percentage: selfConsumption,
+                    color: .yellow,
+                    showPerentage: false,
+                    lineWidth: 5
+                )
+                .frame(maxWidth: 50)
+
+                MiniDonut(
+                    percentage: autarky,
+                    color: .teal,
+                    showPerentage: false,
+                    lineWidth: 5
+                )
+                .frame(maxWidth: 38)
             }
-            
-            GridRow {
-                Group {
-                    let selfConsumption = todaySelfConsumptionRate ?? 0
+
+            VStack {
+                HStack(spacing: 4) {
+                    Circle()
+                        .foregroundColor(.yellow)
+                        .frame(width: 6, height: 6)
                     
-                    MiniDonut(
-                        percentage: selfConsumption,
-                        color: selfConsumption > 60 ? .green : .orange
+                    Text(
+                        "Self consumption: \(selfConsumption.formatIntoPercentage())"
                     )
-                    .frame(maxWidth: 40)
+                    .font(.system(size: 9))
                 }
                 
-                Group {
-                    let autarky = todayAutarchyDegree ?? 0
+                HStack(spacing: 4) {
+                    Circle()
+                        .foregroundColor(.teal)
+                        .frame(width: 6, height: 6)
                     
-                    MiniDonut(
-                        percentage: autarky,
-                        color: autarky > 60 ? .green : .orange
+                    Text(
+                        "Autarky: \(selfConsumption.formatIntoPercentage())"
                     )
-                    .frame(maxWidth: 40)
+                    .font(.system(size: 8))
                 }
+
             }
         }
         .frame(maxHeight: 100)
@@ -43,9 +60,13 @@ struct EfficiencyInfoView: View {
 }
 
 #Preview {
-    EfficiencyInfoView(
-        todaySelfConsumptionRate: 81.2,
-        todayAutarchyDegree: 92.1
-    )
-    .frame(maxWidth: 180, maxHeight: 120)
+    VStack {
+        EfficiencyInfoView(
+            todaySelfConsumptionRate: 81.2,
+            todayAutarchyDegree: 92.1
+        )
+        .frame(maxWidth: 180, maxHeight: 120)
+        
+        Spacer()
+    }
 }

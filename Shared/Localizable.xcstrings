@@ -253,8 +253,15 @@
         }
       }
     },
-    "Autarky:" : {
-
+    "Autarky: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autarkie: %@"
+          }
+        }
+      }
     },
     "Battery" : {
       "localizations" : {
@@ -1706,6 +1713,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Autoconsumo:"
+          }
+        }
+      }
+    },
+    "Self consumption: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenverbrauch: %@"
           }
         }
       }
