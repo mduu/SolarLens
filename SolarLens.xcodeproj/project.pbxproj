@@ -106,48 +106,60 @@
 		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Components/RoundChartButton.swift,
 				Features/Consumption/ConsumptionPieChart.swift,
-				Features/Solar/ForecastListView.swift,
+				Features/Consumption/ConsumptionTodayInfoView.swift,
+				Features/Consumption/DeviceIconView.swift,
 				Features/Solar/SolarTodayInfoView.swift,
-				Features/Widgets/BatteryWidgets/BatteryAppIntent.swift,
-				Features/Widgets/BatteryWidgets/BatteryWidget.swift,
-				Features/Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
-				Features/Widgets/BatteryWidgets/BatteryWidgetView.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
-				Features/Widgets/SolarLensWidgetDataSource.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 				Layouts/FlowLayout.swift,
+				Widgets/BatteryWidgets/BatteryAppIntent.swift,
+				Widgets/BatteryWidgets/BatteryWidget.swift,
+				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Widgets/BatteryWidgets/BatteryWidgetView.swift,
+				Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Widgets/SolarLensWidgetDataSource.swift,
+				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 			);
 			target = 49892CE32D243FF100478C91 /* Solar Lens */;
 		};
 		493AADB22D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Features/Solar/ForecastListView.swift,
-				Features/Widgets/BatteryWidgets/BatteryWidget.swift,
-				Features/Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
-				Features/Widgets/SolarLensWidgetDataSource.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
+				AppIntents/GetBatteryLevelIntent.swift,
+				AppIntents/GetConsumptionIntent.swift,
+				AppIntents/GetSolarProductionIntent.swift,
+				AppIntents/IntentError.swift,
+				AppIntents/IsAnyCarChargingIntent.swift,
+				AppIntents/OpenAppIntent.swift,
+				AppIntents/SetChargingModeIntent.swift,
+				AppIntents/Shortcuts/Shortcuts.swift,
+				AppShortcuts.xcstrings,
+				Widgets/BatteryWidgets/BatteryAppIntent.swift,
+				Widgets/BatteryWidgets/BatteryWidget.swift,
+				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Widgets/BatteryWidgets/BatteryWidgetView.swift,
+				Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Widgets/SolarLensWidgetDataSource.swift,
+				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 			);
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
 		};
@@ -158,37 +170,23 @@
 				Features/Solar/ForecastItemView.swift,
 				Features/Solar/ForecastListView.swift,
 				Features/Solar/SolarTodayInfoView.swift,
-				Features/Widgets/BatteryWidgets/BatteryAppIntent.swift,
-				Features/Widgets/BatteryWidgets/BatteryWidget.swift,
-				Features/Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
-				Features/Widgets/BatteryWidgets/BatteryWidgetView.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
-				Features/Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
-				Features/Widgets/SolarLensWidgetDataSource.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
-				Features/Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
-				Features/Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 				Services/AppStoreReviewManager.swift,
-				Services/ChargingInfoData.swift,
-				Services/ConsumptionData.swift,
 				Services/DateExtensions.swift,
 				Services/EnergyManager.swift,
 				Services/EnergyManagerClientError.swift,
 				Services/FakeEnergyManager.swift,
 				Services/KeychainHelper.swift,
-				Services/OverviewData.swift,
+				Services/Model/ChargingInfoData.swift,
+				Services/Model/ChargingStation.swift,
+				Services/Model/ConsumptionData.swift,
+				Services/Model/Device.swift,
+				Services/Model/OverviewData.swift,
+				Services/Model/OverviewDataExtensions.swift,
+				Services/Model/SolarDetailsData.swift,
 				Services/Rest/DateHelper.swift,
 				Services/Rest/NoRequestBody.swift,
 				Services/Rest/RestClient.swift,
 				Services/Rest/RestError.swift,
-				Services/SolarDetailsData.swift,
 				Services/SolarManager.swift,
 				Services/SolarManagerApi/DTOs/Accuracy.swift,
 				Services/SolarManagerApi/DTOs/ChargingMode.swift,
@@ -212,6 +210,23 @@
 				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
 				Services/SolarManagerApi/SolarManagerApiClient.swift,
 				Services/SolarManagerApi/SolarManagerApiClientError.swift,
+				Widgets/BatteryWidgets/BatteryAppIntent.swift,
+				Widgets/BatteryWidgets/BatteryWidget.swift,
+				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Widgets/BatteryWidgets/BatteryWidgetView.swift,
+				Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Widgets/SolarLensWidgetDataSource.swift,
+				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
 			);
 			target = 493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */;
 		};
@@ -233,13 +248,16 @@
 				AppIntents/OpenAppIntent.swift,
 				AppIntents/SetChargingModeIntent.swift,
 				AppIntents/Shortcuts/Shortcuts.swift,
-				Components/RoundChartButton.swift,
+				AppShortcuts.xcstrings,
 				Components/UpdateTimeStampView.swift,
+				Extensions/ColorExtensions.swift,
 				Features/Consumption/Charging/ChargingButtonView.swift,
 				Features/Consumption/Charging/ChargingModeConfiguration.swift,
 				Features/Consumption/Charging/ChargingModeLabelView.swift,
 				Features/Consumption/Charging/ChargingOptionsPopupView.swift,
 				Features/Consumption/ConsumptionPieChart.swift,
+				Features/Consumption/ConsumptionTodayInfoView.swift,
+				Features/Consumption/DeviceIconView.swift,
 				Layouts/FlowLayout.swift,
 				Localizable.xcstrings,
 				State/CurrentBuildingState.swift,
@@ -631,9 +649,11 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				COMPILER_INDEX_STORE_ENABLE = Default;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_CODE_COVERAGE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens iOS Widgets/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Widgets iOS";
@@ -666,6 +686,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_CODE_COVERAGE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens iOS Widgets/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Widgets iOS";
@@ -692,8 +713,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.1.1;
-				APP_VERSION_BUILDNO = 158;
+				APP_VERSION = 3.2.0;
+				APP_VERSION_BUILDNO = 163;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -727,11 +748,11 @@
 				COPY_PHASE_STRIP = NO;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				FUSE_BUILD_SCRIPT_PHASES = NO;
+				FUSE_BUILD_SCRIPT_PHASES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -756,6 +777,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "";
 			};
 			name = Debug;
@@ -764,8 +786,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.1.1;
-				APP_VERSION_BUILDNO = 158;
+				APP_VERSION = 3.2.0;
+				APP_VERSION_BUILDNO = 163;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -799,11 +821,11 @@
 				COPY_PHASE_STRIP = YES;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				FUSE_BUILD_SCRIPT_PHASES = NO;
+				FUSE_BUILD_SCRIPT_PHASES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -820,6 +842,7 @@
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "";
 			};
 			name = Release;
@@ -832,10 +855,12 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				COMPILER_INDEX_STORE_ENABLE = Default;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_CODE_COVERAGE = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "SolarLens-Watch-App-Info.plist";
@@ -876,9 +901,10 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_CODE_COVERAGE = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "SolarLens-Watch-App-Info.plist";
@@ -917,9 +943,11 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens WidgetsExtension.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				COMPILER_INDEX_STORE_ENABLE = Default;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_CODE_COVERAGE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Widgets";
@@ -954,8 +982,9 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_CODE_COVERAGE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Widgets";
@@ -990,11 +1019,13 @@
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS/Solar Lens iOS.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				COMPILER_INDEX_STORE_ENABLE = Default;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 160;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_CODE_COVERAGE = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar-Lens-Info.plist";
@@ -1011,7 +1042,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1031,10 +1062,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 160;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_CODE_COVERAGE = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar-Lens-Info.plist";
@@ -1051,7 +1083,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

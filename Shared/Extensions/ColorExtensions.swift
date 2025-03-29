@@ -5,7 +5,7 @@ extension Color {
         guard let rgbString else {
             return nil
         }
-        
+
         // Handle hex format
         if rgbString.hasPrefix("#") {
             let hex = String(rgbString.dropFirst())
@@ -32,4 +32,23 @@ extension Color {
             return nil
         }
     }
+
+    func darken(_ amount: Double = 0.2) -> Color {
+        let uiColor = UIColor(self)
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        uiColor.getHue(
+            &hue, saturation: &saturation, brightness: &brightness,
+            alpha: &alpha)
+
+        let newBrightness = CGFloat(max(0, Double(brightness) - amount))
+
+        return Color(
+            UIColor(
+                hue: hue, saturation: saturation, brightness: newBrightness,
+                alpha: alpha))
+    }
+
 }

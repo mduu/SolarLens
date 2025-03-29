@@ -18,9 +18,6 @@
     "%@" : {
       "shouldTranslate" : false
     },
-    "%@ %%" : {
-      "shouldTranslate" : false
-    },
     "%@%%" : {
       "shouldTranslate" : false
     },
@@ -93,24 +90,7 @@
       },
       "shouldTranslate" : false
     },
-    "%lld W" : {
-      "shouldTranslate" : false
-    },
     "%lld%%" : {
-      "shouldTranslate" : false
-    },
-    "%lld%%  %@ kW" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld%%  %2$@ kW"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "🔋%@ %%" : {
       "shouldTranslate" : false
     },
     "A car is chariging." : {
@@ -269,6 +249,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sei sicuro?"
+          }
+        }
+      }
+    },
+    "Autarky: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autarkie: %@"
           }
         }
       }
@@ -1723,6 +1713,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Autoconsumo:"
+          }
+        }
+      }
+    },
+    "Self consumption: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenverbrauch: %@"
           }
         }
       }

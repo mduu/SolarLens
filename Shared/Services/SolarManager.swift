@@ -132,8 +132,11 @@ actor SolarManager: EnergyManager {
                 todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
                 todaySelfConsumptionRate: todayGatewayStatistics?
                     .selfConsumptionRate,
+                todayAutarchyDegree: todayGatewayStatistics?.autarchyDegree,
                 todayProduction: todayGatewayStatistics?.production,
-                todayConsumption: todayGatewayStatistics?.consumption
+                todayConsumption: todayGatewayStatistics?.consumption,
+                todayGridImported: nil,
+                todayGridExported: nil
             )
         }
 

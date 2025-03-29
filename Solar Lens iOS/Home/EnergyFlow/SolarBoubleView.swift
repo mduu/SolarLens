@@ -1,20 +1,32 @@
 import SwiftUI
 
 struct SolarBoubleView: View {
-    var solarInKwh: Double
-    
+    var currentSolarProductionInKwh: Double
+    var todaySolarProductionInWh: Double?
+
     var body: some View {
         CircularInstrument(
-            borderColor: solarInKwh != 0 ? .accentColor : .gray,
+            borderColor: currentSolarProductionInKwh != 0
+                ? .accentColor : .gray,
             label: "Solar Production",
-            value: String(format: "%.1f kW", solarInKwh)
+            value: String(format: "%.1f kW", currentSolarProductionInKwh)
         ) {
-            Image(systemName: "sun.max")
-                .foregroundColor(.black)
+            VStack {
+                if todaySolarProductionInWh != nil {
+                    TodayValue(valueInWh: todaySolarProductionInWh!)
+                }
+
+                Image(systemName: "sun.max")
+                    .foregroundColor(.black)
+            }
         }
     }
 }
 
-#Preview {
-    SolarBoubleView(solarInKwh: 5.4)
+#Preview("Default") {
+    SolarBoubleView(
+        currentSolarProductionInKwh: 5.4,
+        todaySolarProductionInWh: 15500
+    )
+    .frame(width: 150, height: 150)
 }

@@ -180,7 +180,7 @@ class CurrentBuildingState {
 
             print("\(Date()): Set sensor \(sensorId) to priority \(newPriority)")
 
-            let result = try await energyManager.setSensorPriority(
+            _ = try await energyManager.setSensorPriority(
                 sensorId: sensorId,
                 priority: newPriority)
 

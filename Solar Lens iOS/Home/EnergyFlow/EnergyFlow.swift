@@ -29,8 +29,12 @@ struct EnergyFlow: View {
         Grid {
 
             GridRow {
-                SolarBoubleView(solarInKwh: solar)
-                    .frame(maxWidth: .infinity)
+                SolarBoubleView(
+                    currentSolarProductionInKwh: solar,
+                    todaySolarProductionInWh: buildingState
+                        .overviewData.todayProduction
+                )
+                .frame(maxWidth: .infinity)
 
                 ArrowSolarToGrid(
                     isActive: buildingState.overviewData
@@ -77,8 +81,12 @@ struct EnergyFlow: View {
                 )
                 .frame(width: 50, height: 50)
 
-                ConsumptionBoubleView(totalConsumptionInKwh: consumption)
-                    .frame(maxWidth: .infinity)
+                ConsumptionBoubleView(
+                    currentConsumptionInKwh: consumption,
+                    todayConsumptionInWh: buildingState.overviewData
+                        .todayConsumption
+                )
+                .frame(maxWidth: .infinity)
             }
             .frame(maxHeight: .infinity)
 
@@ -121,14 +129,15 @@ struct EnergyFlow: View {
                             currentPower: 0,
                             signal: SensorConnectionStatus.connected)
                     ],
-                    devices: []
+                    devices: [],
+                    todayAutarchyDegree: 78
                 )))
 
 }
 
 #Preview("Small") {
     EnergyFlow()
-        .frame(maxWidth: 250, maxHeight: 250)
+        .frame(maxWidth: 300, maxHeight: 300)
         .environment(
             CurrentBuildingState.fake(
                 overviewData: OverviewData.fake()))

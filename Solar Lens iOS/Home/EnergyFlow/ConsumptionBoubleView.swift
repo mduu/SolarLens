@@ -1,22 +1,35 @@
 import SwiftUI
 
 struct ConsumptionBoubleView: View {
-    var totalConsumptionInKwh: Double
-    
+    var currentConsumptionInKwh: Double
+    var todayConsumptionInWh: Double?
+
     var body: some View {
+
         CircularInstrument(
-            borderColor: totalConsumptionInKwh != 0 ? .teal : .gray,
+            borderColor: currentConsumptionInKwh != 0 ? .teal : .gray,
             label: "Consumption",
             value: String(
-                format: "%.1f kW", totalConsumptionInKwh)
+                format: "%.1f kW", currentConsumptionInKwh)
         ) {
-            Image(systemName: "house")
-                .foregroundColor(.black)
+            VStack {
+                if todayConsumptionInWh != nil {
+                    TodayValue(valueInWh: todayConsumptionInWh!)
+                }
+
+                Image(systemName: "house")
+                    .foregroundColor(.black)
+                    .padding(.top, 1)
+            }
         }
+
     }
 }
 
-#Preview {
-    ConsumptionBoubleView(totalConsumptionInKwh: 4.5)
-        .frame(width: 50, height: 50)
+#Preview("No autarchy") {
+    ConsumptionBoubleView(
+        currentConsumptionInKwh: 4.5,
+        todayConsumptionInWh: 34595
+    )
+    .frame(width: 150, height: 150)
 }
