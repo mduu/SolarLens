@@ -7,6 +7,10 @@ struct MiniDonut: View {
     var showPerentage: Bool = true
     var lineWidth: Int = 4
 
+    func angle(from percentage: Double) -> Double {
+        return percentage * 360.0 / 100.0
+    }
+
     var body: some View {
         GeometryReader { geometry in
             let haldWidth =
@@ -22,14 +26,20 @@ struct MiniDonut: View {
                     angularInset: 0
                 )
                 .cornerRadius(5)
-                .foregroundStyle(color)
+                .foregroundStyle(
+                    AngularGradient(
+                        gradient: Gradient(colors: [color.opacity(0.7), color]),  // Soft Gradient
+                        center: .center,
+                        startAngle: .degrees(-90),  // Start from top center
+                        endAngle: .degrees(angle(from: percentage) - 90)  // End at calculated angle
+                    )
+                )
 
                 SectorMark(
-                    angle: .value("Empty", percentage..<100),
+                    angle: .value("Empty", 0.1..<100),
                     innerRadius: MarkDimension(integerLiteral: innerRadius),
                     angularInset: 0
                 )
-                .cornerRadius(5)
                 .foregroundStyle(color.opacity(0.3))
             }
             .chartBackground { chartProxy in
@@ -55,17 +65,17 @@ struct MiniDonut: View {
 
 #Preview {
     VStack(alignment: .leading) {
-        MiniDonut(percentage: 100, color: .green)
+        MiniDonut(percentage: 80, color: .yellow)
             .frame(width: 40, height: 40)
 
-        MiniDonut(percentage: 35, color: .orange)
+        MiniDonut(percentage: 35, color: .yellow)
             .frame(width: 40, height: 40)
 
         MiniDonut(percentage: 35, color: .orange, showPerentage: false)
             .frame(width: 40, height: 40)
 
         MiniDonut(
-            percentage: 35, color: .cyan, showPerentage: false, lineWidth: 7
+            percentage: 90, color: .teal, showPerentage: false, lineWidth: 7
         )
         .frame(width: 40, height: 40)
 

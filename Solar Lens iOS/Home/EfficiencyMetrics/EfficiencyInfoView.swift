@@ -15,7 +15,7 @@ struct EfficiencyInfoView: View {
             ZStack {
                 MiniDonut(
                     percentage: selfConsumption,
-                    color: .yellow,
+                    color: .indigo,
                     showPerentage: false,
                     lineWidth: 7
                 )
@@ -23,7 +23,7 @@ struct EfficiencyInfoView: View {
 
                 MiniDonut(
                     percentage: autarky,
-                    color: .teal,
+                    color: .purple,
                     showPerentage: false,
                     lineWidth: 7
                 )
@@ -40,7 +40,7 @@ struct EfficiencyInfoView: View {
                     Text(
                         "\(selfConsumption.formatIntoPercentage())"
                     )
-                    .foregroundColor(.yellow.darken(0.3))
+                    .foregroundColor(.indigo)
                     .font(.subheadline)
                     .fontWeight(.bold)
                 }
@@ -54,7 +54,7 @@ struct EfficiencyInfoView: View {
                     Text(
                         "\(autarky.formatIntoPercentage())"
                     )
-                    .foregroundColor(.teal)
+                    .foregroundColor(.purple)
                     .font(.subheadline)
                     .fontWeight(.bold)
                 }
