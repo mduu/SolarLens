@@ -33,7 +33,7 @@ struct EfficiencyInfoView: View {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(
-                        "Self consumption:"
+                        "Self consumption"
                     )
                     .font(.system(size: 9))
                     
@@ -47,7 +47,7 @@ struct EfficiencyInfoView: View {
                 
                 VStack(alignment: .leading, spacing: 1) {
                     Text(
-                        "Autarky:"
+                        "Autarky"
                     )
                     .font(.system(size: 8))
 

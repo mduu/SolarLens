@@ -253,28 +253,24 @@
         }
       }
     },
-    "Autarky:" : {
-
-    },
-    "Autarky: %@" : {
-      "extractionState" : "stale",
+    "Autarky" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autarkie: %@"
+            "value" : "Autarkie"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autarcie: %@"
+            "value" : "Autarcie"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autarchia: %@"
+            "value" : "Autarchia"
           }
         }
       }
@@ -1711,6 +1707,28 @@
         }
       }
     },
+    "Self consumption" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenverbrauch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoconsommation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoconsumo"
+          }
+        }
+      }
+    },
     "Self consumption:" : {
       "localizations" : {
         "de" : {
@@ -1729,29 +1747,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Autoconsumo:"
-          }
-        }
-      }
-    },
-    "Self consumption: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eigenverbrauch: %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autoconsommation: %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autoconsumo: %@"
           }
         }
       }
