@@ -33,7 +33,7 @@ extension Color {
         }
     }
 
-    func darken(amount: Double = 0.2) -> Color {
+    func darken(_ amount: Double = 0.2) -> Color {
         let uiColor = UIColor(self)
         var hue: CGFloat = 0
         var saturation: CGFloat = 0

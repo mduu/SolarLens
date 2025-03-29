@@ -10,48 +10,55 @@ struct EfficiencyInfoView: View {
         let selfConsumption = todaySelfConsumptionRate ?? 0
         let autarky = todayAutarchyDegree ?? 0
 
-        VStack {
+        HStack {
 
             ZStack {
                 MiniDonut(
                     percentage: selfConsumption,
                     color: .yellow,
                     showPerentage: false,
-                    lineWidth: 5
+                    lineWidth: 7
                 )
-                .frame(maxWidth: 50)
+                .frame(maxWidth: 60)
 
                 MiniDonut(
                     percentage: autarky,
                     color: .teal,
                     showPerentage: false,
-                    lineWidth: 5
+                    lineWidth: 7
                 )
-                .frame(maxWidth: 38)
+                .frame(maxWidth: 42)
             }
 
-            VStack {
-                HStack(spacing: 4) {
-                    Circle()
-                        .foregroundColor(.yellow)
-                        .frame(width: 6, height: 6)
-                    
+            VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 1) {
                     Text(
-                        "Self consumption: \(selfConsumption.formatIntoPercentage())"
+                        "Self consumption:"
                     )
                     .font(.system(size: 9))
-                }
-                
-                HStack(spacing: 4) {
-                    Circle()
-                        .foregroundColor(.teal)
-                        .frame(width: 6, height: 6)
                     
                     Text(
-                        "Autarky: \(selfConsumption.formatIntoPercentage())"
+                        "\(selfConsumption.formatIntoPercentage())"
+                    )
+                    .foregroundColor(.yellow.darken(0.3))
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                }
+                
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(
+                        "Autarky:"
                     )
                     .font(.system(size: 8))
+
+                    Text(
+                        "\(autarky.formatIntoPercentage())"
+                    )
+                    .foregroundColor(.teal)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
                 }
+                .padding(.top, 2)
 
             }
         }
