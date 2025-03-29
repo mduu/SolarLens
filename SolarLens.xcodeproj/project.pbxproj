@@ -106,7 +106,6 @@
 		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Extensions/ColorExtensions.swift,
 				Features/Consumption/ConsumptionPieChart.swift,
 				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Features/Consumption/DeviceIconView.swift,
@@ -715,7 +714,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.2.0;
-				APP_VERSION_BUILDNO = 161;
+				APP_VERSION_BUILDNO = 163;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -788,7 +787,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.2.0;
-				APP_VERSION_BUILDNO = 161;
+				APP_VERSION_BUILDNO = 163;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
