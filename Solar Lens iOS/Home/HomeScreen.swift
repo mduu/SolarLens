@@ -10,6 +10,8 @@ struct HomeScreen: View {
     @State var refreshTimer: Timer?
     @State var solarForecastTimer: Timer?
     @State var solarDetailsData: SolarDetailsData?
+    
+    var isPortrait: Bool { verticalSizeClass != .compact }
 
     var body: some View {
         VStack {
@@ -27,7 +29,7 @@ struct HomeScreen: View {
 
                     BackgroundView()
 
-                    if verticalSizeClass != .compact {
+                    if isPortrait {
                         VStack {
                             HeaderView()
                                 .padding(.top, 0)
@@ -56,7 +58,9 @@ struct HomeScreen: View {
                                     todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
                                     todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
                                 )
-                                .frame(maxWidth: 180, maxHeight: 90)
+                                .frame(maxWidth: 180, maxHeight: 120)
+                                .padding(.leading, 5)
+
                             }  // :HStack
                             .padding()
 

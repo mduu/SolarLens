@@ -661,6 +661,28 @@
         }
       }
     },
+    "Efficiency" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effizienz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efficacité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efficienza"
+          }
+        }
+      }
+    },
     "Email" : {
       "localizations" : {
         "de" : {
