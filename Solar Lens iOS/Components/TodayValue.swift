@@ -6,15 +6,15 @@ struct TodayValue: View {
     var body: some View {
         HStack(alignment: .top, spacing: 3) {
             Image(systemName: "calendar")
-                .foregroundColor(.primary)
+                .foregroundColor(.black)
                 .font(.system(size: 12, weight: .bold, design: .default))
 
             HStack(alignment: .firstTextBaseline, spacing: 1) {
                 Text(String(format: "%.1f", Double(valueInWh) / 1000))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.black)
                     .font(.system(size: 12, weight: .bold, design: .default))
                 Text("kWh")
-                    .foregroundColor(.primary)
+                    .foregroundColor(.black)
                     .font(.system(size: 12, weight: .light, design: .default))
             }
         }
