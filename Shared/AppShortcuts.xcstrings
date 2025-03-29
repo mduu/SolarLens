@@ -4,6 +4,16 @@
     "Is any car charging in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Er der nogen bil under opladning i ${applicationName}?",
+              "Oplades der en bil i øjeblikket i ${applicationName}?",
+              "Er der en bil, der er ved at oplade i ${applicationName}?"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -50,6 +60,17 @@
     "Set charging mode to ${chargingMode} in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Indstil oplademodus til ${chargingMode} i ${applicationName}",
+              "Indstil oplademodus i ${applicationName}",
+              "Skift oplademodus til ${chargingMode} i ${applicationName}",
+              "Skift oplademodus i ${applicationName}"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -99,6 +120,16 @@
     "Show battery level in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Vis batteriniveauet i ${applicationName}",
+              "Vis det aktuelle batteriniveau i ${applicationName}",
+              "Hvad er det nuværende batteriniveau i mit hus i ${applicationName}?"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -143,6 +174,16 @@
     "Show power consumption in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Vis strømforbruget i ${applicationName}",
+              "Vis det aktuelle energiforbrug i ${applicationName}",
+              "Hvad er det nuværende strømforbrug i mit hus i ${applicationName}?"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -188,6 +229,15 @@
     "Show solar overview in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Vis soloversigten i ${applicationName}",
+              "Åbn soloversigten i ${applicationName}"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
@@ -229,6 +279,16 @@
     "Show solar production in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Vis solproduktionen i ${applicationName}",
+              "Vis den aktuelle solproduktion i ${applicationName}",
+              "Hvor meget energi producerer mit hus i ${applicationName}?"
+            ]
+          }
+        },
         "de" : {
           "stringSet" : {
             "state" : "translated",
