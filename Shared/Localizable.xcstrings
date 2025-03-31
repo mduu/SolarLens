@@ -95,6 +95,12 @@
     },
     "A car is chariging." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilen oplader."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -117,6 +123,12 @@
     },
     "A car is currently charging." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En bil oplader i øjeblikket."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -139,6 +151,12 @@
     },
     "A connection error occurred!" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der er sket en forbindelsesfejl!"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -161,6 +179,12 @@
     },
     "A general error occurred!" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der sket en generel fejl!"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -183,6 +207,12 @@
     },
     "Always" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altid"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -211,6 +241,12 @@
     },
     "App Icon" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App-ikon"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -233,6 +269,12 @@
     },
     "Are you sure to log out?" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er du sikker på, at du vil logge ud?"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -255,6 +297,12 @@
     },
     "Autarky" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autarki"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -277,6 +325,12 @@
     },
     "Battery" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteri"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -299,6 +353,12 @@
     },
     "Battery level is %@" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteriniveauet er %@"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -321,6 +381,12 @@
     },
     "Cancel" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuller"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -343,6 +409,12 @@
     },
     "Car %" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bil %"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -371,6 +443,12 @@
     },
     "Charging" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opladning"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -393,6 +471,12 @@
     },
     "Charging Mode" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ladetilstand"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -415,6 +499,12 @@
     },
     "Charing Station" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladestation"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -437,6 +527,12 @@
     },
     "Choose charging mode:" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg ladetilstand:"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -462,6 +558,12 @@
     },
     "Confirm" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekræft"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -484,6 +586,12 @@
     },
     "Constant" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konstant"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -512,6 +620,12 @@
     },
     "Constant current" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konstant strøm"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -534,6 +648,12 @@
     },
     "Constant current in watts." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konstant strøm i watt."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -556,6 +676,12 @@
     },
     "Consuming %@ kilo-watts from grid" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forbruger %@ kilowatt fra elnettet"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -578,6 +704,12 @@
     },
     "Consumption" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forbrug"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -600,6 +732,12 @@
     },
     "Current consumption" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelt forbrug"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -622,6 +760,12 @@
     },
     "Current solar production is %@ kilowatts" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuværende solcelleproduktion er %@ kilowatt"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -647,6 +791,12 @@
     },
     "Devices" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enheder"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -669,6 +819,12 @@
     },
     "Efficiency" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effektivitet"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -691,6 +847,12 @@
     },
     "Email" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -719,6 +881,12 @@
     },
     "Empty" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tom"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -741,6 +909,12 @@
     },
     "Exporting %@ kilo-watts to grid" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporterer %@ kilowatt til elnettet"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -763,6 +937,12 @@
     },
     "Forecast" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prognose"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -785,6 +965,12 @@
     },
     "Full" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuld"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -807,6 +993,12 @@
     },
     "Get current battery level" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent aktuelt batteriniveau"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -829,6 +1021,12 @@
     },
     "Get current consumption" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent aktuelt forbrug"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -851,6 +1049,12 @@
     },
     "Get current power consumption" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent aktuelt strømforbrug"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -873,6 +1077,12 @@
     },
     "Get current solar production" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent nuværende solcelleproduktion"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -895,6 +1105,12 @@
     },
     "Get the current battery level in percent" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent det aktuelle batteriniveau i procent"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -917,6 +1133,12 @@
     },
     "Grid" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elnet"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -939,6 +1161,12 @@
     },
     "Here is how:" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her er hvordan:"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -961,6 +1189,12 @@
     },
     "Invalid Email" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ugyldig e-mail"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -989,6 +1223,12 @@
     },
     "Invalid passwort" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ugyldigt kodeord"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1017,6 +1257,12 @@
     },
     "Is any car charging?" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bliver en bil opladet?"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1039,6 +1285,12 @@
     },
     "Is any car currently charging" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er der en bil, der oplader i øjeblikket?"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1061,6 +1313,12 @@
     },
     "kW" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kW"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1092,6 +1350,12 @@
     },
     "Log out" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log ud"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1120,6 +1384,12 @@
     },
     "Logged in as:" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logget ind som:"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1142,6 +1412,12 @@
     },
     "Login" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log ind"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1170,6 +1446,12 @@
     },
     "Login failed!" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login mislykkedes!"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1198,6 +1480,12 @@
     },
     "Max %@ =" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maks %@ ="
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1220,6 +1508,12 @@
     },
     "Minimal" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1248,6 +1542,12 @@
     },
     "Minimal & Solar" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum & Sol"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1276,6 +1576,12 @@
     },
     "Minimum quantity" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimumsmængde"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1298,6 +1604,12 @@
     },
     "Minimum quantity in kWh." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimumsmængde i kWh."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1320,6 +1632,12 @@
     },
     "No car is currently charging." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen bil oplades i øjeblikket."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1342,6 +1660,12 @@
     },
     "No data" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen data"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1364,6 +1688,12 @@
     },
     "No interaction with energy grid" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen interaktion med elnettet"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1386,6 +1716,12 @@
     },
     "Off" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oplad ikke"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1431,6 +1767,12 @@
     },
     "Password" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kodeord"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1459,6 +1801,12 @@
     },
     "Personalize" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilpas"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1487,6 +1835,12 @@
     },
     "Please enter a valid email address" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indtast venligst en gyldig e-mailadresse"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1515,6 +1869,12 @@
     },
     "Please enter a valid password" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indtast venligst et gyldigt kodeord"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1543,6 +1903,12 @@
     },
     "Please make sure you are using the correct email and passwort from your Solar Manager login." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sørg for, at du bruger den korrekte e-mail og det rigtige kodeord fra din Solar Manager-login."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1571,6 +1937,12 @@
     },
     "Please rate us! 🌟" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vurder os! 🌟"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1593,6 +1965,12 @@
     },
     "Prio." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prioritet"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1615,6 +1993,12 @@
     },
     "Production" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produktion"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1637,6 +2021,12 @@
     },
     "Rate app" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vurder appen"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1659,6 +2049,12 @@
     },
     "Returns 'true' if any car is currently charging, otherwise 'false'." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Returnerer 'true', hvis en bil er ved at oplade, ellers 'false'."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1681,6 +2077,12 @@
     },
     "Select target date" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg måldato"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1709,6 +2111,12 @@
     },
     "Select target time" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg mål-tidspunkt"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1737,6 +2145,12 @@
     },
     "Self consumption" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selvforbrug"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1759,6 +2173,12 @@
     },
     "Self consumption:" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selvforbrug:"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1781,6 +2201,12 @@
     },
     "Sensor-ID of the charging station. Leave empty to use the first charging station." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensor-ID for ladestationen. Lad den være tom for at bruge den første ladestation."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1814,6 +2240,12 @@
     },
     "Set" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sæt"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1842,6 +2274,12 @@
     },
     "Set charging mode" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indstil ladetilstand"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1864,6 +2302,12 @@
     },
     "Settings" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indstillinger"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1886,6 +2330,12 @@
     },
     "Show solar overview" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis solenergi oversigt"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1908,6 +2358,12 @@
     },
     "Solar" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solenergi"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1930,6 +2386,12 @@
     },
     "Solar & Tariff" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sol- og takstoptimeret"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1958,6 +2420,12 @@
     },
     "Solar Manger Login" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Manager Login"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1986,6 +2454,12 @@
     },
     "Solar only" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kun solenergi"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2014,6 +2488,12 @@
     },
     "Solar Production" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solcelleproduktion"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2036,6 +2516,12 @@
     },
     "Target %" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål %"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2058,6 +2544,12 @@
     },
     "Target date" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Måldato"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2086,6 +2578,12 @@
     },
     "Target SOC percent (1-100%)." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål SOC i procent (1-100%)."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2108,6 +2606,12 @@
     },
     "Target time" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål-tidspunkt"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2136,6 +2640,12 @@
     },
     "Thank you! 💖" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tak! 💖"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2158,6 +2668,12 @@
     },
     "The battery level of our house is at %lld%%" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteriniveauet i vores hus er %lld%%."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2180,6 +2696,12 @@
     },
     "The charging mode as set to %@" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladetilstand er sat til %@."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2202,6 +2724,12 @@
     },
     "The current overall consumption is %@ kilowatts" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det nuværende samlede forbrug er %@ kilowatt."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2224,6 +2752,12 @@
     },
     "The current solar production is %@ kilowatts" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den nuværende solcelleproduktion er %@ kilowatt."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2246,6 +2780,12 @@
     },
     "There was a problem setting the charging mode." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der opstod et problem med at indstille ladetilstand."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2268,6 +2808,12 @@
     },
     "Time" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tid"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2290,6 +2836,12 @@
     },
     "Time when the charging must be completed." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidspunkt for, hvornår opladningen skal være færdig."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2312,6 +2864,12 @@
     },
     "Total" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I alt"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2334,6 +2892,12 @@
     },
     "Try again" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prøv igen"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2362,6 +2926,12 @@
     },
     "unknown" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ukendt"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2387,6 +2957,12 @@
     },
     "Use the App-Store app on your iPhone and search for 'Solar Lens'." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brug App Store-appen på din iPhone og søg efter 'Solar Lens'."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2412,6 +2988,12 @@
     },
     "Watts" : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watt"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2434,6 +3016,12 @@
     },
     "Your feedback matters! Please consider rating us. Your support helps us improve." : {
       "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din feedback er vigtig! Overvej venligst at bedømme os. Din støtte hjælper os med at forbedre os."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
