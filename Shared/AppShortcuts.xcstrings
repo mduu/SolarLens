@@ -8,7 +8,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Er der nogen bil under opladning i ${applicationName}?",
+              "Bliver en bil opladet i ${applicationName}?",
               "Oplades der en bil i øjeblikket i ${applicationName}?",
               "Er der en bil, der er ved at oplade i ${applicationName}?"
             ]
@@ -64,10 +64,10 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Indstil oplademodus til ${chargingMode} i ${applicationName}",
-              "Indstil oplademodus i ${applicationName}",
-              "Skift oplademodus til ${chargingMode} i ${applicationName}",
-              "Skift oplademodus i ${applicationName}"
+              "Indstil ladetilstand til ${chargingMode} i ${applicationName}",
+              "Indstil ladetilstand i ${applicationName}",
+              "Skift ladetilstand til ${chargingMode} i ${applicationName}",
+              "Skift ladetilstand i ${applicationName}"
             ]
           }
         },
@@ -179,7 +179,7 @@
             "state" : "translated",
             "values" : [
               "Vis strømforbruget i ${applicationName}",
-              "Vis det aktuelle energiforbrug i ${applicationName}",
+              "Vis det aktuelle strømforbrug i ${applicationName}",
               "Hvad er det nuværende strømforbrug i mit hus i ${applicationName}?"
             ]
           }
@@ -233,8 +233,8 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Vis soloversigten i ${applicationName}",
-              "Åbn soloversigten i ${applicationName}"
+              "Vis solenergien i ${applicationName}",
+              "Åbn solenergien i ${applicationName}"
             ]
           }
         },
@@ -283,9 +283,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Vis solproduktionen i ${applicationName}",
-              "Vis den aktuelle solproduktion i ${applicationName}",
-              "Hvor meget energi producerer mit hus i ${applicationName}?"
+              "Vis solcelleproduktion i ${applicationName}",
+              "Vis den aktuelle solcelleproduktion i ${applicationName}",
+              "Hvor meget solenergi producerer mit hus i ${applicationName}?"
             ]
           }
         },
