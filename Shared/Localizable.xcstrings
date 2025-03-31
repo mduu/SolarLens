@@ -457,6 +457,9 @@
         }
       }
     },
+    "Close" : {
+
+    },
     "Confirm" : {
       "localizations" : {
         "de" : {
@@ -638,6 +641,9 @@
           }
         }
       }
+    },
+    "Device priorities" : {
+
     },
     "Devices" : {
       "localizations" : {
