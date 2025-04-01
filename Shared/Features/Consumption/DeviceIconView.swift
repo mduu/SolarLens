@@ -35,7 +35,7 @@ struct DeviceIconView: View {
 
     func ChargingStationIcon(for device: Device) -> some View {
         VStack {
-            if device.currentPowerInWatts > 10 {
+            if device.hasPower() {
                 Image(systemName: "fuelpump.arrowtriangle.right")
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.green, .primary)
@@ -50,7 +50,7 @@ struct DeviceIconView: View {
 
     func EnergyMeasurement(for device: Device) -> some View {
         VStack {
-            if device.currentPowerInWatts > 10 {
+            if device.hasPower() {
                 Image(systemName: "gauge.with.dots.needle.50percent")
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.orange, .primary)

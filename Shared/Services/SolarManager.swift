@@ -127,7 +127,7 @@ actor SolarManager: EnergyManager {
                                     ?? 0,
                                 color: $0.tag?.color,
                                 signal: $0.signal,
-                                hasError: $0.errorCodes.count == 0)
+                                hasError: $0.errorCodes.count > 0)
                         },
                 todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
                 todaySelfConsumptionRate: todayGatewayStatistics?

@@ -553,9 +553,6 @@
         }
       }
     },
-    "Close" : {
-
-    },
     "Confirm" : {
       "localizations" : {
         "da" : {
@@ -786,7 +783,7 @@
         }
       }
     },
-    "Device priorities" : {
+    "Device" : {
 
     },
     "Devices" : {
@@ -816,6 +813,9 @@
           }
         }
       }
+    },
+    "Devices priorities" : {
+
     },
     "Efficiency" : {
       "localizations" : {
@@ -906,6 +906,9 @@
           }
         }
       }
+    },
+    "Explanation" : {
+
     },
     "Exporting %@ kilo-watts to grid" : {
       "localizations" : {

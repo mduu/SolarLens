@@ -1,5 +1,3 @@
-//
-
 import SwiftUI
 
 struct DevicePrioritySheet: View {
@@ -7,61 +5,77 @@ struct DevicePrioritySheet: View {
     @Environment(CurrentBuildingState.self) var buildingState:
         CurrentBuildingState
 
+    @State var isLoading: Bool = false
+
     var body: some View {
-        VStack(spacing: 0) {
-            List {
+        ZStack {
 
-                ForEach(buildingState.overviewData.devices) { device in
-                    HStack {
-                        Text(device.name).fontWeight(.bold)
-                        Spacer()
-                        Text(
-                            device.currentPowerInWatts > 0
-                                ? "\(device.currentPowerInWatts)W" : ""
-                        )
-                        Image(systemName: "line.3.horizontal")  // Drag handle icon
-                            .foregroundColor(.gray)
-                    }
-                    .contentShape(Rectangle())  // Make the whole row tappable
-                }
-                .onMove { indices, newOffset in
-                    //devices.move(fromOffsets: indices, toOffset: newOffset)
-                }
-            }
-            .listStyle(.inset)
+            VStack(spacing: 0) {
 
-            Table(buildingState.overviewData.devices) {
-                TableColumn("Name") { device in
-                    Text(device.name)
-                }
-
-                TableColumn("Power") { device in
-                    Text(
-                        device.currentPowerInWatts > 0
-                            ? "\(device.currentPowerInWatts)W" : ""
-                    )
-                }
-
-                TableColumn("") { device in
-                    Image(systemName: "line.3.horizontal")  // Drag handle icon
+                HStack {
+                    Text("Device")
+                        .font(.footnote)
                         .foregroundColor(.gray)
+                        .padding(.leading, 20)
 
+                    Spacer()
+
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.footnote)
+                        .padding(.trailing, 20)
+                        .foregroundColor(.gray)
                 }
 
-            }
-            .tableColumnHeaders(.visible)
-            .tableStyle(.inset)
+                List {
 
-        }
-        .navigationTitle("Device priorities")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Close") {
-                    dismiss()
+                    ForEach(buildingState.overviewData.devices) { device in
+                        DevicePriorityRow(device: device)
+                            .contentShape(Rectangle())  // Make the whole row tappable
+                    }
+                    .onMove { indices, newOffset in
+                        if let index = indices.first {
+                            let device = buildingState.overviewData.devices[
+                                index
+                            ]
+
+                            Task {
+                                isLoading = true
+                                
+                                await buildingState.setSensorPriority(
+                                    sensorId: device.id,
+                                    newPriority: newOffset + 1
+                                )
+                                
+                                isLoading = false
+                            }
+                        }
+                    }
+                }
+                .listStyle(.inset)
+
+            }
+            .navigationTitle("Devices priorities")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "xmark")  // Use a system icon
+                            .resizable()  // Make the image resizable
+                            .scaledToFit()  // Fit the image within the available space
+                            .frame(width: 18, height: 18)  // Set the size of the image
+                            .foregroundColor(.teal)  // Set the color of the image
+                    }
+
                 }
             }
+            .padding()
+            
+            if isLoading {
+                ProgressView()
+            }
         }
-        .padding()
     }
 }
 
