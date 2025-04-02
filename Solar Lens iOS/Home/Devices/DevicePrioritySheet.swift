@@ -40,12 +40,19 @@ struct DevicePrioritySheet: View {
 
                             Task {
                                 isLoading = true
+
+                                let newPriority =
+                                    newOffset > index
+                                    ? newOffset
+                                    : newOffset + 1
                                 
+                                print("Old prio: \(device.priority), new prio: \(newPriority)")
+
                                 await buildingState.setSensorPriority(
                                     sensorId: device.id,
-                                    newPriority: newOffset + 1
+                                    newPriority: newPriority
                                 )
-                                
+
                                 isLoading = false
                             }
                         }
@@ -71,7 +78,7 @@ struct DevicePrioritySheet: View {
                 }
             }
             .padding()
-            
+
             if isLoading {
                 ProgressView()
             }
