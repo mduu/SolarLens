@@ -783,6 +783,9 @@
         }
       }
     },
+    "Device" : {
+
+    },
     "Devices" : {
       "localizations" : {
         "da" : {
@@ -810,6 +813,9 @@
           }
         }
       }
+    },
+    "Devices priorities" : {
+
     },
     "Efficiency" : {
       "localizations" : {
@@ -900,6 +906,9 @@
           }
         }
       }
+    },
+    "Explanation" : {
+
     },
     "Exporting %@ kilo-watts to grid" : {
       "localizations" : {

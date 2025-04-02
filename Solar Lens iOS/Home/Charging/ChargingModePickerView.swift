@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ChargingModePickerView: View {
-    @Binding var station: ChargingStation
+    var station: ChargingStation
     @State var chargingModeConfiguration = ChargingModeConfiguration()
 
     var body: some View {
@@ -32,15 +32,13 @@ struct ChargingModePickerView: View {
 
 #Preview {
     ChargingModePickerView(
-        station: .constant(
-            ChargingStation(
-                id: "2134",
-                name: "Station 2",
-                chargingMode: .withSolarPower,
-                priority: 1,
-                currentPower: 0,
-                signal: .connected
-            )
+        station: ChargingStation(
+            id: "2134",
+            name: "Station 2",
+            chargingMode: .withSolarPower,
+            priority: 1,
+            currentPower: 0,
+            signal: .connected
         )
     )
 }
