@@ -40,16 +40,22 @@ struct BatteryWidgetView: View {
                     } currentValueLabel: {
 
                         VStack(spacing: 0) {
+                            let isCharging =
+                                entry.currentBatteryChargeRate ?? 0 > 0
+                            let isUnCharging =
+                                entry.currentBatteryChargeRate ?? 0 < 0
+
                             Text(
                                 "\(String(describing: entry.currentBatteryLevel ?? 0))%"
                             )
+                            .font(.system(size: 14))
                             .foregroundColor(
-                                entry.currentBatteryChargeRate ?? 0 < 0
-                                    && renderingMode == .fullColor
+                                isUnCharging && renderingMode == .fullColor
                                     ? .orange
-                                    : nil)
+                                    : nil
+                            )
 
-                            if entry.currentBatteryChargeRate ?? 0 > 0 {
+                            if isCharging {
                                 Image(systemName: "bolt.fill")
                                     .resizable()
                                     .scaledToFit()
@@ -62,11 +68,12 @@ struct BatteryWidgetView: View {
                     .tint(
                         renderingMode == .fullColor
                             ? Gradient(colors: [getColor()])
-                            : nil)
+                            : nil
+                    )
 
                 }
             }
-            .containerBackground(for: .widget) { Color.accentColor }
+            .containerBackground(for: .widget) {}
 
         #if os(watchOS)
             case .accessoryCorner:
@@ -128,17 +135,19 @@ struct BatteryWidgetView_Previews: PreviewProvider {
                 entry: BatteryEntry(
                     date: Date(),
                     currentBatteryLevel: 60,
-                    currentBatteryChargeRate: -1234)
+                    currentBatteryChargeRate: -1234
+                )
             )
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
 
-            // Preview for circular
+            // Preview for circular Accent
             BatteryWidgetView(
                 entry: BatteryEntry(
                     date: Date(),
                     currentBatteryLevel: 60,
-                    currentBatteryChargeRate: 1234)
+                    currentBatteryChargeRate: 1234
+                )
             )
             .previewContext(
                 WidgetPreviewContext(family: .accessoryCircular)
@@ -146,22 +155,49 @@ struct BatteryWidgetView_Previews: PreviewProvider {
             .previewDisplayName("Circular Accent")
             .environment(\.widgetRenderingMode, .accented)
 
+            // Preview for circular Vibrant
+            BatteryWidgetView(
+                entry: BatteryEntry(
+                    date: Date(),
+                    currentBatteryLevel: 100,
+                    currentBatteryChargeRate: 0
+                )
+            )
+            .previewContext(
+                WidgetPreviewContext(family: .accessoryCircular)
+            )
+            .previewDisplayName("Circ. Vibrant 100%")
+            .environment(\.widgetRenderingMode, .vibrant)
+
             // Preview for circular
             BatteryWidgetView(
                 entry: BatteryEntry(
                     date: Date(),
                     currentBatteryLevel: 60,
-                    currentBatteryChargeRate: 1345)
+                    currentBatteryChargeRate: 1345
+                )
             )
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Charging")
+
+            // Preview for circular 100%
+            BatteryWidgetView(
+                entry: BatteryEntry(
+                    date: Date(),
+                    currentBatteryLevel: 100,
+                    currentBatteryChargeRate: 0
+                )
+            )
+            .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            .previewDisplayName("Full")
 
             // Preview for inline
             BatteryWidgetView(
                 entry: BatteryEntry(
                     date: Date(),
                     currentBatteryLevel: 60,
-                    currentBatteryChargeRate: 1234)
+                    currentBatteryChargeRate: 1234
+                )
             )
             .previewContext(WidgetPreviewContext(family: .accessoryInline))
             .previewDisplayName("Inline")
@@ -172,32 +208,35 @@ struct BatteryWidgetView_Previews: PreviewProvider {
                     entry: BatteryEntry(
                         date: Date(),
                         currentBatteryLevel: 60,
-                        currentBatteryChargeRate: 1234)
+                        currentBatteryChargeRate: 1234
+                    )
                 )
                 .previewContext(WidgetPreviewContext(family: .accessoryCorner))
                 .previewDisplayName("Corner")
             #endif
-            
+
             #if os(iOS)
-            // Preview for corner
-            BatteryWidgetView(
-                entry: BatteryEntry(
-                    date: Date(),
-                    currentBatteryLevel: 60,
-                    currentBatteryChargeRate: 1234)
-            )
-            .previewContext(WidgetPreviewContext(family: .systemMedium))
-            .previewDisplayName("System Med.")
-            
-            // Preview for corner
-            BatteryWidgetView(
-                entry: BatteryEntry(
-                    date: Date(),
-                    currentBatteryLevel: 60,
-                    currentBatteryChargeRate: 1234)
-            )
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .previewDisplayName("System Med.")
+                // Preview for corner
+                BatteryWidgetView(
+                    entry: BatteryEntry(
+                        date: Date(),
+                        currentBatteryLevel: 60,
+                        currentBatteryChargeRate: 1234
+                    )
+                )
+                .previewContext(WidgetPreviewContext(family: .systemMedium))
+                .previewDisplayName("System Med.")
+
+                // Preview for corner
+                BatteryWidgetView(
+                    entry: BatteryEntry(
+                        date: Date(),
+                        currentBatteryLevel: 60,
+                        currentBatteryChargeRate: 1234
+                    )
+                )
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+                .previewDisplayName("System Med.")
             #endif
         }
     }
