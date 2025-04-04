@@ -70,7 +70,7 @@ struct HomeScreen: View {
                             HStack(alignment: .bottom) {
                                 Spacer()
 
-                                ChartButton()
+                                TodayChartButton()
                                 
                                 Spacer()
 

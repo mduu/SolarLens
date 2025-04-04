@@ -18,6 +18,12 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "%@ Peak overall consumption =" : {
+
+    },
+    "%@ Peak solar production =" : {
+
+    },
     "%@%%" : {
       "shouldTranslate" : false
     },
@@ -782,9 +788,6 @@
           }
         }
       }
-    },
-    "Day chart" : {
-
     },
     "Device" : {
 
@@ -2868,7 +2871,13 @@
         }
       }
     },
+    "Today autarky:" : {
+
+    },
     "Today production vs. consumption" : {
+
+    },
+    "Today self-consumption:" : {
 
     },
     "Total" : {

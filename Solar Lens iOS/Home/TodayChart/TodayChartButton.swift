@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct ChartButton: View {
+struct TodayChartButton: View {
     @State var showSheet: Bool = false
     
     var body: some View {
@@ -22,7 +22,7 @@ struct ChartButton: View {
         .sheet(isPresented: $showSheet)
         {
             NavigationView {
-                ChartSheet()
+                TodayChartSheet()
             }
             .presentationDetents([.medium, .large])
         }
@@ -31,5 +31,5 @@ struct ChartButton: View {
 }
 
 #Preview {
-    ChartButton()
+    TodayChartButton()
 }
