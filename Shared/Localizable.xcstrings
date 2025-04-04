@@ -783,6 +783,9 @@
         }
       }
     },
+    "Day chart" : {
+
+    },
     "Device" : {
 
     },
@@ -2864,6 +2867,9 @@
           }
         }
       }
+    },
+    "Today production vs. consumption" : {
+
     },
     "Total" : {
       "localizations" : {
