@@ -107,6 +107,13 @@ struct HomeScreen: View {
                                 }
 
                                 Spacer()
+                                
+                                EfficiencyInfoView(
+                                    todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
+                                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
+                                )
+                                .frame(maxWidth: 180, maxHeight: 120)
+                                .padding(.leading, 5)
                             }  // :VStack
                             .padding(.trailing)
 
