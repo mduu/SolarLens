@@ -67,8 +67,11 @@ struct HomeScreen: View {
                             EnergyFlow()
                                 .padding(.horizontal, 50)
 
-                            HStack {
+                            HStack(alignment: .bottom) {
+                                Spacer()
 
+                                TodayChartButton()
+                                
                                 Spacer()
 
                                 ChargingView(
