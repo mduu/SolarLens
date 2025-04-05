@@ -12,10 +12,8 @@ struct SolarBoubleView: View {
             value: String(format: "%.1f kW", currentSolarProductionInKwh)
         ) {
             VStack {
-                if todaySolarProductionInWh != nil {
-                    TodayValue(valueInWh: todaySolarProductionInWh!)
-                }
-
+                TodayValue(valueInWh: todaySolarProductionInWh ?? 0)
+                
                 Image(systemName: "sun.max")
                     .foregroundColor(.black)
             }

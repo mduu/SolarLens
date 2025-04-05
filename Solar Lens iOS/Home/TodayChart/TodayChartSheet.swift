@@ -1,5 +1,3 @@
-//
-
 import SwiftUI
 
 struct TodayChartSheet: View {
@@ -31,4 +29,9 @@ struct TodayChartSheet: View {
 
 #Preview {
     TodayChartSheet()
+        .environment(
+            CurrentBuildingState.fake(
+                overviewData: OverviewData.fake()
+            )
+        )
 }

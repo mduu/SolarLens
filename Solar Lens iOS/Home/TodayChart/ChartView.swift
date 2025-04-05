@@ -21,63 +21,27 @@ struct ChartView: View {
                             )
 
                             HStack {
-                                Text(
-                                    "\(Image(systemName: "sun.max")) Peak solar production ="
+                                let solarPeak = getMaxProductionkW()
+                                TodaySolarView(
+                                    peakProductionInW: solarPeak,
+                                    currentSolarProductionInW: buildingModel
+                                        .overviewData.currentSolarProduction,
+                                    todaySolarProductionInWh: buildingModel
+                                        .overviewData.todayProduction ?? 0
                                 )
-                                .font(.footnote)
-                                Text(
-                                    String(
-                                        format: "%.2f kWp",
-                                        getMaxProductionkW()
-                                    )
+                                .frame(maxHeight: 115)
+
+                                let consumptionPeak = getMaxConsumptionkW()
+                                TodayConsumptionView(
+                                    peakConsumptionInW: consumptionPeak,
+                                    currentConsumptionInW: buildingModel
+                                        .overviewData.currentOverallConsumption,
+                                    todayConsumptionInWh: buildingModel
+                                        .overviewData.todayConsumption ?? 0
                                 )
-                                .font(.footnote)
-                                .foregroundColor(.yellow)
+                                .frame(maxHeight: 115)
                             }
                             .padding(.top)
-
-                            HStack {
-                                Text("\(Image(systemName: "house")) Peak overall consumption =")
-                                    .font(.footnote)
-                                Text(
-                                    String(
-                                        format: "%.2f kWp",
-                                        getMaxConsumptionkW()
-                                    )
-                                )
-                                .font(.footnote)
-                                .foregroundColor(.teal)
-                            }
-
-                            HStack {
-                                let selfConsumptionPercentage =
-                                    buildingModel.overviewData
-                                    .todaySelfConsumptionRate ?? 0
-                                
-                                Text("Today self-consumption:")
-                                    .font(.footnote)
-                                Text(
-                                    selfConsumptionPercentage
-                                        .formatIntoPercentage()
-                                )
-                                .font(.footnote)
-                                .foregroundColor(.indigo)
-                            }
-                            
-                            HStack {
-                                let autarky =
-                                    buildingModel.overviewData
-                                    .todayAutarchyDegree ?? 0
-                                
-                                Text("Today autarky:")
-                                    .font(.footnote)
-                                Text(
-                                    autarky
-                                        .formatIntoPercentage()
-                                )
-                                .font(.footnote)
-                                .foregroundColor(.purple)
-                            }
 
                         }
 
@@ -158,10 +122,7 @@ struct ChartView: View {
     ChartView(
         viewModel: ChartViewModel.previewFake()
     )
-    .frame(maxHeight: 400)
-    .environment(
-        CurrentBuildingState.fake(overviewData: OverviewData())
-    )
+    .frame(maxHeight: 350)
     .environment(
         CurrentBuildingState.fake(
             overviewData: OverviewData.fake()
