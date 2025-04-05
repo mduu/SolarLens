@@ -52,6 +52,10 @@ struct HomeScreen: View {
                                     )
                                     .frame(maxWidth: 180, maxHeight: 120)
                                     .padding(.leading, 5)
+                                } else {
+                                    ProgressView()
+                                        .frame(maxWidth: 180, maxHeight: 120)
+                                        .padding(.leading, 5)
                                 }
 
                                 EfficiencyInfoView(
@@ -107,6 +111,10 @@ struct HomeScreen: View {
                                     )
                                     .frame(maxWidth: 180, maxHeight: 120)
                                     .padding(.leading, 5)
+                                } else {
+                                    ProgressView()
+                                        .frame(maxWidth: 180, maxHeight: 120)
+                                        .padding(.leading, 5)
                                 }
 
                                 Spacer()
@@ -122,13 +130,16 @@ struct HomeScreen: View {
 
                             EnergyFlow()
 
-                            VStack {
+                            VStack(alignment: .trailing) {
                                 HStack(alignment: .center) {
                                     AppLogo()
                                     LogoutButtonView()
                                         .padding(.leading, 5)
                                 }
                                 .padding(.trailing, -30)
+
+                                TodayChartButton()
+                                    .padding(.top)
 
                                 Spacer()
 
