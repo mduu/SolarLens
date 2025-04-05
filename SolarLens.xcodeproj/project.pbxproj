@@ -714,7 +714,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.2.0;
-				APP_VERSION_BUILDNO = 169;
+				APP_VERSION_BUILDNO = 170;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -787,7 +787,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.2.0;
-				APP_VERSION_BUILDNO = 169;
+				APP_VERSION_BUILDNO = 170;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1030,6 +1030,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar-Lens-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSSiriUsageDescription = "We use Siri to handle your voice commends";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1071,6 +1072,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar-Lens-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSSiriUsageDescription = "We use Siri to handle your voice commends";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

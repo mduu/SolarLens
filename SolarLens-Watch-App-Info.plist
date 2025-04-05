@@ -10,9 +10,8 @@
 		<string>de</string>
 		<string>fr</string>
 		<string>it</string>
+		<string>Danish</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>GetSolarProductionIntent</string>
