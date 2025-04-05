@@ -784,10 +784,60 @@
       }
     },
     "Current:" : {
-
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuel:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuell:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actuel:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attuale:"
+          }
+        }
+      }
     },
     "Device" : {
-
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enhed"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerät"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareil"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivo"
+          }
+        }
+      }
     },
     "Devices" : {
       "localizations" : {
@@ -818,7 +868,32 @@
       }
     },
     "Devices priorities" : {
-
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enhedsprioriteter"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerätepriorität"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priorités des appareils"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priorità dei dispositivi"
+          }
+        }
+      }
     },
     "Efficiency" : {
       "localizations" : {
@@ -911,7 +986,32 @@
       }
     },
     "Explanation" : {
-
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forklaring"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erklärung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explication"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spiegazione"
+          }
+        }
+      }
     },
     "Exporting %@ kilo-watts to grid" : {
       "localizations" : {
@@ -1154,7 +1254,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réseau électrique"
+            "value" : "Réseau"
           }
         },
         "it" : {
@@ -1806,7 +1906,32 @@
       }
     },
     "Peak:" : {
-
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max.:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crête:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Picco:"
+          }
+        }
+      }
     },
     "Personalize" : {
       "localizations" : {
@@ -2512,13 +2637,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Production solaire"
+            "value" : "Production"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Produzione solare"
+            "value" : "Produzione"
           }
         }
       }
@@ -2872,7 +2997,32 @@
       }
     },
     "Today production vs. consumption" : {
-
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagens produktion vs. forbrug"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heutige Produktion & Verbrauch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production du jour vs. consommation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione odierna vs. consumo"
+          }
+        }
+      }
     },
     "Total" : {
       "localizations" : {
@@ -2903,7 +3053,32 @@
       }
     },
     "Total:" : {
-
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I alt:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Totale:"
+          }
+        }
+      }
     },
     "Try again" : {
       "localizations" : {
