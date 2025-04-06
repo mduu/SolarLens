@@ -1,0 +1,13 @@
+English texts:
+- screen_1: See how the energy flows!
+- screen_2: Today's history
+- screen_3: Prioritise devices
+- screen_4: Control EV charging mode
+- screen_5: Build your own automations
+
+German texts:
+- screen_1: Beobachte den Energiefluss! 
+- screen_2: Heutiger Verlauf
+- screen_3: Priorisiere Deine Geräte
+- screen_4: Kontrolliere den Lademodus
+- screen_5: Baue eigene Automatisationen
