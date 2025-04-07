@@ -19,8 +19,9 @@ struct EfficiencyWidgetView: View {
                     EfficiencyInfoView(
                         todaySelfConsumptionRate: entry.selfConsumption,
                         todayAutarchyDegree: entry.autarky,
-                        showLegend: family == .systemMedium,
-                        showTitle: false
+                        showLegend: true,
+                        showTitle: false,
+                        legendAtBottom: family == .systemSmall
                     )
                 }
                 .containerBackground(for: .widget) { }

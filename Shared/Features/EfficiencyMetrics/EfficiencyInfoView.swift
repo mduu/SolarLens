@@ -5,6 +5,7 @@ struct EfficiencyInfoView: View {
     var todayAutarchyDegree: Double?
     var showLegend: Bool = true
     var showTitle: Bool = true
+    var legendAtBottom: Bool = false
 
     var body: some View {
         let selfConsumption = todaySelfConsumptionRate ?? 0
@@ -17,34 +18,70 @@ struct EfficiencyInfoView: View {
                     .foregroundColor(.indigo)
             }
             
-            HStack {
-                
-                ZStack {
-                    MiniDonut(
-                        percentage: selfConsumption,
-                        color: .indigo,
-                        showPerentage: false,
-                        lineWidth: 7
-                    )
-                    .frame(maxWidth: 60)
+            VStack {
+                HStack {
                     
-                    #if os(watchOS)
-                    let ringSize = 30
-                    #else
-                    let ringSize = 42
-                    #endif
-                    MiniDonut(
-                        percentage: autarky,
-                        color: .purple,
-                        showPerentage: false,
-                        lineWidth: 7
-                    )
-                    .frame(maxWidth: CGFloat(ringSize))
+                    ZStack {
+                        MiniDonut(
+                            percentage: selfConsumption,
+                            color: .indigo,
+                            showPerentage: false,
+                            lineWidth: 7
+                        )
+                        .frame(maxWidth: 60)
+                        
+#if os(watchOS)
+                        let ringSize = 30
+#else
+                        let ringSize = 42
+#endif
+                        MiniDonut(
+                            percentage: autarky,
+                            color: .purple,
+                            showPerentage: false,
+                            lineWidth: 7
+                        )
+                        .frame(maxWidth: CGFloat(ringSize))
+                    }
+                    
+                    if showLegend && !legendAtBottom {
+                        VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(
+                                    "Self consumption"
+                                )
+                                .font(.system(size: 9))
+                                
+                                Text(
+                                    "\(selfConsumption.formatIntoPercentage())"
+                                )
+                                .foregroundColor(.indigo)
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(
+                                    "Autarky"
+                                )
+                                .font(.system(size: 8))
+                                
+                                Text(
+                                    "\(autarky.formatIntoPercentage())"
+                                )
+                                .foregroundColor(.purple)
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                            }
+                            .padding(.top, 2)
+                            
+                        }
+                    } // :if
                 }
                 
-                if showLegend {
-                    VStack(alignment: .leading) {
-                        VStack(alignment: .leading, spacing: 1) {
+                if showLegend && legendAtBottom {
+                    VStack(alignment: .center, spacing: 0) {
+                        VStack(alignment: .center) {
                             Text(
                                 "Self consumption"
                             )
@@ -58,7 +95,7 @@ struct EfficiencyInfoView: View {
                             .fontWeight(.bold)
                         }
                         
-                        VStack(alignment: .leading, spacing: 1) {
+                        VStack(alignment: .center) {
                             Text(
                                 "Autarky"
                             )
@@ -74,7 +111,7 @@ struct EfficiencyInfoView: View {
                         .padding(.top, 2)
                         
                     }
-                }
+                } // :if
             }
         }
     }
