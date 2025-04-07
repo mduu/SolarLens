@@ -118,6 +118,10 @@
 				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
 				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
 				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Widgets/EfficiencyWidgets/EfficiencyAppIntent.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidget.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidgetProvider.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidgetView.swift,
 				Widgets/SolarLensWidgetDataSource.swift,
 				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
@@ -142,6 +146,8 @@
 				AppIntents/SetChargingModeIntent.swift,
 				AppIntents/Shortcuts/Shortcuts.swift,
 				AppShortcuts.xcstrings,
+				Components/MiniDonut.swift,
+				Features/EfficiencyMetrics/EfficiencyInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
 				Widgets/BatteryWidgets/BatteryWidget.swift,
 				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
@@ -150,6 +156,10 @@
 				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
 				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
 				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Widgets/EfficiencyWidgets/EfficiencyAppIntent.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidget.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidgetProvider.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidgetView.swift,
 				Widgets/SolarLensWidgetDataSource.swift,
 				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
@@ -165,6 +175,9 @@
 		493AADB42D59254B00591E73 /* Exceptions for "Shared" folder in "Solar Lens iOS WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Components/MiniDonut.swift,
+				Extensions/DoubleExtensions.swift,
+				Features/EfficiencyMetrics/EfficiencyInfoView.swift,
 				Features/Overview/OverviewChart.swift,
 				Features/Solar/ForecastItemView.swift,
 				Features/Solar/ForecastListView.swift,
@@ -217,6 +230,10 @@
 				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
 				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
 				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Widgets/EfficiencyWidgets/EfficiencyAppIntent.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidget.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidgetProvider.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidgetView.swift,
 				Widgets/SolarLensWidgetDataSource.swift,
 				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
 				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
@@ -714,7 +731,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.2.0;
-				APP_VERSION_BUILDNO = 171;
+				APP_VERSION_BUILDNO = 172;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -787,7 +804,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.2.0;
-				APP_VERSION_BUILDNO = 171;
+				APP_VERSION_BUILDNO = 172;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

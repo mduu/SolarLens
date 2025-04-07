@@ -41,3 +41,12 @@ extension Double {
         "kWh"
     }
 }
+
+extension Double? {
+    func formatIntoPercentage() -> String {
+        String(
+            format: "%.0f%%",
+            Double(self ?? 0)
+        )
+    }
+}
