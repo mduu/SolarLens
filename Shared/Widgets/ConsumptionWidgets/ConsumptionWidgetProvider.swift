@@ -70,7 +70,7 @@ struct ConsumptionWidgetProvider: AppIntentTimelineProvider {
         [
             AppIntentRecommendation(
                 intent: ConsumptionAppIntent(),
-                description: "Current Consumption")
+                description: "Current consumption")
         ]
     }
 

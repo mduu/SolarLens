@@ -18,6 +18,12 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "%@ %%" : {
+      "shouldTranslate" : false
+    },
+    "%@ kW" : {
+      "shouldTranslate" : false
+    },
     "%@%%" : {
       "shouldTranslate" : false
     },
@@ -90,7 +96,44 @@
       },
       "shouldTranslate" : false
     },
+    "%lld W" : {
+      "shouldTranslate" : false
+    },
     "%lld%%" : {
+      "shouldTranslate" : false
+    },
+    "%lld%%  %@ kW" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld%%  %2$@ kW"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "☀️ %@" : {
+      "shouldTranslate" : false
+    },
+    "☀️ %lld W" : {
+      "shouldTranslate" : false
+    },
+    "♻️ %@, 🍃 %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "♻️ %1$@, 🍃 %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "🔋%@ %%" : {
+      "shouldTranslate" : false
+    },
+    "0" : {
       "shouldTranslate" : false
     },
     "A car is chariging." : {
@@ -239,6 +282,34 @@
         }
       }
     },
+    "App icon" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App-ikon"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Symbol"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icône de l'application"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icona dell'app"
+          }
+        }
+      }
+    },
     "App Icon" : {
       "localizations" : {
         "da" : {
@@ -347,6 +418,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Batteria"
+          }
+        }
+      }
+    },
+    "Battery Level" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteriniveauet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteriestand"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau de batterie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livello batteria"
           }
         }
       }
@@ -553,6 +652,34 @@
         }
       }
     },
+    "Configuration" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfiguration"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfiguration"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuration"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurazione"
+          }
+        }
+      }
+    },
     "Confirm" : {
       "localizations" : {
         "da" : {
@@ -727,6 +854,34 @@
         }
       }
     },
+    "Current Battery Level" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelt batteriniveauet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuellem Batteriestand"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau de batterie actuel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livello batteria attuale"
+          }
+        }
+      }
+    },
     "Current consumption" : {
       "localizations" : {
         "da" : {
@@ -751,6 +906,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Consumo attuale"
+          }
+        }
+      }
+    },
+    "Current production and consumption" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuel produktion og forbrug"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Produktion und Verbrauch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production et consommation actuelles"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione e consumo attuali"
+          }
+        }
+      }
+    },
+    "Current Solar Production" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuel solproduktion"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Solarproduktion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production solaire actuelle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione solare attuale"
           }
         }
       }
@@ -1040,6 +1251,9 @@
           }
         }
       }
+    },
+    "Favorite Emoji" : {
+      "shouldTranslate" : false
     },
     "Forecast" : {
       "localizations" : {
@@ -2153,6 +2367,34 @@
         }
       }
     },
+    "Production & Consumption" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produktion & Forbrug"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produktion & Verbrauch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production & Consommation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione & Consumo"
+          }
+        }
+      }
+    },
     "Rate app" : {
       "localizations" : {
         "da" : {
@@ -2490,6 +2732,230 @@
         }
       }
     },
+    "Shows the current battery level." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser det aktuelle batteriniveau."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt den aktuellen Batteriestand."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche le niveau de batterie actuel."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra il livello batteria attuale."
+          }
+        }
+      }
+    },
+    "Shows the current energy consumption." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser det aktuelle energiforbrug."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt den aktuellen Energieverbrauch."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche la consommation d'énergie actuelle."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra il consumo energetico attuale."
+          }
+        }
+      }
+    },
+    "Shows the current production and consumptions." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser den aktuelle produktion og forbrug."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt die aktuelle Produktion und den Verbrauch."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche la production et la consommation actuelles."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra la produzione e il consumo attuali."
+          }
+        }
+      }
+    },
+    "Shows the current solar production." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser den aktuelle solproduktion."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt die aktuelle Solarproduktion."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche la production solaire actuelle."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra la produzione solare attuale."
+          }
+        }
+      }
+    },
+    "Shows the rings of today efficiency." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser ringene for dagens effektivitet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt heutige Effizienz als Ringe."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche les anneaux de l'efficacité d'aujourd'hui."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra gli anelli dell'efficienza di oggi."
+          }
+        }
+      }
+    },
+    "Shows the Solar Lens app icon." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser Solar Lens app-ikonet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt das Solar Lens App Symbol."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche l'icône de l'application Solar Lens."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra l'icona dell'app Solar Lens."
+          }
+        }
+      }
+    },
+    "Shows the solar production history." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser solproduktionshistorikken."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt den Verlauf der Solarproduktion."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche l'historique de la production solaire."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra la cronologia della produzione solare."
+          }
+        }
+      }
+    },
+    "Shows todays production and consumption as chart." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser dagens produktion og forbrug som diagram."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt die heutige Produktion und den Verbrauch als Diagramm."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche la production et la consommation d'aujourd'hui sous forme de graphique."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra la produzione e il consumo di oggi come grafico."
+          }
+        }
+      }
+    },
     "Solar" : {
       "localizations" : {
         "da" : {
@@ -2644,6 +3110,90 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Produzione"
+          }
+        }
+      }
+    },
+    "Solar Production History" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solproduktionshistorik"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlauf Solarproduktion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique de la production solaire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cronologia della produzione solare"
+          }
+        }
+      }
+    },
+    "Solar Production Timline" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solproduktionstidslinje"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitachse der Solarproduktion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chronologie de la production solaire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cronologia della produzione solare"
+          }
+        }
+      }
+    },
+    "Solarproduction" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solproduktion"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solarproduktion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production solaire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione solare"
           }
         }
       }
@@ -2940,6 +3490,9 @@
         }
       }
     },
+    "This is an example widget." : {
+      "shouldTranslate" : false
+    },
     "Time" : {
       "localizations" : {
         "da" : {
@@ -2996,6 +3549,34 @@
         }
       }
     },
+    "Today History" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagens historik"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heutiger Verlauf"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique d'aujourd'hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cronologia di oggi"
+          }
+        }
+      }
+    },
     "Today production vs. consumption" : {
       "localizations" : {
         "da" : {
@@ -3020,6 +3601,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Produzione odierna vs. consumo"
+          }
+        }
+      }
+    },
+    "Today Timeline" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagens tidslinje"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heutige Zeitachse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chronologie d'aujourd'hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cronologia di oggi"
           }
         }
       }

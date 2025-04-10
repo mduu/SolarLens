@@ -117,7 +117,7 @@ struct EfficiencyInfoView: View {
     }
 }
 
-#Preview {
+#Preview("EN") {
     VStack {
         EfficiencyInfoView(
             todaySelfConsumptionRate: 81.2,
@@ -125,6 +125,19 @@ struct EfficiencyInfoView: View {
         )
         .frame(maxWidth: 180, maxHeight: 120)
         
+        Spacer()
+    }
+}
+
+#Preview("DE") {
+    VStack {
+        EfficiencyInfoView(
+            todaySelfConsumptionRate: 81.2,
+            todayAutarchyDegree: 92.1
+        )
+        .frame(maxWidth: 180, maxHeight: 120)
+        .environment(\.locale, Locale(identifier: "DE"))
+
         Spacer()
     }
 }

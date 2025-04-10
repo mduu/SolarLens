@@ -24,7 +24,7 @@ struct EfficiencyWidgetView: View {
                         legendAtBottom: family == .systemSmall
                     )
                 }
-                .containerBackground(for: .widget) { }
+                .containerBackground(for: .widget) {}
         #endif
         case .accessoryCircular:
             ZStack {
@@ -165,6 +165,18 @@ struct EfficiencyWidgetView_Previews: PreviewProvider {
                 )
                 .previewContext(WidgetPreviewContext(family: .systemMedium))
                 .previewDisplayName("Sys. Med.")
+
+                // Preview for systemMedium
+                EfficiencyWidgetView(
+                    entry: EfficiencyEntry(
+                        date: Date(),
+                        selfConsumption: 60,
+                        autarky: 87
+                    )
+                )
+                .previewContext(WidgetPreviewContext(family: .systemMedium))
+                .previewDisplayName("Sys. Med. DE")
+                .environment(\.locale, Locale(identifier: "DE"))
             #endif
         }
     }
