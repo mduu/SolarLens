@@ -6,13 +6,14 @@ struct SensorInfosV1Response : Codable {
     var priority: Int
     var signal: SensorConnectionStatus
     var deviceActivity: Int
+    var soc: Int? // Car: Battery-Level
     var errorCodes: [String]
     var ip: String?
     var mac: String?
     var createdAt: String?
     var updatedAt: String?
     var tag: SensorInfosV1Tag?
-    //var data: []
+    var data: SensorInfosV1Data?
     //var strings: []
     
     /// Map the string value to a proper enum
@@ -49,4 +50,9 @@ struct SensorInfosV1Response : Codable {
 struct SensorInfosV1Tag: Codable {
     var name: String
     var color: String?
+}
+
+struct SensorInfosV1Data: Codable {
+    var batteryCapacity: Int?
+    var favorite: Bool?
 }
