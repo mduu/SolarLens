@@ -182,6 +182,7 @@
 				Features/Solar/ForecastItemView.swift,
 				Features/Solar/ForecastListView.swift,
 				Features/Solar/SolarTodayInfoView.swift,
+				Localizable.xcstrings,
 				Services/AppStoreReviewManager.swift,
 				Services/DateExtensions.swift,
 				Services/EnergyManager.swift,
@@ -275,7 +276,6 @@
 				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Features/Consumption/DeviceIconView.swift,
 				Layouts/FlowLayout.swift,
-				Localizable.xcstrings,
 				State/CurrentBuildingState.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
