@@ -6,7 +6,7 @@ struct SensorInfosV1Response : Codable {
     var priority: Int
     var signal: SensorConnectionStatus
     var deviceActivity: Int
-    var soc: Int? // Car: Battery-Level
+    var soc: Double? // Car: Battery-Level
     var errorCodes: [String]
     var ip: String?
     var mac: String?
@@ -45,6 +45,10 @@ struct SensorInfosV1Response : Codable {
     func isDevice() -> Bool {
         return deviceType == .device
     }
+    
+    func isCar() -> Bool {
+        return deviceType == .car
+    }
 }
 
 struct SensorInfosV1Tag: Codable {
@@ -53,6 +57,6 @@ struct SensorInfosV1Tag: Codable {
 }
 
 struct SensorInfosV1Data: Codable {
-    var batteryCapacity: Int?
+    var batteryCapacity: Double?
     var favorite: Bool?
 }

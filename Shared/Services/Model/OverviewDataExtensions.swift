@@ -24,7 +24,8 @@ extension OverviewData {
             todayConsumption: nil,
             todayGridImported: nil,
             todayGridExported: nil,
-            todayBatteryCharged: nil
+            todayBatteryCharged: nil,
+            cars: []
         )
     }
 
