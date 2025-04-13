@@ -478,6 +478,34 @@
         }
       }
     },
+    "Batterylevel of my car" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteriniveauet på min bil"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batteriestand meines Autos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau de batterie de ma voiture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livello della batteria della mia auto"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "da" : {
@@ -502,6 +530,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancellare"
+          }
+        }
+      }
+    },
+    "Car" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bil"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voiture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
           }
         }
       }
@@ -536,6 +592,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quantità target%"
+          }
+        }
+      }
+    },
+    "Car Information" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilinformation"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto Informationen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informations sur la voiture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informazioni sull'auto"
           }
         }
       }
@@ -1507,6 +1591,34 @@
         }
       }
     },
+    "Information about the car's charging state" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information om bilens opladningsstatus"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informationen zum Batteriestand des Autos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informations sur l'état de charge de la voiture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informazioni sullo stato di carica dell'auto"
+          }
+        }
+      }
+    },
     "Invalid Email" : {
       "localizations" : {
         "da" : {
@@ -2451,6 +2563,34 @@
         }
       }
     },
+    "Select car to query" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg bil for forespørgsel"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto auswählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionner la voiture à interroger"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli auto"
+          }
+        }
+      }
+    },
     "Select target date" : {
       "localizations" : {
         "da" : {
@@ -3350,6 +3490,40 @@
         }
       }
     },
+    "The %@ is charged %@." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ er opladet %2$@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ è carico al %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The %1$@ is charged %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ est chargé à %2$@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ è carico al %2$@."
+          }
+        }
+      }
+    },
     "The battery level of our house is at %lld%%" : {
       "localizations" : {
         "da" : {
@@ -3809,6 +3983,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Watt"
+          }
+        }
+      }
+    },
+    "What is the charging state of my car?" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvad er opladningsstatusen for min bil?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie ist der Batteriestand meines Autos?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quel est l'état de charge de ma voiture?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qual è lo stato di carica della mia auto?"
           }
         }
       }

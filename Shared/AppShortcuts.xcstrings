@@ -330,6 +330,61 @@
           }
         }
       }
+    },
+    "What is the battery level of my car in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Hvad er batteriniveauet på min bil i ${applicationName}",
+              "Batteriniveauet på min bil i ${applicationName}",
+              "Hvor meget er min bil opladet i ${applicationName}"
+            ]
+          }
+        },
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Wie hoch ist der Batteriestand meines Autos in ${applicationName}",
+              "Batteriestand meines Autos in ${applicationName}",
+              "Wie voll ist die Batterie meines Autos in ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "What is the battery level of my car in ${applicationName}",
+              "Batterylevel of my car in ${applicationName}",
+              "How much is my car charged in ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Quel est le niveau de batterie de ma voiture dans ${applicationName}",
+              "Niveau de batterie de ma voiture dans ${applicationName}",
+              "Combien ma voiture est-elle chargée dans ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Qual è il livello della batteria della mia auto in ${applicationName}",
+              "Livello della batteria della mia auto in ${applicationName}",
+              "Quanto è carica la batteria della mia auto in ${applicationName}"
+            ]
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
