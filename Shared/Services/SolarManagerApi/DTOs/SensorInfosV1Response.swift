@@ -3,6 +3,7 @@ struct SensorInfosV1Response : Codable {
     var device_type: String // device, smart-meter, inverter, car
     var type: String // Battery, Car Charging, Energy Measurement, Heatpump, Car
     var device_group: String // Name of the device
+    var name: String? // Cars seem to have the name on this lavel; not in the tags
     var priority: Int
     var signal: SensorConnectionStatus
     var deviceActivity: Int

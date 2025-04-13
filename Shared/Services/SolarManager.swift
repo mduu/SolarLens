@@ -452,7 +452,7 @@ actor SolarManager: EnergyManager {
 
                 return Car.init(
                     id: sensorInfo._id,
-                    name: sensorInfo.tag?.name ?? sensorInfo.device_group,
+                    name: sensorInfo.name ?? sensorInfo.tag?.name ?? sensorInfo.device_group,
                     priority: sensorInfo.priority,
                     batteryPercent: sensorInfo.soc,
                     batteryCapacity: sensorInfo.data?.batteryCapacity,
