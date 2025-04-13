@@ -8,7 +8,7 @@ struct SolarBoubleView: View {
         CircularInstrument(
             borderColor: currentSolarProductionInKwh != 0
                 ? .accentColor : .gray,
-            label: "Solar Production",
+            label: "Production",
             value: String(format: "%.1f kW", currentSolarProductionInKwh)
         ) {
             VStack {

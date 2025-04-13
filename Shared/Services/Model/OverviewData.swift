@@ -29,6 +29,7 @@ class OverviewData {
     var todayGridImported: Double? = nil
     var todayGridExported: Double? = nil
     var todayBatteryCharged: Double? = nil
+    var cars: [Car] = []
 
     init() {
     }
@@ -55,7 +56,8 @@ class OverviewData {
         todayConsumption: Double? = nil,
         todayGridImported: Double? = nil,
         todayGridExported: Double? = nil,
-        todayBatteryCharged: Double? = nil
+        todayBatteryCharged: Double? = nil,
+        cars: [Car] = []
     ) {
         self.currentSolarProduction = currentSolarProduction
         self.currentOverallConsumption = currentOverallConsumption
@@ -81,6 +83,7 @@ class OverviewData {
         self.todayGridImported = todayGridImported
         self.todayGridExported = todayGridExported
         self.todayBatteryCharged = todayBatteryCharged
+        self.cars = cars
     }
 
     func isFlowBatteryToHome() -> Bool {

@@ -31,22 +31,24 @@ actor SolarManager: EnergyManager {
 
         async let streamSensorInfosResult =
             try await solarManagerApi.getV1StreamGateway(
-                solarManagerId: systemInformation!.sm_id)
+                solarManagerId: systemInformation!.sm_id
+            )
 
         async let todayGatewayStatisticsRsult =
             try await solarManagerApi.getV1Statistics(
                 solarManagerId: systemInformation!.sm_id,
                 from: Date.todayStartOfDay(),
                 to: Date.todayEndOfDay(),
-                accuracy: .high)
+                accuracy: .high
+            )
 
         guard systemInformation != nil else {
             return lastOverviewData ?? OverviewData.empty()
         }
 
         if let chart = try await solarManagerApi.getV1Chart(
-            solarManagerId: systemInformation!.sm_id)
-        {
+            solarManagerId: systemInformation!.sm_id
+        ) {
             let batteryChargingRate =
                 chart.battery != nil
                 ? chart.battery!.batteryCharging
@@ -64,9 +66,10 @@ actor SolarManager: EnergyManager {
             let streamSensorInfos = try await streamSensorInfosResult
             let todayGatewayStatistics = try await todayGatewayStatisticsRsult
             let isAnyCarCharing = getIsAnyCarCharing(
-                streamSensors: streamSensorInfos)
+                streamSensors: streamSensorInfos
+            )
 
-            return OverviewData(
+            return OverviewData.init(
                 currentSolarProduction: chart.production,
                 currentOverallConsumption: chart.consumption,
                 currentBatteryLevel: chart.battery?.capacity ?? 0,
@@ -93,10 +96,9 @@ actor SolarManager: EnergyManager {
                     : sensorInfos!
                         .filter { $0.isCarCharging() }
                         .map {
-                            let id = $0._id
-                            let streamInfo = streamSensorInfos?.devices.first {
-                                $0._id == id
-                            }
+                            let streamInfo = streamSensorInfos?.deviceById(
+                                $0._id
+                            )
 
                             return ChargingStation.init(
                                 id: $0._id,
@@ -105,7 +107,8 @@ actor SolarManager: EnergyManager {
                                     ?? ChargingMode.off,
                                 priority: $0.priority,
                                 currentPower: streamInfo?.currentPower ?? 0,
-                                signal: $0.signal)
+                                signal: $0.signal
+                            )
                         },
                 devices: sensorInfos == nil
                     ? []
@@ -120,14 +123,17 @@ actor SolarManager: EnergyManager {
                             return Device.init(
                                 id: $0._id,
                                 deviceType: Device.mapStringToDeviceType(
-                                    stringValue: $0.type),
+                                    stringValue: $0.type
+                                ),
                                 name: $0.tag?.name ?? $0.device_group,
+
                                 priority: $0.priority,
                                 currentPowerInWatts: streamInfo?.currentPower
                                     ?? 0,
                                 color: $0.tag?.color,
                                 signal: $0.signal,
-                                hasError: $0.errorCodes.count > 0)
+                                hasError: $0.errorCodes.count > 0
+                            )
                         },
                 todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
                 todaySelfConsumptionRate: todayGatewayStatistics?
@@ -136,7 +142,8 @@ actor SolarManager: EnergyManager {
                 todayProduction: todayGatewayStatistics?.production,
                 todayConsumption: todayGatewayStatistics?.consumption,
                 todayGridImported: nil,
-                todayGridExported: nil
+                todayGridExported: nil,
+                cars: mapChars(streamSensorInfos: streamSensorInfos)
             )
         }
 
@@ -161,7 +168,8 @@ actor SolarManager: EnergyManager {
         for chargingStationSensorId in chargingStationSensorIds {
             let chargingStationSensorData =
                 try? await solarManagerApi.getV1ConsumptionSensor(
-                    sensorId: chargingStationSensorId)
+                    sensorId: chargingStationSensorId
+                )
 
             if chargingStationSensorData != nil {
                 total =
@@ -193,10 +201,12 @@ actor SolarManager: EnergyManager {
             solarManagerId: systemInformation!.sm_id,
             from: Date.todayStartOfDay(),
             to: Date.todayEndOfDay(),
-            accuracy: .high)
+            accuracy: .high
+        )
 
         async let forecastResult = solarManagerApi.getV1ForecastGateway(
-            solarManagerId: systemInformation!.sm_id)
+            solarManagerId: systemInformation!.sm_id
+        )
 
         let todayStatistics = try? await todayStatisticsResult
         let forecast = (try? await forecastResult) ?? []
@@ -239,7 +249,8 @@ actor SolarManager: EnergyManager {
         let consumptions = try await solarManagerApi.getV1GatewayConsumption(
             solarManagerId: systemInformation!.sm_id,
             from: from,
-            to: to)
+            to: to
+        )
 
         print("Fetched gateway consumptions&productions.")
 
@@ -258,7 +269,8 @@ actor SolarManager: EnergyManager {
                         productionWatts: $0.pW
                     )
                 }
-                ?? [])
+                ?? []
+        )
     }
 
     func setCarChargingMode(
@@ -274,7 +286,8 @@ actor SolarManager: EnergyManager {
         do {
             try await solarManagerApi.putControlCarCharger(
                 sensorId: sensorId,
-                control: carCharging)
+                control: carCharging
+            )
             return true
         } catch {
             return false
@@ -292,7 +305,8 @@ actor SolarManager: EnergyManager {
         do {
             try await solarManagerApi.putConfigurationSensorPriority(
                 sensorId: sensorId,
-                priority: .init(priority: priority))
+                priority: .init(priority: priority)
+            )
             return true
         } catch {
             return false
@@ -312,10 +326,12 @@ actor SolarManager: EnergyManager {
 
             do {
                 let refreshResponse = try await solarManagerApi.refresh(
-                    refreshToken: refreshToken)
+                    refreshToken: refreshToken
+                )
 
                 self.expireAt = Date().addingTimeInterval(
-                    TimeInterval(refreshResponse.expiresIn))
+                    TimeInterval(refreshResponse.expiresIn)
+                )
                 self.accessClaims = refreshResponse.accessClaims
 
                 if accessToken != nil && expireAt != nil && expireAt! > Date() {
@@ -346,7 +362,8 @@ actor SolarManager: EnergyManager {
 
         let loginSuccess = await doLogin(
             email: credentials.username!,
-            password: credentials.password!)
+            password: credentials.password!
+        )
 
         if !loginSuccess {
             throw EnergyManagerClientError.loginFailed
@@ -391,7 +408,8 @@ actor SolarManager: EnergyManager {
         }
 
         sensorInfos = try await solarManagerApi.getV1InfoSensors(
-            solarManagerId: systemInformation!.sm_id)
+            solarManagerId: systemInformation!.sm_id
+        )
     }
 
     private func getIsAnyCarCharing(streamSensors: StreamSensorsV1Response?)
@@ -419,15 +437,44 @@ actor SolarManager: EnergyManager {
             : []
     }
 
+    private func mapChars(streamSensorInfos: StreamSensorsV1Response?) -> [Car]
+    {
+        guard let sensorInfos = sensorInfos else {
+            return []
+        }
+
+        return
+            sensorInfos
+            .filter { (sensor: SensorInfosV1Response) -> Bool in sensor.isCar()
+            }
+            .map { sensorInfo -> Car in
+                let streamInfo = streamSensorInfos?.deviceById(sensorInfo._id)
+
+                return Car.init(
+                    id: sensorInfo._id,
+                    name: sensorInfo.tag?.name ?? sensorInfo.device_group,
+                    priority: sensorInfo.priority,
+                    batteryPercent: sensorInfo.soc,
+                    batteryCapacity: sensorInfo.data?.batteryCapacity,
+                    signal: sensorInfo.signal,
+                    currentPowerInWatts: streamInfo?.currentPower
+                        ?? 0,
+                    hasError: sensorInfo.errorCodes.count > 0
+                )
+            }
+    }
+
     private func doLogin(email: String, password: String) async -> Bool {
         do {
             let loginSuccess = try await solarManagerApi.login(
                 email: email,
-                password: password)
+                password: password
+            )
 
             KeychainHelper.saveCredentials(username: email, password: password)
             self.expireAt = Date().addingTimeInterval(
-                TimeInterval(loginSuccess.expiresIn))
+                TimeInterval(loginSuccess.expiresIn)
+            )
             self.systemInformation = nil
 
             print("Login succeeded. Token will expire at \(expireAt!)")

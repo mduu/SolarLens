@@ -16,3 +16,11 @@ struct StreamSensorsV1Device : Codable {
     var deviceStatus: Int?
     var signal: SensorConnectionStatus?
 }
+
+extension StreamSensorsV1Response {
+    public func deviceById(_ id: String) -> StreamSensorsV1Device? {
+        self.devices.first {
+            $0._id == id
+        }
+    }
+}

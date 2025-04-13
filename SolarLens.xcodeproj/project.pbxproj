@@ -137,13 +137,14 @@
 		493AADB22D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AppIntents/GetBatteryLevelIntent.swift,
-				AppIntents/GetConsumptionIntent.swift,
-				AppIntents/GetSolarProductionIntent.swift,
-				AppIntents/IntentError.swift,
-				AppIntents/IsAnyCarChargingIntent.swift,
-				AppIntents/OpenAppIntent.swift,
-				AppIntents/SetChargingModeIntent.swift,
+				AppIntents/Intents/GetBatteryLevelIntent.swift,
+				AppIntents/Intents/GetCarInfosIntent.swift,
+				AppIntents/Intents/GetConsumptionIntent.swift,
+				AppIntents/Intents/GetSolarProductionIntent.swift,
+				AppIntents/Intents/IntentError.swift,
+				AppIntents/Intents/IsAnyCarChargingIntent.swift,
+				AppIntents/Intents/OpenAppIntent.swift,
+				AppIntents/Intents/SetChargingModeIntent.swift,
 				AppIntents/Shortcuts/Shortcuts.swift,
 				AppShortcuts.xcstrings,
 				Components/MiniDonut.swift,
@@ -189,6 +190,7 @@
 				Services/EnergyManagerClientError.swift,
 				Services/FakeEnergyManager.swift,
 				Services/KeychainHelper.swift,
+				Services/Model/Car.swift,
 				Services/Model/ChargingInfoData.swift,
 				Services/Model/ChargingStation.swift,
 				Services/Model/ConsumptionData.swift,
@@ -257,13 +259,14 @@
 		49892CFF2D244CEB00478C91 /* Exceptions for "Shared" folder in "Solar Lens WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AppIntents/GetBatteryLevelIntent.swift,
-				AppIntents/GetConsumptionIntent.swift,
-				AppIntents/GetSolarProductionIntent.swift,
-				AppIntents/IntentError.swift,
-				AppIntents/IsAnyCarChargingIntent.swift,
-				AppIntents/OpenAppIntent.swift,
-				AppIntents/SetChargingModeIntent.swift,
+				AppIntents/Intents/GetBatteryLevelIntent.swift,
+				AppIntents/Intents/GetCarInfosIntent.swift,
+				AppIntents/Intents/GetConsumptionIntent.swift,
+				AppIntents/Intents/GetSolarProductionIntent.swift,
+				AppIntents/Intents/IntentError.swift,
+				AppIntents/Intents/IsAnyCarChargingIntent.swift,
+				AppIntents/Intents/OpenAppIntent.swift,
+				AppIntents/Intents/SetChargingModeIntent.swift,
 				AppIntents/Shortcuts/Shortcuts.swift,
 				AppShortcuts.xcstrings,
 				Components/UpdateTimeStampView.swift,
@@ -731,7 +734,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.2.0;
-				APP_VERSION_BUILDNO = 173;
+				APP_VERSION_BUILDNO = 174;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -804,7 +807,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.2.0;
-				APP_VERSION_BUILDNO = 173;
+				APP_VERSION_BUILDNO = 174;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

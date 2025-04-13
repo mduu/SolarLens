@@ -56,6 +56,17 @@ struct SolarLensShortcuts: AppShortcutsProvider {
             shortTitle: "Is any car currently charging",
             systemImageName: "bolt.car.circle"
         )
+        
+        AppShortcut(
+            intent: GetCarInfosIntent(),
+            phrases: [
+                "What is the battery level of my car in \(.applicationName)",
+                "Batterylevel of my car in \(.applicationName)",
+                "How much is my car charged in \(.applicationName)",
+            ],
+            shortTitle: "Batterylevel of my car",
+            systemImageName: "bolt.car.circle.fill"
+        )
 
         AppShortcut(
             intent: SetChargingModeIntent(),
