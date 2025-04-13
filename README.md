@@ -6,7 +6,7 @@
 </h1>
 
 <a href="https://apple.co/408SKri">
-<img src="https://github.com/mduu/SolarManagerWatch/blob/main/marketing/appicon/v2/PNG/150px.png?raw=true" width="240" height="auto" alt="Solar Lens QR Code">
+<img src="marketing/app_store_screens/final/English.png?raw=true" width="auto" height="450" alt="Solar Lens QR Code">
 </a>
 
 ## Support
