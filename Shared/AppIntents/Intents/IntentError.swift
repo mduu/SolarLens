@@ -1,6 +1,7 @@
 enum IntentError: Error {
     case couldNotGetValue(_ message: String)
     case couldNotGetDefaultChargingStation(_ message: String)
+    case couldNotGetSolarDetails(_ message: String)
 }
 
 enum SetChargingModeIntentError: Error {

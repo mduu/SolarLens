@@ -79,5 +79,18 @@ struct SolarLensShortcuts: AppShortcutsProvider {
             shortTitle: "Set charging mode",
             systemImageName: "bolt.car"
         )
+        
+        AppShortcut(
+            intent: GetForecastIntent(),
+            phrases: [
+                "What is the solar forecast for \(\.$forDay) in \(.applicationName)",
+                "Forecast for \(\.$forDay) in \(.applicationName)",
+                "Solar forecast for \(\.$forDay) in \(.applicationName)",
+                "Solar forecast in \(.applicationName)",
+                "Forecast in \(.applicationName)",
+            ],
+            shortTitle: "Solar forecast",
+            systemImageName: "slider.horizontal.below.sun.max"
+        )
     }
 }
