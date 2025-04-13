@@ -2,9 +2,9 @@ import AppIntents
 
 struct GetCarInfosIntent: AppIntent {
     static var title: LocalizedStringResource =
-        "What is the charging state of my car?"
+        "Get car information"
     static var description: IntentDescription? =
-        "Information about the car's charging state"
+        "Information about the car"
 
     @Parameter(
         title: "Car",

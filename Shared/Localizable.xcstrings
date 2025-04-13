@@ -1479,6 +1479,34 @@
         }
       }
     },
+    "Get car information" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent bilinformation"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fahrzeuginformationen abfragen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir des informations sur la voiture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni informazioni sull'auto"
+          }
+        }
+      }
+    },
     "Get current battery level" : {
       "localizations" : {
         "da" : {
@@ -1731,30 +1759,30 @@
         }
       }
     },
-    "Information about the car's charging state" : {
+    "Information about the car" : {
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Information om bilens opladningsstatus"
+            "value" : "Information om bilen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Informationen zum Batteriestand des Autos"
+            "value" : "Fahrzeuginformationen"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Informations sur l'état de charge de la voiture"
+            "value" : "Informations sur la voiture"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Informazioni sullo stato di carica dell'auto"
+            "value" : "Informazioni sull'auto"
           }
         }
       }
@@ -4325,34 +4353,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Watt"
-          }
-        }
-      }
-    },
-    "What is the charging state of my car?" : {
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hvad er opladningsstatusen for min bil?"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wie ist der Batteriestand meines Autos?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quel est l'état de charge de ma voiture?"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qual è lo stato di carica della mia auto?"
           }
         }
       }
