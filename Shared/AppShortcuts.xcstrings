@@ -385,6 +385,73 @@
           }
         }
       }
+    },
+    "What is the solar forecast for ${forDay} in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Hvad er solprognosen for ${forDay} i ${applicationName}",
+              "Prognose for ${forDay} i ${applicationName}",
+              "Solprognose for ${forDay} i ${applicationName}",
+              "Solprognose i ${applicationName}",
+              "Prognose i ${applicationName}"
+            ]
+          }
+        },
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Wie ist die Solar-Prognose für ${forDay} in ${applicationName}",
+              "Prognose für ${forDay} in ${applicationName}",
+              "Solarprogrnose für ${forDay} in ${applicationName}",
+              "Solarprognose in ${applicationName}",
+              "Prognose in ${applicationName}",
+              "Solarvorhersage für ${forDay} in ${applicationName}",
+              "Solarvorhersage in ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "What is the solar forecast for ${forDay} in ${applicationName}",
+              "Forecast for ${forDay} in ${applicationName}",
+              "Solar forecast for ${forDay} in ${applicationName}",
+              "Solar forecast in ${applicationName}",
+              "Forecast in ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Quelle est la prévision solaire pour ${forDay} dans ${applicationName}",
+              "Prévision pour ${forDay} dans ${applicationName}",
+              "Prévision solaire pour ${forDay} dans ${applicationName}",
+              "Prévision solaire dans ${applicationName}",
+              "Prévision dans ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Qual è la previsione solare per ${forDay} in ${applicationName}",
+              "Previsione per ${forDay} in ${applicationName}",
+              "Previsione solare per ${forDay} in ${applicationName}",
+              "Previsione solare in ${applicationName}",
+              "Previsione in ${applicationName}"
+            ]
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

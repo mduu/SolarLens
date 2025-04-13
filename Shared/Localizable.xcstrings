@@ -1106,6 +1106,62 @@
         }
       }
     },
+    "day after tomorrow" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "i overmorgen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "übermorgen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "après-demain"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dopodomani"
+          }
+        }
+      }
+    },
+    "Day after tomorrow" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I overmorgen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übermorgen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Après-demain"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dopodomani"
+          }
+        }
+      }
+    },
     "Device" : {
       "localizations" : {
         "da" : {
@@ -1367,6 +1423,34 @@
         }
       }
     },
+    "Forecast day" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prognosedag"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorhersagetag"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jour de prévision"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giorno di previsione"
+          }
+        }
+      }
+    },
     "Full" : {
       "localizations" : {
         "da" : {
@@ -1507,6 +1591,34 @@
         }
       }
     },
+    "Get solar forecast" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent solprognose"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solarprognose abrufen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir la prévision solaire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni la previsione solare"
+          }
+        }
+      }
+    },
     "Get the current battery level in percent" : {
       "localizations" : {
         "da" : {
@@ -1531,6 +1643,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ottieni il livello attuale della batteria in percentuale"
+          }
+        }
+      }
+    },
+    "Get the solar forecast in kWh" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent solprognosen i kWh"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solarprognose in kWh abrufen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir la prévision solaire en kWh"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni la previsione solare in kWh"
           }
         }
       }
@@ -2659,6 +2799,34 @@
         }
       }
     },
+    "Select the day to get the forecast for." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg den dag, du vil have prognosen for."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wählen Sie den Tag aus, für den Sie die Prognose wünschen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez le jour pour lequel vous souhaitez obtenir la prévision."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona il giorno per cui ottenere la previsione."
+          }
+        }
+      }
+    },
     "Self consumption" : {
       "localizations" : {
         "da" : {
@@ -3158,6 +3326,34 @@
         }
       }
     },
+    "Solar forecast" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solprognose"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solarprognose"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévision solaire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previsione solare"
+          }
+        }
+      }
+    },
     "Solar Manger Login" : {
       "localizations" : {
         "da" : {
@@ -3636,6 +3832,40 @@
         }
       }
     },
+    "The forecast for %@ is %@. Expected is %@" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prognosen for %1$@ er %2$@. Forventet er %3$@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Prognose für %1$@ ist %2$@. Erwartet wird %3$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The forecast for %1$@ is %2$@. Expected is %3$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La prévision pour %1$@ est %2$@. L'attendu est %3$@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La previsione per %1$@ è %2$@. L'atteso è %3$@."
+          }
+        }
+      }
+    },
     "There was a problem setting the charging mode." : {
       "localizations" : {
         "da" : {
@@ -3723,6 +3953,62 @@
         }
       }
     },
+    "today" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "i dag"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "heute"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aujourd'hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "oggi"
+          }
+        }
+      }
+    },
+    "Today" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I dag"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aujourd'hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oggi"
+          }
+        }
+      }
+    },
     "Today History" : {
       "localizations" : {
         "da" : {
@@ -3803,6 +4089,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cronologia di oggi"
+          }
+        }
+      }
+    },
+    "tomorrow" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "i morgen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "morgen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "demain"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "domani"
+          }
+        }
+      }
+    },
+    "Tomorrow" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I morgen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morgen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demain"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domani"
           }
         }
       }
@@ -4011,6 +4353,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Qual è lo stato di carica della mia auto?"
+          }
+        }
+      }
+    },
+    "Which day" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvilken dag"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcher Tag"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quel jour"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quale giorno"
           }
         }
       }
