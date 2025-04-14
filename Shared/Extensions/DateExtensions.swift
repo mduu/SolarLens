@@ -1,6 +1,12 @@
 import Foundation
 
 extension Date {
+    
+    func toUTC() -> Date {
+        let timezoneOffset = TimeInterval(TimeZone.current.secondsFromGMT())
+        return self.addingTimeInterval(-timezoneOffset)
+    }
+
     func convertFromUTCToLocalTime() -> Date {
         let localTimeZone = TimeZone.current
         let sourceTimeZone = TimeZone(abbreviation: "UTC")!
@@ -21,5 +27,4 @@ extension Date {
         return Calendar.current.date(
             bySettingHour: 23, minute: 59, second: 59, of: Date())!
     }
-
 }

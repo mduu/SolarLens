@@ -20,12 +20,12 @@ struct ChargingOptionsPopupView: View {
     private let minMinQuantity: Int = 1
     private let maxMinQuantity: Int = 100
 
-    @State var targetSocPercent: Int = 1
+    @State var targetSocPercent: Int = 5
     @State var targetSocDate: Date = Date()
     @State var targetSocTime: Date = Date()
     @State var showTargetSocDatePicker: Bool = false
     @State var showTargetSocTimePicker: Bool = false
-    private let targetSocMinPercent: Int = 1
+    private let targetSocMinPercent: Int = 5
     private let targetSocMaxPercent: Int = 100
 
     let dateRange: ClosedRange<Date> = {
@@ -33,16 +33,19 @@ struct ChargingOptionsPopupView: View {
         let startComponents = DateComponents(
             year: calendar.component(.year, from: Date()),
             month: calendar.component(.month, from: Date()),
-            day: calendar.component(.day, from: Date()))
+            day: calendar.component(.day, from: Date())
+        )
         let endComponents = DateComponents(
             year: calendar.component(.year, from: Date()) + 1,
             month: 12,
             day: 31,
             hour: 23,
             minute: 59,
-            second: 59)
+            second: 59
+        )
         return calendar.date(from: startComponents)!...calendar.date(
-            from: endComponents)!
+            from: endComponents
+        )!
     }()
 
     var body: some View {
@@ -105,7 +108,9 @@ struct ChargingOptionsPopupView: View {
                     await buildingState.setCarCharging(
                         sensorId: chargingStation.id,
                         newCarCharging: .init(
-                            constantCurrent: constantCurrent))
+                            constantCurrent: constantCurrent
+                        )
+                    )
                     dismiss()
                 }
             }) {
@@ -126,10 +131,7 @@ struct ChargingOptionsPopupView: View {
                 HStack {
 
                     Button(action: {
-                        minQuantity -= 1
-                        if minQuantity < minMinQuantity {
-                            minQuantity = minMinQuantity
-                        }
+                        minQuantity = max(minMinQuantity, minQuantity - 1)
                     }) {
                         Image(systemName: "minus")
                             .frame(height: 30)
@@ -141,10 +143,7 @@ struct ChargingOptionsPopupView: View {
                     Text("\(minQuantity) kWh")
 
                     Button(action: {
-                        minQuantity += 1
-                        if minQuantity > maxMinQuantity {
-                            minQuantity = maxMinQuantity
-                        }
+                        minQuantity = min(maxMinQuantity, minQuantity + 1)
                     }) {
                         Image(systemName: "plus")
                             .frame(height: 30)
@@ -215,7 +214,9 @@ struct ChargingOptionsPopupView: View {
                                 targetTime: combineDateTime(
                                     date: $minQuantityDate.wrappedValue,
                                     time: $minQuantityTime.wrappedValue
-                                )))
+                                ).toUTC()
+                            )
+                        )
                         dismiss()
                     }
                 }) {
@@ -239,10 +240,10 @@ struct ChargingOptionsPopupView: View {
                 HStack {
 
                     Button(action: {
-                        targetSocPercent -= 5
-                        if targetSocMinPercent < targetSocPercent {
-                            targetSocPercent = targetSocMinPercent
-                        }
+                        targetSocPercent = max(
+                            targetSocMinPercent,
+                            targetSocPercent - 5
+                        )
                     }) {
                         Image(systemName: "minus")
                             .frame(height: 30)
@@ -254,10 +255,10 @@ struct ChargingOptionsPopupView: View {
                     Text("\(targetSocPercent) %")
 
                     Button(action: {
-                        targetSocPercent += 1
-                        if targetSocPercent > targetSocMaxPercent {
-                            targetSocPercent = targetSocMaxPercent
-                        }
+                        targetSocPercent = min(
+                            targetSocMaxPercent,
+                            targetSocPercent + 5
+                        )
                     }) {
                         Image(systemName: "plus")
                             .frame(height: 30)
@@ -319,16 +320,21 @@ struct ChargingOptionsPopupView: View {
                 }
 
                 Button(action: {
+                    let socPercent = $targetSocPercent.wrappedValue
+                    let targetTime = combineDateTime(
+                        date: $targetSocDate.wrappedValue,
+                        time: $targetSocTime.wrappedValue
+                    )
+                        .toUTC()
+
                     Task {
                         await buildingState.setCarCharging(
                             sensorId: chargingStation.id,
                             newCarCharging: .init(
-                                targetSocPercent: $targetSocPercent
-                                    .wrappedValue,
-                                targetTime: combineDateTime(
-                                    date: $targetSocDate.wrappedValue,
-                                    time: $targetSocTime.wrappedValue
-                                )))
+                                targetSocPercent: socPercent,
+                                targetTime: targetTime
+                            )
+                        )
                         dismiss()
                     }
                 }) {
@@ -346,9 +352,13 @@ struct ChargingOptionsPopupView: View {
         let calendar = Calendar.current
 
         let dateComponents = calendar.dateComponents(
-            [.year, .month, .day], from: date)
+            [.year, .month, .day],
+            from: date
+        )
         let timeComponents = calendar.dateComponents(
-            [.hour, .minute], from: time)
+            [.hour, .minute],
+            from: time
+        )
 
         var combinedComponents = DateComponents()
         combinedComponents.year = dateComponents.year
@@ -371,7 +381,8 @@ struct ChargingOptionsPopupView: View {
             chargingMode: .withSolarPower,
             priority: 1,
             currentPower: 0,
-            signal: .connected)
+            signal: .connected
+        )
     )
     .environment(
         CurrentBuildingState.fake(
@@ -405,7 +416,8 @@ struct ChargingOptionsPopupView: View {
             chargingMode: .withSolarPower,
             priority: 1,
             currentPower: 0,
-            signal: .connected)
+            signal: .connected
+        )
     )
     .environment(
         CurrentBuildingState.fake(
@@ -439,7 +451,8 @@ struct ChargingOptionsPopupView: View {
             chargingMode: .withSolarPower,
             priority: 1,
             currentPower: 0,
-            signal: .connected)
+            signal: .connected
+        )
     )
     .environment(
         CurrentBuildingState.fake(

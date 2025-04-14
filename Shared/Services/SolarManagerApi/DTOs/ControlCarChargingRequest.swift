@@ -22,11 +22,11 @@ struct ControlCarChargingRequest: Codable {
 
     /// Charge quantity - only for "Minimum charge quantity" mode
     /// Min: 1, Max: 100
-    var minimumChargeQuantityTargetAmount: Int? = 1
+    var minimumChargeQuantityTargetAmount: Int?
 
     /// Car battery charge level % - only for "Charging Target(%)" mode
     /// Min: 1, Max: 100
-    var chargingTargetSoc: Int? = 1
+    var chargingTargetSoc: Int?
 
     /// Target date and time
     /// Example: "2023-12-27T06:00:00.000Z" - only for "Charging Target(%)" mode
@@ -50,7 +50,7 @@ struct ControlCarChargingRequest: Codable {
 
     init(targetSocPercent: Int, targetTime: Date) {
         self.chargingMode = .chargingTargetSoc
-        self.chargingTargetSoc = minimumChargeQuantityTargetAmount
+        self.chargingTargetSoc = targetSocPercent
         self.chargingTargetSocDateTime = targetTime
     }
 }

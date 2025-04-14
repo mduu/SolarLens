@@ -9,7 +9,11 @@ class RestClient {
 
     init(baseUrl: String) {
         self.baseUrl = baseUrl
-        self.jsonEncoder.dateEncodingStrategy = .iso8601
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:00.000"
+        //dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        self.jsonEncoder.dateEncodingStrategy = .formatted(dateFormatter)
 
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 10  // Set timeout to 30 seconds
@@ -17,7 +21,9 @@ class RestClient {
     }
 
     func get<TResponse>(
-        serviceUrl: String, parameters: Codable? = nil, maxRetry: Int = 4
+        serviceUrl: String,
+        parameters: Codable? = nil,
+        maxRetry: Int = 4
     )
         async throws
         -> TResponse? where TResponse: Codable
@@ -27,7 +33,8 @@ class RestClient {
             httpMethod: "GET",
             requestBody: NoRequestBody.Instance,
             parameters: parameters,
-            useAccessToken: true)
+            useAccessToken: true
+        )
     }
 
     func post<TRequest, TResponse>(
@@ -43,7 +50,8 @@ class RestClient {
             httpMethod: "POST",
             requestBody: requestBody,
             parameters: parameters,
-            useAccessToken: useAccessToken)
+            useAccessToken: useAccessToken
+        )
     }
 
     func put<TRequest, TResponse>(
@@ -59,7 +67,8 @@ class RestClient {
             httpMethod: "PUT",
             requestBody: requestBody,
             parameters: parameters,
-            useAccessToken: useAccessToken)
+            useAccessToken: useAccessToken
+        )
     }
 
     internal func handleTokenExpired(failedResponse: HTTPURLResponse) async
@@ -97,11 +106,20 @@ class RestClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = httpMethod
         if requestBody != nil {
-            request.httpBody = try! jsonEncoder.encode(requestBody)
+            let body = try! jsonEncoder.encode(requestBody)
+            request.httpBody = body
+
+            if let jsonString = String(data: body, encoding: .utf8) {
+                debugPrint("httpBody: \(jsonString)")
+            } else {
+                debugPrint("httpBody: Failed to convert Data to String!")
+            }
         }
         if useAccessToken, let accessToken = KeychainHelper.accessToken {
             request.setValue(
-                "Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+                "Bearer " + accessToken,
+                forHTTPHeaderField: "Authorization"
+            )
         }
 
         var retryAttempt = 0
@@ -119,7 +137,8 @@ class RestClient {
 
             do {
                 let (responseData, responseMeta) = try await session.data(
-                    for: request)
+                    for: request
+                )
                 data = responseData
                 response = responseMeta as? HTTPURLResponse
                 print(
@@ -155,7 +174,8 @@ class RestClient {
                     )
                     debugPrint(
                         String(data: data!, encoding: .utf8)
-                            ?? "Data could not be decoded as UTF-8")
+                            ?? "Data could not be decoded as UTF-8"
+                    )
 
                     return nil
                 }
@@ -169,11 +189,13 @@ class RestClient {
                 )
             case 401:  // Unauthorized / Token expired
                 canRetry = await handleTokenExpired(
-                    failedResponse: response!)
+                    failedResponse: response!
+                )
             case 403:  // Forbidden
                 print("ERROR: FORBIDDEN")
                 canRetry = await handleForbidden(
-                    failedResponse: response!)
+                    failedResponse: response!
+                )
             default:
                 print(
                     "ERROR HTTP \(httpMethod): \(response!.statusCode), \(String(describing: HTTPURLResponse.localizedString))"
