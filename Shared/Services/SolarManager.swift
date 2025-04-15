@@ -211,17 +211,16 @@ actor SolarManager: EnergyManager {
         let todayStatistics = try? await todayStatisticsResult
         let forecast = (try? await forecastResult) ?? []
 
-        let dailyForecast = calculateForecastsPerDay(data: forecast)
+        let dailyForecast = getCumSumPerLocalStartOfDay(data: forecast)
 
-        let nowLocal = Date().convertFromUTCToLocalTime()
-        let today = Calendar.current.startOfDay(for: nowLocal)
-            .convertFromUTCToLocalTime()
+        let now = Date()
+        let today = Calendar.current.startOfDay(for: now)
         let tomorrow = Calendar.current.startOfDay(
-            for: Calendar.current.date(byAdding: .day, value: 1, to: Date())!
-        ).convertFromUTCToLocalTime()
+            for: Calendar.current.date(byAdding: .day, value: 1, to: now)!
+        )
         let afterTomorrow = Calendar.current.startOfDay(
-            for: Calendar.current.date(byAdding: .day, value: 2, to: Date())!
-        ).convertFromUTCToLocalTime()
+            for: Calendar.current.date(byAdding: .day, value: 2, to: now)!
+        )
 
         let todaysData =
             dailyForecast[today] ?? ForecastItem(min: 0, max: 0, expected: 0)
@@ -256,15 +255,15 @@ actor SolarManager: EnergyManager {
 
         return ConsumptionData(
             from: RestDateHelper.date(from: consumptions?.from)?
-                .convertFromUTCToLocalTime(),
+                .toLocalTime(),
             to: RestDateHelper.date(from: consumptions?.to)?
-                .convertFromUTCToLocalTime(),
+                .toLocalTime(),
             interval: consumptions?.interval ?? 300,
             data: consumptions?.data
                 .map {
                     ConsumptionItem.init(
                         date: RestDateHelper.date(from: $0.date)?
-                            .convertFromUTCToLocalTime() ?? Date(),
+                            .toLocalTime() ?? Date(),
                         consumptionWatts: $0.cW,
                         productionWatts: $0.pW
                     )
@@ -486,7 +485,7 @@ actor SolarManager: EnergyManager {
         }
     }
 
-    private func calculateForecastsPerDay(data: [ForecastItemV1Response])
+    private func getCumSumPerLocalStartOfDay(data: [ForecastItemV1Response])
         -> [Date: ForecastItem?]
     {
         var dailyKWh: [Date: ForecastItem] = [:]
@@ -494,11 +493,10 @@ actor SolarManager: EnergyManager {
 
         for solarData in data {
             let date = Date(timeIntervalSince1970: solarData.timestamp / 1000)
-                .convertFromUTCToLocalTime()
-            let day = calendar.startOfDay(for: date).convertFromUTCToLocalTime()
+            let startOfDay = calendar.startOfDay(for: date)
 
             // Accumulate energy consumption for the day
-            var forecast = dailyKWh[day]
+            var forecast = dailyKWh[startOfDay]
 
             let minKWh = solarData.min / 1000 / 4
             let maxKWh = solarData.max / 1000 / 4
@@ -518,7 +516,7 @@ actor SolarManager: EnergyManager {
                 )
             }
 
-            dailyKWh[day] = forecast
+            dailyKWh[startOfDay] = forecast
         }
 
         return dailyKWh

@@ -7,7 +7,7 @@ extension Date {
         return self.addingTimeInterval(-timezoneOffset)
     }
 
-    func convertFromUTCToLocalTime() -> Date {
+    func toLocalTime() -> Date {
         let localTimeZone = TimeZone.current
         let sourceTimeZone = TimeZone(abbreviation: "UTC")!
 
