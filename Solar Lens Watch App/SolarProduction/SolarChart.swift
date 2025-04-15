@@ -20,7 +20,7 @@ struct SolarChart: View {
                 from:
                     solarProduction.data.map {
                         SolarDataPoint(
-                            time: $0.date,
+                            time: $0.date.convertToLocalTime(),
                             production: $0.productionWatts / 1000
                         )
                     }

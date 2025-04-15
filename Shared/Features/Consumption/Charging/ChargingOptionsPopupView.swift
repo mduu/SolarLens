@@ -214,7 +214,7 @@ struct ChargingOptionsPopupView: View {
                                 targetTime: combineDateTime(
                                     date: $minQuantityDate.wrappedValue,
                                     time: $minQuantityTime.wrappedValue
-                                ).toUTC()
+                                ).convertLocalUiToUtc()
                             )
                         )
                         dismiss()
@@ -325,7 +325,7 @@ struct ChargingOptionsPopupView: View {
                         date: $targetSocDate.wrappedValue,
                         time: $targetSocTime.wrappedValue
                     )
-                        .toUTC()
+                        .convertLocalUiToUtc()
 
                     Task {
                         await buildingState.setCarCharging(

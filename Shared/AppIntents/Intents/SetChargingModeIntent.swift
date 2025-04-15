@@ -49,11 +49,11 @@ struct SetChargingModeIntent: AppIntent {
             case .minimumQuantity:
                 ControlCarChargingRequest.init(
                     minimumChargeQuantityTargetAmount: minQuantity!,
-                    targetTime: targetTime!.toUTC())
+                    targetTime: targetTime!.convertLocalUiToUtc())
             case .chargingTargetSoc:
                 ControlCarChargingRequest.init(
                     targetSocPercent: targetSocPercent!,
-                    targetTime: targetTime!.toUTC())
+                    targetTime: targetTime!.convertLocalUiToUtc())
             default: ControlCarChargingRequest.init(chargingMode: chargingMode)
             }
 

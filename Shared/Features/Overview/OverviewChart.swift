@@ -12,9 +12,10 @@ struct OverviewChart: View {
         Chart {
             ForEach(consumption.data) { dataPoint in
 
+                // Production (Solar)
                 if !isAccent {
                     AreaMark(
-                        x: .value("Time", dataPoint.date),
+                        x: .value("Time",  dataPoint.date.convertToLocalTime()),
                         y: .value("kW", dataPoint.productionWatts / 1000),
                         stacking: .unstacked
                     )
@@ -37,7 +38,7 @@ struct OverviewChart: View {
                 }
 
                 LineMark(
-                    x: .value("Time", dataPoint.date),
+                    x: .value("Time", dataPoint.date.convertToLocalTime()),
                     y: .value("kW", dataPoint.productionWatts / 1000)
                 )
                 .foregroundStyle(by: .value("Series", "Production"))
@@ -47,10 +48,9 @@ struct OverviewChart: View {
                 )
 
                 // -- Consumption --
-
                 if !isAccent {
                     AreaMark(
-                        x: .value("Time", dataPoint.date),
+                        x: .value("Time", dataPoint.date.convertToLocalTime()),
                         y: .value("kW", dataPoint.consumptionWatts / 1000),
                         stacking: .unstacked
                     )
@@ -72,7 +72,7 @@ struct OverviewChart: View {
                 }
 
                 LineMark(
-                    x: .value("Time", dataPoint.date),
+                    x: .value("Time", dataPoint.date.convertToLocalTime()),
                     y: .value("kW", dataPoint.consumptionWatts / 1000)
                 )
                 .foregroundStyle(by: .value("Series", "Consumption"))

@@ -254,16 +254,13 @@ actor SolarManager: EnergyManager {
         print("Fetched gateway consumptions&productions.")
 
         return ConsumptionData(
-            from: RestDateHelper.date(from: consumptions?.from)?
-                .toLocalTime(),
-            to: RestDateHelper.date(from: consumptions?.to)?
-                .toLocalTime(),
+            from: RestDateHelper.date(from: consumptions?.from),
+            to: RestDateHelper.date(from: consumptions?.to),
             interval: consumptions?.interval ?? 300,
             data: consumptions?.data
                 .map {
                     ConsumptionItem.init(
-                        date: RestDateHelper.date(from: $0.date)?
-                            .toLocalTime() ?? Date(),
+                        date: RestDateHelper.date(from: $0.date) ?? Date(),
                         consumptionWatts: $0.cW,
                         productionWatts: $0.pW
                     )
