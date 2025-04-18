@@ -5,6 +5,7 @@ struct CircularInstrument<Content: View>: View {
     var label: LocalizedStringResource
     var value: String?
     var small: Bool = false
+    var isTouchable: Bool = false
     @ViewBuilder let content: Content?
 
     init(
@@ -12,12 +13,14 @@ struct CircularInstrument<Content: View>: View {
         label: LocalizedStringResource,
         value: String? = nil,
         small: Bool? = nil,
+        isTouchable: Bool? = nil,
         @ViewBuilder content: @escaping () -> Content?
     ) {
         self.borderColor = borderColor
         self.label = label
         self.value = value
         self.small = small ?? false
+        self.isTouchable = isTouchable ?? false
         self.content = content()
     }
 
@@ -25,11 +28,15 @@ struct CircularInstrument<Content: View>: View {
         ZStack {
             Circle()
                 .fill(.white)
+                .if(isTouchable) { view in
+                    view.shadow(radius: 5, x: 4, y: 4)
+                }
                 .opacity(0.8)
                 .overlay(
                     Circle()
                         .stroke(borderColor, lineWidth: 4)
                 )
+                
 
             VStack(alignment: .center) {
                 Text(label)
@@ -57,6 +64,16 @@ struct CircularInstrument<Content: View>: View {
         borderColor: .teal,
         label: "Solar Productions",
         value: "2.4 kW"
+    ) {}
+    .frame(maxWidth: 120)
+}
+
+#Preview("Touchable") {
+    CircularInstrument(
+        borderColor: .teal,
+        label: "Solar Productions",
+        value: "2.4 kW",
+        isTouchable: true
     ) {}
     .frame(maxWidth: 120)
 }

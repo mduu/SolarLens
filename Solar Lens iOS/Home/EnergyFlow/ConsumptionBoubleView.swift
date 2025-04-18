@@ -12,7 +12,8 @@ struct ConsumptionBoubleView: View {
             borderColor: currentConsumptionInKwh != 0 ? .teal : .gray,
             label: "Consumption",
             value: String(
-                format: "%.1f kW", currentConsumptionInKwh)
+                format: "%.1f kW", currentConsumptionInKwh),
+            isTouchable: true
         ) {
             VStack {
                 if todayConsumptionInWh != nil {

@@ -8,7 +8,8 @@ struct ChargingStationView: View {
         CircularInstrument(
             borderColor: .blue,
             label: LocalizedStringResource(stringLiteral: station.name),
-            small: true
+            small: true,
+            isTouchable: true
         ) {
             if station.currentPower > 0 {
                 Image(systemName: "car.side")
