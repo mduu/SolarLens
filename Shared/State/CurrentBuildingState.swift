@@ -83,15 +83,19 @@ class CurrentBuildingState {
             }
 
             print("Fetching server data...")
-
+            
+            var stopwatch = Stopwatch.init()
             let newData = try await energyManager.fetchOverviewData(
                 lastOverviewData: overviewData)
+            stopwatch.stop()
             
             withTransaction(Transaction(animation: nil)) {
                 overviewData = newData;
             }
             
-            print("Server data fetched at \(Date())")
+            print(
+                "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
+            )
 
             withTransaction(Transaction(animation: nil)) {
                 isLoading = false

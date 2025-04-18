@@ -24,10 +24,11 @@ actor SolarManager: EnergyManager {
     func fetchOverviewData(lastOverviewData: OverviewData?) async throws
         -> OverviewData
     {
-        try await ensureLoggedIn()
-        try await ensureSystemInfomation()
-        try await ensureSmId()
         try await ensureSensorInfosAreCurrent()
+
+        guard systemInformation != nil else {
+            return lastOverviewData ?? OverviewData.empty()
+        }
 
         async let streamSensorInfosResult =
             try await solarManagerApi.getV1StreamGateway(
@@ -41,10 +42,6 @@ actor SolarManager: EnergyManager {
                 to: Date.todayEndOfDay(),
                 accuracy: .high
             )
-
-        guard systemInformation != nil else {
-            return lastOverviewData ?? OverviewData.empty()
-        }
 
         if let chart = try await solarManagerApi.getV1Chart(
             solarManagerId: systemInformation!.sm_id
@@ -102,7 +99,7 @@ actor SolarManager: EnergyManager {
 
                             return ChargingStation.init(
                                 id: $0._id,
-                                name: $0.tag?.name ?? $0.device_group,
+                                name: $0.getSensorName(),
                                 chargingMode: streamInfo?.currentMode
                                     ?? ChargingMode.off,
                                 priority: $0.priority,
@@ -125,14 +122,14 @@ actor SolarManager: EnergyManager {
                                 deviceType: Device.mapStringToDeviceType(
                                     stringValue: $0.type
                                 ),
-                                name: $0.tag?.name ?? $0.device_group,
+                                name: $0.getSensorName(),
 
                                 priority: $0.priority,
                                 currentPowerInWatts: streamInfo?.currentPower
                                     ?? 0,
                                 color: $0.tag?.color,
                                 signal: $0.signal,
-                                hasError: $0.errorCodes.count > 0
+                                hasError: $0.hasErrors()
                             )
                         },
                 todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
@@ -448,14 +445,14 @@ actor SolarManager: EnergyManager {
 
                 return Car.init(
                     id: sensorInfo._id,
-                    name: sensorInfo.name ?? sensorInfo.tag?.name ?? sensorInfo.device_group,
+                    name: sensorInfo.getSensorName(),
                     priority: sensorInfo.priority,
                     batteryPercent: sensorInfo.soc,
                     batteryCapacity: sensorInfo.data?.batteryCapacity,
                     signal: sensorInfo.signal,
                     currentPowerInWatts: streamInfo?.currentPower
                         ?? 0,
-                    hasError: sensorInfo.errorCodes.count > 0
+                    hasError: sensorInfo.hasErrors()
                 )
             }
     }

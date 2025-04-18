@@ -1,12 +1,12 @@
 struct SensorInfosV1Response : Codable {
     var _id: String
-    var device_type: String // device, smart-meter, inverter, car
-    var type: String // Battery, Car Charging, Energy Measurement, Heatpump, Car
+    var device_type: String // device, smart-meter, inverter, car, input-device, sub-meter
+    var type: String // Battery, Car Charging, Energy Measurement, Heatpump, Car, Input Device
     var device_group: String // Name of the device
     var name: String? // Cars seem to have the name on this lavel; not in the tags
     var priority: Int
-    var signal: SensorConnectionStatus
-    var deviceActivity: Int
+    var signal: SensorConnectionStatus = .notConnected
+    var deviceActivity: Int?
     var soc: Double? // Car: Battery-Level
     var errorCodes: [String]
     var ip: String?
@@ -29,9 +29,19 @@ struct SensorInfosV1Response : Codable {
             return .inverter
         case "smart-meter":
             return .smartMeter
+        case "input-device":
+            return .other
         default:
             return .other
         }
+    }
+    
+    func getSensorName() -> String {
+        return name ?? tag?.name ?? device_group ?? ""
+    }
+    
+    func hasErrors() -> Bool {
+        return errorCodes.count > 0
     }
     
     func isCarCharging() -> Bool {
