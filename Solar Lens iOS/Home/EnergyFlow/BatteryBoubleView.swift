@@ -23,7 +23,8 @@ struct BatteryBoubleView: View {
                     )
                     .cornerRadius(5)
                     .foregroundStyle(batteryLevel > 5 ? .green : .red)
-                    
+                    .shadow(color: .green.opacity(0.5), radius:5, x: 0, y: 0)
+
                     SectorMark(
                         angle: .value("Empty", batteryLevel..<100),
                         innerRadius: MarkDimension(integerLiteral: innerRadius),
@@ -40,7 +41,7 @@ struct BatteryBoubleView: View {
                                 Circle()
                                     .fill(.white)
                                     .opacity(0.8)
-                                
+
                                 VStack {
                                     Text("Battery")
                                         .font(.system(size: 14, weight: .light))

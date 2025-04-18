@@ -7,7 +7,7 @@ struct CircularInstrument<Content: View>: View {
     var small: Bool = false
     var isTouchable: Bool = false
     @ViewBuilder let content: Content?
-
+    
     init(
         borderColor: Color,
         label: LocalizedStringResource,
@@ -23,7 +23,7 @@ struct CircularInstrument<Content: View>: View {
         self.isTouchable = isTouchable ?? false
         self.content = content()
     }
-
+    
     var body: some View {
         ZStack {
             Circle()
@@ -35,8 +35,8 @@ struct CircularInstrument<Content: View>: View {
                 .overlay(
                     Circle()
                         .stroke(borderColor, lineWidth: 4)
+                        .shadow(color: borderColor.opacity(0.5), radius:5, x: 0, y: 0)
                 )
-                
 
             VStack(alignment: .center) {
                 Text(label)
