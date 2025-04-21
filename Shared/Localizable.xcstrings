@@ -944,6 +944,9 @@
         }
       }
     },
+    "Copied!" : {
+
+    },
     "Current Battery Level" : {
       "localizations" : {
         "da" : {
@@ -2365,6 +2368,9 @@
           }
         }
       }
+    },
+    "OK" : {
+
     },
     "Open Solar-Lens" : {
       "localizations" : {
@@ -3932,6 +3938,9 @@
           }
         }
       }
+    },
+    "The SM-ID has been copied to your clipboard." : {
+
     },
     "There was a problem setting the charging mode." : {
       "localizations" : {

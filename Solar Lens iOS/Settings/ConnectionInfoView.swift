@@ -1,9 +1,10 @@
-//
-
 import SwiftUI
+import UIKit
 
 struct ConnectionInfoView: View {
     var serverInfo: ServerInfo?
+
+    @State private var showConfirmation = false
 
     var body: some View {
         ZStack {
@@ -42,6 +43,13 @@ struct ConnectionInfoView: View {
                         GridRow {
                             Text("SM ID:")
                             Text(serverInfo?.smId ?? "-")
+                            Button(action: {
+                                copyToClipboard(text: serverInfo?.smId ?? "")
+                                showConfirmation = true
+                            }) {
+                                Image(systemName: "document.on.document")
+                                    .foregroundColor(.blue)
+                            }
                         }
 
                         GridRow {
@@ -53,6 +61,11 @@ struct ConnectionInfoView: View {
                     Spacer()
                 }
                 .padding(.top, 4)
+                .alert("Copied!", isPresented: $showConfirmation) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text("The SM-ID has been copied to your clipboard.")
+                }
 
                 Spacer()
 
@@ -61,7 +74,7 @@ struct ConnectionInfoView: View {
 
                     LogoutButtonView()
                         .disabled(serverInfo == nil || !serverInfo!.signal)
-                    
+
                 }
 
             }.padding()
@@ -106,6 +119,11 @@ struct ConnectionStateView: View {
 
         }
     }
+}
+
+// Helper function to copy a string to the clipboard
+func copyToClipboard(text: String) {
+    UIPasteboard.general.string = text
 }
 
 #Preview("Connected") {
