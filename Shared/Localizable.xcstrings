@@ -792,6 +792,12 @@
         }
       }
     },
+    "Connected" : {
+
+    },
+    "Connection error" : {
+
+    },
     "Constant" : {
       "localizations" : {
         "da" : {
@@ -1246,6 +1252,9 @@
         }
       }
     },
+    "Disconnected" : {
+
+    },
     "Efficiency" : {
       "localizations" : {
         "da" : {
@@ -1307,6 +1316,9 @@
           }
         }
       }
+    },
+    "Email:" : {
+
     },
     "Empty" : {
       "localizations" : {
@@ -1730,6 +1742,9 @@
           }
         }
       }
+    },
+    "Hardware Version:" : {
+
     },
     "Here is how:" : {
       "localizations" : {
@@ -2313,6 +2328,9 @@
           }
         }
       }
+    },
+    "Not data" : {
+
     },
     "Off" : {
       "localizations" : {
@@ -3292,6 +3310,15 @@
         }
       }
     },
+    "SM ID:" : {
+
+    },
+    "Software Installation:" : {
+
+    },
+    "Software Version:" : {
+
+    },
     "Solar" : {
       "localizations" : {
         "da" : {
@@ -3381,6 +3408,15 @@
           }
         }
       }
+    },
+    "Solar Lens" : {
+
+    },
+    "Solar Manager" : {
+
+    },
+    "Solar Manager ID:" : {
+
     },
     "Solar Manger Login" : {
       "localizations" : {
@@ -3561,6 +3597,9 @@
           }
         }
       }
+    },
+    "Something went wrong! Please try again later." : {
+
     },
     "Target %" : {
       "localizations" : {
@@ -4326,8 +4365,14 @@
         }
       }
     },
+    "User:" : {
+
+    },
     "v%@" : {
       "shouldTranslate" : false
+    },
+    "Version %@" : {
+
     },
     "Watts" : {
       "localizations" : {

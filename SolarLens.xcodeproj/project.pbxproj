@@ -198,6 +198,7 @@
 				Services/Model/Device.swift,
 				Services/Model/OverviewData.swift,
 				Services/Model/OverviewDataExtensions.swift,
+				Services/Model/ServerInfo.swift,
 				Services/Model/SolarDetailsData.swift,
 				Services/Rest/DateHelper.swift,
 				Services/Rest/NoRequestBody.swift,

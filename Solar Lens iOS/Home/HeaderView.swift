@@ -18,7 +18,7 @@ struct HeaderView: View {
             HStack {
                 Spacer()
 
-                LogoutButtonView()
+                SettingsButton()
                     .padding(.trailing, 30)
             }
 

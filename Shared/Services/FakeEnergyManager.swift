@@ -2,6 +2,10 @@ import Combine
 import Foundation
 
 class FakeEnergyManager: EnergyManager {
+    func fetchServerInfo() async throws -> ServerInfo {
+        ServerInfo.fake()
+    }
+
     private static var _instance: FakeEnergyManager? = nil
     static func instance() -> any EnergyManager {
         if _instance == nil {
