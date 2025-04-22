@@ -10,30 +10,53 @@ struct SettingsScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                
-                Text("Solar Lens")
-                    .font(.title)
-                
-                HStack {
-                    Text(
-                        "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
-                    )
-                    
-                    Text(
-                        "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
-                    )
-                }
-                
-                if isLoading {
-                    ProgressView()
-                        .frame(minWidth: .infinity, maxWidth: 170)
-                } else {
+
+                VStack(alignment: .leading) {
+                    Text("Solar Lens")
+                        .font(.headline)
+
+                    HStack {
+                        Text(
+                            "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
+                        )
+
+                        Text(
+                            "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
+                        )
+                    }
+
                     ConnectionInfoView(
                         serverInfo: serverInfo
                     )
-                }
+                    .padding(.vertical)
+                }.padding(.horizontal, 16)
 
-                Spacer()
+                List {
+
+                    Section(header: Text("Settings")) {
+
+                        SettingListItem(
+                            imageName: "server.rack",
+                            text: "Server Info",
+                            color: .purple
+                        ) {
+                            ServerInfoView(serverInfo: serverInfo)
+                        }
+
+                        SettingListItem(
+                            imageName: "paintbrush.fill",
+                            text: "Apearance",
+                            color: .indigo
+                        ) {
+                        }
+
+                    }
+                }
+                .selectionDisabled()
+                .listStyle(.grouped)
+                .scrollContentBackground(.hidden)
+                .frame(minHeight: 600)
+
             }
         }
         .navigationTitle("Settings")
@@ -43,11 +66,11 @@ struct SettingsScreen: View {
                 Button(action: {
                     dismiss()
                 }) {
-                    Image(systemName: "xmark")  // Use a system icon
-                        .resizable()  // Make the image resizable
-                        .scaledToFit()  // Fit the image within the available space
-                        .frame(width: 18, height: 18)  // Set the size of the image
-                        .foregroundColor(.teal)  // Set the color of the image
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 18, height: 18)
+                        .foregroundColor(.indigo)
                 }
 
             }
@@ -73,6 +96,7 @@ struct SettingsScreen: View {
             }
         }
     }
+
 }
 
 #Preview {

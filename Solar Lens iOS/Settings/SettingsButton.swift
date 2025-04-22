@@ -10,10 +10,11 @@ struct SettingsButton: View {
         }
         .sheet(isPresented: $showSettingsSheet)
         {
-            NavigationView {
+            NavigationStack {
                 SettingsScreen()
             }
             .presentationDetents([.large])
+            .tint(.indigo)
         }
 
     }
