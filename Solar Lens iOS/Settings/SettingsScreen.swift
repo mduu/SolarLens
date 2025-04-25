@@ -11,7 +11,7 @@ struct SettingsScreen: View {
         List {
 
             VStack(alignment: .leading) {
-                Text("Solar Lens")
+                Text(verbatim: "Solar Lens")
                     .font(.headline)
 
                 HStack {
