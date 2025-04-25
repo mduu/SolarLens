@@ -13,8 +13,7 @@ struct LogoutButtonView: View {
             showLogoutConfirmation = true
         }
         .labelStyle(.titleAndIcon)
-        .buttonStyle(.borderedProminent)
-        .tint(.red.opacity(0.2))
+        .buttonStyle(.bordered)
         .foregroundColor(.red)
         .confirmationDialog(
             "Are you sure to log out?",

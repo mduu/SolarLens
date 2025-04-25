@@ -8,57 +8,55 @@ struct SettingsScreen: View {
     @State private var serverInfo: ServerInfo?
 
     var body: some View {
-        ScrollView {
+        List {
+
             VStack(alignment: .leading) {
+                Text("Solar Lens")
+                    .font(.headline)
 
-                VStack(alignment: .leading) {
-                    Text("Solar Lens")
-                        .font(.headline)
-
-                    HStack {
-                        Text(
-                            "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
-                        )
-
-                        Text(
-                            "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
-                        )
-                    }
-
-                    ConnectionInfoView(
-                        serverInfo: serverInfo
+                HStack {
+                    Text(
+                        "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
                     )
-                    .padding(.vertical)
-                }.padding(.horizontal, 16)
 
-                List {
-
-                    Section(header: Text("Settings")) {
-
-                        SettingListItem(
-                            imageName: "server.rack",
-                            text: "Server Info",
-                            color: .purple
-                        ) {
-                            ServerInfoView(serverInfo: serverInfo)
-                        }
-
-                        SettingListItem(
-                            imageName: "paintbrush.fill",
-                            text: "Apearance",
-                            color: .indigo
-                        ) {
-                        }
-
-                    }
+                    Text(
+                        "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
+                    )
                 }
-                .selectionDisabled()
-                .listStyle(.grouped)
-                .scrollContentBackground(.hidden)
-                .frame(minHeight: 600)
+
+                ConnectionInfoView(
+                    serverInfo: serverInfo
+                )
+                .padding(.vertical)
+            }
+            .listRowSeparator(
+                .hidden,
+                edges: [.all]
+            )
+
+            Section(header: Text("Settings")) {
+
+                SettingListItem(
+                    imageName: "server.rack",
+                    text: "Server Info",
+                    color: .purple
+                ) {
+                    ServerInfoView(serverInfo: serverInfo)
+                }
+
+                SettingListItem(
+                    imageName: "paintbrush.fill",
+                    text: "Apearance",
+                    color: .indigo
+                ) {
+                }
 
             }
+
         }
+        .selectionDisabled()
+        .listStyle(.grouped)
+        .scrollContentBackground(.hidden)
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -75,7 +73,6 @@ struct SettingsScreen: View {
 
             }
         }
-        .padding()
         .onAppear {
             isLoading = true
             Task {
