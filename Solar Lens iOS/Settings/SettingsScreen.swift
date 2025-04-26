@@ -55,8 +55,8 @@ struct SettingsScreen: View {
             Section(header: Text("Appearance")) {
 
                 SettingsToggleItem(
-                    imageName: "paintbrush.fill",
-                    text: "Apearance",
+                    imageName: "circle.dotted.circle",
+                    text: "Use glow effect",
                     color: .indigo,
                     isOn: settings.appearanceUseGlowEffectWithDefault
                 )

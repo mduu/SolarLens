@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingNavigationItem<Content: View>: View {
     var imageName: String
-    var text: String
+    var text: LocalizedStringResource
     var color: Color
     @ViewBuilder let content: Content?
 

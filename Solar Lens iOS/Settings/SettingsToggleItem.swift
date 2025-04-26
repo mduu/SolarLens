@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingsToggleItem: View {
     var imageName: String
-    var text: String
+    var text: LocalizedStringResource
     var color: Color
     @Binding var isOn: Bool
 
@@ -14,7 +14,10 @@ struct SettingsToggleItem: View {
                 color: color
             )
 
-            Toggle(text, isOn: $isOn)
+            Toggle(isOn: $isOn)
+            {
+                Text(text)
+            }
         }
     }
 }

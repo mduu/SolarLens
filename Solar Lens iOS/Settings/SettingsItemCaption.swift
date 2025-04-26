@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingsItemCaption: View {
     var imageName: String
-    var text: String
+    var text: LocalizedStringResource
     var color: Color
     
     var body: some View {
