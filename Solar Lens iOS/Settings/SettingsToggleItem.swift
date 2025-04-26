@@ -13,10 +13,11 @@ struct SettingsToggleItem: View {
                 text: text,
                 color: color
             )
+            
+            Spacer()
 
             Toggle(isOn: $isOn)
             {
-                Text(text)
             }
         }
     }
