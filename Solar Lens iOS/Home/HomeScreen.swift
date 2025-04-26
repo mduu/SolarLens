@@ -10,189 +10,246 @@ struct HomeScreen: View {
     @State var refreshTimer: Timer?
     @State var solarForecastTimer: Timer?
     @State var solarDetailsData: SolarDetailsData?
-    
+
     var isPortrait: Bool { verticalSizeClass != .compact }
 
     var body: some View {
         VStack {
+            GeometryReader { rootGeometry in
 
-            if buildingState.isLoading
-                && buildingState.overviewData.lastSuccessServerFetch == nil
-            {
-                ProgressView()
-                    .tint(.accent)
-                    .padding()
-                    .foregroundStyle(.accent)
-                    .background(Color.black.opacity(0.3))
-            } else {
-                ZStack {
+                ScrollView {
 
-                    BackgroundView()
-
-                    if isPortrait {
-                        VStack {
-                            HeaderView()
-                                .padding(.top, 0)
-                            Spacer()
-
-                            HStack(alignment: .bottom) {
-                                if solarDetailsData != nil {
-                                    SolarForecastView(
-                                        solarProductionMax: buildingState
-                                            .overviewData.solarProductionMax,
-                                        todaySolarProduction: solarDetailsData!
-                                            .todaySolarProduction,
-                                        forecastToday: solarDetailsData!
-                                            .forecastToday,
-                                        forecastTomorrow: solarDetailsData!
-                                            .forecastTomorrow,
-                                        forecastDayAfterTomorrow:
-                                            solarDetailsData!
-                                            .forecastDayAfterTomorrow
-                                    )
-                                    .frame(maxWidth: 180, maxHeight: 120)
-                                    .padding(.leading, 5)
-                                } else {
-                                    ProgressView()
-                                        .frame(maxWidth: 180, maxHeight: 120)
-                                        .padding(.leading, 5)
-                                }
-
-                                EfficiencyInfoView(
-                                    todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
-                                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
-                                )
-                                .frame(maxWidth: 180, maxHeight: 120)
-                                .padding(.leading, 5)
-
-                            }  // :HStack
+                    if buildingState.isLoading
+                        && buildingState.overviewData.lastSuccessServerFetch
+                            == nil
+                    {
+                        ProgressView()
+                            .tint(.accent)
                             .padding()
-
-                            EnergyFlow()
-                                .padding(.horizontal, 50)
-
-                            HStack(alignment: .bottom) {
-                                Spacer()
-
-                                ChargingView(
-                                    isVertical: true
-                                )
-
-                            }  // :HStack
-                            .padding()
-
-                            Spacer()
-
-                            FooterView()
-
-                        }  // :VStack
+                            .foregroundStyle(.accent)
+                            .background(Color.black.opacity(0.3))
                     } else {
-                        HStack {
+                        ZStack {
 
-                            VStack {
+                            BackgroundView()
 
-                                if solarDetailsData != nil {
-                                    SolarForecastView(
-                                        solarProductionMax: buildingState
-                                            .overviewData.solarProductionMax,
-                                        todaySolarProduction: solarDetailsData!
-                                            .todaySolarProduction,
-                                        forecastToday: solarDetailsData!
-                                            .forecastToday,
-                                        forecastTomorrow: solarDetailsData!
-                                            .forecastTomorrow,
-                                        forecastDayAfterTomorrow:
-                                            solarDetailsData!
-                                            .forecastDayAfterTomorrow
-                                    )
-                                    .frame(maxWidth: 180, maxHeight: 120)
-                                    .padding(.leading, 5)
-                                } else {
-                                    ProgressView()
+                            if isPortrait {
+                                VStack {
+                                    HeaderView()
+                                        .padding(.top, 65)
+
+                                    Spacer()
+                                    
+                                    HStack(alignment: .bottom) {
+                                        if solarDetailsData != nil {
+                                            SolarForecastView(
+                                                solarProductionMax:
+                                                    buildingState
+                                                    .overviewData
+                                                    .solarProductionMax,
+                                                todaySolarProduction:
+                                                    solarDetailsData!
+                                                    .todaySolarProduction,
+                                                forecastToday: solarDetailsData!
+                                                    .forecastToday,
+                                                forecastTomorrow:
+                                                    solarDetailsData!
+                                                    .forecastTomorrow,
+                                                forecastDayAfterTomorrow:
+                                                    solarDetailsData!
+                                                    .forecastDayAfterTomorrow
+                                            )
+                                            .frame(
+                                                maxWidth: 180,
+                                                maxHeight: 120
+                                            )
+                                            .padding(.leading, 5)
+                                        } else {
+                                            ProgressView()
+                                                .frame(
+                                                    maxWidth: 180,
+                                                    maxHeight: 120
+                                                )
+                                                .padding(.leading, 5)
+                                        }
+
+                                        EfficiencyInfoView(
+                                            todaySelfConsumptionRate:
+                                                buildingState
+                                                .overviewData
+                                                .todaySelfConsumptionRate,
+                                            todayAutarchyDegree: buildingState
+                                                .overviewData
+                                                .todayAutarchyDegree
+                                        )
                                         .frame(maxWidth: 180, maxHeight: 120)
                                         .padding(.leading, 5)
-                                }
 
-                                Spacer()
-                                
-                                EfficiencyInfoView(
-                                    todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
-                                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
-                                )
-                                .frame(maxWidth: 180, maxHeight: 120)
-                                .padding(.leading, 5)
-                            }  // :VStack
-                            .padding(.trailing)
+                                    }  // :HStack
+                                    .padding()
 
-                            EnergyFlow()
+                                    EnergyFlow()
+                                        .padding(.horizontal, 50)
 
-                            VStack(alignment: .trailing) {
-                                HStack(alignment: .center) {
-                                    AppLogo()
-                                    LogoutButtonView()
+                                    HStack(alignment: .bottom) {
+                                        Spacer()
+
+                                        ChargingView(
+                                            isVertical: true
+                                        )
+
+                                    }  // :HStack
+                                    .padding()
+
+                                    Spacer()
+
+                                    FooterView()
+
+                                }  // :VStack
+                                .frame(height: rootGeometry.size.height)
+
+                            } else {
+                                HStack {
+
+                                    VStack {
+
+                                        if solarDetailsData != nil {
+                                            SolarForecastView(
+                                                solarProductionMax:
+                                                    buildingState
+                                                    .overviewData
+                                                    .solarProductionMax,
+                                                todaySolarProduction:
+                                                    solarDetailsData!
+                                                    .todaySolarProduction,
+                                                forecastToday: solarDetailsData!
+                                                    .forecastToday,
+                                                forecastTomorrow:
+                                                    solarDetailsData!
+                                                    .forecastTomorrow,
+                                                forecastDayAfterTomorrow:
+                                                    solarDetailsData!
+                                                    .forecastDayAfterTomorrow
+                                            )
+                                            .frame(
+                                                maxWidth: 180,
+                                                maxHeight: 120
+                                            )
+                                            .padding(.leading, 5)
+                                        } else {
+                                            ProgressView()
+                                                .frame(
+                                                    maxWidth: 180,
+                                                    maxHeight: 120
+                                                )
+                                                .padding(.leading, 5)
+                                        }
+
+                                        Spacer()
+
+                                        EfficiencyInfoView(
+                                            todaySelfConsumptionRate:
+                                                buildingState
+                                                .overviewData
+                                                .todaySelfConsumptionRate,
+                                            todayAutarchyDegree: buildingState
+                                                .overviewData
+                                                .todayAutarchyDegree
+                                        )
+                                        .frame(maxWidth: 180, maxHeight: 120)
                                         .padding(.leading, 5)
-                                }
-                                .padding(.trailing, -30)
+                                    }  // :VStack
+                                    .padding(.trailing)
 
-                                Spacer()
+                                    EnergyFlow()
 
-                                ChargingView(
-                                    isVertical: false
-                                )
-                            }  // :VStack
+                                    VStack(alignment: .trailing) {
+                                        AppLogo()
 
-                        }  // :HStack
-                        .padding(.top)
-                    }  // :else
+                                        SettingsButton()
 
-                }  // :ZStack
-            }
-        }
-        .onAppear {
-            fetchAndStartRefreshTimerForOverviewData()
-            fetchAndStartRefreshTimerForSolarDetailData()
-        }
+                                        Spacer()
+
+                                        ChargingView(
+                                            isVertical: false
+                                        )
+                                    }  // :VStack
+
+                                }  // :HStack
+                                .padding()
+                                .padding(.horizontal, 30)
+                            }  // :else
+
+                        }  // :ZStack
+                        .frame(maxHeight: rootGeometry.size.height)
+                    }
+
+                }
+                .frame(maxHeight: rootGeometry.size.height)
+                .onAppear {
+                    fetchAndStartRefreshTimerForOverviewData()
+                    fetchAndStartRefreshTimerForSolarDetailData()
+                }
+                .refreshable {
+                    print("fetch on pull to refresh: overview data")
+                    fetchOverviewData()
+                    fetchSolarForecastData()
+                }
+
+            }  // :GeometryReader
+
+        }  // :VStack
+        .ignoresSafeArea()
+
     }
 
     private func fetchAndStartRefreshTimerForOverviewData() {
         if buildingState.overviewData.lastSuccessServerFetch == nil {
             print("initial fetch overview data")
-            Task {
-                await buildingState.fetchServerData()
-            }
+            fetchOverviewData()
         }
 
         if refreshTimer == nil {
             refreshTimer = Timer.scheduledTimer(
-                withTimeInterval: 15, repeats: true
+                withTimeInterval: 15,
+                repeats: true
             ) {
                 _ in
-                Task {
-                    print("fetch on timer")
-                    await buildingState.fetchServerData()
-                }
+                print("fetch on timer: overview data")
+                fetchOverviewData()
             }
+        }
+    }
+
+    private func fetchOverviewData() {
+        Task { @MainActor in
+            print("fetch overview data")
+            await buildingState.fetchServerData()
         }
     }
 
     private func fetchAndStartRefreshTimerForSolarDetailData() {
         if solarDetailsData == nil {
             print("fetch solarDetailsData on appear")
-            Task {
-                solarDetailsData = try await energyManager.fetchSolarDetails()
-            }
+            fetchSolarForecastData()
         }
         if solarForecastTimer == nil {
             solarForecastTimer = Timer.scheduledTimer(
-                withTimeInterval: 300, repeats: true
+                withTimeInterval: 300,
+                repeats: true
             ) {
                 _ in
-                Task { @MainActor in
-                    print("fetch solarDetailsData on timer")
-                    solarDetailsData =
-                        try await energyManager.fetchSolarDetails()
-                }
+                print("fetch solarDetailsData on timer")
+                fetchSolarForecastData()
             }
+        }
+    }
+
+    private func fetchSolarForecastData() {
+        Task { @MainActor in
+            print("fetch solarDetailsData")
+            solarDetailsData =
+                try await energyManager.fetchSolarDetails()
         }
     }
 }
@@ -203,5 +260,7 @@ struct HomeScreen: View {
     )
     .environment(
         CurrentBuildingState.fake(
-            overviewData: OverviewData.fake()))
+            overviewData: OverviewData.fake()
+        )
+    )
 }
