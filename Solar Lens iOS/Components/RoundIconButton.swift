@@ -2,8 +2,7 @@ import SwiftUI
 
 struct RoundIconButton: View {
     let imageName: String
-    let color: Color = Color.accent
-    let imageColor: Color = Color.white
+    let imageColor: Color = .primary
     var buttonSize: CGFloat = 48  // Define a size for the button
     let action: () -> Void
 
@@ -18,14 +17,6 @@ struct RoundIconButton: View {
                     .frame(width: buttonSize, height: buttonSize)
                 // Note: No explicit .blur() needed when using Material for this effect
 
-                // Semi-transparent color overlay for tinting
-                Circle()
-                    .fill(
-                        color.opacity(0.6)
-                    )  // Apply a semi-transparent custom color
-                    .frame(width: buttonSize, height: buttonSize)
-                    // You might experiment with blend modes here if needed
-                    //.blendMode(.softLight) // Example blend mode
                 
                 // Image on top
                 Image(systemName: imageName)  // Or use Image("your_asset_image_name")
