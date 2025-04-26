@@ -4,6 +4,8 @@ struct SettingsScreen: View {
     @Environment(\.energyManager) var energyManager
     @Environment(\.dismiss) var dismiss
 
+    @State var settings = AppSettings()
+
     @State private var isLoading = false
     @State private var serverInfo: ServerInfo?
 
@@ -23,34 +25,41 @@ struct SettingsScreen: View {
                         "#\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "")"
                     )
                 }
+            }
+            .listRowSeparator(.hidden, edges: [.all])
+
+            Section(header: Text("Server")) {
 
                 ConnectionInfoView(
                     serverInfo: serverInfo
                 )
                 .padding(.vertical)
-            }
-            .listRowSeparator(
-                .hidden,
-                edges: [.all]
-            )
+                .listRowSeparator(
+                    .hidden,
+                    edges: [.all]
+                )
 
-            Section(header: Text("Settings")) {
-
-                SettingListItem(
+                SettingNavigationItem(
                     imageName: "server.rack",
                     text: "Server Info",
-                    color: .purple
+                    color: .blue
                 ) {
                     ServerInfoView(serverInfo: serverInfo)
                 }
+                .listRowSeparator(
+                    .hidden,
+                    edges: [.all]
+                )
+            }
 
-                SettingListItem(
+            Section(header: Text("Appearance")) {
+
+                SettingsToggleItem(
                     imageName: "paintbrush.fill",
                     text: "Apearance",
-                    color: .indigo
-                ) {
-                }
-
+                    color: .indigo,
+                    isOn: settings.appearanceUseGlowEffectWithDefault
+                )
             }
 
         }

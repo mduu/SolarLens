@@ -338,6 +338,9 @@
         }
       }
     },
+    "Appearance" : {
+
+    },
     "Are you sure to log out?" : {
       "localizations" : {
         "da" : {
@@ -3369,6 +3372,9 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "Server" : {
+
     },
     "Server Info" : {
       "localizations" : {
