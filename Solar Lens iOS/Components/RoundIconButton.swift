@@ -1,12 +1,13 @@
 import SwiftUI
 
 struct RoundIconButton: View {
-    let imageName: String
-    let imageColor: Color = .primary
-    var buttonSize: CGFloat = 48  // Define a size for the button
+    var imageName: String
+    var imageColor: Color = .primary
+    var buttonSize: CGFloat = 48
     let action: () -> Void
 
     var body: some View {
+
         Button(action: action) {
             ZStack {
                 // Blurred Background using a Material

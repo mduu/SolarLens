@@ -27,13 +27,14 @@ struct SettingsScreen: View {
                 }
             }
             .listRowSeparator(.hidden, edges: [.all])
+            .padding(.vertical, 0)
 
             Section(header: Text("Server")) {
 
                 ConnectionInfoView(
                     serverInfo: serverInfo
                 )
-                .padding(.vertical)
+                .padding(.bottom)
                 .listRowSeparator(
                     .hidden,
                     edges: [.all]

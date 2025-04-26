@@ -6,15 +6,13 @@ struct LogoutButtonView: View {
     @State var showLogoutConfirmation: Bool = false
 
     var body: some View {
-        Button(
-            "Log out",
-            systemImage: "iphone.and.arrow.right.outward"
-        ) {
-            showLogoutConfirmation = true
-        }
-        .labelStyle(.titleAndIcon)
-        .buttonStyle(.bordered)
-        .foregroundColor(.red)
+        RoundIconButton(
+            imageName: "iphone.and.arrow.right.outward",
+            imageColor: Color.red,
+            action: {
+                showLogoutConfirmation = true
+            }
+        )
         .confirmationDialog(
             "Are you sure to log out?",
             isPresented: $showLogoutConfirmation

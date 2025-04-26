@@ -27,10 +27,7 @@ struct ConnectionInfoView: View {
 
             VStack {
                 HStack {
-                    HStack {
-                        Text("Solar Manager")
-                            .font(.headline)
-                    }
+                    Text("Solar Manager").font(.headline)
 
                     Spacer()
 
