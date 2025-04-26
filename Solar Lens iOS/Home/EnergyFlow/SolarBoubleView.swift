@@ -5,12 +5,15 @@ struct SolarBoubleView: View {
     var todaySolarProductionInWh: Double?
     var useGlow: Bool
 
+    @State var isChartSheetShown: Bool = false
+
     var body: some View {
         CircularInstrument(
             borderColor: currentSolarProductionInKwh != 0
                 ? .accentColor : .gray,
             label: "Production",
             value: String(format: "%.1f kW", currentSolarProductionInKwh),
+            isTouchable: true,
             useGlowEffect: useGlow
         ) {
             VStack {
@@ -19,6 +22,16 @@ struct SolarBoubleView: View {
                 Image(systemName: "sun.max")
                     .foregroundColor(.black)
             }
+        }
+        .onTapGesture
+        {
+            isChartSheetShown = true
+        }
+        .sheet(isPresented: $isChartSheetShown) {
+            NavigationView {
+                TodayChartSheet()
+            }
+            .presentationDetents([.medium, .large])
         }
     }
 }

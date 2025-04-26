@@ -74,10 +74,6 @@ struct HomeScreen: View {
                             HStack(alignment: .bottom) {
                                 Spacer()
 
-                                TodayChartButton()
-                                
-                                Spacer()
-
                                 ChargingView(
                                     isVertical: true
                                 )
@@ -137,9 +133,6 @@ struct HomeScreen: View {
                                         .padding(.leading, 5)
                                 }
                                 .padding(.trailing, -30)
-
-                                TodayChartButton()
-                                    .padding(.top)
 
                                 Spacer()
 
