@@ -4,9 +4,11 @@ struct OverviewScreen: View {
     @Environment(CurrentBuildingState.self) private var model
     @Environment(NavigationState.self) private var navigationState
 
-    @State private var refreshTimer: Timer?
     @State private var showSettings: Bool = false
     @State private var showChart: Bool = false
+
+    let refreshTimer = Timer.publish(every: 15, on: .main, in: .common)
+        .autoconnect()
 
     var body: some View {
         VStack {
@@ -21,7 +23,8 @@ struct OverviewScreen: View {
                                     options: .repeat(.continuous)
                                 )
                                 .accessibilityLabel(
-                                    "A connection error occurred!")
+                                    "A connection error occurred!"
+                                )
                         }
 
                         if model.error != nil {
@@ -34,13 +37,13 @@ struct OverviewScreen: View {
 
                     Spacer()
                 }  // :VStack
-                
+
                 VStack {
                     Spacer()
-                    
+
                     UpdateTimeStampView(
                         isStale: model.overviewData.isStaleData,
-                        updateTimeStamp: model.overviewData.lastUpdated,
+                        updateTimeStamp: model.overviewData.lastSuccessServerFetch,
                         isLoading: model.isLoading
                     )
                     .padding(.bottom, -9)
@@ -55,17 +58,12 @@ struct OverviewScreen: View {
                     Task {
                         await model.fetchServerData()
                     }
-                    if refreshTimer == nil {
-                        refreshTimer = Timer.scheduledTimer(
-                            withTimeInterval: 15, repeats: true
-                        ) {
-                            _ in
-                            Task {
-                                await model.fetchServerData()
-                            }
-                        }  // :refreshTimer
-                    }  // :if
                 }  // :OnAppear
+                .onReceive(refreshTimer) { inputDate in
+                    Task {
+                        await model.fetchServerData()
+                    }
+                }  // :onReceive
 
                 VStack {
 
@@ -173,7 +171,10 @@ struct OverviewScreen: View {
                     solarProductionMax: 11000,
                     hasConnectionError: false,
                     lastUpdated: Calendar.current.date(
-                        byAdding: .minute, value: -40, to: Date()),
+                        byAdding: .minute,
+                        value: -40,
+                        to: Date()
+                    ),
                     lastSuccessServerFetch: Date(),
                     isAnyCarCharing: false,
                     chargingStations: [],

@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 @Observable
-class CurrentBuildingState {    
+class CurrentBuildingState {
     var isLoading = false
     var errorMessage: String?
     var error: EnergyManagerClientError?
@@ -22,7 +22,7 @@ class CurrentBuildingState {
         self.energyManager = energyManagerClient
         updateCredentialsExists()
     }
-    
+
     init() {
         self.energyManager = SolarManager.instance()
         updateCredentialsExists()
@@ -33,10 +33,10 @@ class CurrentBuildingState {
         loggedIn: Bool = true,
         isLoading: Bool = false,
         didLoginSucceed: Bool? = nil
-    ) -> CurrentBuildingState
-    {
+    ) -> CurrentBuildingState {
         let result = CurrentBuildingState.init(
-            energyManagerClient: FakeEnergyManager.init(data: overviewData))
+            energyManagerClient: FakeEnergyManager.init(data: overviewData)
+        )
         result.isLoading = false
         result.loginCredentialsExists = loggedIn
 
@@ -62,7 +62,9 @@ class CurrentBuildingState {
 
     func tryLogin(email: String, password: String) async {
         didLoginSucceed = await energyManager.login(
-            username: email, password: password)
+            username: email,
+            password: password
+        )
         updateCredentialsExists()
 
         if didLoginSucceed == true {
@@ -77,29 +79,24 @@ class CurrentBuildingState {
         }
 
         do {
-            withTransaction(Transaction(animation: nil)) {
-                isLoading = true
-                resetError()
-            }
+            isLoading = true
+            resetError()
 
             print("Fetching server data...")
-            
+
             var stopwatch = Stopwatch.init()
             let newData = try await energyManager.fetchOverviewData(
-                lastOverviewData: overviewData)
+                lastOverviewData: overviewData
+            )
             stopwatch.stop()
-            
-            withTransaction(Transaction(animation: nil)) {
-                overviewData = newData;
-            }
-            
+
+            overviewData = newData
+
             print(
                 "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
             )
 
-            withTransaction(Transaction(animation: nil)) {
-                isLoading = false
-            }
+            isLoading = false
         } catch {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
@@ -150,7 +147,8 @@ class CurrentBuildingState {
 
             let result = try await energyManager.setCarChargingMode(
                 sensorId: sensorId,
-                carCharging: newCarCharging)
+                carCharging: newCarCharging
+            )
 
             print("Car-Charging set at \(Date())")
 
@@ -165,30 +163,35 @@ class CurrentBuildingState {
             carChargerSetSuccessfully = false
         }
     }
-    
+
     func setSensorPriority(sensorId: String, newPriority: Int) async {
         guard loginCredentialsExists && !isChangingSensorPriority
         else {
             print("WARN: Login-Credentials don't exists or is loading already")
             return
         }
-        
+
         isChangingSensorPriority = true
         defer {
             isChangingSensorPriority = false
         }
-        
+
         do {
 
             resetError()
 
-            print("\(Date()): Set sensor \(sensorId) to priority \(newPriority)")
+            print(
+                "\(Date()): Set sensor \(sensorId) to priority \(newPriority)"
+            )
 
             _ = try await energyManager.setSensorPriority(
                 sensorId: sensorId,
-                priority: newPriority)
+                priority: newPriority
+            )
 
-            print("\(Date()): Sensor \(sensorId) priority se to \(newPriority).")
+            print(
+                "\(Date()): Sensor \(sensorId) priority se to \(newPriority)."
+            )
 
             await fetchServerData()
 
@@ -204,11 +207,11 @@ class CurrentBuildingState {
         updateCredentialsExists()
         resetError()
     }
-    
+
     func checkForCredentions() {
         updateCredentialsExists()
     }
-    
+
     private func updateCredentialsExists() {
         let credentials = KeychainHelper.loadCredentials()
 
