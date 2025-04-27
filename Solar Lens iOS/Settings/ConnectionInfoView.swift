@@ -9,9 +9,11 @@ struct ConnectionInfoView: View {
     var body: some View {
         ZStack {
             let borderColor: Color =
-                (serverInfo?.signal ?? false) == true
-                ? Color.green
-                : Color.red
+                serverInfo == nil
+                ? Color.gray
+                : (serverInfo?.signal ?? false) == true
+                    ? Color.green
+                    : Color.red
 
             RoundedRectangle(cornerRadius: 8)
                 .strokeBorder(borderColor, lineWidth: 1)
@@ -31,28 +33,36 @@ struct ConnectionInfoView: View {
 
                     Spacer()
 
-                    ConnectionStateView(connected: serverInfo?.signal ?? false)
+                    if (serverInfo != nil) {
+                        ConnectionStateView(connected: serverInfo?.signal ?? false)
+                    }
                 }
 
                 HStack {
-                    Grid(alignment: .leading, horizontalSpacing: 20) {
-
-                        GridRow {
-                            Text("SM ID:")
-                            Text(serverInfo?.smId ?? "-")
-                            Button(action: {
-                                copyToClipboard(text: serverInfo?.smId ?? "")
-                                showConfirmation = true
-                            }) {
-                                Image(systemName: "document.on.document")
-                                    .foregroundColor(.blue)
+                    
+                    if serverInfo != nil {
+                        Grid(alignment: .leading, horizontalSpacing: 20) {
+                            
+                            GridRow {
+                                Text("SM ID:")
+                                Text(serverInfo?.smId ?? "-")
+                                Button(action: {
+                                    copyToClipboard(text: serverInfo?.smId ?? "")
+                                    showConfirmation = true
+                                }) {
+                                    Image(systemName: "document.on.document")
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                            
+                            GridRow {
+                                Text("User:")
+                                Text(serverInfo?.email ?? "-")
                             }
                         }
-
-                        GridRow {
-                            Text("User:")
-                            Text(serverInfo?.email ?? "-")
-                        }
+                    } else {
+                        ProgressView()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
 
                     Spacer()
@@ -69,9 +79,10 @@ struct ConnectionInfoView: View {
                 HStack {
                     Spacer()
 
-                    LogoutButtonView()
-                        .disabled(serverInfo == nil || !serverInfo!.signal)
-
+                    if serverInfo != nil {
+                        LogoutButtonView()
+                            .disabled(!serverInfo!.signal)
+                    }
                 }
 
             }.padding()

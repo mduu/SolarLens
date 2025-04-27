@@ -9,6 +9,7 @@ struct LogoutButtonView: View {
         RoundIconButton(
             imageName: "iphone.and.arrow.right.outward",
             imageColor: Color.red,
+            buttonSize: 32,
             action: {
                 showLogoutConfirmation = true
             }

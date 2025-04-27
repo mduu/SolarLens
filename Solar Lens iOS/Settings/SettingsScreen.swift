@@ -43,7 +43,8 @@ struct SettingsScreen: View {
                 SettingNavigationItem(
                     imageName: "server.rack",
                     text: "Server Info",
-                    color: .blue
+                    color: .blue,
+                    disabled: serverInfo == nil
                 ) {
                     ServerInfoView(serverInfo: serverInfo)
                 }
