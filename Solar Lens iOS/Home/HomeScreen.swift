@@ -19,25 +19,20 @@ struct HomeScreen: View {
 
                 ScrollView {
 
-                    if buildingState.isLoading
-                        && buildingState.overviewData.lastSuccessServerFetch
-                            == nil
-                    {
-                        ProgressView()
-                            .tint(.accent)
-                            .padding()
-                            .foregroundStyle(.accent)
-                            .background(Color.black.opacity(0.3))
-                    } else {
-                        ZStack {
+                    ZStack {
 
-                            BackgroundView()
+                        BackgroundView()
 
-                            if isPortrait {
-                                VStack {
+                        if isPortrait {
+                            VStack {
+                                if isLoading() {
+                                    MainProgressView()
+                                        .padding(.top, 65)
+                                } else {
+                                    
                                     HeaderView()
                                         .padding(.top, 65)
-
+                                    
                                     Spacer()
                                     
                                     HStack(alignment: .bottom) {
@@ -72,7 +67,7 @@ struct HomeScreen: View {
                                                 )
                                                 .padding(.leading, 5)
                                         }
-
+                                        
                                         EfficiencyInfoView(
                                             todaySelfConsumptionRate:
                                                 buildingState
@@ -84,35 +79,41 @@ struct HomeScreen: View {
                                         )
                                         .frame(maxWidth: 180, maxHeight: 120)
                                         .padding(.leading, 5)
-
+                                        
                                     }  // :HStack
                                     .padding()
-
+                                    
                                     EnergyFlow()
                                         .padding(.horizontal, 50)
-
+                                    
                                     HStack(alignment: .bottom) {
                                         Spacer()
-
+                                        
                                         ChargingView(
                                             isVertical: true
                                         )
-
+                                        
                                     }  // :HStack
                                     .padding()
-
+                                    
                                     Spacer()
-
+                                    
                                     FooterView()
+                                    
+                                }
 
-                                }  // :VStack
-                                .frame(height: rootGeometry.size.height)
+                            }  // :VStack
+                            .frame(height: rootGeometry.size.height)
 
-                            } else {
-                                HStack {
-
+                        } else {
+                            HStack {
+                                
+                                if isLoading() {
+                                    MainProgressView(isLandscape: true)
+                                } else {
+                                    
                                     VStack {
-
+                                        
                                         if solarDetailsData != nil {
                                             SolarForecastView(
                                                 solarProductionMax:
@@ -144,9 +145,9 @@ struct HomeScreen: View {
                                                 )
                                                 .padding(.leading, 5)
                                         }
-
+                                        
                                         Spacer()
-
+                                        
                                         EfficiencyInfoView(
                                             todaySelfConsumptionRate:
                                                 buildingState
@@ -160,29 +161,30 @@ struct HomeScreen: View {
                                         .padding(.leading, 5)
                                     }  // :VStack
                                     .padding(.trailing)
-
+                                    
                                     EnergyFlow()
-
+                                    
                                     VStack(alignment: .trailing) {
                                         AppLogo()
-
+                                        
                                         SettingsButton()
-
+                                        
                                         Spacer()
-
+                                        
                                         ChargingView(
                                             isVertical: false
                                         )
                                     }  // :VStack
+                                    
+                                }
 
-                                }  // :HStack
-                                .padding()
-                                .padding(.horizontal, 30)
-                            }  // :else
+                            }  // :HStack
+                            .padding()
+                            .padding(.horizontal, 30)
+                        }  // :else
 
-                        }  // :ZStack
-                        .frame(maxHeight: rootGeometry.size.height)
-                    }
+                    }  // :ZStack
+                    .frame(maxHeight: rootGeometry.size.height)
 
                 }
                 .frame(maxHeight: rootGeometry.size.height)
@@ -200,7 +202,6 @@ struct HomeScreen: View {
 
         }  // :VStack
         .ignoresSafeArea()
-
     }
 
     private func fetchAndStartRefreshTimerForOverviewData() {
@@ -252,15 +253,32 @@ struct HomeScreen: View {
                 try await energyManager.fetchSolarDetails()
         }
     }
+
+    private func isLoading() -> Bool {
+        buildingState.isLoading
+            && buildingState.overviewData.lastSuccessServerFetch == nil
+    }
 }
 
-#Preview {
+#Preview("Normal") {
     HomeScreen(
         solarDetailsData: SolarDetailsData.fake()
     )
     .environment(
         CurrentBuildingState.fake(
             overviewData: OverviewData.fake()
+        )
+    )
+}
+
+#Preview("Loading") {
+    HomeScreen(
+        solarDetailsData: nil
+    )
+    .environment(
+        CurrentBuildingState.fake(
+            overviewData: OverviewData.empty(),
+            isLoading: true
         )
     )
 }
