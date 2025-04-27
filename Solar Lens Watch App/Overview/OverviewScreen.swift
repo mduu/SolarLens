@@ -66,6 +66,27 @@ struct OverviewScreen: View {
                 }  // :onReceive
 
                 VStack {
+                    
+                    HStack {
+                        Button(action: {
+                            Task {
+                                await model.fetchServerData()
+                            }
+                        }) {
+                            Image(
+                                systemName: "arrow.clockwise"
+                            )
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                        }
+                        .buttonStyle(.borderless)
+                        .foregroundColor(.primary)
+                        .padding(.leading, 12)
+                        .padding(.top, -18)
+                        
+                        Spacer()
+                    }
 
                     Spacer()
 
