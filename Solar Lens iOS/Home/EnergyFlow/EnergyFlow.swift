@@ -4,17 +4,21 @@ struct EnergyFlow: View {
     @Environment(CurrentBuildingState.self) var buildingState:
         CurrentBuildingState
 
+    @State var appSettings = AppSettings()
+
     var body: some View {
         let solar =
             Double(
                 buildingState.overviewData
-                    .currentSolarProduction)
+                    .currentSolarProduction
+            )
             / 1000
 
         let consumption =
             Double(
                 buildingState.overviewData
-                    .currentOverallConsumption)
+                    .currentOverallConsumption
+            )
             / 1000
 
         let grid =
@@ -23,7 +27,8 @@ struct EnergyFlow: View {
                     ? buildingState.overviewData
                         .currentGridToHouse
                     : buildingState.overviewData
-                        .currentSolarToGrid)
+                        .currentSolarToGrid
+            )
             / 1000
 
         Grid {
@@ -32,7 +37,9 @@ struct EnergyFlow: View {
                 SolarBoubleView(
                     currentSolarProductionInKwh: solar,
                     todaySolarProductionInWh: buildingState
-                        .overviewData.todayProduction
+                        .overviewData.todayProduction,
+                    useGlow: appSettings.appearanceUseGlowEffectWithDefault
+                        .wrappedValue
                 )
                 .frame(maxWidth: .infinity)
 
@@ -42,7 +49,9 @@ struct EnergyFlow: View {
                 )
                 .frame(width: 50, height: 50)
 
-                GridBoubleView(gridInKwh: grid)
+                GridBoubleView(
+                    gridInKwh: grid,
+                    useGlow: appSettings.appearanceUseGlowEffectWithDefault.wrappedValue)
                     .frame(maxWidth: .infinity)
             }
             .frame(maxHeight: .infinity)
@@ -72,7 +81,8 @@ struct EnergyFlow: View {
                         .currentBatteryLevel,
                     currentChargeRate: buildingState
                         .overviewData
-                        .currentBatteryChargeRate
+                        .currentBatteryChargeRate,
+                    useGlow: appSettings.appearanceUseGlowEffectWithDefault.wrappedValue
                 )
                 .frame(maxWidth: .infinity)
 
@@ -100,7 +110,9 @@ struct EnergyFlow: View {
     EnergyFlow()
         .environment(
             CurrentBuildingState.fake(
-                overviewData: OverviewData.fake()))
+                overviewData: OverviewData.fake()
+            )
+        )
 }
 
 #Preview("Large, To Grid") {
@@ -127,11 +139,14 @@ struct EnergyFlow: View {
                             chargingMode: ChargingMode.withSolarPower,
                             priority: 0,
                             currentPower: 0,
-                            signal: SensorConnectionStatus.connected)
+                            signal: SensorConnectionStatus.connected
+                        )
                     ],
                     devices: [],
                     todayAutarchyDegree: 78
-                )))
+                )
+            )
+        )
 
 }
 
@@ -140,6 +155,8 @@ struct EnergyFlow: View {
         .frame(maxWidth: 300, maxHeight: 300)
         .environment(
             CurrentBuildingState.fake(
-                overviewData: OverviewData.fake()))
+                overviewData: OverviewData.fake()
+            )
+        )
 
 }

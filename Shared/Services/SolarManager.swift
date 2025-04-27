@@ -52,14 +52,7 @@ actor SolarManager: EnergyManager {
                     - chart.battery!.batteryDischarging
                 : nil
 
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-            dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)  // Set timezone to UTC
-
-            let lastUpdated = dateFormatter.date(from: chart.lastUpdate)
-            debugPrint(chart.lastUpdate)
-            debugPrint(lastUpdated ?? "nil")
-
+            let lastUpdated = parseSolarManagerDateTime(chart.lastUpdate)
             let streamSensorInfos = try await streamSensorInfosResult
             let todayGatewayStatistics = try await todayGatewayStatisticsRsult
             let isAnyCarCharing = getIsAnyCarCharing(
@@ -263,6 +256,40 @@ actor SolarManager: EnergyManager {
                     )
                 }
                 ?? []
+        )
+    }
+
+    func fetchServerInfo() async throws -> ServerInfo {
+        try await ensureSystemInfomation()
+        
+        guard let systemInformation = systemInformation else {
+            throw EnergyManagerClientError.systemInformationNotFound
+        }
+        
+        return ServerInfo(
+            status: systemInformation.status,
+            language: systemInformation.language,
+            lastname: systemInformation.last_name,
+            firstname: systemInformation.first_name,
+            email: systemInformation.email,
+            country: systemInformation.country,
+            license: systemInformation.license,
+            city: systemInformation.city,
+            street: systemInformation.street,
+            zip: systemInformation.zip,
+            kWp: systemInformation.kWp,
+            energyAssistantEnable: systemInformation.energy_assistant_enable,
+            userId: systemInformation.user_id,
+            registrationDate: parseSolarManagerDateTime(systemInformation.registration_date),
+            deviceCount: systemInformation.device_count,
+            carCount: systemInformation.car_count,
+            smId: systemInformation.sm_id,
+            gatewayId: systemInformation.gateway_id,
+            installationFinished: systemInformation.installation_finished,
+            hardwareVersion: systemInformation.hardware_version,
+            softwareVersion: systemInformation.firmware_version,
+            signal: systemInformation.signal == "connected",
+            installer: systemInformation.installer
         )
     }
 
@@ -514,6 +541,19 @@ actor SolarManager: EnergyManager {
         }
 
         return dailyKWh
+    }
+    
+    func parseSolarManagerDateTime(_ solarManagerDateTime: String?) -> Date? {
+        guard let dateTime = solarManagerDateTime else {
+            return nil
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensures the formatter correctly interprets the 'Z' as UTC.
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // Explicitly set to UTC if 'Z' should be treated as UTC, which is common.
+
+        return dateFormatter.date(from: dateTime)
     }
 
 }

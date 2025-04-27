@@ -6,14 +6,16 @@ struct CircularInstrument<Content: View>: View {
     var value: String?
     var small: Bool = false
     var isTouchable: Bool = false
+    var useGlowEffect: Bool = false
     @ViewBuilder let content: Content?
-    
+
     init(
         borderColor: Color,
         label: LocalizedStringResource,
         value: String? = nil,
         small: Bool? = nil,
         isTouchable: Bool? = nil,
+        useGlowEffect: Bool? = nil,
         @ViewBuilder content: @escaping () -> Content?
     ) {
         self.borderColor = borderColor
@@ -21,11 +23,13 @@ struct CircularInstrument<Content: View>: View {
         self.value = value
         self.small = small ?? false
         self.isTouchable = isTouchable ?? false
+        self.useGlowEffect = useGlowEffect ?? false
         self.content = content()
     }
-    
+
     var body: some View {
         ZStack {
+
             Circle()
                 .fill(.white)
                 .if(isTouchable) { view in
@@ -35,7 +39,12 @@ struct CircularInstrument<Content: View>: View {
                 .overlay(
                     Circle()
                         .stroke(borderColor, lineWidth: 4)
-                        .shadow(color: borderColor.opacity(0.5), radius:5, x: 0, y: 0)
+                        .shadow(
+                            color: borderColor.opacity(useGlowEffect ? 0.5 : 0),
+                            radius: useGlowEffect ? 5 : 0,
+                            x: 0,
+                            y: 0
+                        )
                 )
 
             VStack(alignment: .center) {
@@ -91,6 +100,39 @@ struct CircularInstrument<Content: View>: View {
         borderColor: .teal,
         label: "Charger",
         small: true
+    ) {
+        Image(systemName: "ev.charger")
+            .resizable()
+            .scaledToFit()
+            .frame(maxHeight: 20)
+            .foregroundColor(.black)
+    }
+    .frame(maxWidth: 60)
+}
+
+#Preview("Small touchable") {
+    CircularInstrument(
+        borderColor: .teal,
+        label: "Charger",
+        small: true,
+        isTouchable: true
+    ) {
+        Image(systemName: "ev.charger")
+            .resizable()
+            .scaledToFit()
+            .frame(maxHeight: 20)
+            .foregroundColor(.black)
+    }
+    .frame(maxWidth: 60)
+}
+
+#Preview("Small touchable & glow") {
+    CircularInstrument(
+        borderColor: .teal,
+        label: "Charger",
+        small: true,
+        isTouchable: true,
+        useGlowEffect: true
     ) {
         Image(systemName: "ev.charger")
             .resizable()

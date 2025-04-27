@@ -4,6 +4,7 @@ import SwiftUI
 struct BatteryBoubleView: View {
     var currentBatteryLevel: Int?
     var currentChargeRate: Int?
+    var useGlow: Bool
     
     var body: some View {
         if (currentBatteryLevel != nil) {
@@ -16,14 +17,16 @@ struct BatteryBoubleView: View {
                     : Int(geometry.size.width / 2 - 4)
                 
                 Chart {
+                    let color: Color = batteryLevel > 5 ? .green : .red
+                    
                     SectorMark(
                         angle: .value("Full", 0..<batteryLevel),
                         innerRadius: MarkDimension(integerLiteral: innerRadius),
                         angularInset: 3
                     )
                     .cornerRadius(5)
-                    .foregroundStyle(batteryLevel > 5 ? .green : .red)
-                    .shadow(color: .green.opacity(0.5), radius:5, x: 0, y: 0)
+                    .foregroundStyle(color)
+                    .shadow(color: color.opacity(useGlow ? 0.5 : 0), radius: useGlow ? 5 : 0, x: 0, y: 0)
 
                     SectorMark(
                         angle: .value("Empty", batteryLevel..<100),
@@ -100,7 +103,8 @@ struct BatteryBoubleView: View {
 #Preview("Data") {
     BatteryBoubleView(
         currentBatteryLevel: 33,
-        currentChargeRate: 1234
+        currentChargeRate: 1234,
+        useGlow: false
     )
     .frame(width: 120, height: 120)
 }
@@ -108,7 +112,17 @@ struct BatteryBoubleView: View {
 #Preview("Data lg") {
     BatteryBoubleView(
         currentBatteryLevel: 5,
-        currentChargeRate: 1234
+        currentChargeRate: 1234,
+        useGlow: false
+    )
+    .frame(width: 300, height: 290)
+}
+
+#Preview("Data lg & glow") {
+    BatteryBoubleView(
+        currentBatteryLevel: 5,
+        currentChargeRate: 1234,
+        useGlow: true
     )
     .frame(width: 300, height: 290)
 }
@@ -116,7 +130,8 @@ struct BatteryBoubleView: View {
 #Preview("No Data") {
     BatteryBoubleView(
         currentBatteryLevel: nil,
-        currentChargeRate: nil
+        currentChargeRate: nil,
+        useGlow: false
     )
     .frame(width: 120, height: 120)
 }
