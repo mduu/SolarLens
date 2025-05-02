@@ -1526,6 +1526,34 @@
         }
       }
     },
+    "Discover Siri" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opdag Siri"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entdecke Siri"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Découvrir Siri"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scopri Siri"
+          }
+        }
+      }
+    },
     "Efficiency" : {
       "localizations" : {
         "da" : {
@@ -2147,6 +2175,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Informazioni sull'auto"
+          }
+        }
+      }
+    },
+    "Integrations" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integrationer"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integrationen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intégrations"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integrazioni"
           }
         }
       }
@@ -3628,6 +3684,34 @@
         }
       }
     },
+    "Shortcuts for automation" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genveje til automatisering"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurzbefehle für Automation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raccourcis pour l'automatisation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comandi rapidi per l'automazione"
+          }
+        }
+      }
+    },
     "Show solar overview" : {
       "localizations" : {
         "da" : {
@@ -3904,6 +3988,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Segnale:"
+          }
+        }
+      }
+    },
+    "Siri" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri"
           }
         }
       }
@@ -5389,6 +5501,68 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quale giorno"
+          }
+        }
+      }
+    },
+    "With Shortcuts you can create workflows you can trigger manually or automatically based on events or time." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Lens integreres med Apple Genveje. Med Genveje kan du oprette arbejdsgange, der kan udløses manuelt eller automatisk baseret på begivenheder eller tid. På denne måde kan du bygge dine egne automatiseringer, der inkluderer dine Solar Manager-data og -kommandoer.\n\nDu kan også bruge Genveje til at oprette brugerdefinerede Siri-stemmekommandoer og knapper på hjemmeskærmen og meget mere. De kan også fungere i CarPlay, mens du er på farten.\n\nSe, hvad Solar Lens har at tilbyde i Genveje-appen:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Lens lässt sich in Apple Kurzbefehle integrieren. Mit Kurzbefehlen können Sie Workflows erstellen, die manuell oder automatisch basierend auf Ereignissen oder Zeit ausgelöst werden können. Auf diese Weise können Sie eigene Automatisierungen erstellen, die Ihre Solar Manager-Daten und -Befehle beinhalten.\n\nSie können Kurzbefehle auch verwenden, um benutzerdefinierte Siri-Sprachbefehle und Home-Bildschirm-Schaltflächen und vieles mehr zu erstellen. Sie funktionieren auch in CarPlay, während Sie unterwegs sind.\n\nSehen Sie sich an, was Solar Lens in der Kurzbefehle-App zu bieten hat:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Lens integrates with Apple Shortcuts. With Shortcuts you can create workflows which can be triggered manually or automatically based on events or time. This way you can build our own automations which include your Solar Manager data and commands.\n\nYou can also use Shortcuts to create custom Siri voice commands and Home-screen buttons and much more. They can also work in CarPlay while you are on the road.\n\nCheck what Solar Lens has to offer in the Shortcuts app:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Lens s'intègre avec les Raccourcis Apple. Avec les Raccourcis, vous pouvez créer des flux de travail qui peuvent être déclenchés manuellement ou automatiquement en fonction d'événements ou de l'heure. De cette façon, vous pouvez créer vos propres automatisations qui incluent vos données et commandes Solar Manager.\n\nVous pouvez également utiliser les Raccourcis pour créer des commandes vocales Siri personnalisées, des boutons sur l'écran d'accueil et bien plus encore. Ils peuvent également fonctionner dans CarPlay lorsque vous êtes sur la route.\n\nDécouvrez ce que Solar Lens a à offrir dans l'application Raccourcis:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Lens si integra con i Comandi Rapidi di Apple. Con i Comandi Rapidi puoi creare flussi di lavoro che possono essere attivati manualmente o automaticamente in base a eventi o orari. In questo modo puoi creare le tue automazioni che includono i dati e i comandi del tuo Solar Manager.\n\nPuoi anche usare i Comandi Rapidi per creare comandi vocali personalizzati per Siri, pulsanti sulla schermata Home e molto altro. Possono anche funzionare in CarPlay mentre sei in viaggio.\n\nScopri cosa offre Solar Lens nell'app Comandi Rapidi:"
+          }
+        }
+      }
+    },
+    "You can use Siri to query and control your Solar Manager using Solar Lens. This works everywhere where Siri works and therefore also in CarPlay etc. \n\nHere are some examples:" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan bruge Siri til at forespørge og styre din Solar Manager ved hjælp af Solar Lens. Dette virker overalt, hvor Siri virker og derfor også i CarPlay osv.\n\nHer er nogle eksempler:\t"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie können mit Siri Ihren Solar Manager abfragen und kontrollieren. Dies funktioniert überall wo auch Siri zur verfügung steht wie z.B. in CarPlay.\n\nHier einige Beispiele:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ous pouvez utiliser Siri pour interroger et contrôler votre Solar Manager à l'aide de Solar Lens. Cela fonctionne partout où Siri fonctionne et donc aussi dans CarPlay, etc.\n\nVoici quelques exemples:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puoi usare Siri per interrogare e controllare il tuo Solar Manager usando Solar Lens. Questo funziona ovunque Siri funzioni e quindi anche in CarPlay ecc. \n\nEcco alcuni esempi:"
           }
         }
       }

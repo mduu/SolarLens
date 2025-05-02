@@ -63,6 +63,28 @@ struct SettingsScreen: View {
                     isOn: settings.appearanceUseGlowEffectWithDefault
                 )
             }
+            
+            Section(header: Text("Integrations")) {
+                
+                SettingNavigationItem(
+                    imageName: "microphone.fill",
+                    text: "Siri",
+                    color: .yellow,
+                    disabled: serverInfo == nil
+                ) {
+                    SiriInfoView()
+                }
+                
+                SettingNavigationItem(
+                    imageName: "flowchart.fill",
+                    text: "Shortcuts for automation",
+                    color: .yellow,
+                    disabled: serverInfo == nil
+                ) {
+                    ShortcutsView()
+                }
+                
+            }
 
         }
         .selectionDisabled()
