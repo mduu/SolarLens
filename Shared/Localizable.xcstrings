@@ -848,6 +848,34 @@
         }
       }
     },
+    "Close" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luk"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiudi"
+          }
+        }
+      }
+    },
     "Configuration" : {
       "localizations" : {
         "da" : {
@@ -1494,6 +1522,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Priorità dei dispositivi"
+          }
+        }
+      }
+    },
+    "Did you know Solar Lens has built-in Siri integration?" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidste du, at Solar Lens har indbygget Siri-integration?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wussten Sie, dass Solar Lens eine Siri-Integration hat?\t"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saviez-vous que Solar Lens dispose d'une intégration Siri intégrée?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sapevi che Solar Lens ha l'integrazione Siri integrata?"
           }
         }
       }
@@ -3712,6 +3768,34 @@
         }
       }
     },
+    "Shortcuts Integration" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genveje-integration"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurzbefehle-Integration"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intégration Raccourcis"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integrazione Comandi Rapidi"
+          }
+        }
+      }
+    },
     "Show solar overview" : {
       "localizations" : {
         "da" : {
@@ -4016,6 +4100,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siri"
+          }
+        }
+      }
+    },
+    "Siri Integration" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri-integration"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri-Integration"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intégration Siri"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integrazione Siri"
+          }
+        }
+      }
+    },
+    "Skip" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spring over"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ignorer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salta"
           }
         }
       }
@@ -4961,6 +5101,34 @@
         }
       }
     },
+    "Tip:" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tip:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipp:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Astuce:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggerimento:"
+          }
+        }
+      }
+    },
     "today" : {
       "localizations" : {
         "da" : {
@@ -5418,6 +5586,34 @@
         }
       }
     },
+    "Using Apple Shortcuts you can create automations and custom Siri commands." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ved hjælp af Apple Genveje kan du oprette automatiseringer og brugerdefinerede Siri-kommandoer."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Apple Kurzbefehlen können Sie Automatisierungen und benutzerdefinierte Siri-Befehle erstellen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À l'aide des Raccourcis Apple, vous pouvez créer des automatisations et des commandes Siri personnalisées."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilizzando i Comandi Rapidi Apple puoi creare automazioni e comandi Siri personalizzati."
+          }
+        }
+      }
+    },
     "v%@" : {
       "shouldTranslate" : false
     },
@@ -5539,6 +5735,90 @@
         }
       }
     },
+    "With the build-in integration from Solar Lens you can get information and constrol your Solar Manager using Shortcuts. It is also possible to combine it with other feature of Shortcuts. See what Solar Lens offers in Shortcuts:" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med den indbyggede integration fra Solar Lens kan du få information og styre din Solar Manager ved hjælp af Genveje. Det er også muligt at kombinere det med andre funktioner i Genveje. Se, hvad Solar Lens tilbyder i Genveje:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit der integrierten Integration von Solar Lens können Sie Informationen abrufen und Ihren Solar Manager mit Kurzbefehlen steuern. Es ist auch möglich, dies mit anderen Funktionen von Kurzbefehlen zu kombinieren. Sehen Sie, was Solar Lens in Kurzbefehlen bietet:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grâce à l'intégration intégrée de Solar Lens, vous pouvez obtenir des informations et contrôler votre Solar Manager à l'aide des Raccourcis. Il est également possible de le combiner avec d'autres fonctionnalités des Raccourcis. Découvrez ce que Solar Lens propose dans les Raccourcis:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con l'integrazione integrata di Solar Lens puoi ottenere informazioni e controllare il tuo Solar Manager utilizzando i Comandi Rapidi. È anche possibile combinarlo con altre funzionalità dei Comandi Rapidi. Scopri cosa offre Solar Lens nei Comandi Rapidi:"
+          }
+        }
+      }
+    },
+    "You can ask Siri thinkg like the following:" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan spørge Siri om ting som følgende:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie können Siri Dinge wie die folgenden fragen:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous pouvez demander à Siri des choses comme ceci:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puoi chiedere a Siri cose come le seguenti:"
+          }
+        }
+      }
+    },
+    "You can talk to Siri to get informaiton from you Solar Manager installtion or to control thinks like car charging mode." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan tale med Siri for at få information fra din Solar Manager-installation eller for at styre ting som bilopladningstilstand."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie können mit Siri sprechen, um Informationen von Ihrer Solar Manager-Installation zu erhalten oder Dinge wie den Autolademodus zu steuern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous pouvez parler à Siri pour obtenir des informations de votre installation Solar Manager ou pour contrôler des éléments tels que le mode de charge de la voiture."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puoi parlare con Siri per ottenere informazioni dalla tua installazione di Solar Manager o per controllare cose come la modalità di ricarica dell'auto."
+          }
+        }
+      }
+    },
     "You can use Siri to query and control your Solar Manager using Solar Lens. This works everywhere where Siri works and therefore also in CarPlay etc. \n\nHere are some examples:" : {
       "localizations" : {
         "da" : {
@@ -5563,6 +5843,90 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Puoi usare Siri per interrogare e controllare il tuo Solar Manager usando Solar Lens. Questo funziona ovunque Siri funzioni e quindi anche in CarPlay ecc. \n\nEcco alcuni esempi:"
+          }
+        }
+      }
+    },
+    "You find a lot more samples in the settings menu of Solar Lens." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du finder mange flere eksempler i indstillingsmenuen i Solar Lens."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie finden viele weitere Beispiele im Einstellungsmenü von Solar Lens."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous trouverez beaucoup plus d'exemples dans le menu des réglages de Solar Lens."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Troverai molti altri esempi nel menu delle impostazioni di Solar Lens."
+          }
+        }
+      }
+    },
+    "You need to add the words 'in Solar Lens' to your Siri commands." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du skal tilføje ordene 'i Solar Lens' til dine Siri-kommandoer."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie müssen die Worte 'in Solar Lens' zu Ihren Siri-Befehlen hinzufügen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous devez ajouter les mots « dans Solar Lens » à vos commandes Siri."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devi aggiungere le parole 'in Solar Lens' ai tuoi comandi Siri."
+          }
+        }
+      }
+    },
+    "You will find more information in Solar Lens settgins menu." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du finder mere information i Solar Lens indstillingsmenu."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Informationen finden Sie im Einstellungsmenü von Solar Lens."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous trouverez plus d'informations dans le menu des réglages de Solar Lens."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Troverai maggiori informazioni nel menu delle impostazioni di Solar Lens."
           }
         }
       }
