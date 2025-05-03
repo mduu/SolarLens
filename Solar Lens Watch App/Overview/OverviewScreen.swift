@@ -84,6 +84,9 @@ struct OverviewScreen: View {
                         .foregroundColor(.primary)
                         .padding(.leading, 8)
                         .padding(.top, -22)
+                        .padding(.trailing, 15)
+                        .padding(.bottom, 15)
+                        .background(.black.opacity(0.0001)) // Used to increaset touch area
                         
                         Spacer()
                     }

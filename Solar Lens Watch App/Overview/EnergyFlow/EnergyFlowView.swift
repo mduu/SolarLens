@@ -17,6 +17,9 @@ struct EnergyFlowView: View {
                         .solarProductionMax
                 )
                 .frame(maxWidth: 50, maxHeight: 50)
+                .background(
+                    Color.black.opacity(0.0001).onTapGesture {}
+                )
                 .onTapGesture {
                     navigationState.navigate(to: .solarProduction)
                 }
@@ -96,7 +99,8 @@ struct EnergyFlowView: View {
     EnergyFlowView()
         .environment(
             CurrentBuildingState.fake(
-                overviewData: OverviewData.fake())
+                overviewData: OverviewData.fake()
+            )
         )
         .environment(NavigationState.init())
 }
@@ -105,7 +109,8 @@ struct EnergyFlowView: View {
     EnergyFlowView()
         .environment(
             CurrentBuildingState.fake(
-                overviewData: OverviewData.fake(batteryToHouse: true))
+                overviewData: OverviewData.fake(batteryToHouse: true)
+            )
         )
         .environment(NavigationState.init())
 }
