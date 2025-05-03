@@ -82,8 +82,8 @@ struct OverviewScreen: View {
                         }
                         .buttonStyle(.borderless)
                         .foregroundColor(.primary)
-                        .padding(.leading, 12)
-                        .padding(.top, -18)
+                        .padding(.leading, 8)
+                        .padding(.top, -22)
                         
                         Spacer()
                     }
@@ -106,7 +106,7 @@ struct OverviewScreen: View {
                         }
                         .buttonStyle(.borderless)
                         .foregroundColor(.primary)
-                        .padding(.leading, 12)
+                        .padding(.leading, 8)
                         .sheet(isPresented: $showChart) {
                             OverviewChartView()
                                 .onDisappear {
@@ -130,7 +130,7 @@ struct OverviewScreen: View {
                         }
                         .buttonStyle(.borderless)
                         .foregroundColor(.primary)
-                        .padding(.trailing, 12)
+                        .padding(.trailing, 8)
                         .sheet(isPresented: $showSettings) {
                             SettingsView()
                                 .onDisappear {
