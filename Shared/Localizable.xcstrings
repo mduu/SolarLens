@@ -2039,6 +2039,34 @@
         }
       }
     },
+    "Get efficiency" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hent effektivitet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effizienz abrufen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir l'efficacité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni efficienza"
+          }
+        }
+      }
+    },
     "Get solar forecast" : {
       "localizations" : {
         "da" : {
@@ -2203,6 +2231,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ecco come fare:"
+          }
+        }
+      }
+    },
+    "Information about our site efficiency" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information om vores anlægs effektivitet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informationen zur Effizienz unserer Anlage"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informations sur l'efficacité de notre site"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informazioni sull'efficienza del nostro sito"
           }
         }
       }
@@ -3551,6 +3607,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Autoconsumo:"
+          }
+        }
+      }
+    },
+    "Self-consumption: %lf%% and autarky: %lf%%" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eget forbrug: %1$lf%% og autarki: %2$lf%%"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenverbrauch: %1$lf%% und Autarkie: %2$lf%%"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Self-consumption: %1$lf%% and autarky: %2$lf%%"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoconsommation : %1$lf%% et autarcie : %2$lf%%"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoconsumo: %1$lf%% e autarchia: %2$lf%%"
           }
         }
       }
@@ -4952,6 +5042,40 @@
         }
       }
     },
+    "The efficiency is %@ self-consumption and %@ autarky." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effektiviteten er %1$@ eget forbrug og %2$@ autarki."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Effizienz beträgt %1$@ Eigenverbrauch und %2$@ Autarkie."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The efficiency is %1$@ self-consumption and %2$@ autarky."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'efficacité est de %1$@ en autoconsommation et %2$@ en autarcie."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'efficienza è %1$@ autoconsumo e %2$@ autarchia."
+          }
+        }
+      }
+    },
     "The forecast for %@ is %@. Expected is %@" : {
       "localizations" : {
         "da" : {
@@ -5265,6 +5389,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cronologia di oggi"
+          }
+        }
+      }
+    },
+    "Todays efficiency" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagens effektivitet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heutige Effizienz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efficacité du jour"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efficienza odierna"
           }
         }
       }

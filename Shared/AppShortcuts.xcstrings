@@ -386,6 +386,61 @@
         }
       }
     },
+    "What is the efficiency in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "da" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Hvad er effektiviteten i ${applicationName}",
+              "Effektivitet i ${applicationName}",
+              "Hvor effektivt er mit solsystem i ${applicationName}"
+            ]
+          }
+        },
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Wie hoch ist die Effizienz in ${applicationName}",
+              "Effizienz in ${applicationName}",
+              "Wie effizient ist mein Solarsystem in ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "What is the efficiency in ${applicationName}",
+              "Efficiency in ${applicationName}",
+              "How efficient is my solar system in ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Quelle est l'efficacité dans ${applicationName}",
+              "Efficacité dans ${applicationName}",
+              "Quelle est l'efficacité de mon système solaire dans ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Qual è l'efficienza in ${applicationName}",
+              "Efficienza in ${applicationName}",
+              "Quanto è efficiente il mio impianto solare in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
     "What is the solar forecast for ${forDay} in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {

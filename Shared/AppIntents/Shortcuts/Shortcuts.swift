@@ -92,5 +92,16 @@ struct SolarLensShortcuts: AppShortcutsProvider {
             shortTitle: "Solar forecast",
             systemImageName: "slider.horizontal.below.sun.max"
         )
+        
+        AppShortcut(
+            intent: GetEfficiencyIntent(),
+            phrases: [
+                "What is the efficiency in \(.applicationName)",
+                "Efficiency in \(.applicationName)",
+                "How efficient is my solar system in \(.applicationName)",
+            ],
+            shortTitle: "Efficiency",
+            systemImageName: "gauge.open.with.lines.needle.33percent.and.arrow.trianglehead.from.0percent.to.50percent"
+        )
     }
 }
