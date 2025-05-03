@@ -1,9 +1,0 @@
-import SwiftUI
-import Observation
-
-struct AppStorageKeys {
-    static let appearanceUseGlowEffect = "appearanceUseGlowEffect"
-    static let onboardingShown = "onboardingShown.3"
-}
-
-

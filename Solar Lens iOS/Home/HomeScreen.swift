@@ -10,7 +10,7 @@ struct HomeScreen: View {
     @State var refreshTimer: Timer?
     @State var solarForecastTimer: Timer?
     @State var solarDetailsData: SolarDetailsData?
-    @State var appSettings: AppSettings = AppSettings()
+    @State var presentOnboarding: Bool = AppSettings().showOnboarding
 
     var isPortrait: Bool { verticalSizeClass != .compact }
 
@@ -199,7 +199,10 @@ struct HomeScreen: View {
                     fetchSolarForecastData()
                 }
                 .fullScreenCover(
-                    isPresented: appSettings.needToShowOnboarding
+                    isPresented: $presentOnboarding,
+                    onDismiss: {
+                        AppSettings().showOnboarding = false
+                    }
                 ) {
                     OnboardingsView()
                 }
