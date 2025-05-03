@@ -9,6 +9,16 @@ struct OverviewScreen: View {
 
     let refreshTimer = Timer.publish(every: 15, on: .main, in: .common)
         .autoconnect()
+    
+    struct PressAwareHighlightStyle: ButtonStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                // Apply a visual change based on the isPressed state
+                .background(configuration.isPressed ? Color.blue.opacity(0.5) : Color.clear)
+                // You could also apply a border or shadow here
+                // .border(configuration.isPressed ? Color.red : Color.clear, width: 2)
+        }
+    }
 
     var body: some View {
         VStack {
@@ -80,13 +90,13 @@ struct OverviewScreen: View {
                             .scaledToFit()
                             .frame(width: 15, height: 15)
                         }
-                        .buttonStyle(.borderless)
                         .foregroundColor(.primary)
+                        .buttonStyle(.borderless)
                         .padding(.leading, 8)
                         .padding(.top, -22)
-                        .padding(.trailing, 15)
-                        .padding(.bottom, 15)
-                        .background(.black.opacity(0.0001)) // Used to increaset touch area
+                        .padding(.trailing, 10)
+                        .padding(.bottom, 10)
+                        .background(.yellow.opacity(0.001))
                         
                         Spacer()
                     }
