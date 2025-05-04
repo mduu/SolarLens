@@ -233,9 +233,9 @@ struct HomeScreen: View {
     }
 
     private func fetchAndStartRefreshTimerForOverviewData() {
-        if buildingState.overviewData.lastSuccessServerFetch == nil {
-            print("initial fetch overview data")
-            fetchOverviewData()
+        if getAgeOfData() > 30 {
+            print("forced fetch: overview data")
+            refreshAll()
         }
 
         if refreshTimer == nil {
@@ -285,6 +285,15 @@ struct HomeScreen: View {
     private func isLoading() -> Bool {
         buildingState.isLoading
             && buildingState.overviewData.lastSuccessServerFetch == nil
+    }
+    
+    private func getAgeOfData() -> TimeInterval {
+        var lastUpdate = buildingState.overviewData.lastSuccessServerFetch
+        guard let lastUpdate else {
+            return TimeInterval.infinity
+        }
+
+        return Date().timeIntervalSince(lastUpdate)
     }
 }
 
