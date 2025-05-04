@@ -1,15 +1,17 @@
 import SwiftUI
 
 struct HeaderView: View {
+    let onRefresh: () -> Void
+
     @Environment(CurrentBuildingState.self) var buildingState:
         CurrentBuildingState
-    @Environment(\.colorScheme) var colorScheme
     @State var showLogoutConfirmation: Bool = false
 
     var body: some View {
         HStack {
             HStack {
-                Text("")
+                RefreshButton(onRefresh: { onRefresh() })
+                    .padding(.leading, 30)
                 Spacer()
             }
 
@@ -28,10 +30,12 @@ struct HeaderView: View {
 
 #Preview("top center") {
     VStack {
-        HeaderView()
+        HeaderView(onRefresh: {})
             .environment(
                 CurrentBuildingState.fake(
-                    overviewData: OverviewData.fake()))
+                    overviewData: OverviewData.fake()
+                )
+            )
 
         Spacer()
     }
@@ -39,10 +43,11 @@ struct HeaderView: View {
 
 #Preview("small") {
     VStack {
-        HeaderView()
+        HeaderView(onRefresh: {})
             .environment(
                 CurrentBuildingState.fake(
-                    overviewData: OverviewData.fake())
+                    overviewData: OverviewData.fake()
+                )
             )
             .frame(width: 350, height: 100)
     }

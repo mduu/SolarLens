@@ -56,7 +56,8 @@ struct ConsumptionScreen: View {
                     UpdateTimeStampView(
                         isStale: buildingState.overviewData.isStaleData,
                         updateTimeStamp: buildingState.overviewData.lastUpdated,
-                        isLoading: buildingState.isLoading
+                        isLoading: buildingState.isLoading,
+                        onRefresh: nil
                     )
                     .padding(.top, 4)
 

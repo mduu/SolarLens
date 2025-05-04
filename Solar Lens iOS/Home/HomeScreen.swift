@@ -31,7 +31,7 @@ struct HomeScreen: View {
                                         .padding(.top, 65)
                                 } else {
 
-                                    HeaderView()
+                                    HeaderView(onRefresh: { refreshAll() })
                                         .padding(.top, 65)
 
                                     Spacer()
@@ -160,6 +160,16 @@ struct HomeScreen: View {
                                         )
                                         .frame(maxWidth: 180, maxHeight: 120)
                                         .padding(.leading, 5)
+                                        
+                                        UpdateTimeStampView(
+                                            isStale: buildingState.overviewData.isStaleData,
+                                            updateTimeStamp: buildingState.overviewData
+                                                .lastSuccessServerFetch,
+                                            isLoading: buildingState.isLoading,
+                                            onRefresh: nil
+                                        )
+                                        .padding(.leading, 5)
+                                        
                                     }  // :VStack
                                     .padding(.trailing)
 
@@ -168,7 +178,12 @@ struct HomeScreen: View {
                                     VStack(alignment: .trailing) {
                                         AppLogo()
 
-                                        SettingsButton()
+                                        HStack {
+                                            RefreshButton(
+                                                onRefresh: { refreshAll() })
+                                            .padding(.trailing)
+                                            SettingsButton()
+                                        }
 
                                         Spacer()
 
@@ -195,8 +210,7 @@ struct HomeScreen: View {
                 }
                 .refreshable {
                     print("fetch on pull to refresh: overview data")
-                    fetchOverviewData()
-                    fetchSolarForecastData()
+                    refreshAll()
                 }
                 .fullScreenCover(
                     isPresented: $presentOnboarding,
@@ -211,6 +225,11 @@ struct HomeScreen: View {
 
         }  // :VStack
         .ignoresSafeArea()
+    }
+
+    private func refreshAll() {
+        fetchOverviewData()
+        fetchSolarForecastData()
     }
 
     private func fetchAndStartRefreshTimerForOverviewData() {
@@ -282,7 +301,8 @@ struct HomeScreen: View {
 
 #Preview("Loading") {
     HomeScreen(
-        solarDetailsData: nil
+        solarDetailsData: nil,
+        presentOnboarding: false
     )
     .environment(
         CurrentBuildingState.fake(

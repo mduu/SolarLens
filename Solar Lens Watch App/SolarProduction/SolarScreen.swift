@@ -120,7 +120,8 @@ struct SolarScreen: View {
                 UpdateTimeStampView(
                     isStale: viewModel.overviewData.isStaleData,
                     updateTimeStamp: viewModel.overviewData.lastUpdated,
-                    isLoading: viewModel.isLoading
+                    isLoading: viewModel.isLoading,
+                    onRefresh: nil
                 )
                 .padding(.vertical, 4)
             }

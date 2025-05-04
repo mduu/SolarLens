@@ -3,7 +3,7 @@ import SwiftUI
 struct FooterView: View {
     @Environment(CurrentBuildingState.self) var buildingState:
         CurrentBuildingState
-
+    
     var body: some View {
         VStack {
             SiriDiscoveryView()
@@ -12,7 +12,8 @@ struct FooterView: View {
                 isStale: buildingState.overviewData.isStaleData,
                 updateTimeStamp: buildingState.overviewData
                     .lastSuccessServerFetch,
-                isLoading: buildingState.isLoading
+                isLoading: buildingState.isLoading,
+                onRefresh: nil
             )
             .padding(.bottom)
         }

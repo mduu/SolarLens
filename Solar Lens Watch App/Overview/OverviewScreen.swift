@@ -54,7 +54,12 @@ struct OverviewScreen: View {
                     UpdateTimeStampView(
                         isStale: model.overviewData.isStaleData,
                         updateTimeStamp: model.overviewData.lastSuccessServerFetch,
-                        isLoading: model.isLoading
+                        isLoading: model.isLoading,
+                        onRefresh: {
+                            Task {
+                                await model.fetchServerData()
+                            }
+                        }
                     )
                     .padding(.bottom, -9)
                 }
@@ -76,30 +81,6 @@ struct OverviewScreen: View {
                 }  // :onReceive
 
                 VStack {
-                    
-                    HStack {
-                        Button(action: {
-                            Task {
-                                await model.fetchServerData()
-                            }
-                        }) {
-                            Image(
-                                systemName: "arrow.clockwise"
-                            )
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 15, height: 15)
-                        }
-                        .foregroundColor(.primary)
-                        .buttonStyle(.borderless)
-                        .padding(.leading, 8)
-                        .padding(.top, -22)
-                        .padding(.trailing, 10)
-                        .padding(.bottom, 10)
-                        .background(.yellow.opacity(0.001))
-                        
-                        Spacer()
-                    }
 
                     Spacer()
 
