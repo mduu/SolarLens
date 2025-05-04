@@ -140,6 +140,7 @@
 				AppIntents/Intents/GetBatteryLevelIntent.swift,
 				AppIntents/Intents/GetCarInfosIntent.swift,
 				AppIntents/Intents/GetConsumptionIntent.swift,
+				AppIntents/Intents/GetEfficiencyIntent.swift,
 				AppIntents/Intents/GetForecastIntent.swift,
 				AppIntents/Intents/GetSolarProductionIntent.swift,
 				AppIntents/Intents/IntentError.swift,
@@ -266,6 +267,7 @@
 				AppIntents/Intents/GetBatteryLevelIntent.swift,
 				AppIntents/Intents/GetCarInfosIntent.swift,
 				AppIntents/Intents/GetConsumptionIntent.swift,
+				AppIntents/Intents/GetEfficiencyIntent.swift,
 				AppIntents/Intents/GetForecastIntent.swift,
 				AppIntents/Intents/GetSolarProductionIntent.swift,
 				AppIntents/Intents/IntentError.swift,
@@ -540,7 +542,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					493AAD962D58F9DB00591E73 = {
 						CreatedOnToolsVersion = 16.2;
@@ -677,7 +679,6 @@
 				COMPILER_INDEX_STORE_ENABLE = Default;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
-				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_CODE_COVERAGE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens iOS Widgets/Info.plist";
@@ -710,7 +711,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
-				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_CODE_COVERAGE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens iOS Widgets/Info.plist";
@@ -739,7 +739,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.4.0;
-				APP_VERSION_BUILDNO = 187;
+				APP_VERSION_BUILDNO = 192;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -774,6 +774,7 @@
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -812,7 +813,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.4.0;
-				APP_VERSION_BUILDNO = 187;
+				APP_VERSION_BUILDNO = 192;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -847,6 +848,7 @@
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -884,7 +886,6 @@
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_CODE_COVERAGE = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -928,7 +929,6 @@
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_CODE_COVERAGE = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -971,7 +971,6 @@
 				COMPILER_INDEX_STORE_ENABLE = Default;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_CODE_COVERAGE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -1008,7 +1007,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_CODE_COVERAGE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Solar Lens Widgets/Info.plist";
@@ -1049,7 +1047,6 @@
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_CODE_COVERAGE = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1091,7 +1088,6 @@
 				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = UYT5K989XD;
 				ENABLE_CODE_COVERAGE = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
