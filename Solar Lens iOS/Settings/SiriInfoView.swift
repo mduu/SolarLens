@@ -25,6 +25,7 @@ struct SiriInfoView: View {
                 SiriTip(for: GetConsumptionIntent())
                 SiriTip(for: IsAnyCarChargingIntent())
                 SiriTip(for: GetForecastIntent())
+                SiriTip(for: GetEfficiencyIntent())
                 SiriTip(for: GetCarInfosIntent())
                 SiriTip(for: SetChargingModeIntent())
 
