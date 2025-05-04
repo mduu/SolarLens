@@ -17,9 +17,6 @@ struct EnergyFlowView: View {
                         .solarProductionMax
                 )
                 .frame(maxWidth: 50, maxHeight: 50)
-                .background(
-                    Color.black.opacity(0.0001).onTapGesture {}
-                )
                 .onTapGesture {
                     navigationState.navigate(to: .solarProduction)
                 }
