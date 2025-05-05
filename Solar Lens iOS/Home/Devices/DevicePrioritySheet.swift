@@ -13,6 +13,23 @@ struct DevicePrioritySheet: View {
             VStack(spacing: 0) {
 
                 HStack {
+                    Text("Current consumption")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                        .padding(.leading, 20)
+
+                    Spacer()
+                }
+
+                ConsumptionPieChart(
+                    totalCurrentConsumptionInWatt: buildingState.overviewData
+                        .currentOverallConsumption,
+                    deviceConsumptions: getDeviceConsumptions(),
+                    legendPosition: .right,
+                    annotationTextSize: .large
+                )
+
+                HStack {
                     Text("Device")
                         .font(.footnote)
                         .foregroundColor(.gray)
@@ -45,8 +62,10 @@ struct DevicePrioritySheet: View {
                                     newOffset > index
                                     ? newOffset
                                     : newOffset + 1
-                                
-                                print("Old prio: \(device.priority), new prio: \(newPriority)")
+
+                                print(
+                                    "Old prio: \(device.priority), new prio: \(newPriority)"
+                                )
 
                                 await buildingState.setSensorPriority(
                                     sensorId: device.id,
@@ -59,6 +78,8 @@ struct DevicePrioritySheet: View {
                     }
                 }
                 .listStyle(.inset)
+                
+                Spacer()
 
             }
             .navigationTitle("Devices priorities")
@@ -83,6 +104,20 @@ struct DevicePrioritySheet: View {
                 ProgressView()
             }
         }
+    }
+
+    func getDeviceConsumptions() -> [DeviceConsumption] {
+        return buildingState.overviewData.devices
+            .filter({ $0.isConsumingDevice() })
+            .filter({ $0.hasPower() })
+            .map {
+                DeviceConsumption.init(
+                    id: $0.id,
+                    name: $0.name,
+                    consumptionInWatt: $0.currentPowerInWatts,
+                    color: $0.color
+                )
+            }
     }
 }
 

@@ -35,7 +35,7 @@ struct ConsumptionBoubleView: View {
             NavigationView {
                 DevicePrioritySheet()
             }
-            .presentationDetents([.medium, .large]) 
+            .presentationDetents([.large]) 
         }
     }
 }

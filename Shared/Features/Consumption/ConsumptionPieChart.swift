@@ -12,9 +12,25 @@ struct DeviceConsumption: Identifiable {
 
 }
 
+enum LegendPosition {
+    case bottom
+    case right
+}
+
+enum AnnotationTextSize {
+    case small
+    case large
+}
+
 struct ConsumptionPieChart: View {
     var totalCurrentConsumptionInWatt: Int
     var deviceConsumptions: [DeviceConsumption]
+    var legendPosition: LegendPosition = .bottom
+    var annotationTextSize: AnnotationTextSize = .small
+
+    @State var overrideLabelText: String?
+    @State var overrideLabelColor: Color?
+    @State var overrideValue: String?
 
     let standardColor: [String] = [
         "#AD1457",
@@ -31,65 +47,129 @@ struct ConsumptionPieChart: View {
     var body: some View {
         let allConsumptions: [DeviceConsumption] = getAllConsumptions()
 
-        ScrollView {
+        HVStack(isVertical: legendPosition == .bottom) {
+            ZStack {
 
-            HStack {
-                ZStack {
-                    
-                    Chart(allConsumptions, id: \.id) { device in
-                        
-                        // Draw filled, semi-transparent sectors
-                        SectorMark(
-                            angle: .value("Watts", device.consumptionInWatt),
-                            innerRadius: .ratio(0.6),
-                            outerRadius: .ratio(1),
-                            angularInset: 2.0  // Increased inset creates a border effect
-                        )
-                        .cornerRadius(0)
-                        .opacity(0.4)
-                        .foregroundStyle(device.color2)
-                        .annotation(position: .overlay) {
-                            Group {
-                                if device.consumptionInWatt > 20 {
-                                    Text(
-                                        device.consumptionInWatt
-                                            .formatWattsAsKiloWatts()
+                Chart(allConsumptions, id: \.id) { device in
+
+                    // Draw filled, semi-transparent sectors
+                    SectorMark(
+                        angle: .value("Watts", device.consumptionInWatt),
+                        innerRadius: .ratio(0.6),
+                        outerRadius: .ratio(1),
+                        angularInset: 2.0  // Increased inset creates a border effect
+                    )
+                    .cornerRadius(0)
+                    .opacity(0.3)
+                    .foregroundStyle(device.color2)
+                    .annotation(position: .overlay) {
+                        Group {
+                            if device.consumptionInWatt > 20 {
+                                Text(
+                                    device.consumptionInWatt
+                                        .formatWattsAsKiloWatts()
+                                )
+                                .font(
+                                    .system(
+                                        size: annotationTextSize == .small
+                                            ? 10 : 14
                                     )
-                                    .font(.system(size: 10))
-                                    .foregroundColor(device.color2)
-                                }
+                                )
+                                .foregroundColor(device.color2)
                             }
                         }
                     }
-                    
-                    Chart(allConsumptions, id: \.id) { device in
-                        
-                        // Draw the outer ring of the donuts
-                        SectorMark(
-                            angle: .value("Watts", device.consumptionInWatt),
-                            innerRadius: .ratio(0.96),
-                            outerRadius: .ratio(1),
-                            angularInset: 2.0  // Increased inset creates a border effect
-                        )
-                        .cornerRadius(5)
-                        .opacity(1)
-                        .foregroundStyle(device.color2)
-                        
-                    }
-                    .chartLegend(.visible)
-                    .chartBackground(alignment: .center) { chart in
-                        VStack {
+                }
+
+                Chart(allConsumptions, id: \.id) { device in
+
+                    // Draw the outer ring of the donuts
+                    SectorMark(
+                        angle: .value("Watts", device.consumptionInWatt),
+                        innerRadius: .ratio(0.95),
+                        outerRadius: .ratio(0.61),
+                        angularInset: 2.0  // Increased inset creates a border effect
+                    )
+                    .cornerRadius(0)
+                    .opacity(1)
+                    .foregroundStyle(device.color2)
+
+                }
+                .chartLegend(.visible)
+                .chartBackground(alignment: .center) { chart in
+                    VStack {
+                        if overrideLabelText != nil && overrideValue != nil {
+                            Text(overrideLabelText!)
+                                .foregroundColor(overrideLabelColor)
+                                .bold()
+                            Text(overrideValue!)
+                        } else {
+
                             Text("Total").foregroundColor(.cyan).bold()
                             Text(
-                                totalCurrentConsumptionInWatt.formatWattsAsKiloWatts()
+                                totalCurrentConsumptionInWatt
+                                    .formatWattsAsKiloWatts()
                             )
+
                         }
                     }
-                    
-                } // :ZStack
-            } // :HStack
+                }
+            }  // :ZStack
 
-            HStack(alignment: .center) {
+            if legendPosition == .bottom {
+                ScrollView {
+
+                    FlowLayout(spacing: 5) {
+
+                        ForEach(allConsumptions) { consumption in
+                            HStack {
+                                Rectangle()
+                                    .frame(width: 10, height: 10)
+                                    .foregroundColor(consumption.color2)
+                                    .cornerRadius(2)
+                                Text(consumption.name)
+                                    .foregroundColor(consumption.color2)
+                            }
+                            .gesture(
+                                DragGesture(minimumDistance: 0)  // Detect press and release
+                                    .onChanged { _ in
+                                        DispatchQueue.global().async {
+
+                                            self.overrideLabelText =
+                                                consumption.name
+                                            self.overrideLabelColor =
+                                                consumption.color2
+                                            self.overrideValue = consumption
+                                                .consumptionInWatt
+                                                .formatWattsAsKiloWatts()
+
+                                            print(
+                                                "long press start on \(consumption.name)"
+                                            )
+                                        }
+                                    }
+                                    .onEnded { _ in
+
+                                        if self.overrideLabelText != nil {
+                                            DispatchQueue.global().async {
+
+                                                self.overrideLabelText = nil
+                                                self.overrideLabelColor = nil
+                                                self.overrideValue = nil
+
+                                                print(
+                                                    "long press ended on \(consumption.name)"
+                                                )
+                                            }
+                                        }
+                                    }
+                            )
+                        }
+
+                    }  // :FlowLayout
+
+                }  // :ScrollView
+            } else {
                 FlowLayout(spacing: 5) {
 
                     ForEach(allConsumptions) { consumption in
@@ -101,15 +181,46 @@ struct ConsumptionPieChart: View {
                             Text(consumption.name)
                                 .foregroundColor(consumption.color2)
                         }
+                        .gesture(
+                            DragGesture(minimumDistance: 0)  // Detect press and release
+                                .onChanged { _ in
+                                    DispatchQueue.global().async {
+
+                                        self.overrideLabelText =
+                                            consumption.name
+                                        self.overrideLabelColor =
+                                            consumption.color2
+                                        self.overrideValue = consumption
+                                            .consumptionInWatt
+                                            .formatWattsAsKiloWatts()
+
+                                        print(
+                                            "long press start on \(consumption.name)"
+                                        )
+                                    }
+                                }
+                                .onEnded { _ in
+                                    DispatchQueue.global().async {
+
+                                        self.overrideLabelText = nil
+                                        self.overrideLabelColor = nil
+                                        self.overrideValue = nil
+
+                                        print(
+                                            "long press ended on \(consumption.name)"
+                                        )
+                                    }
+                                }
+                        )
                     }
 
-                } // :FlowLayout
-            } // :HStack
-            //.frame(maxHeight: 20)
-            .padding()
-            .ignoresSafeArea()
-            
-        } // :VStack
+                }  // :FlowLayout
+                .padding(.leading)
+            }
+
+        }  // :HVStack
+        .padding()
+        .ignoresSafeArea()
 
     }
 
@@ -146,26 +257,59 @@ struct ConsumptionPieChart: View {
                     id: element.id,
                     name: element.name,
                     consumptionInWatt: element.consumptionInWatt,
-                    color: element.color ?? standardColor[index])  // Apply standard colors if needed
+                    color: element.color ?? standardColor[index]
+                )  // Apply standard colors if needed
             }
 
     }
 }
 
-#Preview {
-    ConsumptionPieChart(
-        totalCurrentConsumptionInWatt: 4300,
-        deviceConsumptions: [
-            .init(
-                id: "1",
-                name: "Ladestation",
-                consumptionInWatt: 2453,
-                color: "#00aaff"),
-            .init(
-                id: "2",
-                name: "Arbeitsplatz",
-                consumptionInWatt: 1200,
-                color: "#5599ee"),
-        ]
-    )
+#Preview("Normal") {
+
+    VStack {
+
+        ConsumptionPieChart(
+            totalCurrentConsumptionInWatt: 4300,
+            deviceConsumptions: [
+                .init(
+                    id: "1",
+                    name: "Ladestation",
+                    consumptionInWatt: 2453,
+                    color: "#00aaff"
+                ),
+                .init(
+                    id: "2",
+                    name: "Arbeitsplatz",
+                    consumptionInWatt: 1200,
+                    color: "#5599ee"
+                ),
+            ],
+            legendPosition: .bottom
+        )
+        .background(.black)
+        .frame(maxWidth: 200, maxHeight: 200)
+
+        ConsumptionPieChart(
+            totalCurrentConsumptionInWatt: 4300,
+            deviceConsumptions: [
+                .init(
+                    id: "1",
+                    name: "Ladestation",
+                    consumptionInWatt: 2453,
+                    color: "#00aaff"
+                ),
+                .init(
+                    id: "2",
+                    name: "Arbeitsplatz",
+                    consumptionInWatt: 1200,
+                    color: "#5599ee"
+                ),
+            ],
+            legendPosition: .right,
+            annotationTextSize: .large
+        )
+
+        Spacer()
+    }
+    .padding(.top, 100)
 }
