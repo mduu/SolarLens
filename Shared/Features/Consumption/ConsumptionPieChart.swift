@@ -141,10 +141,12 @@ struct ConsumptionPieChart: View {
                                                 consumption.color2
                                             self.overrideValue = consumption
                                                 .consumptionInWatt
-                                                .formatWattsAsKiloWatts()
+                                                .formatWattsAsWattsKiloWatts(
+                                                    widthUnit: true
+                                                )
 
                                             print(
-                                                "long press start on \(consumption.name)"
+                                                "long press start on \(consumption.name), value: \(String(describing: overrideValue))"
                                             )
                                         }
                                     }
@@ -192,10 +194,12 @@ struct ConsumptionPieChart: View {
                                             consumption.color2
                                         self.overrideValue = consumption
                                             .consumptionInWatt
-                                            .formatWattsAsKiloWatts()
+                                            .formatWattsAsWattsKiloWatts(
+                                                widthUnit: true
+                                            )
 
                                         print(
-                                            "long press start on \(consumption.name)"
+                                            "long press start on \(consumption.name), value: \(overrideValue ?? "")"
                                         )
                                     }
                                 }

@@ -6,6 +6,16 @@ extension Int {
             Double(self) / 1000)
     }
 
+    func formatWattsAsWattsKiloWatts(widthUnit: Bool = false) -> String {
+        if self < 1000 {
+            return "\(self) \(getUnitW())"
+        }
+        
+        return String(
+            format: widthUnit ? "%.2f \(getUnitKw())" : "%.2f",
+            Double(self) / 1000)
+    }
+
     func formatAsKiloWatts(widthUnit: Bool = false) -> String {
         widthUnit
             ? "\(String(format: "%.1f", self)) \(getUnitKw())"
@@ -14,6 +24,10 @@ extension Int {
     
     private func getUnitKw() -> String {
         "kW"
+    }
+    
+    private func getUnitW() -> String {
+        "W"
     }
 }
 
