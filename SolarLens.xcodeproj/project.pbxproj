@@ -669,6 +669,7 @@
 		493AADAC2D58F9DC00591E73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_VERSION_BUILDNO = 196;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS WidgetsExtension.entitlements";
@@ -702,6 +703,7 @@
 		493AADAD2D58F9DC00591E73 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_VERSION_BUILDNO = 196;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS WidgetsExtension.entitlements";
