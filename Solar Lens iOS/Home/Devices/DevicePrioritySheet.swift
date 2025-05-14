@@ -45,7 +45,7 @@ struct DevicePrioritySheet: View {
 
                 List {
 
-                    ForEach(buildingState.overviewData.devices) { device in
+                    ForEach(buildingState.overviewData.devices.sorted(by: { $0.priority < $1.priority })) { device in
                         DevicePriorityRow(device: device)
                             .contentShape(Rectangle())  // Make the whole row tappable
                     }
