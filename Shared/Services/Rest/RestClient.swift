@@ -60,7 +60,7 @@ class RestClient {
         parameters: Encodable? = nil,
         useAccessToken: Bool = true
     ) async throws
-    -> TResponse? where TRequest: Encodable, TResponse: Decodable
+        -> TResponse? where TRequest: Encodable, TResponse: Decodable
     {
         return try await doRequest(
             serviceUrl: serviceUrl,
@@ -96,7 +96,7 @@ class RestClient {
         useAccessToken: Bool = true,
         maxRetry: Int = 4
     ) async throws
-    -> TResponse? where TRequest: Encodable, TResponse: Decodable
+        -> TResponse? where TRequest: Encodable, TResponse: Decodable
     {
         guard let url = URL(string: "\(baseUrl)\(serviceUrl)") else {
             return nil
@@ -183,16 +183,22 @@ class RestClient {
                 return nil
             case 400:  // Bad request
                 canRetry = false
-                print("ERROR: BAD REQUEST")
+                print("ERROR: BAD REQUEST (400)")
+                print("Debug-Description: \(response.debugDescription)")
+                let bodyText =
+                    request.httpBody == nil
+                    ? ""
+                    : "\(String(describing: String(data: request.httpBody!, encoding: .utf8)))"
+
                 print(
-                    "HTTP-Body: \(String(describing: String(data: request.httpBody!, encoding: .utf8)))"
+                    "HTTP-Body: \(bodyText)"
                 )
             case 401:  // Unauthorized / Token expired
                 canRetry = await handleTokenExpired(
                     failedResponse: response!
                 )
             case 403:  // Forbidden
-                print("ERROR: FORBIDDEN")
+                print("ERROR: FORBIDDEN (403)")
                 canRetry = await handleForbidden(
                     failedResponse: response!
                 )
