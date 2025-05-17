@@ -59,6 +59,10 @@ class FakeEnergyManager: EnergyManager {
             forecastDayAfterTomorrow: ForecastItem(min: 1.2, max: 4.3, expected: 3.5))
     }
     
+    func fetchTodaysBatteryHistory() async throws -> [BatteryHistory] {
+        return []
+    }
+    
     func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
         return ConsumptionData.fake()
     }

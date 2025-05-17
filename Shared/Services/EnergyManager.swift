@@ -13,6 +13,8 @@ protocol EnergyManager {
     
     func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData
     
+    func fetchTodaysBatteryHistory() async throws -> [BatteryHistory]
+    
     func fetchServerInfo() async throws -> ServerInfo
 
     func setCarChargingMode(
