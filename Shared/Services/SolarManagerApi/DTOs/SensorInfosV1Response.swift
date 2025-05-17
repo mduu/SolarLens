@@ -37,7 +37,7 @@ struct SensorInfosV1Response : Codable {
     }
     
     func getSensorName() -> String {
-        return name ?? tag?.name ?? device_group ?? ""
+        return name ?? tag?.name ?? device_group
     }
     
     func hasErrors() -> Bool {
