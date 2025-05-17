@@ -288,7 +288,7 @@ struct HomeScreen: View {
     }
     
     private func getAgeOfData() -> TimeInterval {
-        var lastUpdate = buildingState.overviewData.lastSuccessServerFetch
+        let lastUpdate = buildingState.overviewData.lastSuccessServerFetch
         guard let lastUpdate else {
             return TimeInterval.infinity
         }
