@@ -17,9 +17,9 @@ struct ChartView: View {
                         VStack {
 
                             OverviewChart(
-                                consumption: viewModel.consumptionData!
+                                consumption: viewModel.consumptionData!,
+                                batteries: viewModel.batteryHistory ?? []
                             )
-
                             HStack {
                                 let solarPeak = getMaxProductionkW()
                                 TodaySolarView(
