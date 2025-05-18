@@ -4,84 +4,21 @@ import SwiftUI
 struct OverviewChart: View {
 
     var consumption: ConsumptionData
+    var batteries: [BatteryHistory] = []
     var isSmall: Bool = false
     var isAccent: Bool = false
 
     var body: some View {
 
         Chart {
-            ForEach(consumption.data) { dataPoint in
+            if !batteries.isEmpty {
+                BatterySeries(batteries: batteries, isAccent: isAccent)
+            }
 
-                // Production (Solar)
-                if !isAccent {
-                    AreaMark(
-                        x: .value("Time",  dataPoint.date.convertToLocalTime()),
-                        y: .value("kW", dataPoint.productionWatts / 1000),
-                        stacking: .unstacked
-                    )
-                    .interpolationMethod(.cardinal)
-                    .foregroundStyle(
-                        .linearGradient(
-                            colors: [
-                                .yellow.opacity(0.5),
-                                .yellow.opacity(0.1),
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .lineStyle(
-                        StrokeStyle(lineWidth: 0)
-                    )
-                    .foregroundStyle(by: .value("Series", "Production"))
-
-                }
-
-                LineMark(
-                    x: .value("Time", dataPoint.date.convertToLocalTime()),
-                    y: .value("kW", dataPoint.productionWatts / 1000)
-                )
-                .foregroundStyle(by: .value("Series", "Production"))
-                .interpolationMethod(.cardinal)
-                .lineStyle(
-                    StrokeStyle(lineWidth: 1)
-                )
-
-                // -- Consumption --
-                if !isAccent {
-                    AreaMark(
-                        x: .value("Time", dataPoint.date.convertToLocalTime()),
-                        y: .value("kW", dataPoint.consumptionWatts / 1000),
-                        stacking: .unstacked
-                    )
-                    .interpolationMethod(.cardinal)
-                    .foregroundStyle(
-                        .linearGradient(
-                            colors: [
-                                .teal.opacity(0.5),
-                                .teal.opacity(0.1),
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .lineStyle(
-                        StrokeStyle(lineWidth: 0)
-                    )
-                    .foregroundStyle(by: .value("Series", "Consumption"))
-                }
-
-                LineMark(
-                    x: .value("Time", dataPoint.date.convertToLocalTime()),
-                    y: .value("kW", dataPoint.consumptionWatts / 1000)
-                )
-                .foregroundStyle(by: .value("Series", "Consumption"))
-                .interpolationMethod(.cardinal)
-                .lineStyle(
-                    StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
-                )
-
-            }  // :foreach
+            ProductionConsumptionSeries(
+                data: consumption.data,
+                isAccent: isAccent
+            )
         }
         .chartYAxis {
             AxisMarks(preset: .automatic) { value in
@@ -96,13 +33,15 @@ struct OverviewChart: View {
                 AxisGridLine()
                 AxisValueLabel(
                     format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(
-                        .twoDigits)
+                        .twoDigits
+                    )
                 )
             }
         }
         .chartForegroundStyleScale([
             "Production": .yellow,
             "Consumption": Color.teal,
+            "Battery Consumption": Color.purple,
         ])
         .chartLegend(isSmall ? .hidden : .visible)
         .frame(maxHeight: .infinity)
@@ -137,6 +76,7 @@ struct OverviewChart: View {
 #Preview("Small") {
     OverviewChart(
         consumption: ConsumptionData.fake(),
+        batteries: BatteryHistory.fakeHistory(),
         isSmall: true
     )
     .frame(height: 80)
