@@ -181,6 +181,8 @@
 				Extensions/DoubleExtensions.swift,
 				Extensions/TimeIntervalExtensions.swift,
 				Features/EfficiencyMetrics/EfficiencyInfoView.swift,
+				Features/Overview/ChartSeries/BatterySeries.swift,
+				Features/Overview/ChartSeries/ProductionConsumptionSeries.swift,
 				Features/Overview/OverviewChart.swift,
 				Features/Solar/ForecastItemView.swift,
 				Features/Solar/ForecastListView.swift,
@@ -191,6 +193,7 @@
 				Services/EnergyManagerClientError.swift,
 				Services/FakeEnergyManager.swift,
 				Services/KeychainHelper.swift,
+				Services/Model/BatteryHistory.swift,
 				Services/Model/Car.swift,
 				Services/Model/ChargingInfoData.swift,
 				Services/Model/ChargingStation.swift,
@@ -221,6 +224,7 @@
 				Services/SolarManagerApi/DTOs/RefreshResponse.swift,
 				Services/SolarManagerApi/DTOs/SensorConnectionStatus.swift,
 				Services/SolarManagerApi/DTOs/SensorConsumptionV1Response.swift,
+				Services/SolarManagerApi/DTOs/SensorDataV1Response.swift,
 				Services/SolarManagerApi/DTOs/SensorInfosV1Response.swift,
 				Services/SolarManagerApi/DTOs/SensorType.swift,
 				Services/SolarManagerApi/DTOs/StatisticsV1Response.swift,
@@ -736,8 +740,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.5.1;
-				APP_VERSION_BUILDNO = 197;
+				APP_VERSION = 3.6.0;
+				APP_VERSION_BUILDNO = 198;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -810,8 +814,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.5.1;
-				APP_VERSION_BUILDNO = 197;
+				APP_VERSION = 3.6.0;
+				APP_VERSION_BUILDNO = 198;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
