@@ -9,7 +9,7 @@ struct BatterySeries: ChartContent {
         let historyItems = flattenallBatteryItems()
         ForEach(historyItems) { batteryItem in
 
-            // Battery
+            // Battery Consumption
             if !isAccent {
                 AreaMark(
                     x: .value(
@@ -37,7 +37,7 @@ struct BatterySeries: ChartContent {
                     StrokeStyle(lineWidth: 0)
                 )
                 .foregroundStyle(
-                    by: .value("Series", "Battery Consumption")
+                    by: .value("Series", "Battery consumption")
                 )
             }
 
@@ -51,7 +51,55 @@ struct BatterySeries: ChartContent {
                     batteryItem.averagePowerDischargedW / 1000
                 )
             )
-            .foregroundStyle(by: .value("Series", "Battery Consumption"))
+            .foregroundStyle(by: .value("Series", "Battery consumption"))
+            .interpolationMethod(.cardinal)
+            .lineStyle(
+                StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
+            )
+            
+            // Battery Charging
+            if !isAccent {
+                AreaMark(
+                    x: .value(
+                        "Time",
+                        batteryItem.date.convertToLocalTime()
+                    ),
+                    y: .value(
+                        "kW",
+                        batteryItem.averagePowerChargedW / 1000
+                    ),
+                    stacking: .unstacked
+                )
+                .interpolationMethod(.cardinal)
+                .foregroundStyle(
+                    .linearGradient(
+                        colors: [
+                            .pink.opacity(0.5),
+                            .pink.opacity(0.1),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .lineStyle(
+                    StrokeStyle(lineWidth: 0)
+                )
+                .foregroundStyle(
+                    by: .value("Series", "Battery charged")
+                )
+            }
+
+            LineMark(
+                x: .value(
+                    "Time",
+                    batteryItem.date.convertToLocalTime()
+                ),
+                y: .value(
+                    "kW",
+                    batteryItem.averagePowerChargedW / 1000
+                )
+            )
+            .foregroundStyle(by: .value("Series", "Battery charged"))
             .interpolationMethod(.cardinal)
             .lineStyle(
                 StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])

@@ -41,7 +41,8 @@ struct OverviewChart: View {
         .chartForegroundStyleScale([
             "Production": .yellow,
             "Consumption": Color.teal,
-            "Battery Consumption": Color.purple,
+            "Battery consumption": Color.purple,
+            "Battery charged": Color.pink,
         ])
         .chartLegend(isSmall ? .hidden : .visible)
         .frame(maxHeight: .infinity)
