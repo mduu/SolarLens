@@ -7,18 +7,27 @@ struct OverviewChart: View {
     var batteries: [BatteryHistory] = []
     var isSmall: Bool = false
     var isAccent: Bool = false
+    var showBatteryCharge: Bool = true
+    var showBatteryDischange: Bool = true
 
     var body: some View {
 
         Chart {
-            if !batteries.isEmpty {
-                BatterySeries(batteries: batteries, isAccent: isAccent)
-            }
 
             ProductionConsumptionSeries(
                 data: consumption.data,
                 isAccent: isAccent
             )
+            
+            if !batteries.isEmpty {
+                BatterySeries(
+                    batteries: batteries,
+                    isAccent: isAccent,
+                    showCharging: showBatteryCharge,
+                    showDischarging: showBatteryDischange
+                )
+            }
+            
         }
         .chartYAxis {
             AxisMarks(preset: .automatic) { value in
@@ -38,16 +47,16 @@ struct OverviewChart: View {
                 )
             }
         }
-        .chartForegroundStyleScale([
-            "Production": .yellow,
-            "Consumption": Color.teal,
-            "Battery consumption": Color.purple,
-            "Battery charged": Color.pink,
-        ])
         .chartLegend(isSmall ? .hidden : .visible)
+        .chartForegroundStyleScale([
+                    "Production": .yellow,
+                    "Consumption": .teal,
+                    (showBatteryDischange ? "Battery consumption" : ""): (showBatteryDischange ? .indigo : .clear),
+                    (showBatteryCharge ? "Battery charged" : ""): (showBatteryCharge ? .purple : .clear),
+                ])
         .frame(maxHeight: .infinity)
     }
-
+    
     private func getTimeFormatter() -> DateFormatter {
         let result = DateFormatter()
         result.setLocalizedDateFormatFromTemplate("HH:mm")

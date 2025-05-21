@@ -26,22 +26,22 @@ struct ProductionConsumptionSeries: ChartContent {
                         endPoint: .bottom
                     )
                 )
+                .foregroundStyle(by: .value("Series", "Production"))
                 .lineStyle(
                     StrokeStyle(lineWidth: 0)
                 )
-                .foregroundStyle(by: .value("Series", "Production"))
-
             }
 
             LineMark(
                 x: .value("Time", dataPoint.date.convertToLocalTime()),
                 y: .value("kW", dataPoint.productionWatts / 1000)
             )
-            .foregroundStyle(by: .value("Series", "Production"))
             .interpolationMethod(.cardinal)
             .lineStyle(
                 StrokeStyle(lineWidth: 1)
             )
+            .accessibilityLabel("Production")
+            .foregroundStyle(by: .value("Series", "Production"))
 
             // -- Consumption --
             if !isAccent {
@@ -71,11 +71,12 @@ struct ProductionConsumptionSeries: ChartContent {
                 x: .value("Time", dataPoint.date.convertToLocalTime()),
                 y: .value("kW", dataPoint.consumptionWatts / 1000)
             )
-            .foregroundStyle(by: .value("Series", "Consumption"))
             .interpolationMethod(.cardinal)
             .lineStyle(
                 StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
             )
+            .accessibilityLabel("Consumption")
+            .foregroundStyle(by: .value("Series", "Consumption"))
 
         }  // :foreach
     }

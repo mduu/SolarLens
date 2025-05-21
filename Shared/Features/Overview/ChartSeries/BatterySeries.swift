@@ -4,14 +4,46 @@ import SwiftUI
 struct BatterySeries: ChartContent {
     var batteries: [BatteryHistory] = []
     var isAccent: Bool
+    var showCharging: Bool = true
+    var showDischarging: Bool = true
 
     var body: some ChartContent {
         let historyItems = flattenallBatteryItems()
         ForEach(historyItems) { batteryItem in
 
-            // Battery Consumption
-            if !isAccent {
-                AreaMark(
+            if showDischarging {
+
+                // Battery Consumption
+                if !isAccent {
+                    AreaMark(
+                        x: .value(
+                            "Time",
+                            batteryItem.date.convertToLocalTime()
+                        ),
+                        y: .value(
+                            "kW",
+                            batteryItem.averagePowerDischargedW / 1000
+                        ),
+                        stacking: .unstacked
+                    )
+                    .interpolationMethod(.cardinal)
+                    .foregroundStyle(
+                        .linearGradient(
+                            colors: [
+                                .indigo.opacity(0.25),
+                                .indigo.opacity(0.05),
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .lineStyle(
+                        StrokeStyle(lineWidth: 0)
+                    )
+                    .foregroundStyle(by: .value("Series", "Battery consumption"))
+                }
+
+                LineMark(
                     x: .value(
                         "Time",
                         batteryItem.date.convertToLocalTime()
@@ -19,47 +51,48 @@ struct BatterySeries: ChartContent {
                     y: .value(
                         "kW",
                         batteryItem.averagePowerDischargedW / 1000
-                    ),
-                    stacking: .unstacked
-                )
-                .interpolationMethod(.cardinal)
-                .foregroundStyle(
-                    .linearGradient(
-                        colors: [
-                            .purple.opacity(0.5),
-                            .purple.opacity(0.1),
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
                     )
                 )
+                .interpolationMethod(.cardinal)
                 .lineStyle(
-                    StrokeStyle(lineWidth: 0)
+                    StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
                 )
-                .foregroundStyle(
-                    by: .value("Series", "Battery consumption")
-                )
+                .foregroundStyle(by: .value("Series", "Battery consumption"))
+                .accessibilityLabel("Battery consumption")
             }
 
-            LineMark(
-                x: .value(
-                    "Time",
-                    batteryItem.date.convertToLocalTime()
-                ),
-                y: .value(
-                    "kW",
-                    batteryItem.averagePowerDischargedW / 1000
-                )
-            )
-            .foregroundStyle(by: .value("Series", "Battery consumption"))
-            .interpolationMethod(.cardinal)
-            .lineStyle(
-                StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
-            )
-            
-            // Battery Charging
-            if !isAccent {
-                AreaMark(
+            if showCharging {
+                // Battery Charging
+                if !isAccent {
+                    AreaMark(
+                        x: .value(
+                            "Time",
+                            batteryItem.date.convertToLocalTime()
+                        ),
+                        y: .value(
+                            "kW",
+                            batteryItem.averagePowerChargedW / 1000
+                        ),
+                        stacking: .unstacked
+                    )
+                    .interpolationMethod(.cardinal)
+                    .foregroundStyle(
+                        .linearGradient(
+                            colors: [
+                                .purple.opacity(0.25),
+                                .purple.opacity(0.05),
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .lineStyle(
+                        StrokeStyle(lineWidth: 0)
+                    )
+                    .foregroundStyle(by: .value("Series", "Battery charged"))
+                }
+
+                LineMark(
                     x: .value(
                         "Time",
                         batteryItem.date.convertToLocalTime()
@@ -67,48 +100,25 @@ struct BatterySeries: ChartContent {
                     y: .value(
                         "kW",
                         batteryItem.averagePowerChargedW / 1000
-                    ),
-                    stacking: .unstacked
-                )
-                .interpolationMethod(.cardinal)
-                .foregroundStyle(
-                    .linearGradient(
-                        colors: [
-                            .pink.opacity(0.5),
-                            .pink.opacity(0.1),
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
                     )
                 )
+                .interpolationMethod(.cardinal)
                 .lineStyle(
-                    StrokeStyle(lineWidth: 0)
+                    StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
                 )
-                .foregroundStyle(
-                    by: .value("Series", "Battery charged")
-                )
+                .accessibilityLabel("Battery charged")
+                .foregroundStyle(by: .value("Series", "Battery charged"))
             }
-
-            LineMark(
-                x: .value(
-                    "Time",
-                    batteryItem.date.convertToLocalTime()
-                ),
-                y: .value(
-                    "kW",
-                    batteryItem.averagePowerChargedW / 1000
-                )
-            )
-            .foregroundStyle(by: .value("Series", "Battery charged"))
-            .interpolationMethod(.cardinal)
-            .lineStyle(
-                StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
-            )
         }
     }
 
     private func flattenallBatteryItems() -> [BatteryHistoryItem] {
-        batteries.flatMap { $0.items }
+        batteries
+            .flatMap { $0.items }
+            .filter {
+                !$0.averagePowerChargedW.isZero
+                    || !$0.averagePowerDischargedW.isZero
+            }
     }
 }
 

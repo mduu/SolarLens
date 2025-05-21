@@ -3,6 +3,11 @@ import SwiftUI
 struct ChartView: View {
     @Environment(CurrentBuildingState.self) var buildingModel:
         CurrentBuildingState
+    @AppStorage("showBatteryCharging") private
+        var showBatteryCharging: Bool = false
+    @AppStorage("showBatteryDischarging") private
+        var showBatteryDischarging: Bool = false
+
     @State var viewModel = ChartViewModel()
     @State private var refreshTimer: Timer?
 
@@ -16,10 +21,41 @@ struct ChartView: View {
 
                         VStack {
 
+                            HStack {
+                                Button(action: {
+                                    showBatteryCharging.toggle()
+                                }) {
+                                    Image(systemName: "battery.100percent.bolt")
+                                        .font(.system(size: 14))
+                                        .padding(4)
+
+                                }
+                                .buttonBorderShape(.circle)
+                                .buttonStyle(.bordered)
+                                .tint(showBatteryCharging ? .purple : .gray)
+
+                                Button(action: {
+                                    showBatteryDischarging.toggle()
+                                }) {
+                                    Image(systemName: "battery.75percent")
+                                        .font(.system(size: 14))
+                                        .padding(4)
+
+                                }
+                                .buttonBorderShape(.circle)
+                                .buttonStyle(.bordered)
+                                .tint(showBatteryDischarging ? .indigo : .gray)
+
+                                Spacer()
+                            }
+
                             OverviewChart(
                                 consumption: viewModel.consumptionData!,
-                                batteries: viewModel.batteryHistory ?? []
+                                batteries: viewModel.batteryHistory ?? [],
+                                showBatteryCharge: showBatteryCharging,
+                                showBatteryDischange: showBatteryDischarging
                             )
+
                             HStack {
                                 let solarPeak = getMaxProductionkW()
                                 TodaySolarView(
