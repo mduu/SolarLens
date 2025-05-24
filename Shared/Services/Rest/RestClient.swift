@@ -9,7 +9,7 @@ class RestClient {
 
     init(baseUrl: String) {
         self.baseUrl = baseUrl
-        
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:00.000"
         //dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
@@ -22,11 +22,11 @@ class RestClient {
 
     func get<TResponse>(
         serviceUrl: String,
-        parameters: Codable? = nil,
+        parameters: Encodable? = nil,
         maxRetry: Int = 4
     )
         async throws
-        -> TResponse? where TResponse: Codable
+        -> TResponse? where TResponse: Decodable
     {
         return try await doRequest(
             serviceUrl: serviceUrl,
@@ -40,10 +40,10 @@ class RestClient {
     func post<TRequest, TResponse>(
         serviceUrl: String,
         requestBody: TRequest,
-        parameters: Codable? = nil,
+        parameters: Encodable? = nil,
         useAccessToken: Bool = true
     ) async throws
-        -> TResponse? where TRequest: Codable, TResponse: Codable
+        -> TResponse? where TRequest: Encodable, TResponse: Decodable
     {
         return try await doRequest(
             serviceUrl: serviceUrl,
@@ -57,10 +57,10 @@ class RestClient {
     func put<TRequest, TResponse>(
         serviceUrl: String,
         requestBody: TRequest,
-        parameters: Codable? = nil,
+        parameters: Encodable? = nil,
         useAccessToken: Bool = true
     ) async throws
-        -> TResponse? where TRequest: Codable, TResponse: Codable
+        -> TResponse? where TRequest: Encodable, TResponse: Decodable
     {
         return try await doRequest(
             serviceUrl: serviceUrl,
@@ -92,11 +92,11 @@ class RestClient {
         serviceUrl: String,
         httpMethod: String,
         requestBody: TRequest?,
-        parameters: Codable? = nil,
+        parameters: Encodable? = nil,
         useAccessToken: Bool = true,
         maxRetry: Int = 4
     ) async throws
-        -> TResponse? where TRequest: Codable, TResponse: Codable
+        -> TResponse? where TRequest: Encodable, TResponse: Decodable
     {
         guard let url = URL(string: "\(baseUrl)\(serviceUrl)") else {
             return nil
@@ -183,16 +183,22 @@ class RestClient {
                 return nil
             case 400:  // Bad request
                 canRetry = false
-                print("ERROR: BAD REQUEST")
+                print("ERROR: BAD REQUEST (400)")
+                print("Debug-Description: \(response.debugDescription)")
+                let bodyText =
+                    request.httpBody == nil
+                    ? ""
+                    : "\(String(describing: String(data: request.httpBody!, encoding: .utf8)))"
+
                 print(
-                    "HTTP-Body: \(String(describing: String(data: request.httpBody!, encoding: .utf8)))"
+                    "HTTP-Body: \(bodyText)"
                 )
             case 401:  // Unauthorized / Token expired
                 canRetry = await handleTokenExpired(
                     failedResponse: response!
                 )
             case 403:  // Forbidden
-                print("ERROR: FORBIDDEN")
+                print("ERROR: FORBIDDEN (403)")
                 canRetry = await handleForbidden(
                     failedResponse: response!
                 )

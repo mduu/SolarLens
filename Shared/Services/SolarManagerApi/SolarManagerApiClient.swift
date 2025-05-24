@@ -131,7 +131,9 @@ class SolarManagerApi: RestClient {
     }
 
     func getV1GatewayConsumption(
-        solarManagerId smId: String, from: Date, to: Date
+        solarManagerId smId: String,
+        from: Date,
+        to: Date
     ) async throws
         -> GatewayIntervalConsumption?
     {
@@ -141,6 +143,23 @@ class SolarManagerApi: RestClient {
         let response: GatewayIntervalConsumption? = try await get(
             serviceUrl:
                 "/v1/consumption/gateway/\(smId)/range?from=\(fromIso)&to=\(toIso)&interval=300"
+        )
+
+        return response
+    }
+    
+    func getV1SensorData(
+        sensor id: String,
+        from: Date,
+        to: Date,
+        interval: Int = 300
+    ) async throws -> [SensorDataV1Response]? {
+        let fromIso = RestDateHelper.string(from: from)
+        let toIso = RestDateHelper.string(from: to)
+
+        let response: [SensorDataV1Response]? = try await get(
+            serviceUrl:
+                "/v1/data/sensor/\(id)/range?from=\(fromIso)&to=\(toIso)&interval=\(interval ?? 0)"
         )
 
         return response

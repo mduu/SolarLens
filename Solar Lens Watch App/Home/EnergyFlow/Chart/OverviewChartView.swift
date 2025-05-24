@@ -17,7 +17,8 @@ struct OverviewChartView: View {
 
                             VStack {
                                 OverviewChart(
-                                    consumption: viewModel.consumptionData!
+                                    consumption: viewModel.consumptionData!,
+                                    batteries: viewModel.batteryHistory ?? []
                                 )
 
                                 HStack {

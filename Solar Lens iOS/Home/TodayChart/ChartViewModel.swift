@@ -3,6 +3,7 @@ import Foundation
 @Observable()
 class ChartViewModel: ObservableObject {
     var consumptionData: ConsumptionData? = nil
+    var batteryHistory: [BatteryHistory]?
     var isLoading = false
     var errorMessage: String? = nil
     var error: EnergyManagerClientError? = nil
@@ -59,6 +60,17 @@ class ChartViewModel: ObservableObject {
                 consumptionChartLastFetchAt = Date()
 
                 print("Fetched consumption data from server successfully.")
+            }
+            
+            let batteryHistory =
+                try? await energyManager.fetchTodaysBatteryHistory()
+            if batteryHistory == nil || batteryHistory?.count == 0 {
+                self.errorMessage =
+                    "Failed to fetch battery history data from server."
+                self.error = .invalidData
+                self.batteryHistory = []
+            } else {
+                self.batteryHistory = batteryHistory
             }
 
             errorMessage = nil

@@ -3,6 +3,7 @@ import Foundation
 @Observable()
 class OverviewChartViewModel: ObservableObject {
     var consumptionData: ConsumptionData? = nil
+    var batteryHistory: [BatteryHistory]?
     var isLoading = false
     var errorMessage: String? = nil
     var error: EnergyManagerClientError? = nil
@@ -17,7 +18,9 @@ class OverviewChartViewModel: ObservableObject {
     public static func previewFake() -> OverviewChartViewModel {
         let fakeEnergyManager = FakeEnergyManager.init()
 
-        return OverviewChartViewModel.init(energyManagerClient: fakeEnergyManager)
+        return OverviewChartViewModel.init(
+            energyManagerClient: fakeEnergyManager
+        )
     }
 
     public func fetch() async {
@@ -33,19 +36,10 @@ class OverviewChartViewModel: ObservableObject {
             {
                 print("Fetching consumption data server data...")
 
-                let calendar = Calendar.current
-                let now = Date()
-                let components = calendar.dateComponents(
-                    [.year, .month, .day], from: now)
-                let endOfDayComponents = DateComponents(
-                    year: components.year, month: components.month,
-                    day: components.day,
-                    hour: 23, minute: 59, second: 59)
-                let toDate = calendar.date(from: endOfDayComponents)!
-
                 let consumptionData = try await energyManager.fetchConsumptions(
-                    from: Calendar.current.startOfDay(for: .now),
-                    to: toDate)
+                    from: Date.todayStartOfDay(),
+                    to: Date.todayEndOfDay()
+                )
 
                 if consumptionData.data.count == 0 {
                     self.errorMessage =
@@ -56,6 +50,18 @@ class OverviewChartViewModel: ObservableObject {
                 }
 
                 self.consumptionData = consumptionData
+
+                let batteryHistory =
+                    try? await energyManager.fetchTodaysBatteryHistory()
+                if batteryHistory == nil || batteryHistory?.count == 0 {
+                    self.errorMessage =
+                        "Failed to fetch battery history data from server."
+                    self.error = .invalidData
+                    self.batteryHistory = []
+                } else {
+                    self.batteryHistory = batteryHistory
+                }
+
                 consumptionChartLastFetchAt = Date()
 
                 print("Fetched consumption data from server successfully.")
