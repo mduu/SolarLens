@@ -94,6 +94,22 @@ struct ContentView: View {
                             }  // :ToolbarItem
                         }  // :.toolbar
                         .tag(3)
+                    
+                    BatteryScreen()
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                HStack {
+                                    HomeButton()
+
+                                    Text("Battery")
+                                        .foregroundColor(.cyan)
+                                        .font(.headline)
+
+                                    Spacer()
+                                }  // :HStack
+                            }  // :ToolbarItem
+                        }  // :.toolbar
+                        .tag(4)
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
