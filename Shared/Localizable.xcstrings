@@ -2934,6 +2934,9 @@
         }
       }
     },
+    "Mode:" : {
+
+    },
     "Name:" : {
       "localizations" : {
         "da" : {
@@ -4812,6 +4815,9 @@
           }
         }
       }
+    },
+    "Standard" : {
+
     },
     "Status:" : {
       "localizations" : {

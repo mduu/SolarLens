@@ -91,17 +91,26 @@ struct BatteryScreen: View {
                             Text("No current data")
                                 .foregroundStyle(.red)
                         }
+                        
+                        HStack {
+                            Text("Mode:")
+                            Button(action: {
+                                // Action
+                            }) {
+                                Text("Standard")
+                            }
+                            .buttonBorderShape(.circle)
+                            .buttonStyle(.bordered)
+                            .controlSize(.mini)
+                        }
 
                         Divider()
+                            .padding()
 
                         let batteryForecast = model.overviewData
                             .getBatteryForecast()
 
                         if let batteryForecast {
-                            Text("Forecast")
-                                .font(.headline)
-                                .foregroundColor(.purple)
-
                             if batteryForecast.durationUntilDischarged != nil
                                 && batteryForecast.timeWhenDischarged != nil
                             {
