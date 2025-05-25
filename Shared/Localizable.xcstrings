@@ -509,6 +509,9 @@
         }
       }
     },
+    "Battery charging" : {
+
+    },
     "Battery consumption" : {
       "localizations" : {
         "da" : {
@@ -536,6 +539,9 @@
           }
         }
       }
+    },
+    "Battery discharging" : {
+
     },
     "Battery Level" : {
       "localizations" : {
@@ -3779,6 +3785,9 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "Series:" : {
+
     },
     "Server" : {
       "localizations" : {
