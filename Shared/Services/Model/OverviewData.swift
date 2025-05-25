@@ -105,7 +105,51 @@ class OverviewData {
     func isFlowGridToHouse() -> Bool {
         return currentGridToHouse >= minGridConsumptionTreashold
     }
-
+    
+    func getBatteryForecast() -> BatteryForecast? {
+        guard let currentOverallPercent = currentBatteryLevel else {
+            return nil
+        }
+        
+        let batteries = devices.filter { $0.deviceType == .battery }
+        
+        let totalBatteryCapacity = batteries
+            .reduce(0) { (currentSum, battery) in
+                if let capa = battery.batteryInfo?.batteryCapacityKwh {
+                    return currentSum + capa
+                } else {
+                    return currentSum
+                }
+            }
+        
+        let currentBatteryCapacityKwh: Double = Double(totalBatteryCapacity) / 100.0 * Double(currentOverallPercent)
+        
+        var durationUntilEmpty: TimeInterval? = nil
+        if currentBatteryChargeRate ?? 0 < 0 {
+            let hours = currentBatteryCapacityKwh / Double(currentOverallConsumption)
+            durationUntilEmpty = TimeInterval(hours) * 3600
+        }
+        
+        var durationUntilFull: TimeInterval? = nil
+        if currentBatteryChargeRate ?? 0 > 0 {
+            let hours = (totalBatteryCapacity - currentBatteryCapacityKwh) / Double(
+                currentSolarProduction
+            )
+            durationUntilFull = TimeInterval(hours) * 3600
+        }
+        
+        return BatteryForecast(
+            durationUntilFullyCharged: durationUntilFull,
+            timeWhenFullyCharged: durationUntilFull != nil
+                ? Date().addingTimeInterval(durationUntilEmpty!)
+                : nil,
+            durationUntilDischarged: durationUntilEmpty,
+            timeWhenDischarged: durationUntilEmpty != nil
+                ? Date().addingTimeInterval(durationUntilEmpty!)
+                : nil
+        )
+    }
+    
     /**
      Return <code>true</code> if the fetched server-data is outdated.
      This indicates a server-side issue in Solar Manager backend.

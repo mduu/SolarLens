@@ -10,6 +10,7 @@ class Device: Identifiable {
     var color: String?
     var signal: SensorConnectionStatus
     var hasError: Bool = false
+    var batteryInfo: BatteryInfo? = nil
 
     init(
         id: String,
@@ -19,7 +20,8 @@ class Device: Identifiable {
         currentPowerInWatts: Int = 0,
         color: String? = nil,
         signal: SensorConnectionStatus = .connected,
-        hasError: Bool = false
+        hasError: Bool = false,
+        batteryInfo: BatteryInfo? = nil
     ) {
         self.id = id
         self.deviceType = deviceType
@@ -29,6 +31,7 @@ class Device: Identifiable {
         self.color = color
         self.signal = signal
         self.hasError = hasError
+        self.batteryInfo = batteryInfo
     }
     
     func hasPower() -> Bool {
@@ -38,6 +41,7 @@ class Device: Identifiable {
     func isConsumingDevice() -> Bool {
         return deviceType != .battery
     }
+
 }
 
 extension Device {

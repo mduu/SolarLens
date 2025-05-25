@@ -857,9 +857,6 @@
         }
       }
     },
-    "Charing:" : {
-
-    },
     "Choose charging mode:" : {
       "localizations" : {
         "da" : {
@@ -1622,9 +1619,6 @@
         }
       }
     },
-    "Discharing:" : {
-
-    },
     "Disconnected" : {
       "localizations" : {
         "da" : {
@@ -2305,6 +2299,9 @@
           }
         }
       }
+    },
+    "In:" : {
+
     },
     "Information about our site efficiency" : {
       "localizations" : {
@@ -3138,6 +3135,9 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "Out:" : {
+
     },
     "Password" : {
       "localizations" : {

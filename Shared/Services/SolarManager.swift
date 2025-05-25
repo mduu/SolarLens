@@ -20,7 +20,7 @@ actor SolarManager: EnergyManager {
     func login(username: String, password: String) async -> Bool {
         return await doLogin(email: username, password: password)
     }
-
+    
     func fetchOverviewData(lastOverviewData: OverviewData?) async throws
         -> OverviewData
     {
@@ -103,27 +103,14 @@ actor SolarManager: EnergyManager {
                 devices: sensorInfos == nil
                     ? []
                     : sensorInfos!
-                        .filter { $0.isDevice() }
-                        .map {
-                            let id = $0._id
-                            let streamInfo = streamSensorInfos?.devices.first {
-                                $0._id == id
+                    .filter { sensorInfo in sensorInfo.isDevice() }
+                        .map { sensorInfo in
+                            let id = sensorInfo._id
+                            let streamInfo = streamSensorInfos?.devices.first {_ in 
+                                sensorInfo._id == id
                             }
 
-                            return Device.init(
-                                id: $0._id,
-                                deviceType: Device.mapStringToDeviceType(
-                                    stringValue: $0.type
-                                ),
-                                name: $0.getSensorName(),
-
-                                priority: $0.priority,
-                                currentPowerInWatts: streamInfo?.currentPower
-                                    ?? 0,
-                                color: $0.tag?.color,
-                                signal: $0.signal,
-                                hasError: $0.hasErrors()
-                            )
+                            return mapDevice(sensorInfo, streamInfo)
                         },
                 todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
                 todaySelfConsumptionRate: todayGatewayStatistics?
@@ -133,7 +120,7 @@ actor SolarManager: EnergyManager {
                 todayConsumption: todayGatewayStatistics?.consumption,
                 todayGridImported: nil,
                 todayGridExported: nil,
-                cars: mapChars(streamSensorInfos: streamSensorInfos)
+                cars: mapCars(streamSensorInfos: streamSensorInfos)
             )
         }
 
@@ -508,8 +495,36 @@ actor SolarManager: EnergyManager {
                 .map { $0._id }
             : []
     }
-
-    private func mapChars(streamSensorInfos: StreamSensorsV1Response?) -> [Car]
+    
+    private func mapDevice(
+        _ sensorInfo: SensorInfosV1Response,
+        _ streamInfo: StreamSensorsV1Device?
+    ) -> Device {
+        return Device.init(
+            id: sensorInfo._id,
+            deviceType: Device.mapStringToDeviceType(
+                stringValue: sensorInfo.type
+            ),
+            name: sensorInfo.getSensorName(),
+            
+            priority: sensorInfo.priority,
+            currentPowerInWatts: streamInfo?.currentPower ?? 0,
+            color: sensorInfo.tag?.color,
+            signal: sensorInfo.signal,
+            hasError: sensorInfo.hasErrors(),
+            batteryInfo: sensorInfo.isBattery() && sensorInfo.data != nil
+            ? BatteryInfo(
+                favorite: sensorInfo.data!.favorite ?? false,
+                maxDischargePower: sensorInfo.data!.maxDischargePower ?? 1000,
+                maxChargePower: sensorInfo.data!.maxChargePower ?? 1000,
+                batteryCapacityKwh: sensorInfo.data!.batteryCapacity ?? 5
+                // TOOD Add battery charging mode data
+            )
+            : nil
+        )
+    }
+    
+    private func mapCars(streamSensorInfos: StreamSensorsV1Response?) -> [Car]
     {
         guard let sensorInfos = sensorInfos else {
             return []

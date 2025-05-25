@@ -9,9 +9,9 @@ struct BatteryIndicator: View {
     // Computed properties for styling
     private var baseColor: Color {
         switch percentage {
-        case 0..<20:
+        case 0..<8:
             return .red
-        case 20..<40:
+        case 8..<12:
             return .orange
         default:
             return .green

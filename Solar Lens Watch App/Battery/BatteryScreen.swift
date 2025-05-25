@@ -43,26 +43,38 @@ struct BatteryScreen: View {
 
                                 if charging > 0 {
                                     HStack {
-                                        Image(systemName: "battery.100percent.bolt")
+                                        Image(
+                                            systemName:
+                                                "arrow.right.circle.fill"
+                                        )
+                                        .foregroundColor(.green)
 
                                         Text(
-                                            "Charing:"
+                                            "In:"
                                         )
+                                        .foregroundColor(.green)
 
                                         Text(
                                             "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
                                         )
-                                    }
+                                    }.padding()
                                 } else if charging < 0 {
-                                    Image(systemName: "powerplug.portrait.fill")
+                                    HStack {
 
-                                    Text(
-                                        "Discharing:"
-                                    )
+                                        Image(
+                                            systemName: "arrow.left.circle.fill"
+                                        )
+                                        .foregroundColor(.orange)
 
-                                    Text(
-                                        "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
-                                    )
+                                        Text(
+                                            "Out:"
+                                        )
+                                        .foregroundColor(.orange)
+
+                                        Text(
+                                            "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
+                                        )
+                                    }.padding()
                                 }
                             }
 
@@ -70,14 +82,13 @@ struct BatteryScreen: View {
                             Text("No current data")
                                 .foregroundStyle(.red)
                         }
-                        
+
                         Divider()
-                            .padding(.vertical)
-                        
+
                         let batteries = model.overviewData.devices
                             .filter { $0.deviceType == .battery }
                         BatteryDevicesList(batteryDevices: batteries)
-                        
+
                     }  // :VStack
                 }  // :GeometryReader
 
