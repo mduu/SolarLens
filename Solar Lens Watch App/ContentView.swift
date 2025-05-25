@@ -102,7 +102,7 @@ struct ContentView: View {
                                     HomeButton()
 
                                     Text("Battery")
-                                        .foregroundColor(.cyan)
+                                        .foregroundColor(.purple)
                                         .font(.headline)
 
                                     Spacer()

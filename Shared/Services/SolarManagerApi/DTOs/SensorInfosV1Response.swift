@@ -65,9 +65,31 @@ struct SensorInfosV1Response : Codable {
 struct SensorInfosV1Tag: Codable {
     var name: String
     var color: String?
+    var sensorsCount: Int?
 }
 
 struct SensorInfosV1Data: Codable {
     var batteryCapacity: Double?
+    var batteryChargingMode: Int?
+    var batteryMode: Int?
+    var batteryManualMode: Int?
+    var upperSocLimit: Int?
+    var lowerSocLimit: Int?
+    var dischargeSocLimit: Int?
+    var chargingSocLimit: Int?
+    var morningSocLimit: Int?
+    var peakShavingSocDischargeLimit: Int?
+    var peakShavingMaxGridPower: Int?
+    var peakShavingRechargePower: Int?
+    var tariffPriceLimitSocMax: Int?
+    var tariffPriceLimitForecast: Bool?
+    var standardStandaloneAllowed: Bool?
+    var standardLowerSocLimit: Int?
+    var standardUpperSocLimit: Int?
+    var powerCharge: Int?
+    var powerDischarge: Int?
+    
     var favorite: Bool?
+    var maxDischargePower: Int?
+    var maxChargePower: Int?
 }

@@ -450,6 +450,9 @@
         }
       }
     },
+    "Bat. %@" : {
+
+    },
     "Battery" : {
       "localizations" : {
         "da" : {
@@ -847,6 +850,9 @@
           }
         }
       }
+    },
+    "Charing:" : {
+
     },
     "Choose charging mode:" : {
       "localizations" : {
@@ -1610,6 +1616,9 @@
         }
       }
     },
+    "Discharing:" : {
+
+    },
     "Disconnected" : {
       "localizations" : {
         "da" : {
@@ -2262,9 +2271,6 @@
           }
         }
       }
-    },
-    "Hello, Battery" : {
-
     },
     "Here is how:" : {
       "localizations" : {
@@ -2960,6 +2966,9 @@
           }
         }
       }
+    },
+    "No current data" : {
+
     },
     "No data" : {
       "localizations" : {
