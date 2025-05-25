@@ -1793,6 +1793,16 @@
         }
       }
     },
+    "Empty in %@ at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Empty in %1$@ at %2$@"
+          }
+        }
+      }
+    },
     "Energy Assistant:" : {
       "localizations" : {
         "da" : {
@@ -1960,6 +1970,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piena"
+          }
+        }
+      }
+    },
+    "Full in %@ at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Full in %1$@ at %2$@"
           }
         }
       }

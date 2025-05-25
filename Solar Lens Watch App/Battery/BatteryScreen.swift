@@ -6,6 +6,15 @@ struct BatteryScreen: View {
 
     @State var isLoading = false
 
+    private let positionalFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated  // e.g., "01:01:05" or "01:05"
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.zeroFormattingBehavior = .pad
+        formatter.collapsesLargestUnit = true  // If hours are 0, it collapses to minutes and seconds
+        return formatter
+    }()
+
     var body: some View {
 
         ZStack {
@@ -23,7 +32,7 @@ struct BatteryScreen: View {
 
                 GeometryReader { geometry in
 
-                    VStack {
+                    VStack(alignment: .leading) {
 
                         if !model.overviewData.isStaleData {
 
@@ -85,9 +94,58 @@ struct BatteryScreen: View {
 
                         Divider()
 
+                        let batteryForecast = model.overviewData
+                            .getBatteryForecast()
+
+                        if let batteryForecast {
+                            Text("Forecast")
+                                .font(.headline)
+                                .foregroundColor(.purple)
+
+                            if batteryForecast.durationUntilDischarged != nil
+                                && batteryForecast.timeWhenDischarged != nil
+                            {
+                                HStack {
+                                    Image(systemName: "battery.0percent")
+                                        .foregroundColor(.red)
+                                        .rotationEffect(.degrees(-90))
+                                    
+                                    VStack(alignment: .leading) {
+                                        Text(
+                                            "Empty in \(positionalFormatter.string(from: batteryForecast.durationUntilDischarged!) ?? "") at \(batteryForecast.timeWhenDischarged!.formatted(date: .omitted, time: .shortened))"
+                                        )
+                                        .multilineTextAlignment(.leading)
+                                        .lineLimit(2)
+                                        .frame(minHeight: 40)
+                                    }
+                                }
+                            }
+
+                            if batteryForecast.durationUntilFullyCharged != nil
+                            {
+                                HStack {
+                                    Image(systemName: "battery.100percent")
+                                        .foregroundColor(.green)
+                                        .rotationEffect(.degrees(-90))
+
+                                    VStack(alignment: .leading) {
+                                        Text(
+                                            "Full in \(positionalFormatter.string(from: batteryForecast.durationUntilFullyCharged!) ?? "") at \(batteryForecast.timeWhenFullyCharged!.formatted(date: .omitted, time: .shortened))"
+                                        )
+                                        .multilineTextAlignment(.leading)
+                                        .lineLimit(2)
+                                        .frame(minHeight: 40)
+                                    }
+                                }
+                            }
+                        }
+
+                        /*
                         let batteries = model.overviewData.devices
                             .filter { $0.deviceType == .battery }
+                        
                         BatteryDevicesList(batteryDevices: batteries)
+                         */
 
                     }  // :VStack
                 }  // :GeometryReader

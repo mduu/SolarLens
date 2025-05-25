@@ -122,26 +122,25 @@ class OverviewData {
                 }
             }
         
-        let currentBatteryCapacityKwh: Double = Double(totalBatteryCapacity) / 100.0 * Double(currentOverallPercent)
+        let currentBatteryCapacityKwh: Double = Double(totalBatteryCapacity) / 100.0 * Double(currentOverallPercent - 5)
+        let currentConsumptionKwh: Double = Double(currentOverallConsumption) / 1000
         
         var durationUntilEmpty: TimeInterval? = nil
         if currentBatteryChargeRate ?? 0 < 0 {
-            let hours = currentBatteryCapacityKwh / Double(currentOverallConsumption)
+            let hours = currentBatteryCapacityKwh / currentConsumptionKwh
             durationUntilEmpty = TimeInterval(hours) * 3600
         }
         
         var durationUntilFull: TimeInterval? = nil
         if currentBatteryChargeRate ?? 0 > 0 {
-            let hours = (totalBatteryCapacity - currentBatteryCapacityKwh) / Double(
-                currentSolarProduction
-            )
+            let hours = (totalBatteryCapacity - currentBatteryCapacityKwh) / currentConsumptionKwh
             durationUntilFull = TimeInterval(hours) * 3600
         }
         
         return BatteryForecast(
             durationUntilFullyCharged: durationUntilFull,
             timeWhenFullyCharged: durationUntilFull != nil
-                ? Date().addingTimeInterval(durationUntilEmpty!)
+                ? Date().addingTimeInterval(durationUntilFull!)
                 : nil,
             durationUntilDischarged: durationUntilEmpty,
             timeWhenDischarged: durationUntilEmpty != nil
