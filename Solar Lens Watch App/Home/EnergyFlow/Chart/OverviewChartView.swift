@@ -1,9 +1,15 @@
 import SwiftUI
 
 struct OverviewChartView: View {
-    @Environment(CurrentBuildingState.self) var buildingModel: CurrentBuildingState
+    @Environment(CurrentBuildingState.self) var buildingModel:
+        CurrentBuildingState
     @State var viewModel = OverviewChartViewModel()
     @State private var refreshTimer: Timer?
+    @AppStorage("showBatteryChargingWatch") private
+        var showBatteryCharging: Bool = false
+    @AppStorage("showBatteryDischargingWatch") private
+        var showBatteryDischarging: Bool = false
+    @State var showSeriesConfiguration: Bool = false
 
     var body: some View {
         ZStack {
@@ -18,7 +24,9 @@ struct OverviewChartView: View {
                             VStack {
                                 OverviewChart(
                                     consumption: viewModel.consumptionData!,
-                                    batteries: viewModel.batteryHistory ?? []
+                                    batteries: viewModel.batteryHistory ?? [],
+                                    showBatteryCharge: showBatteryCharging,
+                                    showBatteryDischange: showBatteryDischarging
                                 )
 
                                 HStack {
@@ -29,7 +37,8 @@ struct OverviewChartView: View {
                                     Text(
                                         String(
                                             format: "%.2f kWp",
-                                            getMaxProductionkW())
+                                            getMaxProductionkW()
+                                        )
                                     )
                                     .font(.footnote)
                                     .foregroundColor(.yellow)
@@ -41,10 +50,32 @@ struct OverviewChartView: View {
                                     Text(
                                         String(
                                             format: "%.2f kWp",
-                                            getMaxConsumptionkW())
+                                            getMaxConsumptionkW()
+                                        )
                                     )
                                     .font(.footnote)
                                     .foregroundColor(.teal)
+                                }
+                            }
+                            .onTapGesture {
+                                showSeriesConfiguration = true
+                            }
+                            .sheet(
+                                isPresented: $showSeriesConfiguration
+                            ) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Series:")
+                                        .font(.headline)
+
+                                    Toggle(isOn: $showBatteryCharging) {
+                                        Text("Battery charging")
+                                    }
+                                    
+                                    Toggle(isOn: $showBatteryDischarging) {
+                                        Text("Battery discharging")
+                                    }
+                                    
+                                    Spacer()
                                 }
                             }
 
@@ -65,7 +96,8 @@ struct OverviewChartView: View {
                                     Text("Self consumption:")
                                         .font(.footnote)
                                     Text(
-                                        selfConsumptionPercentage.formatIntoPercentage()
+                                        selfConsumptionPercentage
+                                            .formatIntoPercentage()
                                     )
                                     .font(.footnote)
                                     .foregroundColor(selfConsumptionColor)
@@ -104,7 +136,8 @@ struct OverviewChartView: View {
 
                 if refreshTimer == nil {
                     refreshTimer = Timer.scheduledTimer(
-                        withTimeInterval: 300, repeats: true
+                        withTimeInterval: 300,
+                        repeats: true
                     ) {
                         _ in
                         Task {
