@@ -66,7 +66,7 @@ struct BatteryScreen: View {
                                         Text(
                                             "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
                                         )
-                                    }.padding()
+                                    }.padding(.top)
                                 } else if charging < 0 {
                                     HStack {
 
@@ -83,7 +83,7 @@ struct BatteryScreen: View {
                                         Text(
                                             "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
                                         )
-                                    }.padding()
+                                    }.padding(.top)
                                 }
                             }
 
@@ -103,6 +103,7 @@ struct BatteryScreen: View {
                             .buttonStyle(.bordered)
                             .controlSize(.mini)
                         }
+                        .padding(.top)
 
                         Divider()
                             .padding()
