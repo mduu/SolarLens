@@ -14,7 +14,8 @@ struct ContentView: View {
                 .onAppear {
                     if loginCredentialsCheckTimer == nil {
                         loginCredentialsCheckTimer = Timer.scheduledTimer(
-                            withTimeInterval: 5, repeats: true
+                            withTimeInterval: 5,
+                            repeats: true
                         ) {
                             _ in
                             Task {
@@ -94,24 +95,22 @@ struct ContentView: View {
                             }  // :ToolbarItem
                         }  // :.toolbar
                         .tag(3)
-                    
-                    if viewModel.overviewData.currentBatteryLevel != nil && viewModel.overviewData.currentChargeRate != nil {
-                        BatteryScreen()
-                            .toolbar {
-                                ToolbarItem(placement: .topBarLeading) {
-                                    HStack {
-                                        HomeButton()
-                                        
-                                        Text("Battery")
-                                            .foregroundColor(.purple)
-                                            .font(.headline)
-                                        
-                                        Spacer()
-                                    }  // :HStack
-                                }  // :ToolbarItem
-                            }  // :.toolbar
-                            .tag(4)
-                    }
+
+                    BatteryScreen()
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                HStack {
+                                    HomeButton()
+
+                                    Text("Battery")
+                                        .foregroundColor(.purple)
+                                        .font(.headline)
+
+                                    Spacer()
+                                }  // :HStack
+                            }  // :ToolbarItem
+                        }  // :.toolbar
+                        .tag(4)
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
@@ -167,7 +166,8 @@ struct ContentView: View {
                     isAnyCarCharing: true,
                     chargingStations: [],
                     devices: []
-                ))
+                )
+            )
         )
 }
 
@@ -176,5 +176,6 @@ struct ContentView: View {
         .environment(
             CurrentBuildingState.fake(
                 loggedIn: false
-            ))
+            )
+        )
 }
