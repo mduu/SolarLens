@@ -105,13 +105,14 @@ struct BatteryScreen: View {
                         }
                         .padding(.top)
 
-                        Divider()
-                            .padding()
-
                         let batteryForecast = model.overviewData
                             .getBatteryForecast()
 
                         if let batteryForecast {
+                            
+                            Divider()
+                                .padding()
+
                             if batteryForecast.durationUntilDischarged != nil
                                 && batteryForecast.timeWhenDischarged != nil
                             {
