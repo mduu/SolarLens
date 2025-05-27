@@ -26,7 +26,7 @@ struct BatterySeries: ChartContent {
                         ),
                         stacking: .unstacked
                     )
-                    .interpolationMethod(.cardinal)
+                    .interpolationMethod(.linear)
                     .foregroundStyle(
                         .linearGradient(
                             colors: [
@@ -53,7 +53,7 @@ struct BatterySeries: ChartContent {
                         batteryItem.averagePowerDischargedW / 1000
                     )
                 )
-                .interpolationMethod(.cardinal)
+                .interpolationMethod(.linear)
                 .lineStyle(
                     StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
                 )
@@ -75,7 +75,7 @@ struct BatterySeries: ChartContent {
                         ),
                         stacking: .unstacked
                     )
-                    .interpolationMethod(.cardinal)
+                    .interpolationMethod(.linear)
                     .foregroundStyle(
                         .linearGradient(
                             colors: [
@@ -102,7 +102,7 @@ struct BatterySeries: ChartContent {
                         batteryItem.averagePowerChargedW / 1000
                     )
                 )
-                .interpolationMethod(.cardinal)
+                .interpolationMethod(.linear)
                 .lineStyle(
                     StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
                 )
