@@ -105,15 +105,16 @@ class OverviewData {
     func isFlowGridToHouse() -> Bool {
         return currentGridToHouse >= minGridConsumptionTreashold
     }
-    
+
     func getBatteryForecast() -> BatteryForecast? {
         guard let currentOverallPercent = currentBatteryLevel else {
             return nil
         }
-        
+
         let batteries = devices.filter { $0.deviceType == .battery }
-        
-        let totalBatteryCapacity = batteries
+
+        let totalBatteryCapacity =
+            batteries
             .reduce(0) { (currentSum, battery) in
                 if let capa = battery.batteryInfo?.batteryCapacityKwh {
                     return currentSum + capa
@@ -121,22 +122,28 @@ class OverviewData {
                     return currentSum
                 }
             }
-        
-        let currentBatteryCapacityKwh: Double = Double(totalBatteryCapacity) / 100.0 * Double(currentOverallPercent - 5)
-        let currentConsumptionKwh: Double = Double(currentOverallConsumption) / 1000
-        
+
+        let currentBatteryCapacityKwh: Double =
+            Double(totalBatteryCapacity) / 100.0 * Double(currentOverallPercent)
+
+        // Discharging
         var durationUntilEmpty: TimeInterval? = nil
         if currentBatteryChargeRate ?? 0 < 0 {
-            let hours = currentBatteryCapacityKwh / currentConsumptionKwh
+            let hours =
+                (currentBatteryCapacityKwh - 5)
+                / Double(currentBatteryChargeRate! * -1)
             durationUntilEmpty = TimeInterval(hours) * 3600
         }
-        
+
+        // Charging
         var durationUntilFull: TimeInterval? = nil
         if currentBatteryChargeRate ?? 0 > 0 {
-            let hours = (totalBatteryCapacity - currentBatteryCapacityKwh) / currentConsumptionKwh
+            let hours =
+                (totalBatteryCapacity - currentBatteryCapacityKwh)
+                / Double(currentBatteryChargeRate!)
             durationUntilFull = TimeInterval(hours) * 3600
         }
-        
+
         return BatteryForecast(
             durationUntilFullyCharged: durationUntilFull,
             timeWhenFullyCharged: durationUntilFull != nil
@@ -148,7 +155,7 @@ class OverviewData {
                 : nil
         )
     }
-    
+
     /**
      Return <code>true</code> if the fetched server-data is outdated.
      This indicates a server-side issue in Solar Manager backend.
@@ -171,4 +178,3 @@ class OverviewData {
         return lastFetch.timeIntervalSince(lastUpdate) > 30 * 60
     }
 }
-
