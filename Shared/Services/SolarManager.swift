@@ -106,8 +106,8 @@ actor SolarManager: EnergyManager {
                     .filter { sensorInfo in sensorInfo.isDevice() }
                         .map { sensorInfo in
                             let id = sensorInfo._id
-                            let streamInfo = streamSensorInfos?.devices.first {_ in 
-                                sensorInfo._id == id
+                            let streamInfo = streamSensorInfos?.devices.first {streamInfo in
+                                streamInfo._id == id
                             }
 
                             return mapDevice(sensorInfo, streamInfo)

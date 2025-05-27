@@ -171,6 +171,8 @@ struct ConsumptionPieChart: View {
                     }  // :FlowLayout
 
                 }  // :ScrollView
+                .frame(maxHeight: 60)
+                .padding(.horizontal, 20)
             } else {
                 FlowLayout(spacing: 5) {
 
@@ -223,9 +225,6 @@ struct ConsumptionPieChart: View {
             }
 
         }  // :HVStack
-        .padding()
-        .ignoresSafeArea()
-
     }
 
     func getAllConsumptions() -> [DeviceConsumption] {
