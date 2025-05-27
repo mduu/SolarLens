@@ -128,19 +128,19 @@ class OverviewData {
 
         // Discharging
         var durationUntilEmpty: TimeInterval? = nil
-        if currentBatteryChargeRate ?? 0 < 0 {
+        if currentBatteryChargeRate ?? 0 < -50 {
             let hours =
                 (currentBatteryCapacityKwh - 5)
-                / Double(currentBatteryChargeRate! * -1)
+                / (Double(currentBatteryChargeRate! * -1) / 1000)
             durationUntilEmpty = TimeInterval(hours) * 3600
         }
 
         // Charging
         var durationUntilFull: TimeInterval? = nil
-        if currentBatteryChargeRate ?? 0 > 0 {
+        if currentBatteryChargeRate ?? 0 > 50 && currentOverallPercent < 100 {
             let hours =
                 (totalBatteryCapacity - currentBatteryCapacityKwh)
-                / Double(currentBatteryChargeRate!)
+                / (Double(currentBatteryChargeRate!) / 1000)
             durationUntilFull = TimeInterval(hours) * 3600
         }
 
