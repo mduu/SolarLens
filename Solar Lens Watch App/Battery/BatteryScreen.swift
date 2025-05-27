@@ -110,12 +110,12 @@ struct BatteryScreen: View {
 
                         if let batteryForecast {
                             
-                            Divider()
-                                .padding()
-
                             if batteryForecast.durationUntilDischarged != nil
                                 && batteryForecast.timeWhenDischarged != nil
                             {
+                                Divider()
+                                    .padding()
+
                                 HStack {
                                     Image(systemName: "battery.0percent")
                                         .foregroundColor(.red)
@@ -134,6 +134,9 @@ struct BatteryScreen: View {
 
                             if batteryForecast.durationUntilFullyCharged != nil
                             {
+                                Divider()
+                                    .padding()
+
                                 HStack {
                                     Image(systemName: "battery.100percent")
                                         .foregroundColor(.green)
