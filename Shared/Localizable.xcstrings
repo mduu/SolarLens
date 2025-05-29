@@ -1831,6 +1831,12 @@
         }
       }
     },
+    "Error message:" : {
+
+    },
+    "Error:" : {
+
+    },
     "Explanation" : {
       "localizations" : {
         "da" : {
@@ -4816,7 +4822,7 @@
         }
       }
     },
-    "Standard" : {
+    "Something went wrong..." : {
 
     },
     "Status:" : {
