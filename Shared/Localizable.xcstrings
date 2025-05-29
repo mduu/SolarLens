@@ -596,6 +596,9 @@
         }
       }
     },
+    "Battery mode" : {
+
+    },
     "Batterylevel of my car" : {
       "localizations" : {
         "da" : {

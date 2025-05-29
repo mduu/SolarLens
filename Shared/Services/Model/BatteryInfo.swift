@@ -85,7 +85,7 @@ enum BatteryMode: Int {
     case StandardControlled = 5
     
     static func from(_ value: Int?) -> BatteryMode {
-        return BatteryMode(rawValue: value ?? 0) ?? .Standard
+        return BatteryMode(rawValue: value ?? 0) ?? .StandardControlled
     }
 }
 

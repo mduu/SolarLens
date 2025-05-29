@@ -4,10 +4,12 @@ import SwiftUI
 
 struct BatteryView: View {
     let battery: Device
+    
+    @State var showModeSheet: Bool = false
 
     var body: some View {
         Button(action: {
-            // Action
+            showModeSheet = true
         }) {
             HStack {
                 Image(systemName: "battery.100percent.circle")
@@ -50,6 +52,16 @@ struct BatteryView: View {
 
                 Spacer()
             }
+        }
+        .sheet(isPresented: $showModeSheet) {
+            BatteryModeSheet(battery: battery)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Text("Battery mode")
+                            .foregroundColor(.purple)
+                            .font(.headline)
+                    }  // :ToolbarItem
+                }  // :.toolbar
         }
     }
     
