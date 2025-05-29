@@ -160,16 +160,18 @@ struct HomeScreen: View {
                                         )
                                         .frame(maxWidth: 180, maxHeight: 120)
                                         .padding(.leading, 5)
-                                        
+
                                         UpdateTimeStampView(
-                                            isStale: buildingState.overviewData.isStaleData,
-                                            updateTimeStamp: buildingState.overviewData
+                                            isStale: buildingState.overviewData
+                                                .isStaleData,
+                                            updateTimeStamp: buildingState
+                                                .overviewData
                                                 .lastSuccessServerFetch,
                                             isLoading: buildingState.isLoading,
                                             onRefresh: nil
                                         )
                                         .padding(.leading, 5)
-                                        
+
                                     }  // :VStack
                                     .padding(.trailing)
 
@@ -181,7 +183,7 @@ struct HomeScreen: View {
                                         HStack {
                                             RefreshButton(
                                                 onRefresh: { refreshAll() })
-                                            .padding(.trailing)
+                                                .padding(.trailing)
                                             SettingsButton()
                                         }
 
@@ -198,6 +200,39 @@ struct HomeScreen: View {
                             .padding()
                             .padding(.horizontal, 30)
                         }  // :else
+
+                        if buildingState.error != nil
+                            || buildingState.errorMessage ?? "" != ""
+                        {
+                            VStack(alignment: .leading) {
+                                Text("Something went wrong...")
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                
+                                    ScrollView {
+                                        
+                                        Text("Error message:")
+                                            .font(.headline)
+                                        
+                                        Text(buildingState.errorMessage ?? "")
+                                            .multilineTextAlignment(.leading)
+                                            .padding(.bottom)
+                                        
+                                        Text("Error:")
+                                            .font(.headline)
+                                        
+                                        Text(String(describing: buildingState.error))
+                                            .multilineTextAlignment(.leading)
+                                        
+                                    }
+
+                            }
+                            .padding()
+                            .border(Color.red, width: 2)
+                            .background(.white)
+                            .foregroundColor(.red)
+                            .frame(maxHeight: 600)
+                        }
 
                     }  // :ZStack
                     .frame(maxHeight: rootGeometry.size.height)
@@ -286,7 +321,7 @@ struct HomeScreen: View {
         buildingState.isLoading
             && buildingState.overviewData.lastSuccessServerFetch == nil
     }
-    
+
     private func getAgeOfData() -> TimeInterval {
         let lastUpdate = buildingState.overviewData.lastSuccessServerFetch
         guard let lastUpdate else {

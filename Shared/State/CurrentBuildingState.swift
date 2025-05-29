@@ -95,10 +95,14 @@ class CurrentBuildingState {
             print(
                 "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
             )
-
+            
             isLoading = false
         } catch {
-            self.error = error as? EnergyManagerClientError
+            if error is RestError {
+                self.error = .apiError(apiError: error as! RestError)
+            } else {
+                self.error = error as? EnergyManagerClientError
+            }
             errorMessage = error.localizedDescription
             isLoading = false
         }

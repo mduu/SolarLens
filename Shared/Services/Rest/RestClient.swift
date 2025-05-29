@@ -193,6 +193,10 @@ class RestClient {
                 print(
                     "HTTP-Body: \(bodyText)"
                 )
+                
+                throw RestError.badRequest(
+                    response: response,
+                    details: "\(request.httpMethod ?? "-") \(url)\n \(bodyText)")
             case 401:  // Unauthorized / Token expired
                 canRetry = await handleTokenExpired(
                     failedResponse: response!

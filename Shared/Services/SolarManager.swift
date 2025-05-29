@@ -30,19 +30,6 @@ actor SolarManager: EnergyManager {
             return lastOverviewData ?? OverviewData.empty()
         }
 
-        async let streamSensorInfosResult =
-            try await solarManagerApi.getV1StreamGateway(
-                solarManagerId: systemInformation!.sm_id
-            )
-
-        async let todayGatewayStatisticsResult =
-            try await solarManagerApi.getV1Statistics(
-                solarManagerId: systemInformation!.sm_id,
-                from: Date.todayStartOfDay(),
-                to: Date.todayEndOfDay(),
-                accuracy: .high
-            )
-
         if let chart = try await solarManagerApi.getV1Chart(
             solarManagerId: systemInformation!.sm_id
         ) {
@@ -53,8 +40,20 @@ actor SolarManager: EnergyManager {
                 : nil
 
             let lastUpdated = parseSolarManagerDateTime(chart.lastUpdate)
-            let streamSensorInfos = try await streamSensorInfosResult
-            let todayGatewayStatistics = try await todayGatewayStatisticsResult
+
+            let streamSensorInfos =
+                try await solarManagerApi.getV1StreamGateway(
+                    solarManagerId: systemInformation!.sm_id
+                )
+
+            let todayGatewayStatistics =
+                try await solarManagerApi.getV1Statistics(
+                    solarManagerId: systemInformation!.sm_id,
+                    from: Date.todayStartOfDay(),
+                    to: Date.todayEndOfDay(),
+                    accuracy: .high
+                )
+            
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos
             )
@@ -302,7 +301,7 @@ actor SolarManager: EnergyManager {
                 batterySensorId: batterySensorId,
                 items: items
             )
-            
+
             result.append(batteryHistory)
         }
 
@@ -401,9 +400,13 @@ actor SolarManager: EnergyManager {
                     refreshToken: refreshToken
                 )
 
-                self.expireAt = Date().addingTimeInterval(
-                    TimeInterval(refreshResponse.expiresIn)
-                )
+                self.expireAt =
+                    refreshResponse.expiresIn > 0
+                    ? Date().addingTimeInterval(
+                        TimeInterval(refreshResponse.expiresIn)
+                    )
+                    : Date().addingTimeInterval(86400)
+
                 self.accessClaims = refreshResponse.accessClaims
 
                 if accessToken != nil && expireAt != nil && expireAt! > Date() {
