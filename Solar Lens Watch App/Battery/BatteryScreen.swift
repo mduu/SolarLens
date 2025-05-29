@@ -95,7 +95,7 @@ struct BatteryScreen: View {
                             )
 
                             Divider()
-                                .padding()
+                                .padding(.vertical)
 
                             BatteryDevicesList(
                                 batteryDevices: model.overviewData.devices

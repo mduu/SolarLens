@@ -2940,9 +2940,6 @@
         }
       }
     },
-    "Mode:" : {
-
-    },
     "Name:" : {
       "localizations" : {
         "da" : {
@@ -4823,9 +4820,6 @@
       }
     },
     "Something went wrong..." : {
-
-    },
-    "Standard" : {
 
     },
     "Status:" : {

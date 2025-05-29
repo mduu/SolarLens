@@ -113,7 +113,7 @@ class OverviewData {
 
         let batteries = devices.filter { $0.deviceType == .battery }
 
-        let totalBatteryCapacity =
+        let totalBatteryCapacity: Double =
             batteries
             .reduce(0) { (currentSum, battery) in
                 if let capa = battery.batteryInfo?.batteryCapacityKwh {
@@ -125,23 +125,26 @@ class OverviewData {
 
         let currentBatteryCapacityKwh: Double =
             Double(totalBatteryCapacity) / 100.0 * Double(currentOverallPercent)
+        let isDischarging = currentBatteryChargeRate ?? 0 < -50 && currentOverallPercent > 0
+        let isCharging = currentBatteryChargeRate ?? 0 > 50 && currentOverallPercent < 100
 
         // Discharging
         var durationUntilEmpty: TimeInterval? = nil
-        if currentBatteryChargeRate ?? 0 < -50 {
-            let hours =
-                (currentBatteryCapacityKwh - 5)
-                / (Double(currentBatteryChargeRate! * -1) / 1000)
-            durationUntilEmpty = TimeInterval(hours) * 3600
+        if isDischarging {
+            let minimumCapacityKwh: Double = totalBatteryCapacity * 0.05
+            let remainingCapacityKwh = currentBatteryCapacityKwh - minimumCapacityKwh
+            let dishargingRateKw = Double(currentBatteryChargeRate! * -1) / 1000
+            let hours = remainingCapacityKwh / dishargingRateKw
+            durationUntilEmpty = TimeInterval(hours * 3600)
         }
 
         // Charging
         var durationUntilFull: TimeInterval? = nil
-        if currentBatteryChargeRate ?? 0 > 50 && currentOverallPercent < 100 {
-            let hours =
-                (totalBatteryCapacity - currentBatteryCapacityKwh)
-                / (Double(currentBatteryChargeRate!) / 1000)
-            durationUntilFull = TimeInterval(hours) * 3600
+        if isCharging {
+            let capacityToChargeKwh = totalBatteryCapacity - currentBatteryCapacityKwh
+            let chargingRateKw = Double(currentBatteryChargeRate ?? 0) / 1000
+            let hours = capacityToChargeKwh / chargingRateKw
+            durationUntilFull = TimeInterval(hours * 3600)
         }
 
         return BatteryForecast(
