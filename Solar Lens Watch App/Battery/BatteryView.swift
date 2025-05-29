@@ -56,9 +56,7 @@ struct BatteryView: View {
     func getBatteryModeText() -> LocalizedStringResource {
         switch battery.batteryInfo?.batteryMode {
         case .Standard:
-            battery.batteryInfo?.standardStandaloneAllowed ?? false
-            ? "Standalone"
-            : "Standard"
+            "Standard"
         case .Eco:
             "Eco"
         case .PeakShaving:
@@ -68,7 +66,9 @@ struct BatteryView: View {
         case .TariffOptimized:
             "Tariff optimized"
         case .StandardControlled:
-            "Standard controlled"
+            battery.batteryInfo?.standardStandaloneAllowed ?? false
+                ? "Standalone"
+                : "Standard"
         case nil:
             ""
         }
@@ -93,12 +93,7 @@ struct BatteryView: View {
                 name: "Test 1",
                 priority: 1,
                 currentPowerInWatts: 3250,
-                batteryInfo: BatteryInfo(
-                    favorite: true,
-                    maxDischargePower: 7000,
-                    maxChargePower: 7000,
-                    batteryCapacityKwh: 11
-                )
+                batteryInfo: BatteryInfo.fake()
             )
         )
     }

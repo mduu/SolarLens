@@ -79,6 +79,7 @@ struct SensorInfosV1Data: Codable {
     var chargingSocLimit: Int?
     var morningSocLimit: Int?
     var peakShavingSocDischargeLimit: Int?
+    var peakShavingSocMaxLimit: Int?
     var peakShavingMaxGridPower: Int?
     var peakShavingRechargePower: Int?
     var tariffPriceLimitSocMax: Int?

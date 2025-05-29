@@ -20,7 +20,7 @@ actor SolarManager: EnergyManager {
     func login(username: String, password: String) async -> Bool {
         return await doLogin(email: username, password: password)
     }
-    
+
     func fetchOverviewData(lastOverviewData: OverviewData?) async throws
         -> OverviewData
     {
@@ -53,7 +53,7 @@ actor SolarManager: EnergyManager {
                     to: Date.todayEndOfDay(),
                     accuracy: .high
                 )
-            
+
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos
             )
@@ -102,10 +102,11 @@ actor SolarManager: EnergyManager {
                 devices: sensorInfos == nil
                     ? []
                     : sensorInfos!
-                    .filter { sensorInfo in sensorInfo.isDevice() }
+                        .filter { sensorInfo in sensorInfo.isDevice() }
                         .map { sensorInfo in
                             let id = sensorInfo._id
-                            let streamInfo = streamSensorInfos?.devices.first {streamInfo in
+                            let streamInfo = streamSensorInfos?.devices.first {
+                                streamInfo in
                                 streamInfo._id == id
                             }
 
@@ -498,7 +499,7 @@ actor SolarManager: EnergyManager {
                 .map { $0._id }
             : []
     }
-    
+
     private func mapDevice(
         _ sensorInfo: SensorInfosV1Response,
         _ streamInfo: StreamSensorsV1Device?
@@ -509,26 +510,70 @@ actor SolarManager: EnergyManager {
                 stringValue: sensorInfo.type
             ),
             name: sensorInfo.getSensorName(),
-            
+
             priority: sensorInfo.priority,
             currentPowerInWatts: streamInfo?.currentPower ?? 0,
             color: sensorInfo.tag?.color,
             signal: sensorInfo.signal,
             hasError: sensorInfo.hasErrors(),
-            batteryInfo: sensorInfo.isBattery() && sensorInfo.data != nil
-            ? BatteryInfo(
-                favorite: sensorInfo.data!.favorite ?? false,
-                maxDischargePower: sensorInfo.data!.maxDischargePower ?? 1000,
-                maxChargePower: sensorInfo.data!.maxChargePower ?? 1000,
-                batteryCapacityKwh: sensorInfo.data!.batteryCapacity ?? 5
-                // TOOD Add battery charging mode data
-            )
-            : nil
+            batteryInfo: sensorInfo.isBattery()
+                ? mapBatteryInfo(battery: sensorInfo.data)
+                : nil
         )
     }
-    
-    private func mapCars(streamSensorInfos: StreamSensorsV1Response?) -> [Car]
-    {
+
+    private func mapBatteryInfo(battery: SensorInfosV1Data?) -> BatteryInfo? {
+        guard let battery = battery else {
+            return nil
+        }
+
+        return BatteryInfo(
+            favorite: battery.favorite ?? false,
+            maxDischargePower: battery.maxDischargePower
+                ?? 1000,
+            maxChargePower: battery.maxChargePower ?? 1000,
+            batteryCapacityKwh: battery.batteryCapacity ?? 5,
+
+            batteryChargingMode:
+                BatteryChargingMode
+                .from(battery.batteryChargingMode),
+            batteryMode:
+                BatteryMode
+                .from(battery.batteryMode!),
+            batteryManualMode:
+                BatteryManualMode
+                .from(battery.batteryManualMode!),
+            
+            // Manual
+            upperSocLimit: battery.upperSocLimit ?? 95,
+            lowerSocLimit: battery.lowerSocLimit ?? 15,
+            
+            // Eco
+            dischargeSocLimit: battery.dischargeSocLimit ?? 30,
+            chargingSocLimit: battery.chargingSocLimit ?? 100,
+            morningSocLimit: battery.morningSocLimit ?? 80,
+            
+            // Peak shaving
+            peakShavingSocDischargeLimit: battery.peakShavingSocDischargeLimit ?? 10,
+            peakShavingSocMaxLimit: battery.peakShavingSocMaxLimit ?? 40,
+            peakShavingMaxGridPower: battery.peakShavingMaxGridPower ?? 0,
+            peakShavingRechargePower: battery.peakShavingRechargePower ?? 0,
+
+            // Tariff optimized
+            tariffPriceLimitSocMax: battery.tariffPriceLimitSocMax ?? 0,
+            tariffPriceLimitForecast: battery.tariffPriceLimitForecast ?? false,
+            
+            // Standard
+            standardStandaloneAllowed: battery.standardStandaloneAllowed ?? false,
+            standardLowerSocLimit: battery.standardLowerSocLimit ?? 10,
+            standardUpperSocLimit: battery.standardUpperSocLimit ?? 90,
+
+            powerCharge: battery.powerCharge ?? 0,
+            powerDischarge: battery.powerDischarge ?? 0,
+        )
+    }
+
+    private func mapCars(streamSensorInfos: StreamSensorsV1Response?) -> [Car] {
         guard let sensorInfos = sensorInfos else {
             return []
         }

@@ -4,49 +4,97 @@ struct BatteryInfo: Sendable {
     let maxChargePower: Int
     let batteryCapacityKwh: Double
 
-    let batteryChargingMode: BatteryChargingMode = .Active
-    let batteryMode: BatteryMode = .Standard
-    let batteryManualMode: BatteryManualMode? = .Charge
-    let upperSocLimit: Int = 95
-    let lowerSocLimit: Int = 15
-    let dischargeSocLimit: Int = 30
-    let chargingSocLimit: Int = 100
-    let morningSocLimit: Int = 80
-    let peakShavingSocDischargeLimit: Int = 10
-    let peakShavingSocMaxLimit: Int = 40
-    let peakShavingMaxGridPower: Int = 0
-    let peakShavingRechargePower: Int = 0
-    let tariffPriceLimit: Double = 0
-    let tariffPriceLimitSocMax: Int = 0
-    let tariffPriceLimitForecast: Bool = false
-    let standardStandaloneAllowed: Bool = false
-    let standardLowerSocLimit: Int = 10
-    let standardUpperSocLimit: Int = 90
-    let powerCharge: Int = 0
-    let powerDischarge: Int = 0
+    let batteryChargingMode: BatteryChargingMode
+    let batteryMode: BatteryMode
+    let batteryManualMode: BatteryManualMode
+    let upperSocLimit: Int
+    let lowerSocLimit: Int
+    let dischargeSocLimit: Int
+    let chargingSocLimit: Int
+    let morningSocLimit: Int
+    let peakShavingSocDischargeLimit: Int
+    let peakShavingSocMaxLimit: Int
+    let peakShavingMaxGridPower: Int
+    let peakShavingRechargePower: Int
+    let tariffPriceLimitSocMax: Int
+    let tariffPriceLimitForecast: Bool
+    let standardStandaloneAllowed: Bool
+    let standardLowerSocLimit: Int
+    let standardUpperSocLimit: Int
+    let powerCharge: Int
+    let powerDischarge: Int
+}
+
+extension BatteryInfo {
+    
+    static func fake() -> BatteryInfo {
+        return BatteryInfo(
+            favorite: true,
+            maxDischargePower: 7000,
+            maxChargePower: 7000,
+            batteryCapacityKwh: 14,
+            batteryChargingMode: BatteryChargingMode.from(nil),
+            batteryMode: BatteryMode.from(nil),
+            batteryManualMode: BatteryManualMode.from(nil),
+            
+            upperSocLimit: 95,
+            lowerSocLimit: 15,
+
+            dischargeSocLimit: 0,
+            chargingSocLimit: 0,
+            morningSocLimit: 30,
+            
+            peakShavingSocDischargeLimit: 100,
+            peakShavingSocMaxLimit: 80,
+            peakShavingMaxGridPower: 10,
+            peakShavingRechargePower: 40,
+            
+            tariffPriceLimitSocMax: 0,
+            tariffPriceLimitForecast: false,
+
+            standardStandaloneAllowed: false,
+            standardLowerSocLimit: 10,
+            standardUpperSocLimit: 90,
+
+            powerCharge: 10,
+            powerDischarge: 90,
+        )
+    }
 }
 
 // Old V1
-enum BatteryChargingMode {
-    case Passive
-    case Active
-    case Charge
-    case Discharge
-    case Off
+enum BatteryChargingMode: Int {
+    case Passive = 0
+    case Active = 1
+    case Charge = 2
+    case Discharge = 3
+    case Off = 4
+
+    static func from(_ value: Int?) -> BatteryChargingMode {
+        return BatteryChargingMode(rawValue: value ?? 0) ?? .Passive
+    }
 }
 
 // New V2
-enum BatteryMode {
-    case Standard
-    case Eco
-    case PeakShaving
-    case Manual
-    case TariffOptimized
-    case StandardControlled
+enum BatteryMode: Int {
+    case Standard = 0
+    case Eco = 1
+    case PeakShaving = 2
+    case Manual = 3
+    case TariffOptimized = 4
+    case StandardControlled = 5
+    
+    static func from(_ value: Int?) -> BatteryMode {
+        return BatteryMode(rawValue: value ?? 0) ?? .Standard
+    }
 }
 
-enum BatteryManualMode {
-    case Charge
-    case Discharge
-    case Off
+enum BatteryManualMode: Int {
+    case Charge = 0
+    case Discharge = 1
+    case Off = 2
+    
+    static func from(_ value: Int?) -> BatteryManualMode {
+        return BatteryManualMode(rawValue: value ?? 0) ?? .Charge
+    }
 }

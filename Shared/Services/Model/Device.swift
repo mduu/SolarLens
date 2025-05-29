@@ -75,12 +75,7 @@ extension Device {
             name: name,
             priority: 0,
             currentPowerInWatts: currentPowerInWatts,
-            batteryInfo: BatteryInfo(
-                favorite: true,
-                maxDischargePower: 7000,
-                maxChargePower: 7000,
-                batteryCapacityKwh: 14
-            )
+            batteryInfo: BatteryInfo.fake()
         )
     }
 }
