@@ -3,7 +3,7 @@ struct BatteryInfo: Sendable {
     let maxDischargePower: Int
     let maxChargePower: Int
     let batteryCapacityKwh: Double
-    
+
     let batteryChargingMode: BatteryChargingMode = .Active
     let batteryMode: BatteryMode = .Standard
     let batteryManualMode: BatteryManualMode? = .Charge

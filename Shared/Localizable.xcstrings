@@ -450,9 +450,6 @@
         }
       }
     },
-    "Bat. %@" : {
-
-    },
     "Battery" : {
       "localizations" : {
         "da" : {
@@ -1675,6 +1672,9 @@
         }
       }
     },
+    "Eco" : {
+
+    },
     "Efficiency" : {
       "localizations" : {
         "da" : {
@@ -2788,6 +2788,9 @@
         }
       }
     },
+    "Manual" : {
+
+    },
     "Max %@ =" : {
       "localizations" : {
         "da" : {
@@ -3226,6 +3229,9 @@
           }
         }
       }
+    },
+    "Peak shaving" : {
+
     },
     "Peak:" : {
       "localizations" : {
@@ -4822,6 +4828,15 @@
     "Something went wrong..." : {
 
     },
+    "Standalone" : {
+
+    },
+    "Standard" : {
+
+    },
+    "Standard controlled" : {
+
+    },
     "Status:" : {
       "localizations" : {
         "da" : {
@@ -5001,6 +5016,9 @@
           }
         }
       }
+    },
+    "Tariff optimized" : {
+
     },
     "Thank you! 💖" : {
       "localizations" : {

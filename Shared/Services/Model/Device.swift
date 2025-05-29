@@ -33,11 +33,11 @@ class Device: Identifiable {
         self.hasError = hasError
         self.batteryInfo = batteryInfo
     }
-    
+
     func hasPower() -> Bool {
         return currentPowerInWatts > 10 || currentPowerInWatts < -10
     }
-    
+
     func isConsumingDevice() -> Bool {
         return deviceType != .battery
     }
@@ -63,6 +63,26 @@ extension Device {
         }
     }
 
+    static func fakeBattery(
+        id: String = "1234",
+        name: String = "Bat 1",
+        priority: Int = 0,
+        currentPowerInWatts: Int = 4242,
+    ) -> Device {
+        .init(
+            id: "123",
+            deviceType: .battery,
+            name: name,
+            priority: 0,
+            currentPowerInWatts: currentPowerInWatts,
+            batteryInfo: BatteryInfo(
+                favorite: true,
+                maxDischargePower: 7000,
+                maxChargePower: 7000,
+                batteryCapacityKwh: 14
+            )
+        )
+    }
 }
 
 public enum DeviceType {

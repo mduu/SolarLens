@@ -8,14 +8,9 @@ struct BatteryDevicesList: View {
     var body: some View {
         VStack(alignment: .leading) {
             ForEach(batteryDevices) { battery in
-                if batteryDevices.count > 1 {
-                    Text("Bat. \(battery.name)")
-                        .fontWeight(.bold)
-                        .foregroundColor(.purple.opacity(0.9))
-                    BatteryModeView(
-                        battery: battery
-                    )
-                }
+                BatteryView(
+                    battery: battery
+                )
             }
         }
     }
@@ -24,12 +19,12 @@ struct BatteryDevicesList: View {
 #Preview("1 Battery") {
     BatteryDevicesList(
         batteryDevices: [
-            Device(
-                id: "1234",
-                deviceType: .battery,
-                name: "Test 1",
-                priority: 1
-            )
+            Device.fakeBattery(
+                id: "1",
+                name: "Bat 1",
+                priority: 0,
+                currentPowerInWatts: 3600
+            ),
         ]
     )
 }
@@ -37,18 +32,18 @@ struct BatteryDevicesList: View {
 #Preview("2 Batteries") {
     BatteryDevicesList(
         batteryDevices: [
-            Device(
-                id: "1234",
-                deviceType: .battery,
-                name: "Test 1",
-                priority: 1
+            Device.fakeBattery(
+                id: "0",
+                name: "Bat 1",
+                priority: 0,
+                currentPowerInWatts: 3600
             ),
-            Device(
-                id: "222",
-                deviceType: .battery,
-                name: "Test 2",
-                priority: 2
-            )
+            Device.fakeBattery(
+                id: "1",
+                name: "Bat 2",
+                priority: 1,
+                currentPowerInWatts: 1200
+            ),
         ]
     )
 }

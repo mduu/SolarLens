@@ -32,7 +32,8 @@ struct BatteryScreen: View {
 
                                 BatteryIndicator(
                                     percentage: Double(
-                                        model.overviewData.currentBatteryLevel
+                                        model.overviewData
+                                            .currentBatteryLevel
                                             ?? 0
                                     ),
                                     showPercentage: true,
@@ -94,13 +95,12 @@ struct BatteryScreen: View {
                                     .getBatteryForecast()
                             )
 
-                            Divider()
-                                .padding(.vertical)
-
                             BatteryDevicesList(
                                 batteryDevices: model.overviewData.devices
                                     .filter { $0.deviceType == .battery }
                             )
+                            .padding(.top, 8)
+                            .frame(maxWidth: .infinity)
 
                         }  // :VStack
                     }  // :GeometryReader
@@ -139,7 +139,9 @@ struct BatteryScreen: View {
                             signal: SensorConnectionStatus.connected
                         )
                     ],
-                    devices: [],
+                    devices: [
+                        Device.fakeBattery(currentPowerInWatts: 2390)
+                    ],
                     todayAutarchyDegree: 78
                 )
             )
@@ -173,7 +175,9 @@ struct BatteryScreen: View {
                             signal: SensorConnectionStatus.connected
                         )
                     ],
-                    devices: [],
+                    devices: [
+                        Device.fakeBattery(currentPowerInWatts: -2390)
+                    ],
                     todayAutarchyDegree: 78
                 )
             )
