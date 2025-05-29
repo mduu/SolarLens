@@ -6,20 +6,13 @@ struct BatteryScreen: View {
 
     @State var isLoading = false
 
-    private let positionalFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .abbreviated  // e.g., "01:01:05" or "01:05"
-        formatter.allowedUnits = [.hour, .minute]
-        formatter.zeroFormattingBehavior = .pad
-        formatter.collapsesLargestUnit = true  // If hours are 0, it collapses to minutes and seconds
-        return formatter
-    }()
-
     var body: some View {
-        if model.overviewData.currentBatteryLevel != nil || model.overviewData.currentBatteryChargeRate != nil {
-            
+        if model.overviewData.currentBatteryLevel != nil
+            || model.overviewData.currentBatteryChargeRate != nil
+        {
+
             ZStack {
-                
+
                 LinearGradient(
                     gradient: Gradient(colors: [
                         .purple.opacity(0.4), .purple.opacity(0.1),
@@ -28,29 +21,31 @@ struct BatteryScreen: View {
                     endPoint: .bottom
                 )
                 .edgesIgnoringSafeArea(.all)
-                
+
                 ScrollView {
-                    
+
                     GeometryReader { geometry in
-                        
+
                         VStack(alignment: .leading) {
-                            
+
                             if !model.overviewData.isStaleData {
-                                
+
                                 BatteryIndicator(
                                     percentage: Double(
-                                        model.overviewData.currentBatteryLevel ?? 0
+                                        model.overviewData.currentBatteryLevel
+                                            ?? 0
                                     ),
                                     showPercentage: true,
                                     height: 30,
                                     width: geometry.size.width
                                 )
-                                
+
                                 HStack {
                                     let charging =
-                                    model.overviewData.currentBatteryChargeRate
-                                    ?? 0
-                                    
+                                        model.overviewData
+                                        .currentBatteryChargeRate
+                                        ?? 0
+
                                     if charging > 0 {
                                         HStack {
                                             Image(
@@ -58,117 +53,62 @@ struct BatteryScreen: View {
                                                     "arrow.right.circle.fill"
                                             )
                                             .foregroundColor(.green)
-                                            
+
                                             Text(
                                                 "In:"
                                             )
                                             .foregroundColor(.green)
-                                            
+
                                             Text(
                                                 "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
                                             )
                                         }.padding(.top)
                                     } else if charging < 0 {
                                         HStack {
-                                            
+
                                             Image(
-                                                systemName: "arrow.left.circle.fill"
+                                                systemName:
+                                                    "arrow.left.circle.fill"
                                             )
                                             .foregroundColor(.orange)
-                                            
+
                                             Text(
                                                 "Out:"
                                             )
                                             .foregroundColor(.orange)
-                                            
+
                                             Text(
                                                 "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
                                             )
                                         }.padding(.top)
                                     }
                                 }
-                                
+
                             } else {
                                 Text("No current data")
                                     .foregroundStyle(.red)
                             }
-                            
-                            HStack {
-                                Text("Mode:")
-                                Button(action: {
-                                    // Action
-                                }) {
-                                    Text("Standard")
-                                }
-                                .buttonBorderShape(.circle)
-                                .buttonStyle(.bordered)
-                                .controlSize(.mini)
-                            }
-                            .padding(.top)
-                            
-                            let batteryForecast = model.overviewData
-                                .getBatteryForecast()
-                            
-                            if let batteryForecast {
-                                
-                                if batteryForecast.durationUntilDischarged != nil
-                                    && batteryForecast.timeWhenDischarged != nil
-                                {
-                                    Divider()
-                                        .padding()
-                                    
-                                    HStack {
-                                        Image(systemName: "battery.0percent")
-                                            .foregroundColor(.red)
-                                            .rotationEffect(.degrees(-90))
-                                        
-                                        VStack(alignment: .leading) {
-                                            Text(
-                                                "Empty in \(positionalFormatter.string(from: batteryForecast.durationUntilDischarged!) ?? "") at \(batteryForecast.timeWhenDischarged!.formatted(date: .omitted, time: .shortened))"
-                                            )
-                                            .multilineTextAlignment(.leading)
-                                            .lineLimit(2)
-                                            .frame(minHeight: 40)
-                                        }
-                                    }
-                                }
-                                
-                                if batteryForecast.durationUntilFullyCharged != nil
-                                {
-                                    Divider()
-                                        .padding()
-                                    
-                                    HStack {
-                                        Image(systemName: "battery.100percent")
-                                            .foregroundColor(.green)
-                                            .rotationEffect(.degrees(-90))
-                                        
-                                        VStack(alignment: .leading) {
-                                            Text(
-                                                "Full in \(positionalFormatter.string(from: batteryForecast.durationUntilFullyCharged!) ?? "") at \(batteryForecast.timeWhenFullyCharged!.formatted(date: .omitted, time: .shortened))"
-                                            )
-                                            .multilineTextAlignment(.leading)
-                                            .lineLimit(2)
-                                            .frame(minHeight: 40)
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            /*
-                             let batteries = model.overviewData.devices
-                             .filter { $0.deviceType == .battery }
-                             
-                             BatteryDevicesList(batteryDevices: batteries)
-                             */
-                            
+
+                            BatteryForecastView(
+                                batteryForecast: model.overviewData
+                                    .getBatteryForecast()
+                            )
+
+                            Divider()
+                                .padding()
+
+                            BatteryDevicesList(
+                                batteryDevices: model.overviewData.devices
+                                    .filter { $0.deviceType == .battery }
+                            )
+
                         }  // :VStack
                     }  // :GeometryReader
-                    
+
                 }  // :ScrollView
                 .padding(.horizontal)
             }  // :ZStack
-        } // :if
+        }  // :if
     }
 }
 
