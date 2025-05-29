@@ -2,7 +2,7 @@ import SwiftUI
 
 struct BatteryForecastView: View {
     let batteryForecast: BatteryForecast?
-    
+
     private let positionalFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .abbreviated  // e.g., "01:01:05" or "01:05"
@@ -23,22 +23,23 @@ struct BatteryForecastView: View {
                     Image(systemName: "battery.0percent")
                         .foregroundColor(.red)
                         .rotationEffect(.degrees(-90))
+                        .offset(x: -4)
 
-                    VStack(alignment: .leading) {
-                        Text(
-                            "Empty in \(positionalFormatter.string(from: batteryForecast!.durationUntilDischarged!) ?? "") at \(batteryForecast!.timeWhenDischarged!.formatted(date: .omitted, time: .shortened))"
-                        )
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(2)
-                        .frame(minHeight: 40)
-                    }
-                } // :if
+                    Text(
+                        "Empty in \(positionalFormatter.string(from: batteryForecast!.durationUntilDischarged!) ?? "") at \(batteryForecast!.timeWhenDischarged!.formatted(date: .omitted, time: .shortened))"
+                    )
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                    .frame(minHeight: 40)
+                    .padding(.leading, -6)
+                }  // :if
 
                 if batteryForecast!.isCharging {
 
                     Image(systemName: "battery.100percent")
                         .foregroundColor(.green)
                         .rotationEffect(.degrees(-90))
+                        .offset(x: -6)
 
                     Text(
                         "Full in \(positionalFormatter.string(from: batteryForecast!.durationUntilFullyCharged!) ?? "") at \(batteryForecast!.timeWhenFullyCharged!.formatted(date: .omitted, time: .shortened))"
@@ -46,9 +47,12 @@ struct BatteryForecastView: View {
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
                     .frame(minHeight: 40)
+                    .padding(.leading, -10)
+                }  // :if
+                
+                Spacer()
 
-                } // :if
-            } // :HStack
+            }  // :HStack
 
         }
     }

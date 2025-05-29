@@ -16,7 +16,13 @@ struct BatteryModeView: View {
             id: "1234",
             deviceType: .battery,
             name: "Test 1",
-            priority: 1
+            priority: 1,
+            batteryInfo: BatteryInfo(
+                favorite: true,
+                maxDischargePower: 7000,
+                maxChargePower: 7000,
+                batteryCapacityKwh: 11
+            )
         )
     )
 }
