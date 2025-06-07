@@ -599,6 +599,9 @@
     "Battery mode" : {
 
     },
+    "Battery options" : {
+
+    },
     "Batterylevel of my car" : {
       "localizations" : {
         "da" : {
@@ -3236,6 +3239,9 @@
     "Peak shaving" : {
 
     },
+    "Peak Shaving" : {
+
+    },
     "Peak:" : {
       "localizations" : {
         "da" : {
@@ -3910,6 +3916,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impostata"
+          }
+        }
+      }
+    },
+    "Set %@ to %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Set %1$@ to %2$@."
           }
         }
       }
@@ -4835,6 +4851,9 @@
 
     },
     "Standard" : {
+
+    },
+    "Standard controlled" : {
 
     },
     "Status:" : {

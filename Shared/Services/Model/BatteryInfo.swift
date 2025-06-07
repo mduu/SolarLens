@@ -1,3 +1,5 @@
+import Foundation
+
 struct BatteryInfo: Sendable {
     let favorite: Bool
     let maxDischargePower: Int
@@ -86,6 +88,17 @@ enum BatteryMode: Int {
     
     static func from(_ value: Int?) -> BatteryMode {
         return BatteryMode(rawValue: value ?? 0) ?? .StandardControlled
+    }
+    
+    func GetBatteryModeName() -> LocalizedStringResource {
+        switch self {
+        case .Standard: return "Standard"
+        case .Eco: return "Eco"
+        case .PeakShaving: return "Peak Shaving"
+        case .Manual: return "Manual"
+        case .TariffOptimized: return "Tariff optimized"
+        case .StandardControlled: return "Standard controlled"
+        }
     }
 }
 

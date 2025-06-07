@@ -8,57 +8,35 @@ struct BatteryModeSheet: View {
             VStack(alignment: .leading, spacing: 4) {
 
                 if battery.batteryInfo?.batteryMode == .Standard {
-                    ModePanel(
-                        mode: BatteryMode.Standard,
-                        modeName: "Standard",
+                    BatteryModeButton(
+                        battery: battery,
+                        mode: BatteryMode.Standard
                     )
                 }
-                
-                ModePanel(
-                    mode: BatteryMode.StandardControlled,
-                    modeName: "Standard",
+
+                BatteryModeButton(
+                    battery: battery,
+                    mode: BatteryMode.StandardControlled
                 )
 
-                ModePanel(
-                    mode: BatteryMode.Eco,
-                    modeName: "Eco",
+                BatteryModeButton(
+                    battery: battery,
+                    mode: BatteryMode.Eco
                 )
 
-                ModePanel(
-                    mode: BatteryMode.PeakShaving,
-                    modeName: "Peak shaving",
+                BatteryModeButton(
+                    battery: battery,
+                    mode: BatteryMode.PeakShaving
                 )
 
-                ModePanel(
-                    mode: BatteryMode.Manual,
-                    modeName: "Manual",
+                BatteryModeButton(
+                    battery: battery,
+                    mode: BatteryMode.Manual
                 )
             }
         }
     }
 
-    @ViewBuilder
-    func ModePanel(
-        mode: BatteryMode,
-        modeName: LocalizedStringResource,
-    ) -> some View {
-        let isActiveButton = battery.batteryInfo?.batteryMode == mode
-
-        Button(action: {
-            // Action
-        }) {
-            HStack(alignment: .top) {
-                Text(modeName)
-                    .font(.headline)
-                    .lineLimit(2)
-            }
-        }
-        .buttonStyle(.borderedProminent)
-        .frame(maxWidth: .infinity)
-        .tint(
-            isActiveButton ? .purple.opacity(0.4) : .white.opacity(0.3)
-        )
-    }
 }
 
 #Preview {

@@ -53,6 +53,7 @@ struct BatteryView: View {
                 Spacer()
             }
         }
+        .tint(.purple)
         .sheet(isPresented: $showModeSheet) {
             BatteryModeSheet(battery: battery)
                 .toolbar {
