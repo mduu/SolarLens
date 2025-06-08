@@ -12,9 +12,9 @@ struct ModeEcoOptions: View {
 
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
-    @State var minPercentage: Int = 5
-    @State var morningPercentage: Int = 80
-    @State var maxPercentage: Int = 100
+    @Binding var minPercentage: Int
+    @Binding var morningPercentage: Int
+    @Binding var maxPercentage: Int
 
     var body: some View {
         Grid(

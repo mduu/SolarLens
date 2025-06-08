@@ -6,12 +6,19 @@ struct BatteryModeOptionsSheet: View {
     var battery: Device
     var targetMode: BatteryMode
 
+    // Eco
+    @State var ecoMin: Int = 0
+    @State var ecoMorning: Int = 0
+    @State var ecoMax: Int = 0
+
     var body: some View {
         ScrollView {
 
             VStack(alignment: .leading) {
                 Button(action: {
-                    // Action
+                    Task {
+                        await setTargetMode()
+                    }
                 }) {
                     Text(
                         "Set '\(battery.name)' to '\(targetMode.GetBatteryModeName())'."
@@ -29,7 +36,12 @@ struct BatteryModeOptionsSheet: View {
                     Text("To implement")
 
                 case .Eco:
-                    ModeEcoOptions(battery: battery)
+                    ModeEcoOptions(
+                        battery: battery,
+                        minPercentage: $ecoMin,
+                        morningPercentage: $ecoMorning,
+                        maxPercentage: $ecoMax
+                    )
 
                 case .PeakShaving:
                     Text("To implement")
@@ -60,6 +72,28 @@ struct BatteryModeOptionsSheet: View {
             }  // :.toolbar
 
         }  // :ScrollView
+        .onAppear {
+            if let batteryInfo = battery.batteryInfo {
+                
+                // Load existing Eco mode configuration
+                ecoMin = batteryInfo.lowerSocLimit
+                ecoMorning = batteryInfo.morningSocLimit
+                ecoMax = batteryInfo.upperSocLimit
+            }
+        }
+    }
+
+    func setTargetMode() async {
+        print("Setting battery mode to \(targetMode) ...")
+
+        switch targetMode {
+        case .Eco:
+            print("Setting eco mode ...")
+            
+
+        default:
+            print("Unsupported mode")
+        }
     }
 }
 
