@@ -33,6 +33,11 @@ struct BatteryModeSheet: View {
                     battery: battery,
                     mode: BatteryMode.Manual
                 )
+
+                BatteryModeButton(
+                    battery: battery,
+                    mode: BatteryMode.TariffOptimized
+                )
             }
         }
     }

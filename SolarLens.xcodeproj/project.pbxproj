@@ -106,6 +106,11 @@
 		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Features/Battery/BatteryForecastView.swift,
+				Features/Battery/BatteryModeButton.swift,
+				Features/Battery/BatteryModeOptionsSheet.swift,
+				Features/Battery/BatteryModeSheet.swift,
+				Features/Battery/ModeOptions/ModeEcoOptions.swift,
 				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Features/Solar/SolarTodayInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
@@ -282,6 +287,11 @@
 				AppShortcuts.xcstrings,
 				Components/UpdateTimeStampView.swift,
 				Extensions/ColorExtensions.swift,
+				Features/Battery/BatteryForecastView.swift,
+				Features/Battery/BatteryModeButton.swift,
+				Features/Battery/BatteryModeOptionsSheet.swift,
+				Features/Battery/BatteryModeSheet.swift,
+				Features/Battery/ModeOptions/ModeEcoOptions.swift,
 				Features/Consumption/Charging/ChargingButtonView.swift,
 				Features/Consumption/Charging/ChargingModeConfiguration.swift,
 				Features/Consumption/Charging/ChargingModeLabelView.swift,
@@ -743,7 +753,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.6.0;
-				APP_VERSION_BUILDNO = 221;
+				APP_VERSION_BUILDNO = 222;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -817,7 +827,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.6.0;
-				APP_VERSION_BUILDNO = 221;
+				APP_VERSION_BUILDNO = 222;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

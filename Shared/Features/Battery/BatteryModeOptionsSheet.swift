@@ -1,15 +1,40 @@
-// 
+//
 
 import SwiftUI
 
 struct BatteryModeOptionsSheet: View {
     var battery: Device
     var targetMode: BatteryMode
-    
+
     var body: some View {
-        VStack {
-            Text("Set \(battery.name) to \(targetMode.GetBatteryModeName()).")
+        VStack(alignment: .leading) {
+            Text(
+                "Set '\(battery.name)' to '\(targetMode.GetBatteryModeName())'."
+            )
+
+            switch targetMode {
+            case .Standard:
+                Text("To implement")
+                
+            case .Eco:
+                ModeEcoOptions(battery: battery)
+                
+            case .PeakShaving:
+                Text("To implement")
+
+            case .TariffOptimized:
+                Text("To implement")
+                
+            case .Manual:
+                Text("To implement")
+                
+            case .StandardControlled:
+                Text("To implement")
+            }
+
+            Spacer()
         }
+        .frame(maxWidth: .infinity)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack {

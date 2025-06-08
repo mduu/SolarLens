@@ -2825,6 +2825,12 @@
         }
       }
     },
+    "Max.:" : {
+
+    },
+    "Min.:" : {
+
+    },
     "Minimal" : {
       "localizations" : {
         "da" : {
@@ -2948,6 +2954,9 @@
           }
         }
       }
+    },
+    "Morning.:" : {
+
     },
     "Name:" : {
       "localizations" : {
@@ -3920,12 +3929,12 @@
         }
       }
     },
-    "Set %@ to %@." : {
+    "Set '%@' to '%@'." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Set %1$@ to %2$@."
+            "value" : "Set '%1$@' to '%2$@'."
           }
         }
       }
@@ -5423,6 +5432,9 @@
           }
         }
       }
+    },
+    "To implement" : {
+
     },
     "today" : {
       "localizations" : {
