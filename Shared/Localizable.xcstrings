@@ -602,6 +602,9 @@
     "Battery options" : {
 
     },
+    "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {
+
+    },
     "Batterylevel of my car" : {
       "localizations" : {
         "da" : {
@@ -2335,6 +2338,9 @@
     "In:" : {
 
     },
+    "Info:" : {
+
+    },
     "Information about our site efficiency" : {
       "localizations" : {
         "da" : {
@@ -2955,7 +2961,7 @@
         }
       }
     },
-    "Morning.:" : {
+    "Morning:" : {
 
     },
     "Name:" : {

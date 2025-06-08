@@ -12,128 +12,59 @@ struct ModeEcoOptions: View {
 
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
-    @State var minPercentage: Double = 5
-    @State var morningPercentage: Double = 80
-    @State var maxPercentage: Double = 100
-
-    @FocusState private var focusedField: PercentageField?
+    @State var minPercentage: Int = 5
+    @State var morningPercentage: Int = 80
+    @State var maxPercentage: Int = 100
 
     var body: some View {
-        VStack(spacing: 10) {
-            HStack {
+        Grid(
+            alignment: .leadingFirstTextBaseline,
+            verticalSpacing: 3
+        ) {
+
+            GridRow {
                 Text("Min.:")
                 Spacer()
-                Text("\(Int(minPercentage)) %")
-                    .padding(2)
-                    .foregroundColor(.purple)
-                    .fontWeight(.bold)
-                    .focusable()
-                    .scaleEffect(
-                        focusedField == .minPercentage ? 1.1 : 1.0
-                    )  // Subtle scaling on focus
-                    .animation(
-                        .easeInOut(duration: 0.2),
-                        value: focusedField == .minPercentage
-                    )  // Animate the scale
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(
-                                focusedField == .minPercentage
-                                ? Color.purple : Color.clear,
-                                lineWidth: 1
-                            )  // Border on focus
-                    )
-                    .onTapGesture {
-                        focusedField = .minPercentage
-                    }
-                    .digitalCrownRotation(
-                        $minPercentage,
-                        from: 5,
-                        through: 100,
-                        by: 5.0,
-                        sensitivity: .low,
-                        isHapticFeedbackEnabled: true
-                    )
-                    .focused($focusedField, equals: .minPercentage)
+                PercentagePicker(
+                    value: $minPercentage,
+                    tintColor: .purple
+                )
             }
 
-            HStack {
-                Text("Morning.:")
+            GridRow {
+                Text("Morning:")
                 Spacer()
-                Text("\(Int(morningPercentage)) %")
-                    .padding(2)
-                    .foregroundColor(.purple)
-                    .fontWeight(.bold)
-                    .scaleEffect(
-                        focusedField == .morningPercentage ? 1.1 : 1.0
-                    )  // Subtle scaling on focus
-                    .animation(
-                        .easeInOut(duration: 0.2),
-                        value: focusedField == .morningPercentage
-                    )  // Animate the scale
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(
-                                focusedField == .morningPercentage
-                                ? Color.purple : Color.clear,
-                                lineWidth: 1
-                            )  // Border on focus
-                    )
-                    .onTapGesture {
-                        focusedField = .morningPercentage
-                    }
-                    .focusable()
-                    .digitalCrownRotation(
-                        $morningPercentage,
-                        from: 5,
-                        through: 100,
-                        by: 5.0,
-                        sensitivity: .low,
-                        isHapticFeedbackEnabled: true
-                    )
-                    .focused($focusedField, equals: .morningPercentage)
+                PercentagePicker(
+                    value: $morningPercentage,
+                    tintColor: .purple
+                )
             }
 
-            HStack {
+            GridRow {
                 Text("Max.:")
                 Spacer()
-                Text("\(Int(maxPercentage)) %")
-                    .padding(2)
-                    .foregroundColor(.purple)
-                    .fontWeight(.bold)
-                    .scaleEffect(
-                        focusedField == .maxPercentage ? 1.1 : 1.0
-                    )  // Subtle scaling on focus
-                    .animation(
-                        .easeInOut(duration: 0.2),
-                        value: focusedField == .maxPercentage
-                    )  // Animate the scale
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(
-                                focusedField == .maxPercentage
-                                ? Color.purple : Color.clear,
-                                lineWidth: 1
-                            )  // Border on focus
-                    )
-                    .onTapGesture {
-                        focusedField = .maxPercentage
-                    }
-                
-                    .focusable()
-                    .digitalCrownRotation(
-                        $maxPercentage,
-                        from: 5,
-                        through: 100,
-                        by: 5.0,
-                        sensitivity: .low,
-                        isHapticFeedbackEnabled: true
-                    )
-                    .focused($focusedField, equals: .maxPercentage)
+                PercentagePicker(
+                    value: $maxPercentage,
+                    tintColor: .purple
+                )
             }
+        }  // :Grid
 
-            Spacer()
+        VStack(alignment: .leading) {
+            Text("Info:")
+                .font(.footnote)
+                .fontWeight(.bold)
+                .foregroundColor(.purple)
+
+            Text(
+                "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing."
+            )
+            .font(.footnote)
+
         }
+
+        Spacer()
+
     }
 }
 
