@@ -8,49 +8,44 @@ struct BatteryModeOptionsSheet: View {
 
     var body: some View {
         ScrollView {
-            
+
             VStack(alignment: .leading) {
                 Button(action: {
                     // Action
                 }) {
-                    Spacer()
-
                     Text(
                         "Set '\(battery.name)' to '\(targetMode.GetBatteryModeName())'."
                     )
-                    
-                    Spacer()
                 }
                 .buttonBorderShape(.circle)
                 .buttonStyle(.borderedProminent)
-                .frame(maxWidth: .infinity)
                 .background(Material.thick)
                 .tint(.purple.opacity(0.6))
                 .frame(maxWidth: .infinity)
                 .padding(.bottom, 3)
-                
+
                 switch targetMode {
                 case .Standard:
                     Text("To implement")
-                    
+
                 case .Eco:
                     ModeEcoOptions(battery: battery)
-                    
+
                 case .PeakShaving:
                     Text("To implement")
-                    
+
                 case .TariffOptimized:
                     Text("To implement")
-                    
+
                 case .Manual:
                     Text("To implement")
-                    
+
                 case .StandardControlled:
                     Text("To implement")
                 }
-                
+
                 Spacer()
-            } // :VStack
+            }  // :VStack
             .padding()
             .ignoresSafeArea(.all, edges: .bottom)
             .frame(maxWidth: .infinity)
@@ -63,8 +58,8 @@ struct BatteryModeOptionsSheet: View {
                     }
                 }  // :ToolbarItem
             }  // :.toolbar
-            
-        } // :ScrollView
+
+        }  // :ScrollView
     }
 }
 
