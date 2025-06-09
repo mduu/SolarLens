@@ -373,13 +373,33 @@ actor SolarManager: EnergyManager {
     }
 
     func setBatteryMode(
-        sensorId: String
+        sensorId: String,
+        batteryModeInfo: BatteryModeInfo
     ) async throws -> Bool {
         try await ensureLoggedIn()
         try await ensureSmId()
         try await ensureSensorInfosAreCurrent()
 
-        let controlBody = ControlBatteryV2Request()
+        let controlBody = ControlBatteryV2Request(
+            batteryMode: batteryModeInfo.batteryMode.rawValue,
+            batteryManualMode: batteryModeInfo.batteryManualMode.rawValue,
+            upperSocLimit: batteryModeInfo.upperSocLimit,
+            lowerSocLimit: batteryModeInfo.lowerSocLimit,
+            powerCharge: batteryModeInfo.powerCharge,
+            powerDischarge: batteryModeInfo.powerDischarge,
+            dischargeSocLimit: batteryModeInfo.dischargeSocLimit,
+            chargingSocLimit: batteryModeInfo.chargingSocLimit,
+            peakShavingSocDischargeLimit: batteryModeInfo.peakShavingSocDischargeLimit,
+            peakShavingSocMaxLimit: batteryModeInfo.peakShavingSocMaxLimit,
+            peakShavingMaxGridPower: batteryModeInfo.peakShavingMaxGridPower,
+            peakShavingRechargePower: batteryModeInfo.peakShavingRechargePower,
+            tariffPriceLimit: batteryModeInfo.tariffPriceLimit,
+            tariffPriceLimitSocMax: batteryModeInfo.tariffPriceLimitSocMax,
+            tariffPriceLimitForecast: batteryModeInfo.tariffPriceLimitForecast,
+            standardStandaloneAllowed: batteryModeInfo.standardStandaloneAllowed,
+            standardLowerSocLimit: batteryModeInfo.standardLowerSocLimit,
+            standardUpperSocLimit: batteryModeInfo.standardUpperSocLimit,
+        )
 
         do {
             try await solarManagerApi.putControlBattery(
@@ -584,6 +604,7 @@ actor SolarManager: EnergyManager {
 
                 // Tariff optimized
                 tariffPriceLimitSocMax: battery.tariffPriceLimitSocMax ?? 0,
+                tariffPriceLimit: battery.tariffPriceLimit ?? 0,
                 tariffPriceLimitForecast: battery.tariffPriceLimitForecast
                     ?? false,
 

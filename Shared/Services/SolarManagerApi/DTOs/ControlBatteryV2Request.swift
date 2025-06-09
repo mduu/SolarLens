@@ -1,4 +1,4 @@
-struct ControlBatteryChargingV2Request: Codable {
+struct ControlBatteryV2Request: Codable {
 
     /// minimum: 0, maximum: 5
     var batteryMode: Int

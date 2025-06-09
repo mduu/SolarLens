@@ -4,7 +4,7 @@ import SwiftUI
 
 struct BatteryView: View {
     let battery: Device
-    
+
     @State var showModeSheet: Bool = false
 
     var body: some View {
@@ -65,9 +65,9 @@ struct BatteryView: View {
                 }  // :.toolbar
         }
     }
-    
+
     func getBatteryModeText() -> LocalizedStringResource {
-        switch battery.batteryInfo?.batteryMode {
+        switch battery.batteryInfo?.modeInfo.batteryMode {
         case .Standard:
             "Standard"
         case .Eco:
@@ -79,7 +79,7 @@ struct BatteryView: View {
         case .TariffOptimized:
             "Tariff optimized"
         case .StandardControlled:
-            battery.batteryInfo?.standardStandaloneAllowed ?? false
+            battery.batteryInfo?.modeInfo.standardStandaloneAllowed ?? false
                 ? "Standalone"
                 : "Standard"
         case nil:

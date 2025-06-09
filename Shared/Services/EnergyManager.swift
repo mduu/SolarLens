@@ -24,4 +24,9 @@ protocol EnergyManager {
     func setSensorPriority(
         sensorId: String, priority: Int
     ) async throws -> Bool
+    
+    func setBatteryMode(
+        sensorId: String,
+        batteryModeInfo: BatteryModeInfo
+    ) async throws -> Bool
 }

@@ -87,5 +87,16 @@ class FakeEnergyManager: EnergyManager {
         print("setSensorPriority: Sensor=\(sensorId), New Prio=\(priority)")
         return true
     }
+    
+    func setBatteryMode(
+        sensorId: String,
+        batteryModeInfo: BatteryModeInfo
+    ) async throws -> Bool {
+        print(
+            "setBatteryMode: Sensor=\(sensorId), New Mode=\(batteryModeInfo.batteryChargingMode)"
+        )
+        
+        return true
+    }
 
 }

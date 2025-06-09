@@ -83,6 +83,7 @@ struct SensorInfosV1Data: Codable {
     var peakShavingMaxGridPower: Int?
     var peakShavingRechargePower: Int?
     var tariffPriceLimitSocMax: Int?
+    var tariffPriceLimit: Double?
     var tariffPriceLimitForecast: Bool?
     var standardStandaloneAllowed: Bool?
     var standardLowerSocLimit: Int?

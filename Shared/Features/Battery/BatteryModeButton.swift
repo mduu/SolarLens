@@ -7,7 +7,7 @@ struct BatteryModeButton: View {
     @State var showBatteryModeOptions = false
 
     var body: some View {
-        let isActiveButton = battery.batteryInfo?.batteryMode == mode
+        let isActiveButton = battery.batteryInfo?.modeInfo.batteryMode == mode
         let modeName = mode.GetBatteryModeName()
 
         Button(action: {

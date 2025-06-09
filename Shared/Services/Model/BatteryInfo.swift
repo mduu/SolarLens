@@ -23,6 +23,7 @@ struct BatteryModeInfo: Sendable {
     let peakShavingMaxGridPower: Int
     let peakShavingRechargePower: Int
     let tariffPriceLimitSocMax: Int
+    let tariffPriceLimit: Double
     let tariffPriceLimitForecast: Bool
     let standardStandaloneAllowed: Bool
     let standardLowerSocLimit: Int
@@ -114,6 +115,7 @@ extension BatteryModeInfo {
             peakShavingRechargePower: 40,
 
             tariffPriceLimitSocMax: 0,
+            tariffPriceLimit: 0.23,
             tariffPriceLimitForecast: false,
 
             standardStandaloneAllowed: false,

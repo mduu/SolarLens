@@ -185,7 +185,7 @@ class SolarManagerApi: RestClient {
         return
     }
     
-    func putControlBattery(sensorId: String, control: ControlBatteryChargingV2Request)
+    func putControlBattery(sensorId: String, control: ControlBatteryV2Request)
     async throws
     {
         var _: NoContentResponse? = try await put(

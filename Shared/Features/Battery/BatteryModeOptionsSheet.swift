@@ -5,6 +5,9 @@ import SwiftUI
 struct BatteryModeOptionsSheet: View {
     var battery: Device
     var targetMode: BatteryMode
+    
+    @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
+    @Environment(\.dismiss) var dismiss
 
     // Eco
     @State var ecoMin: Int = 0
@@ -76,9 +79,9 @@ struct BatteryModeOptionsSheet: View {
             if let batteryInfo = battery.batteryInfo {
                 
                 // Load existing Eco mode configuration
-                ecoMin = batteryInfo.lowerSocLimit
-                ecoMorning = batteryInfo.morningSocLimit
-                ecoMax = batteryInfo.upperSocLimit
+                ecoMin = batteryInfo.modeInfo.lowerSocLimit
+                ecoMorning = batteryInfo.modeInfo.morningSocLimit
+                ecoMax = batteryInfo.modeInfo.upperSocLimit
             }
         }
     }

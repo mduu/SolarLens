@@ -217,6 +217,7 @@
 				Services/SolarManager.swift,
 				Services/SolarManagerApi/DTOs/Accuracy.swift,
 				Services/SolarManagerApi/DTOs/ChargingMode.swift,
+				Services/SolarManagerApi/DTOs/ControlBatteryV2Request.swift,
 				Services/SolarManagerApi/DTOs/ControlCarChargingRequest.swift,
 				Services/SolarManagerApi/DTOs/ForecastItemV1Response.swift,
 				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
@@ -753,7 +754,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.7.0;
-				APP_VERSION_BUILDNO = 224;
+				APP_VERSION_BUILDNO = 225;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -827,7 +828,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.7.0;
-				APP_VERSION_BUILDNO = 224;
+				APP_VERSION_BUILDNO = 225;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

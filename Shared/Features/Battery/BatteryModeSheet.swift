@@ -7,7 +7,7 @@ struct BatteryModeSheet: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 4) {
 
-                if battery.batteryInfo?.batteryMode == .Standard {
+                if battery.batteryInfo?.modeInfo.batteryMode == .Standard {
                     BatteryModeButton(
                         battery: battery,
                         mode: BatteryMode.Standard
