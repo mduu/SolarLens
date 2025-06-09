@@ -6,6 +6,10 @@ struct BatteryInfo: Sendable {
     let maxChargePower: Int
     let batteryCapacityKwh: Double
 
+    let modeInfo: BatteryModeInfo
+}
+
+struct BatteryModeInfo: Sendable {
     let batteryChargingMode: BatteryChargingMode
     let batteryMode: BatteryMode
     let batteryManualMode: BatteryManualMode
@@ -25,43 +29,6 @@ struct BatteryInfo: Sendable {
     let standardUpperSocLimit: Int
     let powerCharge: Int
     let powerDischarge: Int
-}
-
-extension BatteryInfo {
-    
-    static func fake() -> BatteryInfo {
-        return BatteryInfo(
-            favorite: true,
-            maxDischargePower: 7000,
-            maxChargePower: 7000,
-            batteryCapacityKwh: 14,
-            batteryChargingMode: BatteryChargingMode.from(nil),
-            batteryMode: BatteryMode.from(nil),
-            batteryManualMode: BatteryManualMode.from(nil),
-            
-            upperSocLimit: 95,
-            lowerSocLimit: 15,
-
-            dischargeSocLimit: 0,
-            chargingSocLimit: 0,
-            morningSocLimit: 30,
-            
-            peakShavingSocDischargeLimit: 100,
-            peakShavingSocMaxLimit: 80,
-            peakShavingMaxGridPower: 10,
-            peakShavingRechargePower: 40,
-            
-            tariffPriceLimitSocMax: 0,
-            tariffPriceLimitForecast: false,
-
-            standardStandaloneAllowed: false,
-            standardLowerSocLimit: 10,
-            standardUpperSocLimit: 90,
-
-            powerCharge: 10,
-            powerDischarge: 90,
-        )
-    }
 }
 
 // Old V1
@@ -85,11 +52,11 @@ enum BatteryMode: Int {
     case Manual = 3
     case TariffOptimized = 4
     case StandardControlled = 5
-    
+
     static func from(_ value: Int?) -> BatteryMode {
         return BatteryMode(rawValue: value ?? 0) ?? .StandardControlled
     }
-    
+
     func GetBatteryModeName() -> LocalizedStringResource {
         switch self {
         case .Standard: return "Standard"
@@ -106,8 +73,56 @@ enum BatteryManualMode: Int {
     case Charge = 0
     case Discharge = 1
     case Off = 2
-    
+
     static func from(_ value: Int?) -> BatteryManualMode {
         return BatteryManualMode(rawValue: value ?? 0) ?? .Charge
+    }
+}
+
+extension BatteryInfo {
+
+    static func fake() -> BatteryInfo {
+        return BatteryInfo(
+            favorite: true,
+            maxDischargePower: 7000,
+            maxChargePower: 7000,
+            batteryCapacityKwh: 14,
+            modeInfo: BatteryModeInfo.fake()
+        )
+    }
+
+}
+
+extension BatteryModeInfo {
+
+    static func fake() -> BatteryModeInfo {
+        return BatteryModeInfo(
+            batteryChargingMode: BatteryChargingMode.from(nil),
+            batteryMode: BatteryMode.from(nil),
+            batteryManualMode: BatteryManualMode.from(nil),
+
+            upperSocLimit: 95,
+            lowerSocLimit: 15,
+
+            dischargeSocLimit: 0,
+            chargingSocLimit: 0,
+            morningSocLimit: 30,
+
+            peakShavingSocDischargeLimit: 100,
+            peakShavingSocMaxLimit: 80,
+            peakShavingMaxGridPower: 10,
+            peakShavingRechargePower: 40,
+
+            tariffPriceLimitSocMax: 0,
+            tariffPriceLimitForecast: false,
+
+            standardStandaloneAllowed: false,
+            standardLowerSocLimit: 10,
+            standardUpperSocLimit: 90,
+
+            powerCharge: 10,
+            powerDischarge: 90,
+        )
+
     }
 }

@@ -372,6 +372,27 @@ actor SolarManager: EnergyManager {
         }
     }
 
+    func setBatteryMode(
+        sensorId: String
+    ) async throws -> Bool {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        let controlBody = ControlBatteryV2Request()
+
+        do {
+            try await solarManagerApi.putControlBattery(
+                sensorId: sensorId,
+                control: controlBody
+            )
+
+            return true
+        } catch {
+            return false
+        }
+    }
+
     private func ensureLoggedIn() async throws {
         let accessToken = KeychainHelper.accessToken
         let refreshToken = KeychainHelper.refreshToken
@@ -533,43 +554,48 @@ actor SolarManager: EnergyManager {
                 ?? 1000,
             maxChargePower: battery.maxChargePower ?? 1000,
             batteryCapacityKwh: battery.batteryCapacity ?? 5,
+            modeInfo: BatteryModeInfo(
+                batteryChargingMode:
+                    BatteryChargingMode
+                    .from(battery.batteryChargingMode),
+                batteryMode:
+                    BatteryMode
+                    .from(battery.batteryMode!),
+                batteryManualMode:
+                    BatteryManualMode
+                    .from(battery.batteryManualMode!),
 
-            batteryChargingMode:
-                BatteryChargingMode
-                .from(battery.batteryChargingMode),
-            batteryMode:
-                BatteryMode
-                .from(battery.batteryMode!),
-            batteryManualMode:
-                BatteryManualMode
-                .from(battery.batteryManualMode!),
-            
-            // Manual
-            upperSocLimit: battery.upperSocLimit ?? 95,
-            lowerSocLimit: battery.lowerSocLimit ?? 15,
-            
-            // Eco
-            dischargeSocLimit: battery.dischargeSocLimit ?? 30,
-            chargingSocLimit: battery.chargingSocLimit ?? 100,
-            morningSocLimit: battery.morningSocLimit ?? 80,
-            
-            // Peak shaving
-            peakShavingSocDischargeLimit: battery.peakShavingSocDischargeLimit ?? 10,
-            peakShavingSocMaxLimit: battery.peakShavingSocMaxLimit ?? 40,
-            peakShavingMaxGridPower: battery.peakShavingMaxGridPower ?? 0,
-            peakShavingRechargePower: battery.peakShavingRechargePower ?? 0,
+                // Manual
+                upperSocLimit: battery.upperSocLimit ?? 95,
+                lowerSocLimit: battery.lowerSocLimit ?? 15,
 
-            // Tariff optimized
-            tariffPriceLimitSocMax: battery.tariffPriceLimitSocMax ?? 0,
-            tariffPriceLimitForecast: battery.tariffPriceLimitForecast ?? false,
-            
-            // Standard
-            standardStandaloneAllowed: battery.standardStandaloneAllowed ?? false,
-            standardLowerSocLimit: battery.standardLowerSocLimit ?? 10,
-            standardUpperSocLimit: battery.standardUpperSocLimit ?? 90,
+                // Eco
+                dischargeSocLimit: battery.dischargeSocLimit ?? 30,
+                chargingSocLimit: battery.chargingSocLimit ?? 100,
+                morningSocLimit: battery.morningSocLimit ?? 80,
 
-            powerCharge: battery.powerCharge ?? 0,
-            powerDischarge: battery.powerDischarge ?? 0,
+                // Peak shaving
+                peakShavingSocDischargeLimit: battery
+                    .peakShavingSocDischargeLimit
+                    ?? 10,
+                peakShavingSocMaxLimit: battery.peakShavingSocMaxLimit ?? 40,
+                peakShavingMaxGridPower: battery.peakShavingMaxGridPower ?? 0,
+                peakShavingRechargePower: battery.peakShavingRechargePower ?? 0,
+
+                // Tariff optimized
+                tariffPriceLimitSocMax: battery.tariffPriceLimitSocMax ?? 0,
+                tariffPriceLimitForecast: battery.tariffPriceLimitForecast
+                    ?? false,
+
+                // Standard
+                standardStandaloneAllowed: battery.standardStandaloneAllowed
+                    ?? false,
+                standardLowerSocLimit: battery.standardLowerSocLimit ?? 10,
+                standardUpperSocLimit: battery.standardUpperSocLimit ?? 90,
+
+                powerCharge: battery.powerCharge ?? 0,
+                powerDischarge: battery.powerDischarge ?? 0
+            )
         )
     }
 

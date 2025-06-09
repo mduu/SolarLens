@@ -70,7 +70,10 @@ struct ModeEcoOptions: View {
 
 #Preview {
     ModeEcoOptions(
-        battery: .fakeBattery()
+        battery: .fakeBattery(),
+        minPercentage: .constant(5),
+        morningPercentage: .constant(80),
+        maxPercentage: .constant(100)
     )
     .environment(
         CurrentBuildingState.fake(

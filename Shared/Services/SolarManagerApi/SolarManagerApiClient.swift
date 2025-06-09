@@ -184,6 +184,16 @@ class SolarManagerApi: RestClient {
 
         return
     }
+    
+    func putControlBattery(sensorId: String, control: ControlBatteryChargingV2Request)
+    async throws
+    {
+        var _: NoContentResponse? = try await put(
+            serviceUrl: "/v2/control/battery/\(sensorId)",
+            requestBody: control)
+        
+        return
+    }
 
     private func storeLogin(accessToken: String, refreshToken: String) {
         KeychainHelper.accessToken = accessToken
