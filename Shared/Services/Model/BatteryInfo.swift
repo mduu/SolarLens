@@ -30,6 +30,63 @@ struct BatteryModeInfo: Sendable {
     let standardUpperSocLimit: Int
     let powerCharge: Int
     let powerDischarge: Int
+
+    func createClone(
+        batteryChargingMode: BatteryChargingMode? = nil,
+        batteryMode: BatteryMode? = nil,
+        batteryManualMode: BatteryManualMode? = nil,
+        upperSocLimit: Int? = nil,
+        lowerSocLimit: Int? = nil,
+        dischargeSocLimit: Int? = nil,
+        chargingSocLimit: Int? = nil,
+        morningSocLimit: Int? = nil,
+        peakShavingSocDischargeLimit: Int? = nil,
+        peakShavingSocMaxLimit: Int? = nil,
+        peakShavingMaxGridPower: Int? = nil,
+        peakShavingRechargePower: Int? = nil,
+        tariffPriceLimitSocMax: Int? = nil,
+        tariffPriceLimit: Double? = nil,
+        tariffPriceLimitForecast: Bool? = nil,
+        standardStandaloneAllowed: Bool? = nil,
+        standardLowerSocLimit: Int? = nil,
+        standardUpperSocLimit: Int? = nil,
+        powerCharge: Int? = nil,
+        powerDischarge: Int? = nil
+    ) -> BatteryModeInfo {
+
+        return BatteryModeInfo(
+            batteryChargingMode: batteryChargingMode
+                ?? self.batteryChargingMode,
+            batteryMode: batteryMode ?? self.batteryMode,
+            batteryManualMode: batteryManualMode ?? self.batteryManualMode,
+            upperSocLimit: upperSocLimit ?? self.upperSocLimit,
+            lowerSocLimit: lowerSocLimit ?? self.lowerSocLimit,
+            dischargeSocLimit: dischargeSocLimit ?? self.dischargeSocLimit,
+            chargingSocLimit: chargingSocLimit ?? self.chargingSocLimit,
+            morningSocLimit: morningSocLimit ?? self.morningSocLimit,
+            peakShavingSocDischargeLimit: peakShavingSocDischargeLimit
+                ?? self.peakShavingSocDischargeLimit,
+            peakShavingSocMaxLimit: peakShavingSocMaxLimit
+                ?? self.peakShavingSocMaxLimit,
+            peakShavingMaxGridPower: peakShavingMaxGridPower
+                ?? self.peakShavingMaxGridPower,
+            peakShavingRechargePower: peakShavingRechargePower
+                ?? self.peakShavingRechargePower,
+            tariffPriceLimitSocMax: tariffPriceLimitSocMax
+                ?? self.tariffPriceLimitSocMax,
+            tariffPriceLimit: tariffPriceLimit ?? self.tariffPriceLimit,
+            tariffPriceLimitForecast: tariffPriceLimitForecast
+                ?? self.tariffPriceLimitForecast,
+            standardStandaloneAllowed: standardStandaloneAllowed
+                ?? self.standardStandaloneAllowed,
+            standardLowerSocLimit: standardLowerSocLimit
+                ?? self.standardLowerSocLimit,
+            standardUpperSocLimit: standardUpperSocLimit
+                ?? self.standardUpperSocLimit,
+            powerCharge: powerCharge ?? self.powerCharge,
+            powerDischarge: powerDischarge ?? self.powerDischarge
+        )
+    }
 }
 
 // Old V1
@@ -65,7 +122,7 @@ enum BatteryMode: Int {
         case .PeakShaving: return "Peak Shaving"
         case .Manual: return "Manual"
         case .TariffOptimized: return "Tariff optimized"
-        case .StandardControlled: return "Standard controlled"
+        case .StandardControlled: return "Standard"
         }
     }
 }

@@ -5,9 +5,11 @@ import SwiftUI
 struct BatteryModeOptionsSheet: View {
     var battery: Device
     var targetMode: BatteryMode
-    
+
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
     @Environment(\.dismiss) var dismiss
+
+    @State var hasError: Bool = false
 
     // Eco
     @State var ecoMin: Int = 0
@@ -15,87 +17,136 @@ struct BatteryModeOptionsSheet: View {
     @State var ecoMax: Int = 0
 
     var body: some View {
-        ScrollView {
-
-            VStack(alignment: .leading) {
-                Button(action: {
-                    Task {
-                        await setTargetMode()
-                    }
-                }) {
-                    Text(
-                        "Set '\(battery.name)' to '\(targetMode.GetBatteryModeName())'."
-                    )
-                }
-                .buttonBorderShape(.circle)
-                .buttonStyle(.borderedProminent)
-                .background(Material.thick)
-                .tint(.purple.opacity(0.6))
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 3)
-
-                switch targetMode {
-                case .Standard:
-                    Text("To implement")
-
-                case .Eco:
-                    ModeEcoOptions(
-                        battery: battery,
-                        minPercentage: $ecoMin,
-                        morningPercentage: $ecoMorning,
-                        maxPercentage: $ecoMax
-                    )
-
-                case .PeakShaving:
-                    Text("To implement")
-
-                case .TariffOptimized:
-                    Text("To implement")
-
-                case .Manual:
-                    Text("To implement")
-
-                case .StandardControlled:
-                    Text("To implement")
-                }
-
-                Spacer()
-            }  // :VStack
-            .padding()
-            .ignoresSafeArea(.all, edges: .bottom)
-            .frame(maxWidth: .infinity)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    HStack {
-                        Text("Battery options")
-                            .foregroundColor(.purple)
-                            .font(.headline)
-                    }
-                }  // :ToolbarItem
-            }  // :.toolbar
-
-        }  // :ScrollView
-        .onAppear {
-            if let batteryInfo = battery.batteryInfo {
+        ZStack {
+            ScrollView {
                 
-                // Load existing Eco mode configuration
-                ecoMin = batteryInfo.modeInfo.lowerSocLimit
-                ecoMorning = batteryInfo.modeInfo.morningSocLimit
-                ecoMax = batteryInfo.modeInfo.upperSocLimit
+                VStack(alignment: .leading) {
+                    Button(action: {
+                        Task {
+                            await setTargetMode()
+                        }
+                    }) {
+                        Text(
+                            "Set '\(battery.name)' to '\(targetMode.GetBatteryModeName())'."
+                        )
+                    }
+                    .buttonBorderShape(.circle)
+                    .buttonStyle(.borderedProminent)
+                    .background(Material.thick)
+                    .tint(.purple.opacity(0.6))
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 3)
+                    
+                    switch targetMode {
+                    case .Standard:
+                        Text("To implement")
+                        
+                    case .Eco:
+                        ModeEcoOptions(
+                            battery: battery,
+                            minPercentage: $ecoMin,
+                            morningPercentage: $ecoMorning,
+                            maxPercentage: $ecoMax
+                        )
+                        
+                    case .PeakShaving:
+                        Text("To implement")
+                        
+                    case .TariffOptimized:
+                        Text("To implement")
+                        
+                    case .Manual:
+                        Text("To implement")
+                        
+                    case .StandardControlled:
+                        Text("To implement")
+                    }
+                    
+                    Spacer()
+                }  // :VStack
+                .padding()
+                .ignoresSafeArea(.all, edges: .bottom)
+                .frame(maxWidth: .infinity)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        HStack {
+                            Text("Battery options")
+                                .foregroundColor(.purple)
+                                .font(.headline)
+                        }
+                    }  // :ToolbarItem
+                }  // :.toolbar
+                
+            }  // :ScrollView
+            .onAppear {
+                if let batteryInfo = battery.batteryInfo {
+                    
+                    // Load existing Eco mode configuration
+                    ecoMin = batteryInfo.modeInfo.dischargeSocLimit
+                    ecoMorning = batteryInfo.modeInfo.morningSocLimit
+                    ecoMax = batteryInfo.modeInfo.chargingSocLimit
+                }
             }
+        }
+        
+        if model.isChangingBatteryMode {
+            ProgressView()
         }
     }
 
     func setTargetMode() async {
         print("Setting battery mode to \(targetMode) ...")
 
-        switch targetMode {
-        case .Eco:
-            print("Setting eco mode ...")
-            
+        guard
+            let existingModeInfo: BatteryModeInfo = battery.batteryInfo?
+                .modeInfo
+        else {
+            hasError = true
+            return
+        }
 
-        default:
-            print("Unsupported mode")
+        print("Setting battery mode to \(targetMode) ...")
+
+        let batteryInfo: BatteryModeInfo =
+            switch targetMode {
+            case .Eco:
+
+                existingModeInfo.createClone(
+                    batteryMode: .Eco,
+                    dischargeSocLimit: ecoMin,
+                    chargingSocLimit: ecoMax,
+                    morningSocLimit: ecoMorning
+                )
+
+            case .Standard:
+                existingModeInfo.createClone(
+                    batteryMode: .Standard,
+                )
+            case .PeakShaving:
+                existingModeInfo.createClone(
+                    batteryMode: .PeakShaving
+                )
+            case .Manual:
+                existingModeInfo.createClone(
+                    batteryMode: .Manual,
+                )
+            case .TariffOptimized:
+                existingModeInfo.createClone(
+                    batteryMode: .TariffOptimized
+                )
+            case .StandardControlled:
+                existingModeInfo.createClone(
+                    batteryMode: .StandardControlled
+                )
+            }
+
+        await model.setBatteryMode(
+            sensorId: battery.id,
+            batteryModeInfo: batteryInfo
+        )
+        
+        if model.batteryModeSetSuccessfully == true {
+            dismiss()
         }
     }
 }

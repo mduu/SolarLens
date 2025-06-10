@@ -3,7 +3,7 @@ import SwiftUI
 struct BatteryModeButton: View {
     let battery: Device
     let mode: BatteryMode
-    
+
     @State var showBatteryModeOptions = false
 
     var body: some View {
@@ -28,7 +28,8 @@ struct BatteryModeButton: View {
         .tint(
             isActiveButton ? .purple.opacity(0.6) : .white.opacity(0.3)
         )
-        .sheet(isPresented: $showBatteryModeOptions) {
+        .sheet(
+            isPresented: $showBatteryModeOptions) {
             BatteryModeOptionsSheet(
                 battery: battery,
                 targetMode: mode

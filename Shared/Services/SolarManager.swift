@@ -389,6 +389,7 @@ actor SolarManager: EnergyManager {
             powerDischarge: batteryModeInfo.powerDischarge,
             dischargeSocLimit: batteryModeInfo.dischargeSocLimit,
             chargingSocLimit: batteryModeInfo.chargingSocLimit,
+            morningSocLimit: batteryModeInfo.morningSocLimit,
             peakShavingSocDischargeLimit: batteryModeInfo.peakShavingSocDischargeLimit,
             peakShavingSocMaxLimit: batteryModeInfo.peakShavingSocMaxLimit,
             peakShavingMaxGridPower: batteryModeInfo.peakShavingMaxGridPower,

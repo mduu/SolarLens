@@ -12,32 +12,37 @@ struct BatteryModeSheet: View {
                         battery: battery,
                         mode: BatteryMode.Standard
                     )
+                    .disabled(true)
+                } else {
+                    
+                    BatteryModeButton(
+                        battery: battery,
+                        mode: BatteryMode.StandardControlled
+                    )
+                    
+                    BatteryModeButton(
+                        battery: battery,
+                        mode: BatteryMode.Eco
+                    )
+                    
+                    BatteryModeButton(
+                        battery: battery,
+                        mode: BatteryMode.PeakShaving
+                    )
+                    
+                    BatteryModeButton(
+                        battery: battery,
+                        mode: BatteryMode.Manual
+                    )
+                    
+                    /*
+                     BatteryModeButton(
+                     battery: battery,
+                     mode: BatteryMode.TariffOptimized
+                     )
+                     */
+                    
                 }
-
-                BatteryModeButton(
-                    battery: battery,
-                    mode: BatteryMode.StandardControlled
-                )
-
-                BatteryModeButton(
-                    battery: battery,
-                    mode: BatteryMode.Eco
-                )
-
-                BatteryModeButton(
-                    battery: battery,
-                    mode: BatteryMode.PeakShaving
-                )
-
-                BatteryModeButton(
-                    battery: battery,
-                    mode: BatteryMode.Manual
-                )
-
-                BatteryModeButton(
-                    battery: battery,
-                    mode: BatteryMode.TariffOptimized
-                )
             }
         }
     }

@@ -24,6 +24,9 @@ struct ControlBatteryV2Request: Codable {
     /// default: 100, minimum: 0, maximum: 100
     var chargingSocLimit: Int?
     
+    /// default: 80, minimum: 0, maximum: 100
+    var morningSocLimit: Int?
+    
     /// default: 10, minimum: 0, maximum: 100
     var peakShavingSocDischargeLimit: Int?
     
