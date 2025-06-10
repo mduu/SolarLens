@@ -7,7 +7,7 @@ enum PercentageField: Hashable {
     case none  // No field is specifically focused
 }
 
-struct ModeEcoOptions: View {
+struct EcoOptionsView: View {
     var battery: Device
 
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
@@ -69,7 +69,7 @@ struct ModeEcoOptions: View {
 }
 
 #Preview {
-    ModeEcoOptions(
+    EcoOptionsView(
         battery: .fakeBattery(),
         minPercentage: .constant(5),
         morningPercentage: .constant(80),

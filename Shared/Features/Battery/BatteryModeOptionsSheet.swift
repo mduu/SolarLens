@@ -42,7 +42,7 @@ struct BatteryModeOptionsSheet: View {
                         Text("To implement")
                         
                     case .Eco:
-                        ModeEcoOptions(
+                        EcoOptionsView(
                             battery: battery,
                             minPercentage: $ecoMin,
                             morningPercentage: $ecoMorning,
