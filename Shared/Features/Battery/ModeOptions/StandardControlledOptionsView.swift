@@ -1,19 +1,27 @@
+// 
+
 import SwiftUI
 
-struct EcoOptionsView: View {
+struct StandardControlledOptionsView: View {
     var battery: Device
 
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
+    @Binding var allowStandalone: Bool
     @Binding var minPercentage: Int
-    @Binding var morningPercentage: Int
     @Binding var maxPercentage: Int
 
     var body: some View {
         Grid(
             alignment: .leadingFirstTextBaseline,
-            verticalSpacing: 3
+            verticalSpacing: 5
         ) {
+            
+            GridRow {
+                Toggle(isOn: $allowStandalone, label: { Text("Allow standalone") })
+                    .gridCellColumns(3)
+                    .padding(.bottom, 5)
+            }
 
             GridRow {
                 Text("Min.:")
@@ -21,15 +29,6 @@ struct EcoOptionsView: View {
                 PercentagePicker(
                     value: $minPercentage,
                     step: 1,
-                    tintColor: .purple
-                )
-            }
-
-            GridRow {
-                Text("Morning:")
-                Spacer()
-                PercentagePicker(
-                    value: $morningPercentage,
                     tintColor: .purple
                 )
             }
@@ -45,28 +44,38 @@ struct EcoOptionsView: View {
         }  // :Grid
 
         VStack(alignment: .leading) {
-            Text("Info:")
-                .font(.footnote)
-                .fontWeight(.bold)
-                .foregroundColor(.purple)
+            HStack {
+                Text("Info:")
+                    .font(.footnote)
+                    .fontWeight(.bold)
+                    .foregroundColor(.purple)
+                
+                Spacer()
+            }
 
             Text(
-                "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing."
+                "The battery will operate in standalone mode (if a smart meter is present) or controlled by Solar Manager with min/max percentage settings."
             )
             .font(.footnote)
+            
+            Text(
+                "To let Solar Manager control the battery disable 'Allow standalone'."
+            )
+            .font(.footnote)
+            .padding(.top, 2)
 
         }
+        .frame(maxWidth: .infinity)
 
         Spacer()
-
     }
 }
 
 #Preview {
-    EcoOptionsView(
+    StandardControlledOptionsView(
         battery: .fakeBattery(),
+        allowStandalone: .constant(true),
         minPercentage: .constant(5),
-        morningPercentage: .constant(80),
         maxPercentage: .constant(100)
     )
     .environment(

@@ -11,6 +11,11 @@ struct BatteryModeOptionsSheet: View {
 
     @State var hasError: Bool = false
 
+    // Standard Controlled
+    @State var stdCtrlAllowStandalone: Bool = false
+    @State var stdCtrlMin: Int = 0
+    @State var stdCtrlMax: Int = 0
+
     // Eco
     @State var ecoMin: Int = 0
     @State var ecoMorning: Int = 0
@@ -19,7 +24,7 @@ struct BatteryModeOptionsSheet: View {
     var body: some View {
         ZStack {
             ScrollView {
-                
+
                 VStack(alignment: .leading) {
                     Button(action: {
                         Task {
@@ -36,11 +41,11 @@ struct BatteryModeOptionsSheet: View {
                     .tint(.purple.opacity(0.6))
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 3)
-                    
+
                     switch targetMode {
                     case .Standard:
-                        Text("To implement")
-                        
+                        Text("Not supported!")
+
                     case .Eco:
                         EcoOptionsView(
                             battery: battery,
@@ -48,20 +53,25 @@ struct BatteryModeOptionsSheet: View {
                             morningPercentage: $ecoMorning,
                             maxPercentage: $ecoMax
                         )
-                        
+
                     case .PeakShaving:
                         Text("To implement")
-                        
+
                     case .TariffOptimized:
                         Text("To implement")
-                        
+
                     case .Manual:
                         Text("To implement")
-                        
+
                     case .StandardControlled:
-                        Text("To implement")
+                        StandardControlledOptionsView(
+                            battery: battery,
+                            allowStandalone: $stdCtrlAllowStandalone,
+                            minPercentage: $stdCtrlMin,
+                            maxPercentage: $stdCtrlMax
+                        )
                     }
-                    
+
                     Spacer()
                 }  // :VStack
                 .padding()
@@ -76,19 +86,24 @@ struct BatteryModeOptionsSheet: View {
                         }
                     }  // :ToolbarItem
                 }  // :.toolbar
-                
+
             }  // :ScrollView
             .onAppear {
                 if let batteryInfo = battery.batteryInfo {
-                    
+
                     // Load existing Eco mode configuration
                     ecoMin = batteryInfo.modeInfo.dischargeSocLimit
                     ecoMorning = batteryInfo.modeInfo.morningSocLimit
                     ecoMax = batteryInfo.modeInfo.chargingSocLimit
+                    
+                    // Load existing Standard Controlled mode configuration
+                    stdCtrlAllowStandalone = batteryInfo.modeInfo.standardStandaloneAllowed
+                    stdCtrlMin = batteryInfo.modeInfo.standardLowerSocLimit
+                    stdCtrlMax = batteryInfo.modeInfo.standardUpperSocLimit
                 }
             }
         }
-        
+
         if model.isChangingBatteryMode {
             ProgressView()
         }
@@ -110,7 +125,6 @@ struct BatteryModeOptionsSheet: View {
         let batteryInfo: BatteryModeInfo =
             switch targetMode {
             case .Eco:
-
                 existingModeInfo.createClone(
                     batteryMode: .Eco,
                     dischargeSocLimit: ecoMin,
@@ -136,7 +150,10 @@ struct BatteryModeOptionsSheet: View {
                 )
             case .StandardControlled:
                 existingModeInfo.createClone(
-                    batteryMode: .StandardControlled
+                    batteryMode: .StandardControlled,
+                    standardStandaloneAllowed: stdCtrlAllowStandalone,
+                    standardLowerSocLimit: stdCtrlMin,
+                    standardUpperSocLimit: stdCtrlMax
                 )
             }
 
@@ -144,7 +161,7 @@ struct BatteryModeOptionsSheet: View {
             sensorId: battery.id,
             batteryModeInfo: batteryInfo
         )
-        
+
         if model.batteryModeSetSuccessfully == true {
             dismiss()
         }

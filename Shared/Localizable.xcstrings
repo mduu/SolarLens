@@ -276,6 +276,9 @@
         }
       }
     },
+    "Allow standalone" : {
+
+    },
     "Always" : {
       "localizations" : {
         "da" : {
@@ -3079,6 +3082,9 @@
         }
       }
     },
+    "Not supported!" : {
+
+    },
     "Off" : {
       "localizations" : {
         "da" : {
@@ -5141,6 +5147,9 @@
         }
       }
     },
+    "The battery will operate in standalone mode (if a smart meter is present) or controlled by Solar Manager with min/max percentage settings." : {
+
+    },
     "The charging mode as set to %@" : {
       "localizations" : {
         "da" : {
@@ -5437,6 +5446,9 @@
       }
     },
     "To implement" : {
+
+    },
+    "To let Solar Manager control the battery disable 'Allow standalone'." : {
 
     },
     "today" : {
