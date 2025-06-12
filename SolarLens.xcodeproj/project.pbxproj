@@ -294,6 +294,7 @@
 				Features/Battery/BatteryModeOptionsSheet.swift,
 				Features/Battery/BatteryModeSheet.swift,
 				Features/Battery/ModeOptions/EcoOptionsView.swift,
+				Features/Battery/ModeOptions/PeakShavingOptionsView.swift,
 				Features/Battery/ModeOptions/StandardControlledOptionsView.swift,
 				Features/Consumption/Charging/ChargingButtonView.swift,
 				Features/Consumption/Charging/ChargingModeConfiguration.swift,

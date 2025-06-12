@@ -2,12 +2,13 @@
 
 import SwiftUI
 
-struct PercentagePicker: View {
+struct IntPicker: View {
     @Binding var value: Int
     var step: Int = 5
     var min: Int = 0
     var max: Int = 100
     var tintColor: Color = .accent
+    var unit: LocalizedStringResource = "%"
 
     var body: some View {
         HStack {
@@ -23,8 +24,10 @@ struct PercentagePicker: View {
             .buttonStyle(.bordered)
             .tint(tintColor)
 
-            Text(verbatim: "\(value)%")
-                .animation(.bouncy)
+            HStack(spacing: 2) {
+                Text(verbatim: "\(value)")
+                Text(unit)
+            }
 
             Button(action: {
                 withAnimation {
@@ -44,7 +47,7 @@ struct PercentagePicker: View {
 
 #Preview {
     VStack {
-        PercentagePicker(
+        IntPicker(
             value: .constant(42)
         )
 

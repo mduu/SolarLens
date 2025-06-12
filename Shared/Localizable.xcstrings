@@ -12,8 +12,14 @@
       },
       "shouldTranslate" : false
     },
+    "'Peak Shaving' uses your battery to supply power during high-demand periods, reducing the amount of expensive electricity drawn from the grid and lowering your overall costs." : {
+
+    },
     "#%@" : {
       "shouldTranslate" : false
+    },
+    "%" : {
+
     },
     "%@" : {
       "shouldTranslate" : false
@@ -2834,7 +2840,16 @@
         }
       }
     },
+    "Max. charging limit:" : {
+
+    },
+    "Max. Grid Power:" : {
+
+    },
     "Max.:" : {
+
+    },
+    "Min. discharging limit:" : {
 
     },
     "Min.:" : {
@@ -3566,6 +3581,9 @@
           }
         }
       }
+    },
+    "Recharging limit:" : {
+
     },
     "Returns 'true' if any car is currently charging, otherwise 'false'." : {
       "localizations" : {
@@ -6022,6 +6040,9 @@
           }
         }
       }
+    },
+    "W" : {
+
     },
     "Watts" : {
       "localizations" : {

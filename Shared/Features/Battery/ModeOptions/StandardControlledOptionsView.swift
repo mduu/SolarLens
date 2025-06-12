@@ -26,7 +26,7 @@ struct StandardControlledOptionsView: View {
             GridRow {
                 Text("Min.:")
                 Spacer()
-                PercentagePicker(
+                IntPicker(
                     value: $minPercentage,
                     step: 1,
                     tintColor: .purple
@@ -36,7 +36,7 @@ struct StandardControlledOptionsView: View {
             GridRow {
                 Text("Max.:")
                 Spacer()
-                PercentagePicker(
+                IntPicker(
                     value: $maxPercentage,
                     tintColor: .purple
                 )

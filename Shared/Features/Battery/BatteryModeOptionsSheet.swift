@@ -20,6 +20,13 @@ struct BatteryModeOptionsSheet: View {
     @State var ecoMin: Int = 0
     @State var ecoMorning: Int = 0
     @State var ecoMax: Int = 0
+    
+    // Peak shaving
+    @State var psSocDischargeLimit: Int = 0
+    @State var psSocMaxLimit: Int = 0
+    @State var psMaxGridPower: Int = 0
+    @State var psRechargePower: Int = 0
+
 
     var body: some View {
         ZStack {
@@ -55,7 +62,13 @@ struct BatteryModeOptionsSheet: View {
                         )
 
                     case .PeakShaving:
-                        Text("To implement")
+                        PeakShavingOptionsView(
+                            battery: battery,
+                            socDischargeLimit: $psSocDischargeLimit,
+                            socMaxLimit: $psSocMaxLimit,
+                            maxGridPower: $psMaxGridPower,
+                            rechargePower: $psRechargePower
+                        )
 
                     case .TariffOptimized:
                         Text("To implement")
@@ -100,6 +113,13 @@ struct BatteryModeOptionsSheet: View {
                     stdCtrlAllowStandalone = batteryInfo.modeInfo.standardStandaloneAllowed
                     stdCtrlMin = batteryInfo.modeInfo.standardLowerSocLimit
                     stdCtrlMax = batteryInfo.modeInfo.standardUpperSocLimit
+                    
+                    // Load existing Peak Shaving mode configuration
+                    psSocDischargeLimit = batteryInfo.modeInfo.peakShavingSocDischargeLimit
+                    psSocMaxLimit = batteryInfo.modeInfo.peakShavingSocMaxLimit
+                    psMaxGridPower = batteryInfo.modeInfo.peakShavingMaxGridPower
+                    psRechargePower = batteryInfo.modeInfo.peakShavingRechargePower
+
                 }
             }
         }
@@ -138,7 +158,11 @@ struct BatteryModeOptionsSheet: View {
                 )
             case .PeakShaving:
                 existingModeInfo.createClone(
-                    batteryMode: .PeakShaving
+                    batteryMode: .PeakShaving,
+                    peakShavingSocDischargeLimit: psSocDischargeLimit,
+                    peakShavingSocMaxLimit: psSocMaxLimit,
+                    peakShavingMaxGridPower: psMaxGridPower,
+                    peakShavingRechargePower: psRechargePower
                 )
             case .Manual:
                 existingModeInfo.createClone(

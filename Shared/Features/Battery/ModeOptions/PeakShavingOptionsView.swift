@@ -1,47 +1,58 @@
+//
+
 import SwiftUI
 
-struct EcoOptionsView: View {
+struct PeakShavingOptionsView: View {
     var battery: Device
 
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
-    @Binding var minPercentage: Int
-    @Binding var morningPercentage: Int
-    @Binding var maxPercentage: Int
+    @Binding var socDischargeLimit: Int
+    @Binding var socMaxLimit: Int
+    @Binding var maxGridPower: Int
+    @Binding var rechargePower: Int
 
     var body: some View {
-        Grid(
-            alignment: .leadingFirstTextBaseline,
-            verticalSpacing: 3
+        VStack(
+            alignment: .leading,
+            spacing: 3
         ) {
 
-            GridRow {
-                Text("Min.:")
-                Spacer()
-                IntPicker(
-                    value: $minPercentage,
-                    step: 1,
-                    tintColor: .purple
-                )
-            }
+            Text("Min. discharging limit:")
+                .padding(.top, 4)
+            IntPicker(
+                value: $socDischargeLimit,
+                step: 1,
+                tintColor: .purple
+            )
 
-            GridRow {
-                Text("Morning:")
-                Spacer()
-                IntPicker(
-                    value: $morningPercentage,
-                    tintColor: .purple
-                )
-            }
+            Text("Max. charging limit:")
+                .padding(.top, 12)
+            IntPicker(
+                value: $socMaxLimit,
+                tintColor: .purple
+            )
 
-            GridRow {
-                Text("Max.:")
-                Spacer()
-                IntPicker(
-                    value: $maxPercentage,
-                    tintColor: .purple
-                )
-            }
+            Text("Max. Grid Power:")
+                .padding(.top, 12)
+            IntPicker(
+                value: $maxGridPower,
+                step: 500,
+                max: 25000,
+                tintColor: .purple,
+                unit: "W"
+            )
+            
+            Text("Recharging limit:")
+                .padding(.top, 12)
+            IntPicker(
+                value: $rechargePower,
+                step: 500,
+                max: 25000,
+                tintColor: .purple,
+                unit: "W"
+            )
+
         }  // :Grid
 
         VStack(alignment: .leading) {
@@ -51,23 +62,24 @@ struct EcoOptionsView: View {
                 .foregroundColor(.purple)
 
             Text(
-                "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing."
+                "'Peak Shaving' uses your battery to supply power during high-demand periods, reducing the amount of expensive electricity drawn from the grid and lowering your overall costs."
             )
             .font(.footnote)
+            .frame(maxWidth: .infinity, maxHeight: 200)
 
         }
 
         Spacer()
-
     }
 }
 
 #Preview {
-    EcoOptionsView(
+    PeakShavingOptionsView(
         battery: .fakeBattery(),
-        minPercentage: .constant(5),
-        morningPercentage: .constant(80),
-        maxPercentage: .constant(100)
+        socDischargeLimit: .constant(10),
+        socMaxLimit: .constant(40),
+        maxGridPower: .constant(10),
+        rechargePower: .constant(5)
     )
     .environment(
         CurrentBuildingState.fake(
