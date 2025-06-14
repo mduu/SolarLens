@@ -26,7 +26,13 @@ struct BatteryModeOptionsSheet: View {
     @State var psSocMaxLimit: Int = 0
     @State var psMaxGridPower: Int = 0
     @State var psRechargePower: Int = 0
-
+    
+    // Manual
+    @State var manualMode: BatteryManualMode = .Charge
+    @State var manualUpperSocLimit: Int = 0
+    @State var manualLowerSocLimit: Int = 0
+    @State var manualPowerCharge: Int = 0
+    @State var manualPowerDischarge: Int = 0
 
     var body: some View {
         ZStack {
@@ -74,7 +80,14 @@ struct BatteryModeOptionsSheet: View {
                         Text("To implement")
 
                     case .Manual:
-                        Text("To implement")
+                        ManualOptionsView(
+                            battery: battery,
+                            manualMode: $manualMode,
+                            upperSocLimit: $manualUpperSocLimit,
+                            lowerSocLimit: $manualLowerSocLimit,
+                            powerCharge: $manualPowerCharge,
+                            powerDischarge: $manualPowerDischarge
+                        )
 
                     case .StandardControlled:
                         StandardControlledOptionsView(
@@ -120,6 +133,12 @@ struct BatteryModeOptionsSheet: View {
                     psMaxGridPower = batteryInfo.modeInfo.peakShavingMaxGridPower
                     psRechargePower = batteryInfo.modeInfo.peakShavingRechargePower
 
+                    // Laod existing Manual mode configuration
+                    manualMode = batteryInfo.modeInfo.batteryManualMode
+                    manualUpperSocLimit = batteryInfo.modeInfo.upperSocLimit
+                    manualLowerSocLimit = batteryInfo.modeInfo.lowerSocLimit
+                    manualPowerCharge = batteryInfo.modeInfo.powerCharge
+                    manualPowerDischarge = batteryInfo.modeInfo.dischargeSocLimit
                 }
             }
         }
@@ -167,6 +186,11 @@ struct BatteryModeOptionsSheet: View {
             case .Manual:
                 existingModeInfo.createClone(
                     batteryMode: .Manual,
+                    batteryManualMode: manualMode,
+                    upperSocLimit: manualUpperSocLimit,
+                    lowerSocLimit: manualLowerSocLimit,
+                    powerCharge: manualPowerCharge,
+                    powerDischarge: manualPowerDischarge,
                 )
             case .TariffOptimized:
                 existingModeInfo.createClone(

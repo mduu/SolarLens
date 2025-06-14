@@ -614,6 +614,36 @@
     "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {
 
     },
+    "battery_manualmode_charge" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge"
+          }
+        }
+      }
+    },
+    "battery_manualmode_discharge" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discharge"
+          }
+        }
+      }
+    },
+    "battery_manualmode_off" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
     "Batterylevel of my car" : {
       "localizations" : {
         "da" : {
@@ -843,6 +873,9 @@
           }
         }
       }
+    },
+    "Charging power:" : {
+
     },
     "Charing Station" : {
       "localizations" : {
@@ -1213,6 +1246,9 @@
           }
         }
       }
+    },
+    "Contorll manually if the battery is charging, discharing or switched off." : {
+
     },
     "Copied!" : {
       "localizations" : {
@@ -1633,6 +1669,9 @@
           }
         }
       }
+    },
+    "Discharging power:" : {
+
     },
     "Disconnected" : {
       "localizations" : {
@@ -2849,6 +2888,9 @@
     "Max.:" : {
 
     },
+    "Min. discharge limit:" : {
+
+    },
     "Min. discharging limit:" : {
 
     },
@@ -2978,6 +3020,12 @@
           }
         }
       }
+    },
+    "Mode" : {
+
+    },
+    "Mode:" : {
+
     },
     "Morning:" : {
 

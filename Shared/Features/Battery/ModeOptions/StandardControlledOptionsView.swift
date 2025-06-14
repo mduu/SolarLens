@@ -80,34 +80,7 @@ struct StandardControlledOptionsView: View {
     )
     .environment(
         CurrentBuildingState.fake(
-            overviewData: .init(
-                currentSolarProduction: 4550,
-                currentOverallConsumption: 1200,
-                currentBatteryLevel: 78,
-                currentBatteryChargeRate: 3400,
-                currentSolarToGrid: 10,
-                currentGridToHouse: 0,
-                currentSolarToHouse: 1200,
-                solarProductionMax: 11000,
-                hasConnectionError: false,
-                lastUpdated: Date(),
-                lastSuccessServerFetch: Date(),
-                isAnyCarCharing: false,
-                chargingStations: [
-                    .init(
-                        id: "42",
-                        name: "Keba",
-                        chargingMode: ChargingMode.withSolarPower,
-                        priority: 1,
-                        currentPower: 0,
-                        signal: SensorConnectionStatus.connected
-                    )
-                ],
-                devices: [
-                    Device.fakeBattery(currentPowerInWatts: 2390)
-                ],
-                todayAutarchyDegree: 78
-            )
+            overviewData: OverviewData.fakeWithBattery()
         )
     )
 }

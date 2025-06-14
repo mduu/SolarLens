@@ -127,13 +127,25 @@ enum BatteryMode: Int {
     }
 }
 
-enum BatteryManualMode: Int {
+enum BatteryManualMode: Int, CaseIterable, Identifiable {
     case Charge = 0
     case Discharge = 1
     case Off = 2
+    
+    var id: Int { self.rawValue } // Use rawValue as a unique ID
 
     static func from(_ value: Int?) -> BatteryManualMode {
         return BatteryManualMode(rawValue: value ?? 0) ?? .Charge
+    }
+}
+
+extension BatteryManualMode {
+    var localizedName: LocalizedStringResource {
+        switch self {
+        case .Charge: return "battery_manualmode_charge"
+        case .Discharge: return "battery_manualmode_discharge"
+        case .Off: return "battery_manualmode_off"
+        }
     }
 }
 
