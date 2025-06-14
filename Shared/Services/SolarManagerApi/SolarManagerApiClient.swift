@@ -159,7 +159,7 @@ class SolarManagerApi: RestClient {
 
         let response: [SensorDataV1Response]? = try await get(
             serviceUrl:
-                "/v1/data/sensor/\(id)/range?from=\(fromIso)&to=\(toIso)&interval=\(interval ?? 0)"
+                "/v1/data/sensor/\(id)/range?from=\(fromIso)&to=\(toIso)&interval=\(interval)"
         )
 
         return response
@@ -182,6 +182,16 @@ class SolarManagerApi: RestClient {
             serviceUrl: "/v1/configure/sensor-priority/\(sensorId)",
             requestBody: priority)
 
+        return
+    }
+    
+    func putControlBattery(sensorId: String, control: ControlBatteryV2Request)
+    async throws
+    {
+        var _: NoContentResponse? = try await put(
+            serviceUrl: "/v2/control/battery/\(sensorId)",
+            requestBody: control)
+        
         return
     }
 

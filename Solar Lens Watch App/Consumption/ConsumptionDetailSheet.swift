@@ -5,20 +5,18 @@ import SwiftUI
 struct ConsumptionDetailSheet: View {
     var totalCurrentConsumptionInWatt: Int
     var devices: [Device]
-    
+
     var body: some View {
-        ScrollView {
-            HStack {
-                ConsumptionPieChart(
-                    totalCurrentConsumptionInWatt: totalCurrentConsumptionInWatt,
-                    deviceConsumptions: getDeviceConsumptions()
-                )
-            }
-        }
+        ConsumptionPieChart(
+            totalCurrentConsumptionInWatt: totalCurrentConsumptionInWatt,
+            deviceConsumptions: getDeviceConsumptions()
+        )
+        .ignoresSafeArea(edges: .bottom)
     }
-    
+
     func getDeviceConsumptions() -> [DeviceConsumption] {
-        return devices
+        return
+            devices
             .filter({ $0.isConsumingDevice() })
             .filter({ $0.hasPower() })
             .map {
@@ -56,7 +54,7 @@ struct ConsumptionDetailSheet: View {
                 name: "Office",
                 priority: 500,
                 color: "#7711ff"
-            )
+            ),
         ]
     )
 }

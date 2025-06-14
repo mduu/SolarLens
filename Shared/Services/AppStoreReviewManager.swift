@@ -9,6 +9,8 @@ class AppStoreReviewManager {
         var sensorPrioritySetAtLeastOnce = false
     @AppStorage("solarDetailsShownAtLeastOnce") private
         var solarDetailsShownAtLeastOnce = false
+    @AppStorage("batteryModeSetAtLeastOnce") private
+        var batteryModeSetAtLeastOnce = false
     @AppStorage("lastTimeReviewRequested") private
         var lastTimeReviewRequested = 0
 
@@ -28,6 +30,10 @@ class AppStoreReviewManager {
 
     func setSolarDetailsShownAtLeastOnce() {
         solarDetailsShownAtLeastOnce = true
+    }
+
+    func setBatterModeSetAtLeastOnce() {
+        batteryModeSetAtLeastOnce = true
     }
 
     func checkAndRequestReview(force: Bool = false) -> Bool {

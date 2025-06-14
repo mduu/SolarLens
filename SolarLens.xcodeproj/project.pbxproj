@@ -106,6 +106,12 @@
 		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Features/Battery/BatteryForecastView.swift,
+				Features/Battery/BatteryModeButton.swift,
+				Features/Battery/BatteryModeOptionsSheet.swift,
+				Features/Battery/BatteryModeSheet.swift,
+				Features/Battery/ModeOptions/EcoOptionsView.swift,
+				Features/Battery/ModeOptions/StandardControlledOptionsView.swift,
 				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Features/Solar/SolarTodayInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
@@ -193,7 +199,9 @@
 				Services/EnergyManagerClientError.swift,
 				Services/FakeEnergyManager.swift,
 				Services/KeychainHelper.swift,
+				Services/Model/BatteryForecast.swift,
 				Services/Model/BatteryHistory.swift,
+				Services/Model/BatteryInfo.swift,
 				Services/Model/Car.swift,
 				Services/Model/ChargingInfoData.swift,
 				Services/Model/ChargingStation.swift,
@@ -210,6 +218,7 @@
 				Services/SolarManager.swift,
 				Services/SolarManagerApi/DTOs/Accuracy.swift,
 				Services/SolarManagerApi/DTOs/ChargingMode.swift,
+				Services/SolarManagerApi/DTOs/ControlBatteryV2Request.swift,
 				Services/SolarManagerApi/DTOs/ControlCarChargingRequest.swift,
 				Services/SolarManagerApi/DTOs/ForecastItemV1Response.swift,
 				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
@@ -280,6 +289,14 @@
 				AppShortcuts.xcstrings,
 				Components/UpdateTimeStampView.swift,
 				Extensions/ColorExtensions.swift,
+				Features/Battery/BatteryForecastView.swift,
+				Features/Battery/BatteryModeButton.swift,
+				Features/Battery/BatteryModeOptionsSheet.swift,
+				Features/Battery/BatteryModeSheet.swift,
+				Features/Battery/ModeOptions/EcoOptionsView.swift,
+				Features/Battery/ModeOptions/ManualOptionsView.swift,
+				Features/Battery/ModeOptions/PeakShavingOptionsView.swift,
+				Features/Battery/ModeOptions/StandardControlledOptionsView.swift,
 				Features/Consumption/Charging/ChargingButtonView.swift,
 				Features/Consumption/Charging/ChargingModeConfiguration.swift,
 				Features/Consumption/Charging/ChargingModeLabelView.swift,
@@ -740,8 +757,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.6.0;
-				APP_VERSION_BUILDNO = 220;
+				APP_VERSION = 3.7.0;
+				APP_VERSION_BUILDNO = 226;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -814,8 +831,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.6.0;
-				APP_VERSION_BUILDNO = 220;
+				APP_VERSION = 3.7.0;
+				APP_VERSION_BUILDNO = 226;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

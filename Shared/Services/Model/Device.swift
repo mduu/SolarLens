@@ -10,6 +10,7 @@ class Device: Identifiable {
     var color: String?
     var signal: SensorConnectionStatus
     var hasError: Bool = false
+    var batteryInfo: BatteryInfo? = nil
 
     init(
         id: String,
@@ -19,7 +20,8 @@ class Device: Identifiable {
         currentPowerInWatts: Int = 0,
         color: String? = nil,
         signal: SensorConnectionStatus = .connected,
-        hasError: Bool = false
+        hasError: Bool = false,
+        batteryInfo: BatteryInfo? = nil
     ) {
         self.id = id
         self.deviceType = deviceType
@@ -29,15 +31,17 @@ class Device: Identifiable {
         self.color = color
         self.signal = signal
         self.hasError = hasError
+        self.batteryInfo = batteryInfo
     }
-    
+
     func hasPower() -> Bool {
         return currentPowerInWatts > 10 || currentPowerInWatts < -10
     }
-    
+
     func isConsumingDevice() -> Bool {
         return deviceType != .battery
     }
+
 }
 
 extension Device {
@@ -59,6 +63,21 @@ extension Device {
         }
     }
 
+    static func fakeBattery(
+        id: String = "1234",
+        name: String = "Bat 1",
+        priority: Int = 0,
+        currentPowerInWatts: Int = 4242,
+    ) -> Device {
+        .init(
+            id: "123",
+            deviceType: .battery,
+            name: name,
+            priority: 0,
+            currentPowerInWatts: currentPowerInWatts,
+            batteryInfo: BatteryInfo.fake()
+        )
+    }
 }
 
 public enum DeviceType {

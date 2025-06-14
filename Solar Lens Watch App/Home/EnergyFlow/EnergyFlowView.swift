@@ -68,6 +68,9 @@ struct EnergyFlowView: View {
                         .currentBatteryChargeRate
                 )
                 .frame(maxWidth: 50, maxHeight: 50)
+                .onTapGesture {
+                    navigationState.navigate(to: .battery)
+                }
 
                 ArrowBatteryToHouse(
                     isActive: buildingState.overviewData.isFlowBatteryToHome()

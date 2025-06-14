@@ -12,8 +12,14 @@
       },
       "shouldTranslate" : false
     },
+    "'Peak Shaving' uses your battery to supply power during high-demand periods, reducing the amount of expensive electricity drawn from the grid and lowering your overall costs." : {
+
+    },
     "#%@" : {
       "shouldTranslate" : false
+    },
+    "%" : {
+
     },
     "%@" : {
       "shouldTranslate" : false
@@ -275,6 +281,9 @@
           }
         }
       }
+    },
+    "Allow standalone" : {
+
     },
     "Always" : {
       "localizations" : {
@@ -596,6 +605,45 @@
         }
       }
     },
+    "Battery mode" : {
+
+    },
+    "Battery options" : {
+
+    },
+    "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {
+
+    },
+    "battery_manualmode_charge" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge"
+          }
+        }
+      }
+    },
+    "battery_manualmode_discharge" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discharge"
+          }
+        }
+      }
+    },
+    "battery_manualmode_off" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
     "Batterylevel of my car" : {
       "localizations" : {
         "da" : {
@@ -825,6 +873,9 @@
           }
         }
       }
+    },
+    "Charging power:" : {
+
     },
     "Charing Station" : {
       "localizations" : {
@@ -1195,6 +1246,9 @@
           }
         }
       }
+    },
+    "Contorll manually if the battery is charging, discharing or switched off." : {
+
     },
     "Copied!" : {
       "localizations" : {
@@ -1616,6 +1670,9 @@
         }
       }
     },
+    "Discharging power:" : {
+
+    },
     "Disconnected" : {
       "localizations" : {
         "da" : {
@@ -1671,6 +1728,9 @@
           }
         }
       }
+    },
+    "Eco" : {
+
     },
     "Efficiency" : {
       "localizations" : {
@@ -1786,6 +1846,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vuota"
+          }
+        }
+      }
+    },
+    "Empty in %@ at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Empty in %1$@ at %2$@"
           }
         }
       }
@@ -1963,6 +2033,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piena"
+          }
+        }
+      }
+    },
+    "Full in %@ at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Full in %1$@ at %2$@"
           }
         }
       }
@@ -2302,6 +2382,12 @@
           }
         }
       }
+    },
+    "In:" : {
+
+    },
+    "Info:" : {
+
     },
     "Information about our site efficiency" : {
       "localizations" : {
@@ -2762,6 +2848,9 @@
         }
       }
     },
+    "Manual" : {
+
+    },
     "Max %@ =" : {
       "localizations" : {
         "da" : {
@@ -2789,6 +2878,24 @@
           }
         }
       }
+    },
+    "Max. charging limit:" : {
+
+    },
+    "Max. Grid Power:" : {
+
+    },
+    "Max.:" : {
+
+    },
+    "Min. discharge limit:" : {
+
+    },
+    "Min. discharging limit:" : {
+
+    },
+    "Min.:" : {
+
     },
     "Minimal" : {
       "localizations" : {
@@ -2914,6 +3021,15 @@
         }
       }
     },
+    "Mode" : {
+
+    },
+    "Mode:" : {
+
+    },
+    "Morning:" : {
+
+    },
     "Name:" : {
       "localizations" : {
         "da" : {
@@ -2970,6 +3086,9 @@
         }
       }
     },
+    "No current data" : {
+
+    },
     "No data" : {
       "localizations" : {
         "da" : {
@@ -3025,6 +3144,9 @@
           }
         }
       }
+    },
+    "Not supported!" : {
+
     },
     "Off" : {
       "localizations" : {
@@ -3133,6 +3255,9 @@
       },
       "shouldTranslate" : false
     },
+    "Out:" : {
+
+    },
     "Password" : {
       "localizations" : {
         "da" : {
@@ -3194,6 +3319,12 @@
           }
         }
       }
+    },
+    "Peak shaving" : {
+
+    },
+    "Peak Shaving" : {
+
     },
     "Peak:" : {
       "localizations" : {
@@ -3498,6 +3629,9 @@
           }
         }
       }
+    },
+    "Recharging limit:" : {
+
     },
     "Returns 'true' if any car is currently charging, otherwise 'false'." : {
       "localizations" : {
@@ -3869,6 +4003,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impostata"
+          }
+        }
+      }
+    },
+    "Set '%@' to '%@'." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Set '%1$@' to '%2$@'."
           }
         }
       }
@@ -4790,6 +4934,12 @@
     "Something went wrong..." : {
 
     },
+    "Standalone" : {
+
+    },
+    "Standard" : {
+
+    },
     "Status:" : {
       "localizations" : {
         "da" : {
@@ -4970,6 +5120,9 @@
         }
       }
     },
+    "Tariff optimized" : {
+
+    },
     "Thank you! 💖" : {
       "localizations" : {
         "da" : {
@@ -5059,6 +5212,9 @@
           }
         }
       }
+    },
+    "The battery will operate in standalone mode (if a smart meter is present) or controlled by Solar Manager with min/max percentage settings." : {
+
     },
     "The charging mode as set to %@" : {
       "localizations" : {
@@ -5354,6 +5510,12 @@
           }
         }
       }
+    },
+    "To implement" : {
+
+    },
+    "To let Solar Manager control the battery disable 'Allow standalone'." : {
+
     },
     "today" : {
       "localizations" : {
@@ -5926,6 +6088,9 @@
           }
         }
       }
+    },
+    "W" : {
+
     },
     "Watts" : {
       "localizations" : {

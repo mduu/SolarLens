@@ -13,6 +13,8 @@ class CurrentBuildingState {
     var carChargerSetSuccessfully: Bool? = nil
     var isChangingSensorPriority: Bool = false
     var sensorPrioritySetSuccessfully: Bool? = nil
+    var isChangingBatteryMode: Bool = false
+    var batteryModeSetSuccessfully: Bool? = nil
     var fetchingIsPaused: Bool = false
     var chargingInfos: CharingInfoData?
 
@@ -205,6 +207,54 @@ class CurrentBuildingState {
             sensorPrioritySetSuccessfully = false
         }
     }
+    
+    func setBatteryMode(
+        sensorId: String,
+        batteryModeInfo: BatteryModeInfo
+    ) async {
+        guard loginCredentialsExists && !isChangingBatteryMode
+        else {
+            print("WARN: Login-Credentials don't exists or is changing already")
+            return
+        }
+
+        batteryModeSetSuccessfully = nil
+        isChangingBatteryMode = true
+        defer {
+            isChangingBatteryMode = false
+        }
+
+        do {
+
+            resetError()
+
+            print("Set battery mode \(Date())")
+
+            let result = try await energyManager.setBatteryMode(
+                sensorId: sensorId,
+                batteryModeInfo: batteryModeInfo
+            )
+
+            print("Battery-Mode set at \(Date())")
+
+            // Optimistic UI: Update charging mode in-memory to speed up UI
+            let batteryDevice = overviewData.devices
+                .first(where: { $0.id == sensorId })
+            batteryDevice?.batteryInfo = BatteryInfo(
+                favorite: batteryDevice?.batteryInfo?.favorite ?? true,
+                maxDischargePower: batteryDevice?.batteryInfo?.maxDischargePower ?? 0,
+                maxChargePower: batteryDevice?.batteryInfo?.maxChargePower ?? 0,
+                batteryCapacityKwh: batteryDevice?.batteryInfo?.batteryCapacityKwh ?? 0,
+                modeInfo: batteryModeInfo
+            )
+
+            batteryModeSetSuccessfully = result
+            AppStoreReviewManager.shared.setBatterModeSetAtLeastOnce()
+        } catch {
+            batteryModeSetSuccessfully = false
+        }
+    }
+
 
     func logout() {
         KeychainHelper.deleteCredentials()

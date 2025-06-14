@@ -50,21 +50,24 @@ extension OverviewData {
                     chargingMode: ChargingMode.withSolarPower,
                     priority: 1,
                     currentPower: 11356,
-                    signal: SensorConnectionStatus.connected),
+                    signal: SensorConnectionStatus.connected
+                ),
                 .init(
                     id: "43",
                     name: "Keba 2",
                     chargingMode: ChargingMode.withSolarPower,
                     priority: 2,
                     currentPower: 0,
-                    signal: SensorConnectionStatus.connected),
+                    signal: SensorConnectionStatus.connected
+                ),
                 .init(
                     id: "44",
                     name: "Keba 3",
                     chargingMode: ChargingMode.withSolarPower,
                     priority: 3,
                     currentPower: 0,
-                    signal: SensorConnectionStatus.connected),
+                    signal: SensorConnectionStatus.connected
+                ),
             ],
             devices: [
                 Device.init(
@@ -75,7 +78,8 @@ extension OverviewData {
                     currentPowerInWatts: 11356,
                     color: "#ff00ff",
                     signal: SensorConnectionStatus.connected,
-                    hasError: false),
+                    hasError: false
+                ),
                 Device.init(
                     id: "43",
                     deviceType: .carCharging,
@@ -84,7 +88,8 @@ extension OverviewData {
                     currentPowerInWatts: 0,
                     color: "#ff00af",
                     signal: SensorConnectionStatus.connected,
-                    hasError: false),
+                    hasError: false
+                ),
                 Device.init(
                     id: "44",
                     deviceType: .carCharging,
@@ -93,7 +98,8 @@ extension OverviewData {
                     currentPowerInWatts: 0,
                     color: "#ff000f",
                     signal: SensorConnectionStatus.notConnected,
-                    hasError: true),
+                    hasError: true
+                ),
                 Device.init(
                     id: "10",
                     deviceType: .battery,
@@ -102,7 +108,8 @@ extension OverviewData {
                     currentPowerInWatts: 0,
                     color: "#ffff06",
                     signal: SensorConnectionStatus.connected,
-                    hasError: false),
+                    hasError: false
+                ),
                 Device.init(
                     id: "20",
                     deviceType: .energyMeasurement,
@@ -111,7 +118,8 @@ extension OverviewData {
                     currentPowerInWatts: 12,
                     color: "#aaff06",
                     signal: SensorConnectionStatus.connected,
-                    hasError: false)
+                    hasError: false
+                ),
             ],
             todaySelfConsumption: 4340,
             todaySelfConsumptionRate: 89,
@@ -121,6 +129,37 @@ extension OverviewData {
             todayGridImported: 25403,
             todayGridExported: 28838,
             todayBatteryCharged: 23480
+        )
+    }
+
+    static func fakeWithBattery(battery: Device = Device.fakeBattery()) -> OverviewData {
+        .init(
+            currentSolarProduction: 4550,
+            currentOverallConsumption: 1200,
+            currentBatteryLevel: 78,
+            currentBatteryChargeRate: 3400,
+            currentSolarToGrid: 10,
+            currentGridToHouse: 0,
+            currentSolarToHouse: 1200,
+            solarProductionMax: 11000,
+            hasConnectionError: false,
+            lastUpdated: Date(),
+            lastSuccessServerFetch: Date(),
+            isAnyCarCharing: false,
+            chargingStations: [
+                .init(
+                    id: "42",
+                    name: "Keba",
+                    chargingMode: ChargingMode.withSolarPower,
+                    priority: 1,
+                    currentPower: 0,
+                    signal: SensorConnectionStatus.connected
+                )
+            ],
+            devices: [
+                battery
+            ],
+            todayAutarchyDegree: 78
         )
     }
 }

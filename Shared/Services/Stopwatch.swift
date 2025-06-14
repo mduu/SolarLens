@@ -22,7 +22,7 @@ struct Stopwatch {
     }
 
     mutating func stop() {
-        if let start = startTime, endTime == nil {
+        if startTime != nil && endTime == nil {
             endTime = .now()
         }
     }
