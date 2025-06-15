@@ -134,7 +134,7 @@ struct ManualOptionsView: View {
                     .foregroundColor(.purple)
 
                 Text(
-                    "Contorll manually if the battery is charging, discharing or switched off."
+                    "Contorl manually if the battery is charging, discharing or switched off."
                 )
                 .font(.footnote)
             }

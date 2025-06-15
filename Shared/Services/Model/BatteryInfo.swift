@@ -119,7 +119,7 @@ enum BatteryMode: Int {
         switch self {
         case .Standard: return "Standard"
         case .Eco: return "Eco"
-        case .PeakShaving: return "Peak Shaving"
+        case .PeakShaving: return "Peak shaving"
         case .Manual: return "Manual"
         case .TariffOptimized: return "Tariff optimized"
         case .StandardControlled: return "Standard"
