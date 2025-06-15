@@ -10,63 +10,97 @@ struct EcoOptionsView: View {
     @Binding var maxPercentage: Int
 
     var body: some View {
-        Grid(
-            alignment: .leadingFirstTextBaseline,
-            verticalSpacing: 3
+        VStack(
+            alignment: .leading,
+            spacing: 3
         ) {
 
-            GridRow {
+            #if os(watchOS)
+
                 Text("Min.:")
-                Spacer()
+                    .padding(.top, 4)
                 IntPicker(
                     value: $minPercentage,
                     step: 1,
                     tintColor: .purple
                 )
-            }
 
-            GridRow {
                 Text("Morning:")
-                Spacer()
+                    .padding(.top, 4)
                 IntPicker(
                     value: $morningPercentage,
                     tintColor: .purple
                 )
-            }
 
-            GridRow {
                 Text("Max.:")
-                Spacer()
                 IntPicker(
-                    value: $maxPercentage,
+                    value: $morningPercentage,
                     tintColor: .purple
                 )
-            }
-        }  // :Grid
-        .frame(maxWidth: .infinity)
 
-        VStack(alignment: .leading) {
-            Text("Info:")
+            #else
+
+                Grid(
+                    alignment: .leadingFirstTextBaseline,
+                    verticalSpacing: 3
+                ) {
+
+                    GridRow {
+                        Text("Min.:")
+                        Spacer()
+                        IntPicker(
+                            value: $minPercentage,
+                            step: 1,
+                            tintColor: .purple
+                        )
+                    }
+
+                    GridRow {
+                        Text("Morning:")
+                        Spacer()
+                        IntPicker(
+                            value: $morningPercentage,
+                            tintColor: .purple
+                        )
+                    }
+
+                    GridRow {
+                        Text("Max.:")
+                        Spacer()
+                        IntPicker(
+                            value: $maxPercentage,
+                            tintColor: .purple
+                        )
+                    }
+                }  // :Grid
+                .frame(maxWidth: .infinity)
+
+            #endif
+
+            VStack(alignment: .leading) {
+                Text("Info:")
+                    .font(.footnote)
+                    .fontWeight(.bold)
+                    .foregroundColor(.purple)
+
+                Text(
+                    "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing."
+                )
                 .font(.footnote)
-                .fontWeight(.bold)
-                .foregroundColor(.purple)
 
-            Text(
-                "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing."
-            )
-            .font(.footnote)
+            }
+
+            Spacer()
 
         }
-
-        Spacer()
 
     }
 }
 
 #Preview {
-    
+
     VStack {
-        
+
         EcoOptionsView(
             battery: .fakeBattery(),
             minPercentage: .constant(5),
@@ -78,7 +112,7 @@ struct EcoOptionsView: View {
                 overviewData: OverviewData.fakeWithBattery()
             )
         )
-        
+
     }
     .frame(maxHeight: 500)
     .padding()

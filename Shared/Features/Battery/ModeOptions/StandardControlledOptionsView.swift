@@ -1,4 +1,4 @@
-// 
+//
 
 import SwiftUI
 
@@ -12,62 +12,98 @@ struct StandardControlledOptionsView: View {
     @Binding var maxPercentage: Int
 
     var body: some View {
-        Grid(
-            alignment: .leadingFirstTextBaseline,
-            verticalSpacing: 3
+        VStack(
+            alignment: .leading,
+            spacing: 3
         ) {
-            
-            GridRow {
-                Toggle(isOn: $allowStandalone, label: { Text("Allow standalone") })
-                    .gridCellColumns(3)
-                    .padding(.bottom, 5)
-            }
+            #if os(watchOS)
 
-            GridRow {
+                Toggle(
+                    isOn: $allowStandalone,
+                    label: { Text("Allow standalone") }
+                )
+                .gridCellColumns(3)
+                .padding(.bottom, 5)
+
                 Text("Min.:")
-                Spacer()
+                    .padding(.top, 4)
                 IntPicker(
                     value: $minPercentage,
                     step: 1,
                     tintColor: .purple
                 )
-            }
 
-            GridRow {
                 Text("Max.:")
-                Spacer()
+                    .padding(.top, 4)
                 IntPicker(
                     value: $maxPercentage,
                     tintColor: .purple
                 )
+
+            #else
+
+                Grid(
+                    alignment: .leadingFirstTextBaseline,
+                    verticalSpacing: 3
+                ) {
+
+                    GridRow {
+                        Toggle(
+                            isOn: $allowStandalone,
+                            label: { Text("Allow standalone") }
+                        )
+                        .gridCellColumns(3)
+                        .padding(.bottom, 5)
+                    }
+
+                    GridRow {
+                        Text("Min.:")
+                        Spacer()
+                        IntPicker(
+                            value: $minPercentage,
+                            step: 1,
+                            tintColor: .purple
+                        )
+                    }
+
+                    GridRow {
+                        Text("Max.:")
+                        Spacer()
+                        IntPicker(
+                            value: $maxPercentage,
+                            tintColor: .purple
+                        )
+                    }
+                }  // :Grid
+
+            #endif
+
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("Info:")
+                        .font(.footnote)
+                        .fontWeight(.bold)
+                        .foregroundColor(.purple)
+
+                    Spacer()
+                }
+
+                Text(
+                    "The battery will operate in standalone mode (if a smart meter is present) or controlled by Solar Manager with min/max percentage settings."
+                )
+                .font(.footnote)
+
+                Text(
+                    "To let Solar Manager control the battery disable 'Allow standalone'."
+                )
+                .font(.footnote)
+                .padding(.top, 2)
+
             }
-        }  // :Grid
+            .frame(maxWidth: .infinity)
 
-        VStack(alignment: .leading) {
-            HStack {
-                Text("Info:")
-                    .font(.footnote)
-                    .fontWeight(.bold)
-                    .foregroundColor(.purple)
-                
-                Spacer()
-            }
-
-            Text(
-                "The battery will operate in standalone mode (if a smart meter is present) or controlled by Solar Manager with min/max percentage settings."
-            )
-            .font(.footnote)
-            
-            Text(
-                "To let Solar Manager control the battery disable 'Allow standalone'."
-            )
-            .font(.footnote)
-            .padding(.top, 2)
-
+            Spacer()
         }
-        .frame(maxWidth: .infinity)
-
-        Spacer()
     }
 }
 
