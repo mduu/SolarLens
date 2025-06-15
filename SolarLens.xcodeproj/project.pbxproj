@@ -106,12 +106,6 @@
 		493AADB12D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Features/Battery/BatteryForecastView.swift,
-				Features/Battery/BatteryModeButton.swift,
-				Features/Battery/BatteryModeOptionsSheet.swift,
-				Features/Battery/BatteryModeSheet.swift,
-				Features/Battery/ModeOptions/EcoOptionsView.swift,
-				Features/Battery/ModeOptions/StandardControlledOptionsView.swift,
 				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Features/Solar/SolarTodayInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
@@ -290,9 +284,11 @@
 				Components/UpdateTimeStampView.swift,
 				Extensions/ColorExtensions.swift,
 				Features/Battery/BatteryForecastView.swift,
+				Features/Battery/BatteryIndicator.swift,
 				Features/Battery/BatteryModeButton.swift,
 				Features/Battery/BatteryModeOptionsSheet.swift,
 				Features/Battery/BatteryModeSheet.swift,
+				Features/Battery/BatteryView.swift,
 				Features/Battery/ModeOptions/EcoOptionsView.swift,
 				Features/Battery/ModeOptions/ManualOptionsView.swift,
 				Features/Battery/ModeOptions/PeakShavingOptionsView.swift,

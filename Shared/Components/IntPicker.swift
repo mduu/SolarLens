@@ -23,11 +23,15 @@ struct IntPicker: View {
             .buttonBorderShape(.circle)
             .buttonStyle(.bordered)
             .tint(tintColor)
+            
+            Spacer()
 
             HStack(spacing: 2) {
                 Text(verbatim: "\(value)")
                 Text(unit)
             }
+
+            Spacer()
 
             Button(action: {
                 withAnimation {

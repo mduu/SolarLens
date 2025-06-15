@@ -6,6 +6,8 @@ struct BatteryBoubleView: View {
     var currentChargeRate: Int?
     var useGlow: Bool
     
+    @State var showBatterySheet: Bool = false
+    
     var body: some View {
         if (currentBatteryLevel != nil) {
             
@@ -44,6 +46,7 @@ struct BatteryBoubleView: View {
                                 Circle()
                                     .fill(.white)
                                     .opacity(0.8)
+                                    .shadow(radius: 5, x: 4, y: 4)
 
                                 VStack {
                                     Text("Battery")
@@ -62,6 +65,15 @@ struct BatteryBoubleView: View {
                             } // :ZStack
                         }
                     }
+                }
+                .onTapGesture {
+                    showBatterySheet = true
+                }
+                .sheet(isPresented: $showBatterySheet) {
+                    NavigationView {
+                        BatterySheet()
+                    }
+                    .presentationDetents([.medium])
                 }
             } // :GeometryReader
         } // :if

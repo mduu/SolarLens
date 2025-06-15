@@ -846,6 +846,9 @@
         }
       }
     },
+    "Charging limit:" : {
+
+    },
     "Charging Mode" : {
       "localizations" : {
         "da" : {
@@ -875,6 +878,9 @@
       }
     },
     "Charging power:" : {
+
+    },
+    "Charging:" : {
 
     },
     "Charing Station" : {
@@ -1670,7 +1676,16 @@
         }
       }
     },
+    "Discharge limit:" : {
+
+    },
+    "Discharging limit:" : {
+
+    },
     "Discharging power:" : {
+
+    },
+    "Discharging:" : {
 
     },
     "Disconnected" : {
@@ -3058,6 +3073,9 @@
         }
       }
     },
+    "No battery data present!" : {
+
+    },
     "No car is currently charging." : {
       "localizations" : {
         "da" : {
@@ -4007,12 +4025,12 @@
         }
       }
     },
-    "Set '%@' to '%@'." : {
+    "Set %@ to %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Set '%1$@' to '%2$@'."
+            "value" : "Set %1$@ to %2$@"
           }
         }
       }
@@ -4932,6 +4950,9 @@
       }
     },
     "Something went wrong..." : {
+
+    },
+    "Stale data!" : {
 
     },
     "Standalone" : {

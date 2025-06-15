@@ -43,6 +43,7 @@ struct EcoOptionsView: View {
                 )
             }
         }  // :Grid
+        .frame(maxWidth: .infinity)
 
         VStack(alignment: .leading) {
             Text("Info:")
@@ -63,15 +64,22 @@ struct EcoOptionsView: View {
 }
 
 #Preview {
-    EcoOptionsView(
-        battery: .fakeBattery(),
-        minPercentage: .constant(5),
-        morningPercentage: .constant(80),
-        maxPercentage: .constant(100)
-    )
-    .environment(
-        CurrentBuildingState.fake(
-            overviewData: OverviewData.fakeWithBattery()
+    
+    VStack {
+        
+        EcoOptionsView(
+            battery: .fakeBattery(),
+            minPercentage: .constant(5),
+            morningPercentage: .constant(80),
+            maxPercentage: .constant(100)
         )
-    )
+        .environment(
+            CurrentBuildingState.fake(
+                overviewData: OverviewData.fakeWithBattery()
+            )
+        )
+        
+    }
+    .frame(maxHeight: 500)
+    .padding()
 }

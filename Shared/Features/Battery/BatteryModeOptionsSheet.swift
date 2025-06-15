@@ -20,13 +20,13 @@ struct BatteryModeOptionsSheet: View {
     @State var ecoMin: Int = 0
     @State var ecoMorning: Int = 0
     @State var ecoMax: Int = 0
-    
+
     // Peak shaving
     @State var psSocDischargeLimit: Int = 0
     @State var psSocMaxLimit: Int = 0
     @State var psMaxGridPower: Int = 0
     @State var psRechargePower: Int = 0
-    
+
     // Manual
     @State var manualMode: BatteryManualMode = .Charge
     @State var manualUpperSocLimit: Int = 0
@@ -39,21 +39,38 @@ struct BatteryModeOptionsSheet: View {
             ScrollView {
 
                 VStack(alignment: .leading) {
+                    #if os(watchOS)
+                        let buttonColor: Color = .purple.opacity(0.6)
+                    #else
+                        let buttonColor: Color = .purple
+                    #endif
+
                     Button(action: {
                         Task {
                             await setTargetMode()
                         }
                     }) {
+                        Spacer()
+
                         Text(
-                            "Set '\(battery.name)' to '\(targetMode.GetBatteryModeName())'."
+                            "Set \(Text(battery.name).fontWeight(.bold)) to \(Text(targetMode.GetBatteryModeName()).fontWeight(.bold))"
                         )
+
+                        Spacer()
                     }
-                    .buttonBorderShape(.circle)
+                    #if os(watchOS)
+                        .buttonBorderShape(.circle)
+                    #endif
                     .buttonStyle(.borderedProminent)
                     .background(Material.thick)
-                    .tint(.purple.opacity(0.6))
+                    .tint(buttonColor)
                     .frame(maxWidth: .infinity)
-                    .padding(.bottom, 3)
+                    #if os(watchOS)
+                        .padding(.bottom, 3)
+                    #else
+                        .padding(.top, 0)
+                        .padding(.bottom, 8)
+                    #endif
 
                     switch targetMode {
                     case .Standard:
@@ -104,7 +121,7 @@ struct BatteryModeOptionsSheet: View {
                 .ignoresSafeArea(.all, edges: .bottom)
                 .frame(maxWidth: .infinity)
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .topBarLeading) {
                         HStack {
                             Text("Battery options")
                                 .foregroundColor(.purple)
@@ -121,24 +138,29 @@ struct BatteryModeOptionsSheet: View {
                     ecoMin = batteryInfo.modeInfo.dischargeSocLimit
                     ecoMorning = batteryInfo.modeInfo.morningSocLimit
                     ecoMax = batteryInfo.modeInfo.chargingSocLimit
-                    
+
                     // Load existing Standard Controlled mode configuration
-                    stdCtrlAllowStandalone = batteryInfo.modeInfo.standardStandaloneAllowed
+                    stdCtrlAllowStandalone =
+                        batteryInfo.modeInfo.standardStandaloneAllowed
                     stdCtrlMin = batteryInfo.modeInfo.standardLowerSocLimit
                     stdCtrlMax = batteryInfo.modeInfo.standardUpperSocLimit
-                    
+
                     // Load existing Peak Shaving mode configuration
-                    psSocDischargeLimit = batteryInfo.modeInfo.peakShavingSocDischargeLimit
+                    psSocDischargeLimit =
+                        batteryInfo.modeInfo.peakShavingSocDischargeLimit
                     psSocMaxLimit = batteryInfo.modeInfo.peakShavingSocMaxLimit
-                    psMaxGridPower = batteryInfo.modeInfo.peakShavingMaxGridPower
-                    psRechargePower = batteryInfo.modeInfo.peakShavingRechargePower
+                    psMaxGridPower =
+                        batteryInfo.modeInfo.peakShavingMaxGridPower
+                    psRechargePower =
+                        batteryInfo.modeInfo.peakShavingRechargePower
 
                     // Laod existing Manual mode configuration
                     manualMode = batteryInfo.modeInfo.batteryManualMode
                     manualUpperSocLimit = batteryInfo.modeInfo.upperSocLimit
                     manualLowerSocLimit = batteryInfo.modeInfo.lowerSocLimit
                     manualPowerCharge = batteryInfo.modeInfo.powerCharge
-                    manualPowerDischarge = batteryInfo.modeInfo.dischargeSocLimit
+                    manualPowerDischarge =
+                        batteryInfo.modeInfo.dischargeSocLimit
                 }
             }
         }

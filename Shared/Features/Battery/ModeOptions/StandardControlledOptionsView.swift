@@ -14,7 +14,7 @@ struct StandardControlledOptionsView: View {
     var body: some View {
         Grid(
             alignment: .leadingFirstTextBaseline,
-            verticalSpacing: 5
+            verticalSpacing: 3
         ) {
             
             GridRow {
