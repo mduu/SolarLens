@@ -11,6 +11,7 @@ struct HomeScreen: View {
     @State var solarForecastTimer: Timer?
     @State var solarDetailsData: SolarDetailsData?
     @State var presentOnboarding: Bool = AppSettings().showOnboarding
+    @State var showError: Bool = false
 
     var isPortrait: Bool { verticalSizeClass != .compact }
 
@@ -204,34 +205,116 @@ struct HomeScreen: View {
                         if buildingState.error != nil
                             || buildingState.errorMessage ?? "" != ""
                         {
-                            VStack(alignment: .leading) {
-                                Text("Something went wrong...")
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                
-                                    ScrollView {
-                                        
-                                        Text("Error message:")
-                                            .font(.headline)
-                                        
-                                        Text(buildingState.errorMessage ?? "")
-                                            .multilineTextAlignment(.leading)
-                                            .padding(.bottom)
-                                        
-                                        Text("Error:")
-                                            .font(.headline)
-                                        
-                                        Text(String(describing: buildingState.error))
-                                            .multilineTextAlignment(.leading)
-                                        
+                            VStack {
+                                Spacer()
+
+                                HStack {
+                                    Button(action: {
+                                        showError = true
+                                    }) {
+                                        Image(
+                                            systemName:
+                                                "exclamationmark.bubble.fill"
+                                        )
+                                        .font(.system(size: 32))
+                                    }
+                                    .buttonStyle(.plain)
+                                    .foregroundColor(.red)
+
+                                    Spacer()
+                                }
+                                .padding(.leading, 20)
+                                .padding(.bottom, 50)
+                                .sheet(
+                                    isPresented: $showError
+                                ) {
+                                    NavigationView {
+
+                                        ScrollView(showsIndicators: true) {
+
+                                            VStack(alignment: .leading) {
+
+                                                Text("Error message:")
+                                                    .frame(
+                                                        maxWidth: .infinity,
+                                                        alignment: .leading
+                                                    )
+                                                    .font(.title2)
+                                                    .fontWeight(.bold)
+                                                    .foregroundColor(.red)
+
+                                                Text(
+                                                    buildingState.errorMessage
+                                                        ?? "-"
+                                                )
+                                                .multilineTextAlignment(
+                                                    .leading
+                                                )
+                                                .frame(
+                                                    maxWidth: .infinity,
+                                                    alignment: .leading
+                                                )
+
+                                                Text("Error:")
+                                                    .font(.title2)
+                                                    .fontWeight(.bold)
+                                                    .frame(
+                                                        maxWidth: .infinity,
+                                                        alignment: .leading
+                                                    )
+                                                    .foregroundColor(.red)
+
+                                                Text(
+                                                    String(
+                                                        describing:
+                                                            buildingState
+                                                            .error
+                                                    )
+                                                )
+                                                .multilineTextAlignment(
+                                                    .leading
+                                                )
+                                                .frame(
+                                                    maxWidth: .infinity,
+                                                    alignment: .leading
+                                                )
+
+                                            }
+                                            .frame(maxWidth: .infinity)
+                                        }
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .navigationBarTitleDisplayMode(.inline)
+                                        .toolbar {
+                                            ToolbarItem(
+                                                placement: .navigationBarLeading
+                                            ) {
+                                                Button(action: {
+                                                    showError = false
+                                                }) {
+                                                    Image(systemName: "xmark")  // Use a system icon
+                                                        .resizable()  // Make the image resizable
+                                                        .scaledToFit()  // Fit the image within the available space
+                                                        .frame(
+                                                            width: 18,
+                                                            height: 18
+                                                        )  // Set the size of the image
+                                                        .foregroundColor(.red)  // Set the color of the image
+                                                }
+
+                                            }
+                                            ToolbarItem(
+                                                placement:
+                                                    .navigationBarTrailing
+                                            ) {
+                                                Text("Error")
+                                                    .foregroundColor(.red)
+                                            }
+                                        }
                                     }
 
+                                }
                             }
-                            .padding()
-                            .border(Color.red, width: 2)
-                            .background(.white)
-                            .foregroundColor(.red)
-                            .frame(maxHeight: 600)
                         }
 
                     }  // :ZStack
@@ -334,7 +417,8 @@ struct HomeScreen: View {
 
 #Preview("Normal") {
     HomeScreen(
-        solarDetailsData: SolarDetailsData.fake()
+        solarDetailsData: SolarDetailsData.fake(),
+        presentOnboarding: false
     )
     .environment(
         CurrentBuildingState.fake(
@@ -352,6 +436,20 @@ struct HomeScreen: View {
         CurrentBuildingState.fake(
             overviewData: OverviewData.empty(),
             isLoading: true
+        )
+    )
+}
+
+#Preview("Error") {
+    HomeScreen(
+        solarDetailsData: SolarDetailsData.fake(),
+        presentOnboarding: false
+    )
+    .environment(
+        CurrentBuildingState.fake(
+            overviewData: OverviewData.fake(),
+            error: .invalidData,
+            errorMessage: "This is an error message!"
         )
     )
 }

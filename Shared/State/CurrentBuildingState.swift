@@ -34,7 +34,9 @@ class CurrentBuildingState {
         overviewData: OverviewData = OverviewData.fake(),
         loggedIn: Bool = true,
         isLoading: Bool = false,
-        didLoginSucceed: Bool? = nil
+        didLoginSucceed: Bool? = nil,
+        error: EnergyManagerClientError? = nil,
+        errorMessage: String? = nil
     ) -> CurrentBuildingState {
         let result = CurrentBuildingState.init(
             energyManagerClient: FakeEnergyManager.init(data: overviewData)
@@ -48,6 +50,8 @@ class CurrentBuildingState {
 
         result.isLoading = isLoading
         result.didLoginSucceed = didLoginSucceed
+        result.error = error
+        result.errorMessage = errorMessage
 
         return result
     }
