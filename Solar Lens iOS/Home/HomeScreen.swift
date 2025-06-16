@@ -342,7 +342,7 @@ struct HomeScreen: View {
             }  // :GeometryReader
 
         }  // :VStack
-        .ignoresSafeArea()
+        .ignoresSafeArea(.all, edges: [.leading, .trailing, .top])
     }
 
     private func refreshAll() {
