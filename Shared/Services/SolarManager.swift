@@ -584,7 +584,7 @@ actor SolarManager: EnergyManager {
                     .from(battery.batteryMode!),
                 batteryManualMode:
                     BatteryManualMode
-                    .from(battery.batteryManualMode!),
+                    .from(battery.batteryManualMode ?? 0),
 
                 // Manual
                 upperSocLimit: battery.upperSocLimit ?? 95,
