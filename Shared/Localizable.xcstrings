@@ -195,6 +195,9 @@
     "0" : {
       "shouldTranslate" : false
     },
+    "1x Tariff" : {
+
+    },
     "A car is chariging." : {
       "localizations" : {
         "da" : {
@@ -761,6 +764,9 @@
         }
       }
     },
+    "Battery to car" : {
+
+    },
     "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {
       "localizations" : {
         "da" : {
@@ -1064,6 +1070,9 @@
           }
         }
       }
+    },
+    "Charge car with tariff optimized, then switch back to previouse mode." : {
+
     },
     "Charging" : {
       "localizations" : {
@@ -4139,6 +4148,9 @@
         }
       }
     },
+    "Now" : {
+
+    },
     "Off" : {
       "localizations" : {
         "da" : {
@@ -4723,6 +4735,15 @@
           }
         }
       }
+    },
+    "Scenario" : {
+
+    },
+    "Scenarios" : {
+
+    },
+    "Scenarios are practical automations that help you to control your energy in your house the smart way." : {
+
     },
     "Select car to query" : {
       "localizations" : {
@@ -7062,6 +7083,9 @@
           }
         }
       }
+    },
+    "Transfer energy from battery to car." : {
+
     },
     "Try again" : {
       "localizations" : {
