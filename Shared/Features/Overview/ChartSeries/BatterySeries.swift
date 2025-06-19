@@ -115,10 +115,6 @@ struct BatterySeries: ChartContent {
     private func flattenallBatteryItems() -> [BatteryHistoryItem] {
         batteries
             .flatMap { $0.items }
-            .filter {
-                !$0.averagePowerChargedW.isZero
-                    || !$0.averagePowerDischargedW.isZero
-            }
     }
 }
 
