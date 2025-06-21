@@ -3,9 +3,10 @@
 import SwiftUI
 
 struct ScenarioButton: View {
-    var imageName: String
-    var title: LocalizedStringResource
-    var description: LocalizedStringResource
+    let imageName: String
+    let title: LocalizedStringResource
+    let description: LocalizedStringResource
+    let action: () -> Void
 
     @State var isPressed: Bool = false
 
@@ -50,7 +51,7 @@ struct ScenarioButton: View {
                             lineWidth: 4
                         )
                         .shadow(
-                            color: isPressed ? .pink.opacity(0.4) : .clear,
+                            color: isPressed ? .pink.opacity(0.7) : .clear,
                             radius: 10
                         )
                 )
@@ -67,6 +68,8 @@ struct ScenarioButton: View {
                         .toggle()  // Second toggle with animation
                 }
             }
+            
+            action()
         }
     }
 }
@@ -92,13 +95,15 @@ struct ScenarioButton: View {
             ScenarioButton(
                 imageName: "bolt.car.circle",
                 title: "Battery to car",
-                description: "Transfer energy from battery to car."
+                description: "Transfer energy from battery to car.",
+                action: {}
             )
 
             ScenarioButton(
                 imageName: "bolt.car.circle",
                 title: "Battery to car",
                 description: "Transfer energy from battery to car.",
+                action: {},
                 isPressed: true
             )
             .padding(.top, 50)

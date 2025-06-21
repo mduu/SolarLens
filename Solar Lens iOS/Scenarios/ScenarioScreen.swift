@@ -50,14 +50,20 @@ struct ScenarioScreen: View {
                         ScenarioButton(
                             imageName: "bolt.car.circle",
                             title: "Battery to car",
-                            description: "Transfer energy from battery to car."
+                            description: "Transfer energy from battery to car.",
+                            action: {
+                                print("Battery to car pressed")
+                            }
                         )
 
                         ScenarioButton(
                             imageName: "bolt.car",
                             title: "1x Tariff",
                             description:
-                                "Charge car with tariff optimized, then switch back to previouse mode."
+                                "Charge car with tariff optimized, then switch back to previouse mode.",
+                            action: {
+                                print("1x Tariff pressed")
+                            }
                         )
                     }
 
