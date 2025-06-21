@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.marcduerst.SolarManagerWatch.Scenario.BatteryToCar</string>
+		<string>com.marcduerst.SolarManagerWatch.Scenario.OneTimeTarif</string>
+	</array>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -9,6 +14,11 @@
 		<string>fr</string>
 		<string>it</string>
 		<string>Danish</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
 	</array>
 </dict>
 </plist>
