@@ -53,6 +53,7 @@ struct ScenarioScreen: View {
                             description: "Transfer energy from battery to car.",
                             action: {
                                 print("Battery to car pressed")
+                                
                             }
                         )
 

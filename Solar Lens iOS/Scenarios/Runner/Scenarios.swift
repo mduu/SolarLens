@@ -1,7 +1,8 @@
 import BackgroundTasks
 import Foundation
 
-class ScenarionRegistry {
+public class Scenarios {
+    
     public static func registerScenarioTasks() {
         ScenarioBatteryToCar().register()
     }
