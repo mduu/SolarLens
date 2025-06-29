@@ -4,8 +4,7 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.marcduerst.SolarManagerWatch.Scenario.BatteryToCar</string>
-		<string>com.marcduerst.SolarManagerWatch.Scenario.OneTimeTarif</string>
+		<string>com.marcduerst.SolarManagerWatch.ScenarioRunner</string>
 	</array>
 	<key>CFBundleLocalizations</key>
 	<array>

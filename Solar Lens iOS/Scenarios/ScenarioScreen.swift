@@ -51,9 +51,10 @@ struct ScenarioScreen: View {
                             imageName: "bolt.car.circle",
                             title: "Battery to car",
                             description: "Transfer energy from battery to car.",
-                            action: {
+                            scenario: .BatteryToCar,
+                            activateAction: {
                                 print("Battery to car pressed")
-                                
+                                //ScenarioBatteryToCar.shared.start()
                             }
                         )
 
@@ -62,17 +63,21 @@ struct ScenarioScreen: View {
                             title: "1x Tariff",
                             description:
                                 "Charge car with tariff optimized, then switch back to previouse mode.",
-                            action: {
+                            scenario: .OneTimeTariff,
+                            activateAction: {
                                 print("1x Tariff pressed")
                             }
                         )
                     }
 
-                }
+                }  // :Grid
                 .frame(maxWidth: .infinity)
+                .padding(.bottom, 10)
 
                 Spacer()
-            }
+
+                LogCountBubble(messages: ScenarioManager.shared.log)
+            }  // :VStack
             .padding()
 
         }

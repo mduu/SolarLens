@@ -21,7 +21,7 @@ struct Solar_Lens_iOSApp: App {
 
     init() {
         // Register background tasks on app launch
-        Scenarios.registerScenarioTasks()
+        ScenarioManager.shared.registerBackgroundTask()
     }
 
     private func handleScenePhaseChange(_ newPhase: ScenePhase) {

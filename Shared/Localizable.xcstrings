@@ -12,6 +12,9 @@
       },
       "shouldTranslate" : false
     },
+    "-" : {
+
+    },
     "'Peak Shaving' uses your battery to supply power during high-demand periods, reducing the amount of expensive electricity drawn from the grid and lowering your overall costs." : {
       "localizations" : {
         "da" : {
@@ -85,6 +88,9 @@
     },
     "%@%%" : {
       "shouldTranslate" : false
+    },
+    "%lld" : {
+
     },
     "%lld %%" : {
       "localizations" : {
@@ -512,6 +518,15 @@
         }
       }
     },
+    "Background tasks registered with iOS" : {
+
+    },
+    "Background trigger received" : {
+
+    },
+    "Background trigger received but active scenario. Abort background task." : {
+
+    },
     "Battery" : {
       "localizations" : {
         "da" : {
@@ -765,6 +780,9 @@
       }
     },
     "Battery to car" : {
+
+    },
+    "Battery to Car" : {
 
     },
     "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {
@@ -2492,6 +2510,9 @@
         }
       }
     },
+    "ERROR: Could not schedule app refresh: %@" : {
+
+    },
     "Explanation" : {
       "localizations" : {
         "da" : {
@@ -3980,6 +4001,15 @@
         }
       }
     },
+    "Next background check scheduled successfully at %lf" : {
+
+    },
+    "Next scenario run at %@" : {
+
+    },
+    "No 'nextRun' date set, cannot schedule background task" : {
+
+    },
     "No battery data present!" : {
       "localizations" : {
         "da" : {
@@ -4736,13 +4766,47 @@
         }
       }
     },
+    "Run scenario %@" : {
+
+    },
+    "RunActiveScenario: activeTask?.run() failed (attempt %lld/%lld). Error: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "RunActiveScenario: activeTask?.run() failed (attempt %1$lld/%2$lld). Error: %3$@"
+          }
+        }
+      }
+    },
+    "RunActiveScenario: All %lld attempts failed." : {
+
+    },
+    "RunActiveScenario: Retrying in 1 second..." : {
+
+    },
     "Scenario" : {
+
+    },
+    "Scenario %@ failed!" : {
+
+    },
+    "Scenario %@ started" : {
+
+    },
+    "Scenario Logs" : {
+
+    },
+    "Scenarion %@" : {
 
     },
     "Scenarios" : {
 
     },
     "Scenarios are practical automations that help you to control your energy in your house the smart way." : {
+
+    },
+    "Search logs..." : {
 
     },
     "Select car to query" : {
@@ -6208,6 +6272,9 @@
         }
       }
     },
+    "Successfully ran scenario %@.)" : {
+
+    },
     "Target %" : {
       "localizations" : {
         "da" : {
@@ -7151,6 +7218,9 @@
     },
     "Unknown charging mode" : {
       "shouldTranslate" : false
+    },
+    "Unsupported scenario %@" : {
+
     },
     "Updated %@" : {
       "localizations" : {

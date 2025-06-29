@@ -1,14 +1,19 @@
-//
-
 import SwiftUI
 
 struct ScenarioButton: View {
     let imageName: String
     let title: LocalizedStringResource
     let description: LocalizedStringResource
-    let action: () -> Void
+    let scenario: Scenario
+    let activateAction: () -> Void
+    let deactivateAction: (() -> Void)? = nil
 
     @State var isPressed: Bool = false
+
+    var isOtherScenarioActive: Bool {
+        ScenarioManager.shared.activeScenario != nil
+            && ScenarioManager.shared.activeScenario != scenario
+    }
 
     var body: some View {
         VStack(spacing: 10) {
@@ -16,17 +21,23 @@ struct ScenarioButton: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 50, height: 50)
-                .foregroundColor(.purple)
+                .foregroundColor(
+                    isOtherScenarioActive ? .purple.opacity(0.6) : .purple
+                )
 
             Text(title)
                 .font(.title3)
                 .fontWeight(.bold)
-                .foregroundColor(.primary)
+                .foregroundColor(
+                    isOtherScenarioActive ? .primary.opacity(0.6) : .primary
+                )
                 .frame(maxWidth: 140)
 
             Text(description)
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(
+                    isOtherScenarioActive ? .secondary.opacity(0.6) : .secondary
+                )
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 140)
         }
@@ -35,7 +46,10 @@ struct ScenarioButton: View {
         .background(
 
             RoundedRectangle(cornerRadius: 15)
-                .fill(.white.opacity(0.15))
+                .fill(
+                    isOtherScenarioActive
+                        ? .white.opacity(0.30) : .white.opacity(0.15)
+                )
                 .shadow(color: .black, radius: 10, x: 5, y: 5)
                 .overlay(
                     RoundedRectangle(cornerRadius: 15)
@@ -57,6 +71,10 @@ struct ScenarioButton: View {
                 )
         )
         .onTapGesture { gesture in
+            if isOtherScenarioActive {
+                return
+            }
+
             withAnimation {
                 isPressed.toggle()  // First toggle with animation
             }
@@ -68,8 +86,8 @@ struct ScenarioButton: View {
                         .toggle()  // Second toggle with animation
                 }
             }
-            
-            action()
+
+            activateAction()
         }
     }
 }
@@ -96,14 +114,16 @@ struct ScenarioButton: View {
                 imageName: "bolt.car.circle",
                 title: "Battery to car",
                 description: "Transfer energy from battery to car.",
-                action: {}
+                scenario: .BatteryToCar,
+                activateAction: {}
             )
 
             ScenarioButton(
                 imageName: "bolt.car.circle",
                 title: "Battery to car",
                 description: "Transfer energy from battery to car.",
-                action: {},
+                scenario: .OneTimeTariff,
+                activateAction: {},
                 isPressed: true
             )
             .padding(.top, 50)
