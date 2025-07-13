@@ -214,7 +214,8 @@
 				Services/SolarManagerApi/DTOs/ChargingMode.swift,
 				Services/SolarManagerApi/DTOs/ControlBatteryV2Request.swift,
 				Services/SolarManagerApi/DTOs/ControlCarChargingRequest.swift,
-				Services/SolarManagerApi/DTOs/ForecastItemV1Response.swift,
+				Services/SolarManagerApi/DTOs/ErrorCode.swift,
+				Services/SolarManagerApi/DTOs/ForecastItemV3Response.swift,
 				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
 				Services/SolarManagerApi/DTOs/GetV1ChartResponse.swift,
 				Services/SolarManagerApi/DTOs/GetV1UsersResponse.swift,
@@ -753,8 +754,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.7.1;
-				APP_VERSION_BUILDNO = 229;
+				APP_VERSION = 3.7.2;
+				APP_VERSION_BUILDNO = 230;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -827,8 +828,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.7.1;
-				APP_VERSION_BUILDNO = 229;
+				APP_VERSION = 3.7.2;
+				APP_VERSION_BUILDNO = 230;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
