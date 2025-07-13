@@ -8,7 +8,7 @@ struct SensorInfosV1Response : Codable {
     var signal: SensorConnectionStatus = .notConnected
     var deviceActivity: Int?
     var soc: Double? // Car: Battery-Level
-    var errorCodes: [String]
+    var errorCodes: [ErrorCode] = []
     var ip: String?
     var mac: String?
     var createdAt: String?
