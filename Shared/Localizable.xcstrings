@@ -162,10 +162,10 @@
       "shouldTranslate" : false
     },
     "%lld W" : {
-      "shouldTranslate" : false
+
     },
     "%lld%%" : {
-      "shouldTranslate" : false
+
     },
     "%lld%%  %@ kW" : {
       "localizations" : {
@@ -175,14 +175,13 @@
             "value" : "%1$lld%%  %2$@ kW"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "☀️ %@" : {
-      "shouldTranslate" : false
+
     },
     "☀️ %lld W" : {
-      "shouldTranslate" : false
+
     },
     "♻️ %@, 🍃 %@" : {
       "localizations" : {
@@ -192,14 +191,13 @@
             "value" : "♻️ %1$@, 🍃 %2$@"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "🔋%@ %%" : {
-      "shouldTranslate" : false
+
     },
     "0" : {
-      "shouldTranslate" : false
+
     },
     "1x Tariff" : {
 
@@ -2570,7 +2568,7 @@
       }
     },
     "Favorite Emoji" : {
-      "shouldTranslate" : false
+
     },
     "Forecast" : {
       "localizations" : {
@@ -3353,7 +3351,7 @@
       }
     },
     "kWh" : {
-      "shouldTranslate" : false
+
     },
     "Licence:" : {
       "localizations" : {
@@ -5063,7 +5061,7 @@
       "shouldTranslate" : false
     },
     "Series:" : {
-      "shouldTranslate" : false
+
     },
     "Server" : {
       "localizations" : {
@@ -6754,7 +6752,7 @@
       }
     },
     "This is an example widget." : {
-      "shouldTranslate" : false
+
     },
     "Time" : {
       "localizations" : {
@@ -6841,7 +6839,7 @@
       }
     },
     "To implement" : {
-      "shouldTranslate" : false
+
     },
     "To let Solar Manager control the battery disable 'Allow standalone'." : {
       "localizations" : {
@@ -7217,7 +7215,7 @@
       }
     },
     "Unknown charging mode" : {
-      "shouldTranslate" : false
+
     },
     "Unsupported scenario %@" : {
 
@@ -7419,7 +7417,7 @@
       }
     },
     "v%@" : {
-      "shouldTranslate" : false
+
     },
     "Version %@" : {
       "localizations" : {
@@ -7450,7 +7448,7 @@
       }
     },
     "W" : {
-      "shouldTranslate" : false
+
     },
     "Watts" : {
       "localizations" : {

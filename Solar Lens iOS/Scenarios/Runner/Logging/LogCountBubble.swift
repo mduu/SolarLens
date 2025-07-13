@@ -2,16 +2,16 @@ import SwiftUI
 
 struct LogCountBubble: View {
     let messages: [ScenarioLogMessage]
-    
-    private var count: Int { messages.count }
-    
+
+    private var count: Int { messages.filter { $0.level != .Debug }.count }
+
     @State private var showingLogSheet = false
-    
+
     // Count messages by level for the bubble color
     private var hasErrors: Bool {
         messages.contains { $0.level == .Error || $0.level == .Failure }
     }
-    
+
     private var bubbleColor: Color {
         if count == 0 {
             return .gray
@@ -21,7 +21,7 @@ struct LogCountBubble: View {
             return .blue
         }
     }
-    
+
     var body: some View {
         Button {
             showingLogSheet = true
@@ -30,7 +30,7 @@ struct LogCountBubble: View {
                 Circle()
                     .fill(bubbleColor)
                     .frame(width: bubbleSize, height: bubbleSize)
-                
+
                 Text("\(count)")
                     .font(countFont)
                     .fontWeight(.semibold)
@@ -38,14 +38,13 @@ struct LogCountBubble: View {
                     .minimumScaleFactor(0.8)
             }
         }
-        .disabled(count == 0)
         .opacity(count == 0 ? 0.5 : 1.0)
         .sheet(isPresented: $showingLogSheet) {
             ScenarioLogView(messages: messages)
                 .presentationDetents([.large, .medium])
         }
     }
-    
+
     private var bubbleSize: CGFloat {
         switch count {
         case 0...9:
@@ -58,7 +57,7 @@ struct LogCountBubble: View {
             return 44
         }
     }
-    
+
     private var countFont: Font {
         switch count {
         case 0...9:

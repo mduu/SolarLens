@@ -12,7 +12,7 @@ public class ScenarioManager: ScenariorHost {
         "com.marcduerst.SolarManagerWatch.ScenarioRunner"
     private var activeTask: ScenarioTask?
     private var nextRun: Date?
-    
+
     private var activeScenarioName: LocalizedStringResource {
         activeTask?.scenarioName ?? "-"
     }
@@ -24,10 +24,10 @@ public class ScenarioManager: ScenariorHost {
         ) { task in
             self.handleBckgroundTask(task: task as! BGAppRefreshTask)
         }
-        
+
         logDebug(message: "Background tasks registered with iOS")
     }
-    
+
     public func startScenario(scenario: Scenario) {
         switch scenario {
         case .BatteryToCar:
@@ -36,43 +36,50 @@ public class ScenarioManager: ScenariorHost {
         default:
             logError(message: "Unsupported scenario \(scenario.rawValue)")
         }
-        
+
         activeScenario = scenario
-        
+
         logInfo(message: "Scenario \(activeScenarioName) started")
-        
+
         Task {
             await runActiveScenario()
         }
     }
 
-    func logSccess() {
+    func logSuccess() {
         log.append(
             .init(
                 time: Date(),
-                message: "Successfully ran scenario \(activeScenarioName).)",
+                message: "Successfully ran scenario \(activeScenarioName).",
                 level: .Success
             )
         )
+        print("SUCCESS: Successfully ran scenario \(activeScenarioName)")
     }
 
     func logInfo(message: LocalizedStringResource) {
         log.append(.init(time: Date(), message: message, level: .Info))
+        print("INFO: \(message)")
     }
 
     func logError(message: LocalizedStringResource) {
         log.append(.init(time: Date(), message: message, level: .Error))
+        print("ERROR: \(message)")
     }
-    
+
     func logDebug(message: LocalizedStringResource) {
         log.append(.init(time: Date(), message: message, level: .Debug))
+        print("DEBUG: \(message)")
     }
 
     func logFailure() {
-        log.append(.init(
-            time: Date(),
-            message: "Scenario \(activeScenarioName) failed!",
-            level: .Failure))
+        log.append(
+            .init(
+                time: Date(),
+                message: "Scenario \(activeScenarioName) failed!",
+                level: .Failure
+            )
+        )
     }
 
     private var foregroundCheckTask: Task<Void, Never>? = nil
@@ -81,7 +88,10 @@ public class ScenarioManager: ScenariorHost {
         logDebug(message: "Background trigger received")
 
         if activeTask == nil {
-            logInfo(message: "Background trigger received but active scenario. Abort background task.")
+            logInfo(
+                message:
+                    "Background trigger received but active scenario. Abort background task."
+            )
 
             task.setTaskCompleted(success: true)
             return
@@ -104,7 +114,10 @@ public class ScenarioManager: ScenariorHost {
 
     private func scheduleNextBackgroundCall() {
         guard let nextRun else {
-            logError(message: "No 'nextRun' date set, cannot schedule background task")
+            logError(
+                message:
+                    "No 'nextRun' date set, cannot schedule background task"
+            )
             return
         }
 
@@ -118,13 +131,17 @@ public class ScenarioManager: ScenariorHost {
         )
 
         do {
-            
+
             try BGTaskScheduler.shared.submit(request)
-            logDebug(message: "Next background check scheduled successfully at \(nextRunIn)")
-            
+            logDebug(
+                message:
+                    "Next background check scheduled successfully at \(nextRunIn)"
+            )
+
         } catch {
             logError(
-                message: "ERROR: Could not schedule app refresh: \(error.localizedDescription)"
+                message:
+                    "ERROR: Could not schedule app refresh: \(error.localizedDescription)"
             )
         }
     }
@@ -152,16 +169,20 @@ public class ScenarioManager: ScenariorHost {
             } catch {
                 currentRetry += 1
                 logError(
-                    message: "RunActiveScenario: activeTask?.run() failed (attempt \(currentRetry)/\(maxRetries + 1)). Error: \(error.localizedDescription)"
+                    message:
+                        "RunActiveScenario: activeTask?.run() failed (attempt \(currentRetry)/\(maxRetries + 1)). Error: \(error.localizedDescription)"
                 )
 
                 if currentRetry <= maxRetries {
-                    logDebug(message: "RunActiveScenario: Retrying in 1 second...")
+                    logDebug(
+                        message: "RunActiveScenario: Retrying in 1 second..."
+                    )
                     try? await Task.sleep(nanoseconds: 1_000_000_000)  // 1 second
                 } else {
                     // All retries exhausted, re-throw the last error or handle it
                     logError(
-                        message: "RunActiveScenario: All \(maxRetries + 1) attempts failed."
+                        message:
+                            "RunActiveScenario: All \(maxRetries + 1) attempts failed."
                     )
                     // If you want to propagate the error up, uncomment the line below.
                     // Otherwise, you might log it and decide on a different action.
