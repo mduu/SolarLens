@@ -172,6 +172,7 @@ class RestClient {
                     print(
                         "Error deserializing response: \(error.localizedDescription)"
                     )
+                    print("Debug-Description: \(response.debugDescription)")
                     debugPrint(
                         String(data: data!, encoding: .utf8)
                             ?? "Data could not be decoded as UTF-8"

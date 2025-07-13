@@ -12,10 +12,19 @@ class RestDateHelper {
         let dateFormatter = getDateFormatterWithZulu()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
-        let result = dateFormatter.date(from: string)
+        var result = dateFormatter.date(from: string)
+        
+        if result == nil {
+            // Fallback and try parsing without ms
+            let dateFormatter = getDateFormatterWithZulu()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+
+            result = dateFormatter.date(from: string)
+        }
+        
         return result
     }
-    
+        
     private static func getDateFormatterWithZulu() -> DateFormatter {
         let dateFormatter = getDateFormatterWithoutTimezone()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"

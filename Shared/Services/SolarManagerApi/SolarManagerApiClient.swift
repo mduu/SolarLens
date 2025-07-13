@@ -14,11 +14,12 @@ class SolarManagerApi: RestClient {
             if let loginResponse: LoginResponse? = try await post(
                 serviceUrl: "/v1/oauth/login",
                 requestBody: LoginRequest(email: email, password: password),
-                useAccessToken: false)
-            {
+                useAccessToken: false
+            ) {
                 storeLogin(
                     accessToken: loginResponse!.accessToken,
-                    refreshToken: loginResponse!.refreshToken)
+                    refreshToken: loginResponse!.refreshToken
+                )
 
                 return loginResponse!
             }
@@ -40,11 +41,12 @@ class SolarManagerApi: RestClient {
             if let refreshResponse: RefreshResponse? = try await post(
                 serviceUrl: "/v1/oauth/refresh",
                 requestBody: RefreshRequest(refreshToken: refreshToken),
-                useAccessToken: false)
-            {
+                useAccessToken: false
+            ) {
                 storeLogin(
                     accessToken: refreshResponse!.accessToken,
-                    refreshToken: refreshResponse!.refreshToken)
+                    refreshToken: refreshResponse!.refreshToken
+                )
 
                 return refreshResponse!
             }
@@ -65,14 +67,16 @@ class SolarManagerApi: RestClient {
         -> GetV1ChartResponse?
     {
         let response: GetV1ChartResponse? = try await get(
-            serviceUrl: "/v1/chart/gateway/\(smId)")
+            serviceUrl: "/v1/chart/gateway/\(smId)"
+        )
 
         return response
     }
 
     func getV1Users() async throws -> [V1User]? {
         let response: [V1User]? = try await get(
-            serviceUrl: "/v1/users")
+            serviceUrl: "/v1/users"
+        )
 
         return response
     }
@@ -81,7 +85,8 @@ class SolarManagerApi: RestClient {
         -> [SensorInfosV1Response]?
     {
         let response: [SensorInfosV1Response]? = try await get(
-            serviceUrl: "/v1/info/sensors/\(smId)")
+            serviceUrl: "/v1/info/sensors/\(smId)"
+        )
 
         return response
     }
@@ -90,7 +95,8 @@ class SolarManagerApi: RestClient {
         -> StreamSensorsV1Response?
     {
         let response: StreamSensorsV1Response? = try await get(
-            serviceUrl: "/v1/stream/gateway/\(smId)")
+            serviceUrl: "/v1/stream/gateway/\(smId)"
+        )
 
         return response
     }
@@ -99,7 +105,8 @@ class SolarManagerApi: RestClient {
         async throws -> SensorConsumptionV1Response?
     {
         let response: SensorConsumptionV1Response? = try await get(
-            serviceUrl: "/v1/consumption/sensor/\(sensorId)?period=\(period)")
+            serviceUrl: "/v1/consumption/sensor/\(sensorId)?period=\(period)"
+        )
 
         return response
     }
@@ -121,11 +128,12 @@ class SolarManagerApi: RestClient {
         return response
     }
 
-    func getV1ForecastGateway(solarManagerId smId: String) async throws
-        -> [ForecastItemV1Response]?
+    func getV3ForecastGateway(solarManagerId smId: String) async throws
+        -> ForecastV3Response?
     {
-        let response: [ForecastItemV1Response]? = try await get(
-            serviceUrl: "/v1/forecast/gateways/\(smId)")
+        let response: ForecastV3Response? = try await get(
+            serviceUrl: "/v3/users/\(smId)/data/forecast"
+        )
 
         return response
     }
@@ -147,7 +155,7 @@ class SolarManagerApi: RestClient {
 
         return response
     }
-    
+
     func getV1SensorData(
         sensor id: String,
         from: Date,
@@ -166,32 +174,37 @@ class SolarManagerApi: RestClient {
     }
 
     func putControlCarCharger(
-        sensorId: String, control: ControlCarChargingRequest
+        sensorId: String,
+        control: ControlCarChargingRequest
     ) async throws {
         var _: NoContentResponse? = try await put(
             serviceUrl: "/v1/control/car-charger/\(sensorId)",
-            requestBody: control)
+            requestBody: control
+        )
 
         return
     }
 
     func putConfigurationSensorPriority(
-        sensorId: String, priority: PutSensorPriorityRequest
+        sensorId: String,
+        priority: PutSensorPriorityRequest
     ) async throws {
         var _: NoContentResponse? = try await put(
             serviceUrl: "/v1/configure/sensor-priority/\(sensorId)",
-            requestBody: priority)
+            requestBody: priority
+        )
 
         return
     }
-    
+
     func putControlBattery(sensorId: String, control: ControlBatteryV2Request)
-    async throws
+        async throws
     {
         var _: NoContentResponse? = try await put(
             serviceUrl: "/v2/control/battery/\(sensorId)",
-            requestBody: control)
-        
+            requestBody: control
+        )
+
         return
     }
 
