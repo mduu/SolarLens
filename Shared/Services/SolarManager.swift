@@ -181,14 +181,16 @@ actor SolarManager: EnergyManager {
             accuracy: .high
         )
 
-        async let forecastResult = solarManagerApi.getV1ForecastGateway(
+        async let forecastResult = solarManagerApi.getV3ForecastGateway(
             solarManagerId: systemInformation!.sm_id
         )
 
         let todayStatistics = try? await todayStatisticsResult
-        let forecast = (try? await forecastResult) ?? []
+        let forecast: ForecastV3Response? = try? await forecastResult
 
-        let dailyForecast = getCumSumPerLocalStartOfDay(data: forecast)
+        let dailyForecast = getCumSumPerLocalStartOfDay(
+            data: forecast?.data ?? []
+        )
 
         let now = Date()
         let today = Calendar.current.startOfDay(for: now)
@@ -669,22 +671,24 @@ actor SolarManager: EnergyManager {
         }
     }
 
-    private func getCumSumPerLocalStartOfDay(data: [ForecastItemV1Response])
+    private func getCumSumPerLocalStartOfDay(data: [ForecastItemV3Response])
         -> [Date: ForecastItem?]
     {
         var dailyKWh: [Date: ForecastItem] = [:]
         let calendar = Calendar.current
 
         for solarData in data {
-            let date = Date(timeIntervalSince1970: solarData.timestamp / 1000)
-            let startOfDay = calendar.startOfDay(for: date)
+            guard let timeStamp = solarData.timeStamp else {
+                continue
+            }
+            let startOfDay = calendar.startOfDay(for: timeStamp)
 
             // Accumulate energy consumption for the day
             var forecast = dailyKWh[startOfDay]
 
-            let minKWh = solarData.min / 1000 / 4
-            let maxKWh = solarData.max / 1000 / 4
-            let expectedKWh = solarData.expected / 1000 / 4
+            let minKWh = solarData.pWmin / 1000 / 4
+            let maxKWh = solarData.pWmax / 1000 / 4
+            let expectedKWh = solarData.pW / 1000 / 4
 
             if forecast == nil {
                 forecast = ForecastItem(
