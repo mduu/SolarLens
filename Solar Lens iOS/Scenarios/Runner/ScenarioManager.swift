@@ -1,17 +1,20 @@
 import BackgroundTasks
 import Foundation
 
-public class ScenarioManager: ScenariorHost {
+public final class ScenarioManager: ScenarioHost {
 
     public static var shared: ScenarioManager = .init()
 
     public var activeScenario: Scenario?
-    public var log: [ScenarioLogMessage] = []
 
     private let identifier =
         "com.marcduerst.SolarManagerWatch.ScenarioRunner"
+
     private var activeTask: ScenarioTask?
-    private var nextRun: Date?
+    private var activeTaskStatus: ScenarioStatus = .none
+    private var activeTaskParameters: any ScenarioTaskParameters?
+    private var activeTaskState: any ScenarioTaskState?
+    private var activeTaskNextRun: Date?
 
     private var activeScenarioName: LocalizedStringResource {
         activeTask?.scenarioName ?? "-"
@@ -28,16 +31,21 @@ public class ScenarioManager: ScenariorHost {
         logDebug(message: "Background tasks registered with iOS")
     }
 
-    public func startScenario(scenario: Scenario) {
+    public func startScenario(
+        scenario: Scenario,
+        parameters: any ScenarioTaskParameters
+    ) {
         switch scenario {
         case .BatteryToCar:
-            activeTask = ScenarioBatteryToCar()
+            activeTask = ScenarioBatteryToCar.shared
+            activeTaskState = ScenarioBatteryToCarState()
             break
         default:
             logError(message: "Unsupported scenario \(scenario.rawValue)")
         }
 
         activeScenario = scenario
+        activeTaskParameters = parameters
 
         logInfo(message: "Scenario \(activeScenarioName) started")
 
@@ -47,38 +55,48 @@ public class ScenarioManager: ScenariorHost {
     }
 
     func logSuccess() {
-        log.append(
+        ScenarioLogManager.shared.log(
             .init(
-                time: Date(),
                 message: "Successfully ran scenario \(activeScenarioName).",
                 level: .Success
             )
         )
-        print("SUCCESS: Successfully ran scenario \(activeScenarioName)")
+        print(
+            "SCENARIO SUCCESS: Successfully ran scenario \(activeScenarioName)"
+        )
     }
 
     func logInfo(message: LocalizedStringResource) {
-        log.append(.init(time: Date(), message: message, level: .Info))
-        print("INFO: \(message)")
+        ScenarioLogManager.shared.log(
+            .init(time: Date(), message: message, level: .Info)
+        )
+        print("SCENARIO INFO: \(message)")
     }
 
     func logError(message: LocalizedStringResource) {
-        log.append(.init(time: Date(), message: message, level: .Error))
-        print("ERROR: \(message)")
+        ScenarioLogManager.shared.log(
+            .init(time: Date(), message: message, level: .Error)
+        )
+
+        print("SCENARIO ERROR: \(message)")
     }
 
     func logDebug(message: LocalizedStringResource) {
-        log.append(.init(time: Date(), message: message, level: .Debug))
-        print("DEBUG: \(message)")
+        ScenarioLogManager.shared.log(
+            .init(time: Date(), message: message, level: .Debug)
+        )
+        print("SCENARIO DEBUG: \(message)")
     }
 
     func logFailure() {
-        log.append(
+        ScenarioLogManager.shared.log(
             .init(
-                time: Date(),
                 message: "Scenario \(activeScenarioName) failed!",
                 level: .Failure
             )
+        )
+        print(
+            "SCENARIO FAILURE: Successfully ran scenario \(activeScenarioName)"
         )
     }
 
@@ -113,7 +131,7 @@ public class ScenarioManager: ScenariorHost {
     }
 
     private func scheduleNextBackgroundCall() {
-        guard let nextRun else {
+        guard let activeTaskNextRun else {
             logError(
                 message:
                     "No 'nextRun' date set, cannot schedule background task"
@@ -124,7 +142,7 @@ public class ScenarioManager: ScenariorHost {
         let request = BGAppRefreshTaskRequest(identifier: identifier)
 
         let now: Date = Date()
-        let nextRunIn = nextRun.timeIntervalSince(now)
+        let nextRunIn = activeTaskNextRun.timeIntervalSince(now)
 
         request.earliestBeginDate = Date(
             timeIntervalSinceNow: nextRunIn
@@ -147,19 +165,27 @@ public class ScenarioManager: ScenariorHost {
     }
 
     private func runActiveScenario() async {
-        let maxRetries = 3
+        guard let activeTask else {
+            return
+        }
+
+        let maxRetries = 10
         var currentRetry = 0
 
         while currentRetry <= maxRetries {
             do {
                 logDebug(message: "Run scenario \(activeScenarioName)")
 
-                let nextRunIn = try await activeTask?.run(host: self)
+                let runResult = try await activeTask.run(
+                    host: self,
+                    parameters: activeTaskParameters
+                )
 
-                if nextRunIn != nil {
-                    nextRun = Date().addingTimeInterval(nextRunIn!)
+                if runResult.nextRunAfter != nil {
+                    activeTaskNextRun = runResult.nextRunAfter
+                    
                     logDebug(
-                        message: "Next scenario run at \(activeScenarioName)"
+                        message: "Next scenario '\(activeScenarioName)' run at \(activeTaskNextRun)"
                     )
                 } else {
                     scenarioFinished()
@@ -177,17 +203,16 @@ public class ScenarioManager: ScenariorHost {
                     logDebug(
                         message: "RunActiveScenario: Retrying in 1 second..."
                     )
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)  // 1 second
+                    try? await Task.sleep(nanoseconds: 2_000_000_000)  // 2 second
                 } else {
                     // All retries exhausted, re-throw the last error or handle it
                     logError(
                         message:
                             "RunActiveScenario: All \(maxRetries + 1) attempts failed."
                     )
-                    // If you want to propagate the error up, uncomment the line below.
-                    // Otherwise, you might log it and decide on a different action.
-                    // throw error // Uncomment to re-throw the error
-                    // For this example, we'll just log and gracefully exit if no further action needed
+
+                    activeTaskState?.stat
+
                     return
                 }
             }
@@ -198,7 +223,11 @@ public class ScenarioManager: ScenariorHost {
         logDebug(message: "Scenarion \(activeScenarioName)")
 
         activeScenario = nil
+        activeTaskStatus = .finishedSuccessfull
         activeTask = nil
+        activeTaskParameters = nil
+        activeTaskState = nil
+
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
     }
 }

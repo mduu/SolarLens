@@ -1,17 +1,23 @@
 import BackgroundTasks
-import UIKit
 import Foundation
+import UIKit
 
-class ScenarioBatteryToCar: ScenarioTask {
+final class ScenarioBatteryToCar: ScenarioTask {
     public static let shared = ScenarioBatteryToCar()
 
-    var scenarioName: LocalizedStringResource = "Battery to Car"
+    let scenarioName: LocalizedStringResource = "Battery to Car"
+    let fiveMinutes: TimeInterval = 5 * 60
 
-    private var numberOfWork: Int = 0
-    private var isStopped: Bool = false
+    func run<TParameters: ScenarioTaskParameters, TState: ScenarioTaskState>(
+        host: any ScenarioHost,
+        parameters: TParameters,
+        state: TState
+    )
+        async throws -> ScenarioTaskRunResult
+    {
+        let params = parameters as ScenarioBatteryToCarParameters
 
-    func run(host: any ScenariorHost) async throws -> TimeInterval? {
-        numberOfWork += 1
+        let numberOfWork = state.numberOfWork + 1
 
         host.logInfo(message: "Battery to car: Doing work #\(numberOfWork)")
 
@@ -19,11 +25,45 @@ class ScenarioBatteryToCar: ScenarioTask {
 
         if numberOfWork < 2 {
             host.logInfo(message: "Battery to car: scheduled next call")
-            let fiveMinutes: TimeInterval = 5 * 60
-            return fiveMinutes
+            let nextRun = Date().addingTimeInterval(fiveMinutes)
+
+            return ScenarioTaskRunResult(
+                nextRunAfter: nextRun,
+                newStatus: ScenarioStatus.finishedSuccessfull,
+                newState: ScenarioBatteryToCarState(
+                    from: state,
+                    numberOfWork: numberOfWork,
+                    isStopped: false
+                )
+            )
         }
 
         host.logSuccess()
-        return nil
+
+        return ScenarioTaskRunResult(
+            nextRunAfter: nil as Date?,
+            newStatus: ScenarioStatus.finishedSuccessfull,
+            newState: nil as ScenarioBatteryToCarState?
+        )
+    }
+
+}
+
+class ScenarioBatteryToCarParameters: ScenarioTaskParameters, Codable {
+    var minBatteryLevel: Int = 20
+}
+
+class ScenarioBatteryToCarState: ScenarioTaskState, Codable {
+    var numberOfWork: Int = 0
+    var isStopped: Bool = false
+
+    convenience init(
+        from other: ScenarioBatteryToCarState,
+        numberOfWork: Int? = nil,
+        isStopped: Bool? = nil
+    ) {
+        self.init()  // Call the designated initializer (or a default one if available)
+        self.numberOfWork = numberOfWork ?? other.numberOfWork
+        self.isStopped = isStopped ?? other.isStopped
     }
 }

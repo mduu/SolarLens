@@ -54,7 +54,12 @@ struct ScenarioScreen: View {
                             scenario: .BatteryToCar,
                             activateAction: {
                                 print("Battery to car pressed")
-                                //ScenarioBatteryToCar.shared.start()
+                                ScenarioManager.shared.startScenario(
+                                    scenario: .BatteryToCar,
+                                    parameters: ScenarioBatteryToCarParameters(
+                                        minBatteryLevel: 20
+                                    )
+                                )
                             }
                         )
 

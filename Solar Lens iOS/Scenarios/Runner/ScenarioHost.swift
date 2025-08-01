@@ -1,6 +1,6 @@
 import Foundation
 
-protocol ScenariorHost {
+protocol ScenarioHost {
     func logSuccess()
     func logInfo(message: LocalizedStringResource)
     func logError(message: LocalizedStringResource)
