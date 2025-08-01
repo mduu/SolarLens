@@ -96,21 +96,22 @@ struct ContentView: View {
                         }  // :.toolbar
                         .tag(3)
 
-                    BatteryScreen()
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                HStack {
-                                    HomeButton()
-
-                                    Text("Battery")
-                                        .foregroundColor(.purple)
-                                        .font(.headline)
-
-                                    Spacer()
-                                }  // :HStack
-                            }  // :ToolbarItem
-                        }  // :.toolbar
-                        .tag(4)
+                    if viewModel.overviewData.hasAnyBattery {
+                        BatteryScreen()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    HStack {
+                                        HomeButton()
+                                        
+                                        Text("Battery")
+                                            .foregroundColor(.purple)
+                                            .font(.headline)
+                                        Spacer()
+                                    }  // :HStack
+                                }  // :ToolbarItem
+                            }  // :.toolbar
+                            .tag(4)
+                    }
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
@@ -120,6 +121,14 @@ struct ContentView: View {
 
             }  // :NavigationView
             .edgesIgnoringSafeArea(.all)
+            .onAppear {
+                if viewModel.overviewData.isOutdatedData {
+                    print("Fetching onAppear because outdated data")
+                    Task {
+                        await viewModel.fetchServerData()
+                    }
+                }
+            }
 
         } else {
             ProgressView()

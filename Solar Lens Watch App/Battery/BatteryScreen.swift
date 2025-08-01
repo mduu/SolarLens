@@ -22,9 +22,9 @@ struct BatteryScreen: View {
                 )
                 .edgesIgnoringSafeArea(.all)
 
-                ScrollView {
+                GeometryReader { geometry in
 
-                    GeometryReader { geometry in
+                    ScrollView {
 
                         VStack(alignment: .leading) {
 
@@ -103,10 +103,12 @@ struct BatteryScreen: View {
                             .frame(maxWidth: .infinity)
 
                         }  // :VStack
-                    }  // :GeometryReader
 
-                }  // :ScrollView
+                    }  // :ScrollView
+
+                }  // :GeometryReader
                 .padding(.horizontal)
+
             }  // :ZStack
         }  // :if
     }
