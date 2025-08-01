@@ -96,21 +96,22 @@ struct ContentView: View {
                         }  // :.toolbar
                         .tag(3)
 
-                    BatteryScreen()
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                HStack {
-                                    HomeButton()
-
-                                    Text("Battery")
-                                        .foregroundColor(.purple)
-                                        .font(.headline)
-
-                                    Spacer()
-                                }  // :HStack
-                            }  // :ToolbarItem
-                        }  // :.toolbar
-                        .tag(4)
+                    if viewModel.overviewData.hasAnyBattery {
+                        BatteryScreen()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    HStack {
+                                        HomeButton()
+                                        
+                                        Text("Battery")
+                                            .foregroundColor(.purple)
+                                            .font(.headline)
+                                        Spacer()
+                                    }  // :HStack
+                                }  // :ToolbarItem
+                            }  // :.toolbar
+                            .tag(4)
+                    }
 
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))

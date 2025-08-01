@@ -21,6 +21,7 @@ class OverviewData {
     var devices: [Device] = []
     var isStaleData: Bool = false
     var hasAnyCarChargingStation: Bool = true
+    var hasAnyBattery: Bool = true
     var todaySelfConsumption: Double? = nil
     var todaySelfConsumptionRate: Double? = nil
     var todayAutarchyDegree: Double? = nil
@@ -75,6 +76,8 @@ class OverviewData {
         self.devices = devices
         self.isStaleData = getIsStaleData()
         self.hasAnyCarChargingStation = chargingStations.count > 0
+        self.hasAnyBattery = devices
+            .first(where: { $0.deviceType == .battery }) != nil
         self.todaySelfConsumption = todaySelfConsumption
         self.todaySelfConsumptionRate = todaySelfConsumptionRate
         self.todayAutarchyDegree = todayAutarchyDegree
