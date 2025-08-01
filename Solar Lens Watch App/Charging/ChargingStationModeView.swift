@@ -1,4 +1,4 @@
-import SwiftUICore
+import SwiftUI
 
 struct ChargingStationModeView: View {
     var isTheOnlyOne: Bool
