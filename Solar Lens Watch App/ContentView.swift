@@ -121,6 +121,14 @@ struct ContentView: View {
 
             }  // :NavigationView
             .edgesIgnoringSafeArea(.all)
+            .onAppear {
+                if viewModel.overviewData.isOutdatedData {
+                    print("Fetching onAppear because outdated data")
+                    Task {
+                        await viewModel.fetchServerData()
+                    }
+                }
+            }
 
         } else {
             ProgressView()

@@ -31,6 +31,15 @@ class OverviewData {
     var todayGridExported: Double? = nil
     var todayBatteryCharged: Double? = nil
     var cars: [Car] = []
+    var isOutdatedData: Bool {
+        guard let lastUpdated else { return true }
+        guard let lastSuccessServerFetch else { return true }
+
+        let secondsElapsedSinceLastUpdated = Date().timeIntervalSince(lastUpdated)
+        let secondsElapsedSinceLastFetch = Date().timeIntervalSince(lastSuccessServerFetch)
+
+        return secondsElapsedSinceLastUpdated > 60 && secondsElapsedSinceLastFetch > 60
+    }
 
     init() {
     }
@@ -76,7 +85,8 @@ class OverviewData {
         self.devices = devices
         self.isStaleData = getIsStaleData()
         self.hasAnyCarChargingStation = chargingStations.count > 0
-        self.hasAnyBattery = devices
+        self.hasAnyBattery =
+            devices
             .first(where: { $0.deviceType == .battery }) != nil
         self.todaySelfConsumption = todaySelfConsumption
         self.todaySelfConsumptionRate = todaySelfConsumptionRate
@@ -128,14 +138,17 @@ class OverviewData {
 
         let currentBatteryCapacityKwh: Double =
             Double(totalBatteryCapacity) / 100.0 * Double(currentOverallPercent)
-        let isDischarging = currentBatteryChargeRate ?? 0 < -50 && currentOverallPercent > 0
-        let isCharging = currentBatteryChargeRate ?? 0 > 50 && currentOverallPercent < 100
+        let isDischarging =
+            currentBatteryChargeRate ?? 0 < -50 && currentOverallPercent > 0
+        let isCharging =
+            currentBatteryChargeRate ?? 0 > 50 && currentOverallPercent < 100
 
         // Discharging
         var durationUntilEmpty: TimeInterval? = nil
         if isDischarging {
             let minimumCapacityKwh: Double = totalBatteryCapacity * 0.05
-            let remainingCapacityKwh = currentBatteryCapacityKwh - minimumCapacityKwh
+            let remainingCapacityKwh =
+                currentBatteryCapacityKwh - minimumCapacityKwh
             let dishargingRateKw = Double(currentBatteryChargeRate! * -1) / 1000
             let hours = remainingCapacityKwh / dishargingRateKw
             durationUntilEmpty = TimeInterval(hours * 3600)
@@ -144,7 +157,8 @@ class OverviewData {
         // Charging
         var durationUntilFull: TimeInterval? = nil
         if isCharging {
-            let capacityToChargeKwh = totalBatteryCapacity - currentBatteryCapacityKwh
+            let capacityToChargeKwh =
+                totalBatteryCapacity - currentBatteryCapacityKwh
             let chargingRateKw = Double(currentBatteryChargeRate ?? 0) / 1000
             let hours = capacityToChargeKwh / chargingRateKw
             durationUntilFull = TimeInterval(hours * 3600)
