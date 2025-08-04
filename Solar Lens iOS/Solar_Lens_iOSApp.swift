@@ -14,26 +14,19 @@ struct Solar_Lens_iOSApp: App {
                 .environment(currentBuildingState)
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
-            handleScenePhaseChange(newPhase)
+            handleScenePhaseChange(oldPhase, newPhase)
         }
         //.environment(\.locale, Locale(identifier: "DE"))
     }
 
     init() {
-        // Register background tasks on app launch
         ScenarioManager.shared.registerBackgroundTask()
     }
 
-    private func handleScenePhaseChange(_ newPhase: ScenePhase) {
-        switch newPhase {
-        case .active:
-            print("App became active")
-        case .inactive:
-            print("App became inactive")
-        case .background:
-            print("App moved to background - scheduling background tasks")
-        @unknown default:
-            break
-        }
+    private func handleScenePhaseChange(
+        _ oldPhase: ScenePhase,
+        _ newPhase: ScenePhase
+    ) {
+        ScenarioManager.shared.handleScenePhaseChange(oldPhase, newPhase)
     }
 }

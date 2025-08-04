@@ -3,9 +3,9 @@ import Foundation
 protocol ScenarioTask {
     var scenarioName: LocalizedStringResource { get }
 
-    func run<TParameters: ScenarioTaskParameters, TState: ScenarioTaskState>(
+    func run(
         host: ScenarioHost,
-        parameters: TParameters,
-        state: TState
-    ) async throws -> ScenarioTaskRunResult
+        parameters: ScenarioParameters,
+        state: ScenarioState
+    ) async throws -> ScenarioState
 }

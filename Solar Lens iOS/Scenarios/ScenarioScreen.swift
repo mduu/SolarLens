@@ -56,8 +56,9 @@ struct ScenarioScreen: View {
                                 print("Battery to car pressed")
                                 ScenarioManager.shared.startScenario(
                                     scenario: .BatteryToCar,
-                                    parameters: ScenarioBatteryToCarParameters(
-                                        minBatteryLevel: 20
+                                    parameters: ScenarioParameters(
+                                        batteryToCar: ScenarioBatteryToCarParameters(
+                                            minBatteryLevel: 20)
                                     )
                                 )
                             }
@@ -81,7 +82,7 @@ struct ScenarioScreen: View {
 
                 Spacer()
 
-                LogCountBubble(messages: ScenarioManager.shared.log)
+                LogCountBubble(messages: ScenarioLogManager.shared.load())
             }  // :VStack
             .padding()
 

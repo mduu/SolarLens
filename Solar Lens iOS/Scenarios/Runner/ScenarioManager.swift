@@ -1,23 +1,22 @@
 import BackgroundTasks
+import SwiftUI
 import Foundation
 
 public final class ScenarioManager: ScenarioHost {
 
     public static var shared: ScenarioManager = .init()
-
-    public var activeScenario: Scenario?
-
     private let identifier =
         "com.marcduerst.SolarManagerWatch.ScenarioRunner"
 
-    private var activeTask: ScenarioTask?
-    private var activeTaskStatus: ScenarioStatus = .none
-    private var activeTaskParameters: any ScenarioTaskParameters?
-    private var activeTaskState: any ScenarioTaskState?
-    private var activeTaskNextRun: Date?
-
+    private var activeState: ScenarioState? = nil
+    private var activeTaskParameters: ScenarioParameters? = nil
     private var activeScenarioName: LocalizedStringResource {
-        activeTask?.scenarioName ?? "-"
+        activeState?.scenario?.getScenarioTask()?.scenarioName ?? "-"
+    }
+    private var timer: Timer?
+
+    public var activeScenario: Scenario? {
+        activeState?.scenario
     }
 
     public func registerBackgroundTask() {
@@ -30,21 +29,31 @@ public final class ScenarioManager: ScenarioHost {
 
         logDebug(message: "Background tasks registered with iOS")
     }
+    
+    public func handleScenePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase)
+    {
+        switch newPhase {
+        case .active:
+            logDebug(message: "App became active")
+        case .inactive:
+            logDebug(message: "App became inactive")
+        case .background:
+            if activeState?.scenario == nil {
+                logDebug(message: "App moved to background - no scenarion running")
+            }
+            
+            logDebug(message: "App moved to background - scheduling background tasks")
+            scheduleNextBackgroundCall()
+        @unknown default:
+            break
+        }
+    }
 
     public func startScenario(
         scenario: Scenario,
-        parameters: any ScenarioTaskParameters
+        parameters: ScenarioParameters
     ) {
-        switch scenario {
-        case .BatteryToCar:
-            activeTask = ScenarioBatteryToCar.shared
-            activeTaskState = ScenarioBatteryToCarState()
-            break
-        default:
-            logError(message: "Unsupported scenario \(scenario.rawValue)")
-        }
-
-        activeScenario = scenario
+        activeState = ScenarioState(scenario: scenario)
         activeTaskParameters = parameters
 
         logInfo(message: "Scenario \(activeScenarioName) started")
@@ -100,12 +109,10 @@ public final class ScenarioManager: ScenarioHost {
         )
     }
 
-    private var foregroundCheckTask: Task<Void, Never>? = nil
-
     func handleBckgroundTask(task: BGAppRefreshTask) {
         logDebug(message: "Background trigger received")
 
-        if activeTask == nil {
+        guard (activeState?.scenario?.getScenarioTask()) != nil else {
             logInfo(
                 message:
                     "Background trigger received but active scenario. Abort background task."
@@ -124,14 +131,41 @@ public final class ScenarioManager: ScenarioHost {
             await runActiveScenario()
             task.setTaskCompleted(success: true)
 
-            if activeScenario != nil {
+            if activeState?.scenario != nil {
                 scheduleNextBackgroundCall()
             }
         }
     }
+    
+    func startTimer() {
+        stopTimer()
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 60.0 * 5, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            
+            let state = self.activeState
+            
+            guard let nextRunAfter = state?.nextTaskRun else {
+                return
+            }
+            
+            if nextRunAfter < Date() {
+                Task {
+                    await self.runActiveScenario()
+                }
+            }
+        }
+    }
+    
+    func stopTimer() {
+        if let timer, timer.isValid {
+            timer.invalidate()
+        }
+        timer = nil
+    }
 
     private func scheduleNextBackgroundCall() {
-        guard let activeTaskNextRun else {
+        guard let activeTaskNextRun = activeState?.nextTaskRun else {
             logError(
                 message:
                     "No 'nextRun' date set, cannot schedule background task"
@@ -165,7 +199,21 @@ public final class ScenarioManager: ScenarioHost {
     }
 
     private func runActiveScenario() async {
-        guard let activeTask else {
+        guard let activeTask = activeState?.scenario?.getScenarioTask() else {
+            logError(message: "No scenario task found!")
+            return
+        }
+
+        guard let activeState else {
+            logError(message: "No scenario state found!")
+            return
+        }
+
+        guard let activeTaskParameters else {
+            logError(
+                message:
+                    "No parameters provided for scenario \(activeScenarioName)"
+            )
             return
         }
 
@@ -176,27 +224,28 @@ public final class ScenarioManager: ScenarioHost {
             do {
                 logDebug(message: "Run scenario \(activeScenarioName)")
 
-                let runResult = try await activeTask.run(
+                let newState = try await activeTask.run(
                     host: self,
-                    parameters: activeTaskParameters
+                    parameters: activeTaskParameters,
+                    state: activeState
                 )
 
-                if runResult.nextRunAfter != nil {
-                    activeTaskNextRun = runResult.nextRunAfter
-                    
+                self.activeState = newState
+
+                if activeState.nextTaskRun != nil {
                     logDebug(
-                        message: "Next scenario '\(activeScenarioName)' run at \(activeTaskNextRun)"
+                        message:
+                            "Next scenario '\(activeScenarioName)' run at \(activeState.nextTaskRun!.description)"
                     )
                 } else {
-                    scenarioFinished()
+                    terminiateScenario()
                 }
 
                 return  // Exit the function immediately on success
             } catch {
                 currentRetry += 1
-                logError(
-                    message:
-                        "RunActiveScenario: activeTask?.run() failed (attempt \(currentRetry)/\(maxRetries + 1)). Error: \(error.localizedDescription)"
+                print(
+                    "RunActiveScenario: activeTask?.run() failed (attempt \(currentRetry)/\(maxRetries + 1)). Error: \(error.localizedDescription)"
                 )
 
                 if currentRetry <= maxRetries {
@@ -210,24 +259,22 @@ public final class ScenarioManager: ScenarioHost {
                         message:
                             "RunActiveScenario: All \(maxRetries + 1) attempts failed."
                     )
-
-                    activeTaskState?.stat
-
+                    terminiateScenario()
                     return
                 }
             }
         }
     }
 
-    private func scenarioFinished() {
-        logDebug(message: "Scenarion \(activeScenarioName)")
+    private func terminiateScenario() {
+        logDebug(message: "Scenarion \(activeScenarioName) terminating")
+        
+        // TODO Push notification
 
-        activeScenario = nil
-        activeTaskStatus = .finishedSuccessfull
-        activeTask = nil
+        activeState = nil
         activeTaskParameters = nil
-        activeTaskState = nil
 
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
+        stopTimer()
     }
 }

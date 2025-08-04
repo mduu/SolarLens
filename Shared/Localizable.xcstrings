@@ -376,6 +376,12 @@
         }
       }
     },
+    "App became active" : {
+
+    },
+    "App became inactive" : {
+
+    },
     "App icon" : {
       "localizations" : {
         "da" : {
@@ -431,6 +437,12 @@
           }
         }
       }
+    },
+    "App moved to background - no scenarion running" : {
+
+    },
+    "App moved to background - scheduling background tasks" : {
+
     },
     "Appearance" : {
       "localizations" : {
@@ -781,6 +793,12 @@
 
     },
     "Battery to Car" : {
+
+    },
+    "Battery to car: Doing work #%lld" : {
+
+    },
+    "Battery to car: scheduled next call" : {
 
     },
     "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {
@@ -4002,8 +4020,15 @@
     "Next background check scheduled successfully at %lf" : {
 
     },
-    "Next scenario run at %@" : {
-
+    "Next scenario '%@' run at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Next scenario '%1$@' run at %2$@"
+          }
+        }
+      }
     },
     "No 'nextRun' date set, cannot schedule background task" : {
 
@@ -4147,6 +4172,15 @@
           }
         }
       }
+    },
+    "No parameters provided for scenario %@" : {
+
+    },
+    "No scenario state found!" : {
+
+    },
+    "No scenario task found!" : {
+
     },
     "Not supported!" : {
       "localizations" : {
@@ -4767,16 +4801,6 @@
     "Run scenario %@" : {
 
     },
-    "RunActiveScenario: activeTask?.run() failed (attempt %lld/%lld). Error: %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "RunActiveScenario: activeTask?.run() failed (attempt %1$lld/%2$lld). Error: %3$@"
-          }
-        }
-      }
-    },
     "RunActiveScenario: All %lld attempts failed." : {
 
     },
@@ -4795,7 +4819,7 @@
     "Scenario Logs" : {
 
     },
-    "Scenarion %@" : {
+    "Scenarion %@ terminating" : {
 
     },
     "Scenarios" : {
@@ -6270,7 +6294,7 @@
         }
       }
     },
-    "Successfully ran scenario %@.)" : {
+    "Successfully ran scenario %@." : {
 
     },
     "Target %" : {
@@ -7215,9 +7239,6 @@
       }
     },
     "Unknown charging mode" : {
-
-    },
-    "Unsupported scenario %@" : {
 
     },
     "Updated %@" : {
