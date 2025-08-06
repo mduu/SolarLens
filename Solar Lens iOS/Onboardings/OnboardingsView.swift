@@ -4,6 +4,7 @@ struct OnboardingsView: View {
     @State var appSettings = AppSettings()
     @State private var selectedTab = 0
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) var colorScheme
 
     private let numberOfTabs = 2
 
@@ -58,9 +59,9 @@ struct OnboardingsView: View {
 
             }
             .padding(.bottom)
-
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(colorScheme == .dark ? Color.black : Color.white)
     }
 }
 
