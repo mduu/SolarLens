@@ -84,7 +84,7 @@ struct ScenarioScreen: View {
 
                 Spacer()
 
-                LogCountBubble(messages: ScenarioLogManager.shared.load())
+                LogCountBubble()
             }  // :VStack
             .padding()
 

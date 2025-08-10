@@ -3,8 +3,7 @@
 import SwiftUI
 
 struct ScenarioLogView: View {
-    let messages: [ScenarioLogMessage]
-
+    @State var messages: [ScenarioLogMessage] = ScenarioLogManager.shared.load()
     @State private var selectedLevels: Set<ScenarioLogMessageLevel> = Set(
         ScenarioLogMessageLevel.defaultCases
     )
@@ -36,6 +35,33 @@ struct ScenarioLogView: View {
                                 toggleLevel(level)
                             }
                         }
+
+                        Divider()
+                            .frame(maxHeight: 30)
+
+                        // Clear log button
+                        Button(action: {
+                            withAnimation {
+                                ScenarioLogManager.shared.clearAll()
+                                messages = ScenarioLogManager.shared.load()
+                            }
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "trash")
+                                    .font(.system(size: 12, weight: .medium))
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color.gray.opacity(0.1))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color.gray.opacity(0.3),lineWidth: 1)
+                            )
+                        }
+                        .foregroundColor(.red)
                     }
                     .padding(.horizontal)
                 }
@@ -75,7 +101,7 @@ struct FilterButton: View {
             HStack(spacing: 4) {
                 Image(systemName: level.symbolName)
                     .font(.system(size: 12, weight: .medium))
-                
+
                 /*
                 Text(level.displayName)
                     .font(.caption)

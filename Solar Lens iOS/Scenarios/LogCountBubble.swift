@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LogCountBubble: View {
-    let messages: [ScenarioLogMessage]
+    @State var messages: [ScenarioLogMessage] = ScenarioLogManager.shared.load()
 
     private var count: Int { messages.filter { $0.level != .Debug }.count }
 
@@ -40,6 +40,9 @@ struct LogCountBubble: View {
         .sheet(isPresented: $showingLogSheet) {
             ScenarioLogView(messages: messages)
                 .presentationDetents([.large, .medium])
+                .onDisappear {
+                    messages = ScenarioLogManager.shared.load()
+                }
         }
     }
 
