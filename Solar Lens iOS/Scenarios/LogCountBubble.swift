@@ -15,8 +15,6 @@ struct LogCountBubble: View {
     private var bubbleColor: Color {
         if count == 0 {
             return .gray
-        } else if hasErrors {
-            return .red
         } else {
             return .blue
         }
@@ -28,13 +26,13 @@ struct LogCountBubble: View {
         } label: {
             ZStack {
                 Circle()
-                    .fill(bubbleColor)
+                    .fill(bubbleColor.opacity(0.8))
                     .frame(width: bubbleSize, height: bubbleSize)
 
                 Text("\(count)")
                     .font(countFont)
                     .fontWeight(.semibold)
-                    .foregroundColor(.white)
+                    .foregroundColor(.primary)
                     .minimumScaleFactor(0.8)
             }
         }
