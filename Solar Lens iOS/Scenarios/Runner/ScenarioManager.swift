@@ -1,6 +1,6 @@
 import BackgroundTasks
-import SwiftUI
 import Foundation
+import SwiftUI
 
 public final class ScenarioManager: ScenarioHost {
 
@@ -29,20 +29,34 @@ public final class ScenarioManager: ScenarioHost {
 
         logDebug(message: "Background tasks registered with iOS")
     }
-    
-    public func handleScenePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase)
-    {
+
+    public func handleScenePhaseChange(
+        _ oldPhase: ScenePhase,
+        _ newPhase: ScenePhase
+    ) {
         switch newPhase {
         case .active:
-            logDebug(message: "App became active")
+            if activeState?.scenario == nil {
+                logDebug(
+                    message: "App became active - no scenarion running"
+                )
+            }
+
+            logDebug(message: "App became active - start timer")
+            startTimer()
         case .inactive:
             logDebug(message: "App became inactive")
         case .background:
             if activeState?.scenario == nil {
-                logDebug(message: "App moved to background - no scenarion running")
+                logDebug(
+                    message: "App moved to background - no scenarion running"
+                )
             }
-            
-            logDebug(message: "App moved to background - scheduling background tasks")
+
+            logDebug(
+                message: "App moved to background - scheduling background tasks"
+            )
+            stopTimer()
             scheduleNextBackgroundCall()
         @unknown default:
             break
@@ -61,6 +75,7 @@ public final class ScenarioManager: ScenarioHost {
         Task {
             await runActiveScenario()
         }
+        startTimer()
     }
 
     func logSuccess() {
@@ -136,19 +151,20 @@ public final class ScenarioManager: ScenarioHost {
             }
         }
     }
-    
+
     func startTimer() {
         stopTimer()
-        
-        timer = Timer.scheduledTimer(withTimeInterval: 60.0 * 5, repeats: true) { [weak self] _ in
+
+        timer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true)
+        { [weak self] _ in
             guard let self else { return }
-            
+
             let state = self.activeState
-            
+
             guard let nextRunAfter = state?.nextTaskRun else {
                 return
             }
-            
+
             if nextRunAfter < Date() {
                 Task {
                     await self.runActiveScenario()
@@ -156,7 +172,7 @@ public final class ScenarioManager: ScenarioHost {
             }
         }
     }
-    
+
     func stopTimer() {
         if let timer, timer.isValid {
             timer.invalidate()
@@ -204,7 +220,7 @@ public final class ScenarioManager: ScenarioHost {
             return
         }
 
-        guard let activeState else {
+        guard let currentState = activeState else {
             logError(message: "No scenario state found!")
             return
         }
@@ -227,15 +243,15 @@ public final class ScenarioManager: ScenarioHost {
                 let newState = try await activeTask.run(
                     host: self,
                     parameters: activeTaskParameters,
-                    state: activeState
+                    state: currentState
                 )
 
-                self.activeState = newState
+                activeState = newState
 
-                if activeState.nextTaskRun != nil {
+                if activeState?.nextTaskRun != nil {
                     logDebug(
                         message:
-                            "Next scenario '\(activeScenarioName)' run at \(activeState.nextTaskRun!.description)"
+                            "Next scenario '\(activeScenarioName)' run at \(activeState!.nextTaskRun!.description)"
                     )
                 } else {
                     terminiateScenario()
@@ -268,7 +284,7 @@ public final class ScenarioManager: ScenarioHost {
 
     private func terminiateScenario() {
         logDebug(message: "Scenarion \(activeScenarioName) terminating")
-        
+
         // TODO Push notification
 
         activeState = nil

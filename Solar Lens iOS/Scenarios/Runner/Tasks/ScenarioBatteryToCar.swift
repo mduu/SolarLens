@@ -15,7 +15,9 @@ final class ScenarioBatteryToCar: ScenarioTask {
     )
         async throws -> ScenarioState
     {
-        let numberOfWork = state.batteryToCar?.numberOfWork ?? 0 + 1
+        let previousNumberOfWork = state.batteryToCar?.numberOfWork ?? 0
+
+        let numberOfWork = previousNumberOfWork + 1
 
         host.logInfo(message: "Battery to car: Doing work #\(numberOfWork)")
 
