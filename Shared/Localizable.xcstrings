@@ -314,6 +314,9 @@
         }
       }
     },
+    "Active" : {
+
+    },
     "Allow standalone" : {
       "localizations" : {
         "da" : {
@@ -376,7 +379,10 @@
         }
       }
     },
-    "App became active" : {
+    "App became active - no scenarion running" : {
+
+    },
+    "App became active - start timer" : {
 
     },
     "App became inactive" : {

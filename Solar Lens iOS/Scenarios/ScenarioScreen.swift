@@ -57,8 +57,10 @@ struct ScenarioScreen: View {
                                 ScenarioManager.shared.startScenario(
                                     scenario: .BatteryToCar,
                                     parameters: ScenarioParameters(
-                                        batteryToCar: ScenarioBatteryToCarParameters(
-                                            minBatteryLevel: 20)
+                                        batteryToCar:
+                                            ScenarioBatteryToCarParameters(
+                                                minBatteryLevel: 20
+                                            )
                                     )
                                 )
                             }

@@ -15,6 +15,11 @@ struct ScenarioButton: View {
             && ScenarioManager.shared.activeScenario != scenario
     }
 
+    var isThisScenarioActive: Bool {
+        ScenarioManager.shared.activeScenario != nil
+            && ScenarioManager.shared.activeScenario == scenario
+    }
+
     var body: some View {
         VStack(spacing: 10) {
             Image(systemName: imageName)
@@ -40,6 +45,14 @@ struct ScenarioButton: View {
                 )
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 140)
+
+            if isThisScenarioActive {
+                Text("Active")
+                    .font(.caption)
+                    .background(.blue)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: 140)
+            }
         }
         .padding(20)
         .frame(maxWidth: 160, maxHeight: 200)
@@ -65,7 +78,7 @@ struct ScenarioButton: View {
                             lineWidth: 4
                         )
                         .shadow(
-                            color: isPressed ? .pink.opacity(0.7) : .clear,
+                            color: isPressed ? .pink.opacity(0.4) : .clear,
                             radius: 10
                         )
                 )
@@ -115,7 +128,7 @@ struct ScenarioButton: View {
                 title: "Battery to car",
                 description: "Transfer energy from battery to car.",
                 scenario: .BatteryToCar,
-                activateAction: {}
+                activateAction: {},
             )
 
             ScenarioButton(
@@ -125,6 +138,18 @@ struct ScenarioButton: View {
                 scenario: .OneTimeTariff,
                 activateAction: {},
                 isPressed: true
+
+            )
+            .padding(.top, 50)
+
+            ScenarioButton(
+                imageName: "bolt.car.circle",
+                title: "Battery to car",
+                description: "Transfer energy from battery to car.",
+                scenario: .OneTimeTariff,
+                activateAction: {},
+                isPressed: false
+
             )
             .padding(.top, 50)
 
