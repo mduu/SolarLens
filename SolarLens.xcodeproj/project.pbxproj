@@ -86,6 +86,7 @@
 		493AADDD2D592A9D00591E73 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		493AADE12D592B3E00591E73 /* Solar Lens iOS WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Solar Lens iOS WidgetsExtension.entitlements"; sourceTree = "<group>"; };
 		494882B52CA8443300C59146 /* Solar Lens Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		494F1A912E4BB61B00647150 /* Solar Lens BigScreen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens BigScreen.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49892CE42D243FF100478C91 /* Solar Lens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49892EB92D2D906600478C91 /* Solar-Lens-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Solar-Lens-Info.plist"; sourceTree = "<group>"; };
@@ -351,6 +352,11 @@
 			path = "Solar Lens Watch App";
 			sourceTree = "<group>";
 		};
+		494F1A922E4BB61C00647150 /* Solar Lens BigScreen */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Solar Lens BigScreen";
+			sourceTree = "<group>";
+		};
 		495539B92CECF51A00D2FE19 /* Solar Lens Widgets */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -383,6 +389,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		494F1A8E2E4BB61B00647150 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,6 +432,7 @@
 				495539B92CECF51A00D2FE19 /* Solar Lens Widgets */,
 				49892CE52D243FF100478C91 /* Solar Lens iOS */,
 				493AAD9A2D58F9DB00591E73 /* Solar Lens iOS Widgets */,
+				494F1A922E4BB61C00647150 /* Solar Lens BigScreen */,
 				49EED1A72CC0389C00A89445 /* Frameworks */,
 				494882B02CA8443300C59146 /* Products */,
 			);
@@ -431,6 +445,7 @@
 				495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */,
 				49892CE42D243FF100478C91 /* Solar Lens.app */,
 				493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */,
+				494F1A912E4BB61B00647150 /* Solar Lens BigScreen.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -498,6 +513,28 @@
 			productReference = 494882B52CA8443300C59146 /* Solar Lens Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
+		494F1A902E4BB61B00647150 /* Solar Lens BigScreen */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 494F1A9B2E4BB61C00647150 /* Build configuration list for PBXNativeTarget "Solar Lens BigScreen" */;
+			buildPhases = (
+				494F1A8D2E4BB61B00647150 /* Sources */,
+				494F1A8E2E4BB61B00647150 /* Frameworks */,
+				494F1A8F2E4BB61B00647150 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				494F1A922E4BB61C00647150 /* Solar Lens BigScreen */,
+			);
+			name = "Solar Lens BigScreen";
+			packageProductDependencies = (
+			);
+			productName = "Solar Lens BigScreen";
+			productReference = 494F1A912E4BB61B00647150 /* Solar Lens BigScreen.app */;
+			productType = "com.apple.product-type.application";
+		};
 		495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 495539C52CECF51C00D2FE19 /* Build configuration list for PBXNativeTarget "Solar Lens WidgetsExtension" */;
@@ -557,7 +594,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					493AAD962D58F9DB00591E73 = {
@@ -565,6 +602,9 @@
 					};
 					494882B42CA8443300C59146 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					494F1A902E4BB61B00647150 = {
+						CreatedOnToolsVersion = 26.0;
 					};
 					495539B52CECF51A00D2FE19 = {
 						CreatedOnToolsVersion = 16.1;
@@ -599,6 +639,7 @@
 				494882B42CA8443300C59146 /* Solar Lens Watch App */,
 				495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */,
 				493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */,
+				494F1A902E4BB61B00647150 /* Solar Lens BigScreen */,
 			);
 		};
 /* End PBXProject section */
@@ -612,6 +653,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		494882B32CA8443300C59146 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		494F1A8F2E4BB61B00647150 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -643,6 +691,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		494882B12CA8443300C59146 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		494F1A8D2E4BB61B00647150 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -976,6 +1031,71 @@
 			};
 			name = Release;
 		};
+		494F1A992E4BB61C00647150 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.Solar-Lens-BigScreen";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		494F1A9A2E4BB61C00647150 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UYT5K989XD;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.Solar-Lens-BigScreen";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 26.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		495539C62CECF51C00D2FE19 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1162,6 +1282,15 @@
 			buildConfigurations = (
 				494882C62CA8443400C59146 /* Debug */,
 				494882C72CA8443400C59146 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		494F1A9B2E4BB61C00647150 /* Build configuration list for PBXNativeTarget "Solar Lens BigScreen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				494F1A992E4BB61C00647150 /* Debug */,
+				494F1A9A2E4BB61C00647150 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
