@@ -656,8 +656,10 @@ actor SolarManager: EnergyManager {
                 password: password
             )
 
-            KeychainHelper.saveCredentials(username: email, password: password)
-            self.expireAt = Date().addingTimeInterval(
+            await KeychainHelper
+                .saveCredentials(username: email, password: password)
+            
+            self.expireAt = await Date().addingTimeInterval(
                 TimeInterval(loginSuccess.expiresIn)
             )
             self.systemInformation = nil
