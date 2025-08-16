@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 
 struct BatteryHistory: Sendable, Identifiable {
     var id = UUID()

@@ -1,5 +1,5 @@
 import Combine
-import Foundation
+internal import Foundation
 
 class FakeEnergyManager: EnergyManager {
     func fetchServerInfo() async throws -> ServerInfo {

@@ -11,6 +11,7 @@
 		493AADAA2D58F9DC00591E73 /* Solar Lens iOS WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		493AADDE2D592A9D00591E73 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 493AADDD2D592A9D00591E73 /* SwiftUI.framework */; };
 		493AADE02D592B1C00591E73 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 493AADDF2D592B1C00591E73 /* KeychainAccess */; };
+		494F21862E4E72F200647150 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 494F21852E4E72F200647150 /* KeychainAccess */; };
 		495539B72CECF51A00D2FE19 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1A82CC0389C00A89445 /* WidgetKit.framework */; };
 		495539B82CECF51A00D2FE19 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1AA2CC0389D00A89445 /* SwiftUI.framework */; };
 		495539C32CECF51C00D2FE19 /* Solar Lens WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -261,6 +262,43 @@
 			);
 			target = 493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */;
 		};
+		494F21D02E505AFE00647150 /* Exceptions for "Shared" folder in "Solar Lens BigScreen" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Features/Battery/BatteryModeButton.swift,
+				Features/Battery/BatteryModeOptionsSheet.swift,
+				Features/Battery/BatteryModeSheet.swift,
+				Features/Battery/ModeOptions/EcoOptionsView.swift,
+				Features/Battery/ModeOptions/ManualOptionsView.swift,
+				Features/Battery/ModeOptions/PeakShavingOptionsView.swift,
+				Features/Battery/ModeOptions/StandardControlledOptionsView.swift,
+				Features/Consumption/Charging/ChargingButtonView.swift,
+				Features/Consumption/Charging/ChargingModeConfiguration.swift,
+				Features/Consumption/Charging/ChargingOptionsPopupView.swift,
+				Widgets/BatteryWidgets/BatteryAppIntent.swift,
+				Widgets/BatteryWidgets/BatteryWidget.swift,
+				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
+				Widgets/BatteryWidgets/BatteryWidgetView.swift,
+				Widgets/ConsumptionWidgets/ConsumptionAppIntent.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidget.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidgetProvider.swift,
+				Widgets/ConsumptionWidgets/ConsumptionWidgetView.swift,
+				Widgets/EfficiencyWidgets/EfficiencyAppIntent.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidget.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidgetProvider.swift,
+				Widgets/EfficiencyWidgets/EfficiencyWidgetView.swift,
+				Widgets/SolarLensWidgetDataSource.swift,
+				Widgets/SolarProductionWidgets/SolarProductionAppIntent.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidget.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetProvider.swift,
+				Widgets/SolarProductionWidgets/SolarProductionWidgetView.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineAppIntent.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidget.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetProvider.swift,
+				Widgets/TodayOverviewWidgets/TodayTimelineWidgetView.swift,
+			);
+			target = 494F1A902E4BB61B00647150 /* Solar Lens BigScreen */;
+		};
 		495539C42CECF51C00D2FE19 /* Exceptions for "Solar Lens Widgets" folder in "Solar Lens WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -332,6 +370,7 @@
 				493AADB22D59253F00591E73 /* Exceptions for "Shared" folder in "Solar Lens Watch App" target */,
 				49892CFF2D244CEB00478C91 /* Exceptions for "Shared" folder in "Solar Lens WidgetsExtension" target */,
 				493AADB42D59254B00591E73 /* Exceptions for "Shared" folder in "Solar Lens iOS WidgetsExtension" target */,
+				494F21D02E505AFE00647150 /* Exceptions for "Shared" folder in "Solar Lens BigScreen" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -396,6 +435,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				494F21862E4E72F200647150 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -526,10 +566,12 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				4917325C2D1FE4A800CA9EDF /* Shared */,
 				494F1A922E4BB61C00647150 /* Solar Lens BigScreen */,
 			);
 			name = "Solar Lens BigScreen";
 			packageProductDependencies = (
+				494F21852E4E72F200647150 /* KeychainAccess */,
 			);
 			productName = "Solar Lens BigScreen";
 			productReference = 494F1A912E4BB61B00647150 /* Solar Lens BigScreen.app */;
@@ -1328,6 +1370,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		493AADDF2D592B1C00591E73 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		494F21852E4E72F200647150 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;

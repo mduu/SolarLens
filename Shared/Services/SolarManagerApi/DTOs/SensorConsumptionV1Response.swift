@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 
 struct SensorConsumptionV1Response : Codable {
     var sensorId: String

@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 
 struct ServerInfo {
     var status: String  // active

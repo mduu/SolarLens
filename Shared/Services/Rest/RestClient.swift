@@ -1,5 +1,5 @@
 import Combine
-import Foundation
+internal import Foundation
 
 class RestClient {
     let baseUrl: String

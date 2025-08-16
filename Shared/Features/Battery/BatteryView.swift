@@ -64,15 +64,16 @@ struct BatteryView: View {
         #if os(watchOS)
             .sheet(isPresented: $showModeSheet) {
                 BatteryModeSheet(battery: battery)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Text("Battery mode")
-                            .foregroundColor(.purple)
-                            .font(.headline)
-                        }  // :ToolbarItem
-                    }  // :.toolbar
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Text("Battery mode")
+                        .foregroundColor(.purple)
+                        .font(.headline)
+                    }  // :ToolbarItem
+                }  // :.toolbar
             }
-        #else
+        #endif
+        #if os(iOS)
             .sheet(isPresented: $showModeSheet) {
                 NavigationView {
                     BatteryModeSheet(battery: battery)
