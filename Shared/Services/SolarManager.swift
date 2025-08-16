@@ -58,7 +58,7 @@ actor SolarManager: EnergyManager {
                 streamSensors: streamSensorInfos
             )
 
-            return OverviewData.init(
+            return await OverviewData.init(
                 currentSolarProduction: chart.production,
                 currentOverallConsumption: chart.consumption,
                 currentBatteryLevel: chart.battery?.capacity ?? 0,
@@ -159,7 +159,7 @@ actor SolarManager: EnergyManager {
 
         var current: Int? = nil
         if overviewData != nil {
-            current = overviewData!.chargingStations
+            current = await overviewData!.chargingStations
                 .map { station in station.currentPower }
                 .reduce(0, +)
         }
@@ -168,7 +168,7 @@ actor SolarManager: EnergyManager {
             "Got charging data: 24h: \(String(describing: total)), current: \(String(describing: current))"
         )
 
-        return .init(totalCharedToday: total, currentCharging: current)
+        return await .init(totalCharedToday: total, currentCharging: current)
     }
 
     func fetchSolarDetails() async throws -> SolarDetailsData {
@@ -209,7 +209,7 @@ actor SolarManager: EnergyManager {
             dailyForecast[afterTomorrow]
             ?? ForecastItem(min: 0, max: 0, expected: 0)
 
-        return SolarDetailsData(
+        return await SolarDetailsData(
             todaySolarProduction: todayStatistics?.production,
             forecastToday: todaysData,
             forecastTomorrow: tomorrowData,
@@ -232,7 +232,7 @@ actor SolarManager: EnergyManager {
 
         print("Fetched gateway consumptions&productions.")
 
-        return ConsumptionData(
+        return await ConsumptionData(
             from: RestDateHelper.date(from: consumptions?.from),
             to: RestDateHelper.date(from: consumptions?.to),
             interval: consumptions?.interval ?? 300,
@@ -264,8 +264,8 @@ actor SolarManager: EnergyManager {
             return []
         }
 
-        let todayStart = Date.todayStartOfDay()
-        let todayEnd = Date.todayEndOfDay()
+        let todayStart = await Date.todayStartOfDay()
+        let todayEnd = await Date.todayEndOfDay()
 
         var result: [BatteryHistory] = []  // Array to hold the results
         for batterySensorId in batterySensorIds {
@@ -305,7 +305,7 @@ actor SolarManager: EnergyManager {
             throw EnergyManagerClientError.systemInformationNotFound
         }
 
-        return ServerInfo(
+        return await ServerInfo(
             status: systemInformation.status,
             language: systemInformation.language,
             lastname: systemInformation.last_name,
@@ -417,8 +417,8 @@ actor SolarManager: EnergyManager {
     }
 
     private func ensureLoggedIn() async throws {
-        let accessToken = KeychainHelper.accessToken
-        let refreshToken = KeychainHelper.refreshToken
+        let accessToken = await KeychainHelper.accessToken
+        let refreshToken = await KeychainHelper.refreshToken
 
         if accessToken != nil && expireAt != nil && expireAt! > Date() {
             return
@@ -457,7 +457,7 @@ actor SolarManager: EnergyManager {
             }
         }
 
-        let credentials = KeychainHelper.loadCredentials()
+        let credentials = await KeychainHelper.loadCredentials()
         if (credentials.username?.isEmpty ?? true)
             || (credentials.password?.isEmpty ?? true)
         {
@@ -499,7 +499,7 @@ actor SolarManager: EnergyManager {
 
         self.systemInformation = firstUser
         print(
-            "System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")"
+            "System Informaton loaded. SMID: \(await self.systemInformation?.sm_id ?? "<NONE>")"
         )
     }
 
