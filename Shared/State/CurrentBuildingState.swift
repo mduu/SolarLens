@@ -30,6 +30,10 @@ class CurrentBuildingState {
         updateCredentialsExists()
     }
 
+    static func fake() -> CurrentBuildingState {
+        return .fake(overviewData: .fake())
+    }
+
     static func fake(
         overviewData: OverviewData = OverviewData.fake(),
         loggedIn: Bool = true,
@@ -133,6 +137,7 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
     func setCarCharging(
         sensorId: String,
         newCarCharging: ControlCarChargingRequest
@@ -174,6 +179,7 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
     func setSensorPriority(sensorId: String, newPriority: Int) async {
         guard loginCredentialsExists && !isChangingSensorPriority
         else {
@@ -212,6 +218,7 @@ class CurrentBuildingState {
         }
     }
     
+    @MainActor
     func setBatteryMode(
         sensorId: String,
         batteryModeInfo: BatteryModeInfo
@@ -259,13 +266,14 @@ class CurrentBuildingState {
         }
     }
 
-
+    @MainActor
     func logout() {
         KeychainHelper.deleteCredentials()
         updateCredentialsExists()
         resetError()
     }
 
+    @MainActor
     func checkForCredentions() {
         updateCredentialsExists()
     }

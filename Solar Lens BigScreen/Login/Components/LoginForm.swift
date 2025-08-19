@@ -1,43 +1,33 @@
 import SwiftUI
 
-struct LoginScreen: View {
+struct LoginForm: View {
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
-
-    @State var email: String = ""
-    @State var password: String = ""
+    @State var email: String = "marc@marcduerst.com"
+    @State var password: String = "Yodago26woti$"
 
     var body: some View {
-        VStack(alignment: .center) {
-            Image("solarlens")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 150, height: 150)
-                .cornerRadius(10)
-                .shadow(radius: 5)
-                .padding()
-
-            Text(verbatim: "Solar Lens")
-                .font(.largeTitle)
-                .foregroundColor(.accent)
-
+        VStack(alignment: .leading) {
             TextField("Email", text: $email)
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .autocapitalization(.none)
 
             SecureField("Password", text: $password)
                 .textContentType(.password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
+
             Button(action: {
                 Task {
                     await model.tryLogin(
-                        email: email, password: password)
+                        email: email,
+                        password: password
+                    )
                 }
             }) {
-                Image(systemName: "person.badge.key.fill")
-                Text("Login")
+                HStack {
+                    Image(systemName: "person.badge.key.fill")
+                    Text("Login")
+                }
+                .padding()
             }
             .font(.title2)
             .buttonStyle(.borderedProminent)
@@ -48,19 +38,20 @@ struct LoginScreen: View {
                     Text("Login failed!")
                         .font(.title3)
                         .foregroundColor(.white)
-                        .padding(16)
+                        .padding(50)
 
                     Text(
                         "Please make sure you are using the correct email and passwort from your Solar Manager login."
                     )
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 16)
+                    .padding(.horizontal, 50)
+                    .padding(.bottom, 50)
                     .font(.subheadline)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                 }
                 .background(Color.red)
-                .cornerRadius(8)
+                .cornerRadius(20)
+                .padding(.top, 100)
             }
         }
         .padding(.horizontal, 30)
@@ -76,7 +67,8 @@ struct LoginScreen: View {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let valid = NSPredicate(format: "SELF MATCHES %@", emailRegex)
             .evaluate(
-                with: email)
+                with: email
+            )
         return valid
     }
 
@@ -87,12 +79,12 @@ struct LoginScreen: View {
 }
 
 #Preview("English") {
-    LoginScreen()
+    LoginForm()
         .environment(CurrentBuildingState.fake())
 }
 
 #Preview("Failed") {
-    LoginScreen()
+    LoginForm()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: .fake(),
@@ -101,22 +93,4 @@ struct LoginScreen: View {
                 didLoginSucceed: false
             )
         )
-}
-
-#Preview("German") {
-    LoginScreen()
-        .environment(CurrentBuildingState())
-        .environment(\.locale, Locale(identifier: "DE"))
-}
-
-#Preview("French") {
-    LoginScreen()
-        .environment(CurrentBuildingState())
-        .environment(\.locale, Locale(identifier: "FR"))
-}
-
-#Preview("Italian") {
-    LoginScreen()
-        .environment(CurrentBuildingState())
-        .environment(\.locale, Locale(identifier: "IT"))
 }
