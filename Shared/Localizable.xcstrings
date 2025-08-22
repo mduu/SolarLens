@@ -12,6 +12,9 @@
       },
       "shouldTranslate" : false
     },
+    "-" : {
+
+    },
     "'Peak Shaving' uses your battery to supply power during high-demand periods, reducing the amount of expensive electricity drawn from the grid and lowering your overall costs." : {
       "localizations" : {
         "da" : {
@@ -86,6 +89,9 @@
     "%@%%" : {
       "shouldTranslate" : false
     },
+    "%lld" : {
+
+    },
     "%lld %%" : {
       "localizations" : {
         "en" : {
@@ -156,10 +162,10 @@
       "shouldTranslate" : false
     },
     "%lld W" : {
-      "shouldTranslate" : false
+
     },
     "%lld%%" : {
-      "shouldTranslate" : false
+
     },
     "%lld%%  %@ kW" : {
       "localizations" : {
@@ -169,14 +175,13 @@
             "value" : "%1$lld%%  %2$@ kW"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "☀️ %@" : {
-      "shouldTranslate" : false
+
     },
     "☀️ %lld W" : {
-      "shouldTranslate" : false
+
     },
     "♻️ %@, 🍃 %@" : {
       "localizations" : {
@@ -186,14 +191,16 @@
             "value" : "♻️ %1$@, 🍃 %2$@"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "🔋%@ %%" : {
-      "shouldTranslate" : false
+
     },
     "0" : {
-      "shouldTranslate" : false
+
+    },
+    "1x Tariff" : {
+
     },
     "A car is chariging." : {
       "localizations" : {
@@ -307,6 +314,9 @@
         }
       }
     },
+    "Active" : {
+
+    },
     "Allow standalone" : {
       "localizations" : {
         "da" : {
@@ -369,6 +379,15 @@
         }
       }
     },
+    "App became active - no scenarion running" : {
+
+    },
+    "App became active - start timer" : {
+
+    },
+    "App became inactive" : {
+
+    },
     "App icon" : {
       "localizations" : {
         "da" : {
@@ -424,6 +443,12 @@
           }
         }
       }
+    },
+    "App moved to background - no scenarion running" : {
+
+    },
+    "App moved to background - scheduling background tasks" : {
+
     },
     "Appearance" : {
       "localizations" : {
@@ -508,6 +533,15 @@
           }
         }
       }
+    },
+    "Background tasks registered with iOS" : {
+
+    },
+    "Background trigger received" : {
+
+    },
+    "Background trigger received but active scenario. Abort background task." : {
+
     },
     "Battery" : {
       "localizations" : {
@@ -760,6 +794,18 @@
           }
         }
       }
+    },
+    "Battery to car" : {
+
+    },
+    "Battery to Car" : {
+
+    },
+    "Battery to car: Doing work #%lld" : {
+
+    },
+    "Battery to car: scheduled next call" : {
+
     },
     "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {
       "localizations" : {
@@ -1064,6 +1110,9 @@
           }
         }
       }
+    },
+    "Charge car with tariff optimized, then switch back to previouse mode." : {
+
     },
     "Charging" : {
       "localizations" : {
@@ -2483,6 +2532,9 @@
         }
       }
     },
+    "ERROR: Could not schedule app refresh: %@" : {
+
+    },
     "Explanation" : {
       "localizations" : {
         "da" : {
@@ -2540,7 +2592,7 @@
       }
     },
     "Favorite Emoji" : {
-      "shouldTranslate" : false
+
     },
     "Forecast" : {
       "localizations" : {
@@ -3323,7 +3375,7 @@
       }
     },
     "kWh" : {
-      "shouldTranslate" : false
+
     },
     "Licence:" : {
       "localizations" : {
@@ -3971,6 +4023,22 @@
         }
       }
     },
+    "Next background check scheduled successfully at %lf" : {
+
+    },
+    "Next scenario '%@' run at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Next scenario '%1$@' run at %2$@"
+          }
+        }
+      }
+    },
+    "No 'nextRun' date set, cannot schedule background task" : {
+
+    },
     "No battery data present!" : {
       "localizations" : {
         "da" : {
@@ -4111,6 +4179,15 @@
         }
       }
     },
+    "No parameters provided for scenario %@" : {
+
+    },
+    "No scenario state found!" : {
+
+    },
+    "No scenario task found!" : {
+
+    },
     "Not supported!" : {
       "localizations" : {
         "da" : {
@@ -4138,6 +4215,9 @@
           }
         }
       }
+    },
+    "Now" : {
+
     },
     "Off" : {
       "localizations" : {
@@ -4724,6 +4804,39 @@
         }
       }
     },
+    "Run scenario %@" : {
+
+    },
+    "RunActiveScenario: All %lld attempts failed." : {
+
+    },
+    "RunActiveScenario: Retrying in 1 second..." : {
+
+    },
+    "Scenario" : {
+
+    },
+    "Scenario %@ failed!" : {
+
+    },
+    "Scenario %@ started" : {
+
+    },
+    "Scenario Logs" : {
+
+    },
+    "Scenarion %@ terminating" : {
+
+    },
+    "Scenarios" : {
+
+    },
+    "Scenarios are practical automations that help you to control your energy in your house the smart way." : {
+
+    },
+    "Search logs..." : {
+
+    },
     "Select car to query" : {
       "localizations" : {
         "da" : {
@@ -4978,7 +5091,7 @@
       "shouldTranslate" : false
     },
     "Series:" : {
-      "shouldTranslate" : false
+
     },
     "Server" : {
       "localizations" : {
@@ -6187,6 +6300,9 @@
         }
       }
     },
+    "Successfully ran scenario %@." : {
+
+    },
     "Target %" : {
       "localizations" : {
         "da" : {
@@ -6666,7 +6782,7 @@
       }
     },
     "This is an example widget." : {
-      "shouldTranslate" : false
+
     },
     "Time" : {
       "localizations" : {
@@ -6753,7 +6869,7 @@
       }
     },
     "To implement" : {
-      "shouldTranslate" : false
+
     },
     "To let Solar Manager control the battery disable 'Allow standalone'." : {
       "localizations" : {
@@ -7063,6 +7179,9 @@
         }
       }
     },
+    "Transfer energy from battery to car." : {
+
+    },
     "Try again" : {
       "localizations" : {
         "da" : {
@@ -7126,7 +7245,7 @@
       }
     },
     "Unknown charging mode" : {
-      "shouldTranslate" : false
+
     },
     "Updated %@" : {
       "localizations" : {
@@ -7325,7 +7444,7 @@
       }
     },
     "v%@" : {
-      "shouldTranslate" : false
+
     },
     "Version %@" : {
       "localizations" : {
@@ -7356,7 +7475,7 @@
       }
     },
     "W" : {
-      "shouldTranslate" : false
+
     },
     "Watts" : {
       "localizations" : {
