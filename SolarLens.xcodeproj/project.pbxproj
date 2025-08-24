@@ -191,7 +191,6 @@
 				Features/Solar/SolarTodayInfoView.swift,
 				Localizable.xcstrings,
 				Services/AppStoreReviewManager.swift,
-				Services/CredentialsManager.swift,
 				Services/EnergyManager.swift,
 				Services/EnergyManagerClientError.swift,
 				Services/FakeEnergyManager.swift,
