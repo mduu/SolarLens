@@ -1,5 +1,5 @@
 internal import Foundation
-import SwiftUICore
+import SwiftUI
 
 struct StandardTheme : ColorTheme {
     static var id: String = "theme.standard"

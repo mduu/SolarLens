@@ -12,7 +12,14 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+#Preview("Standard") {
+    ContentView()
+        .environment(CurrentBuildingState.fake())
+        .environment(UiContext())
+}
+
+#Preview("Login") {
     ContentView()
         .environment(CurrentBuildingState())
+        .environment(UiContext())
 }
