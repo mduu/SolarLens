@@ -9,6 +9,7 @@ class CurrentBuildingState {
     var loginCredentialsExists: Bool = false
     var didLoginSucceed: Bool? = nil
     var overviewData: OverviewData = .init()
+    var solarDetailsData: SolarDetailsData?
     var isChangingCarCharger: Bool = false
     var carChargerSetSuccessfully: Bool? = nil
     var isChangingSensorPriority: Bool = false
@@ -135,6 +136,17 @@ class CurrentBuildingState {
             errorMessage = error.localizedDescription
             isLoading = false
         }
+    }
+
+    @MainActor
+    func fetchSolarDetails() async {
+        let fetchedSolarDetailsData = try? await energyManager.fetchSolarDetails()
+
+        guard let fetchedSolarDetailsData else {
+            return
+        }
+
+        solarDetailsData = fetchedSolarDetailsData
     }
 
     @MainActor
