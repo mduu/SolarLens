@@ -1,16 +1,56 @@
 import SwiftUI
 
 struct CurrentEnergyFlow: View {
+    @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
+
     var body: some View {
         Grid {
             GridRow {
-                Text("Current Energy Flow")
-                    .font(.headline)
-                    .bold()
+                SolarView(
+                    currentSolarProductionInW: buildings.overviewData
+                        .currentSolarProduction
+                )
+                .frame(maxWidth: .infinity)
+
+                EmptyView()
+                    .frame(maxWidth: .infinity)
+
+                EmptyView()
+                    .frame(maxWidth: .infinity)
+            }
+
+            GridRow {
+
+                EmptyView()
+                    .frame(maxWidth: .infinity)
+
+                EmptyView()
+                    .frame(maxWidth: .infinity)
+
+                EmptyView()
+                    .frame(maxWidth: .infinity)
+
+            }
+
+            GridRow {
+
+                EmptyView()
+                    .frame(maxWidth: .infinity)
+
+                EmptyView()
+                    .frame(maxWidth: .infinity)
+
+                ConsumptionView(
+                    currentOverallConsumptionInW: buildings.overviewData
+                        .currentOverallConsumption
+                )
+                .frame(maxWidth: .infinity)
 
             }
         }
+        .foregroundColor(.white.opacity(0.8))
         .padding(30)
+        .frame(maxWidth: .infinity)
         .frame(height: 300)
         .glassEffect(in: .rect(cornerRadius: 30.0))
 

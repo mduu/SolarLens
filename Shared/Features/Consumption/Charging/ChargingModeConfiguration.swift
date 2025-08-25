@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 import SwiftUI
 
 class ChargingModeConfiguration: ObservableObject {

@@ -6,55 +6,57 @@ struct LoginForm: View {
     @State var password: String = ""
 
     var body: some View {
-        VStack(alignment: .leading) {
-            TextField("Email", text: $email)
-                .textContentType(.emailAddress)
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-
-            SecureField("Password", text: $password)
-                .textContentType(.password)
-
-            Button(action: {
-                Task {
-                    await model.tryLogin(
-                        email: email,
-                        password: password
-                    )
+        GlassEffectContainer(spacing: 40.0) {
+            VStack(alignment: .leading) {
+                TextField("Email", text: $email)
+                    .textContentType(.emailAddress)
+                    .keyboardType(.emailAddress)
+                    .autocapitalization(.none)
+                
+                SecureField("Password", text: $password)
+                    .textContentType(.password)
+                
+                Button(action: {
+                    Task {
+                        await model.tryLogin(
+                            email: email,
+                            password: password
+                        )
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "person.badge.key.fill")
+                        Text("Login")
+                    }
+                    .padding()
                 }
-            }) {
-                HStack {
-                    Image(systemName: "person.badge.key.fill")
-                    Text("Login")
-                }
-                .padding()
-            }
-            .font(.title2)
-            .buttonStyle(.borderedProminent)
-            .disabled(isValidLogin())
-
-            if model.didLoginSucceed == false {
-                VStack(alignment: HorizontalAlignment.center, spacing: 8) {
-                    Text("Login failed!")
-                        .font(.title3)
+                .font(.title2)
+                .buttonStyle(.borderedProminent)
+                .disabled(isValidLogin())
+                
+                if model.didLoginSucceed == false {
+                    VStack(alignment: HorizontalAlignment.center, spacing: 8) {
+                        Text("Login failed!")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .padding(50)
+                        
+                        Text(
+                            "Please make sure you are using the correct email and passwort from your Solar Manager login."
+                        )
+                        .padding(.horizontal, 50)
+                        .padding(.bottom, 50)
+                        .font(.subheadline)
                         .foregroundColor(.white)
-                        .padding(50)
-
-                    Text(
-                        "Please make sure you are using the correct email and passwort from your Solar Manager login."
-                    )
-                    .padding(.horizontal, 50)
-                    .padding(.bottom, 50)
-                    .font(.subheadline)
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.center)
+                    }
+                    .background(Color.red)
+                    .cornerRadius(20)
+                    .padding(.top, 100)
                 }
-                .background(Color.red)
-                .cornerRadius(20)
-                .padding(.top, 100)
             }
+            .padding(.horizontal, 30)
         }
-        .padding(.horizontal, 30)
     }
 
     func isValidLogin() -> Bool {

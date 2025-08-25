@@ -9,6 +9,7 @@ struct StandardLayout: View {
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
+                .backgroundExtensionEffect()
 
             HStack {
                 Column1()
@@ -27,7 +28,6 @@ struct StandardLayout: View {
                 .frame(maxWidth: .infinity)
             }
             .frame(maxWidth: .infinity)
-            .padding()
 
         }
     }
