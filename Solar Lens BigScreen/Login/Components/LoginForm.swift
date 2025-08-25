@@ -2,8 +2,8 @@ import SwiftUI
 
 struct LoginForm: View {
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
-    @State var email: String = "marc@marcduerst.com"
-    @State var password: String = "Yodago26woti$"
+    @State var email: String = ""
+    @State var password: String = ""
 
     var body: some View {
         VStack(alignment: .leading) {

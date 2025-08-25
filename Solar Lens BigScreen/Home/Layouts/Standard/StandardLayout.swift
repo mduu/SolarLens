@@ -11,11 +11,8 @@ struct StandardLayout: View {
                 .ignoresSafeArea()
 
             HStack {
-                VStack {
-                    Text("Left")
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity)
+                Column1()
+                    .frame(maxWidth: .infinity)
 
                 VStack {
                     Text("Center")
