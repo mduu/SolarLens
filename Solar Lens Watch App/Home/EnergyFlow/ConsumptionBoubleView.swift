@@ -19,7 +19,7 @@ struct ConsumptionBoubleView: View {
             .accessibilityLabel(
                 currentOverallConsumption != nil
                     ? String(
-                        format: "Total household consumption is %.1f kilo-watt",
+                        format: "Total household consumption is %0 kilo-watt",
                         currentOverallConsumption!.formatWattsAsKiloWatts()
                     ) : "No household consumption"
             )
