@@ -12,8 +12,10 @@ struct CurrentEnergyFlow: View {
                 )
                 .frame(maxWidth: .infinity)
 
-                EmptyView()
-                    .frame(maxWidth: .infinity)
+                ArrowSolarToGrid(
+                    isActive: buildings.overviewData.isFlowSolarToGrid()
+                )
+                .frame(maxWidth: .infinity)
 
                 CurrentGridView(
                     currentGridInW:
@@ -26,14 +28,20 @@ struct CurrentEnergyFlow: View {
 
             GridRow {
 
-                EmptyView()
-                    .frame(maxWidth: .infinity)
+                ArrowSolarToBattery(
+                    isActive: buildings.overviewData.isFlowSolarToBattery()
+                )
+                .frame(maxWidth: .infinity)
 
-                EmptyView()
-                    .frame(maxWidth: .infinity)
+                ArrowSolarToHouse(
+                    isActive: buildings.overviewData.isFlowSolarToHouse()
+                )
+                .frame(maxWidth: .infinity)
 
-                EmptyView()
-                    .frame(maxWidth: .infinity)
+                ArrowGridToHouse(
+                    isActive: buildings.overviewData.isFlowGridToHouse()
+                )
+                .frame(maxWidth: .infinity)
 
             }
 
@@ -47,8 +55,10 @@ struct CurrentEnergyFlow: View {
                 )
                 .frame(maxWidth: .infinity)
 
-                EmptyView()
-                    .frame(maxWidth: .infinity)
+                ArrowBatteryToHouse(
+                    isActive: buildings.overviewData.isFlowBatteryToHome()
+                )
+                .frame(maxWidth: .infinity)
 
                 ConsumptionView(
                     currentOverallConsumptionInW: buildings.overviewData
@@ -59,7 +69,7 @@ struct CurrentEnergyFlow: View {
             }
         }
         .foregroundColor(.white.opacity(0.9))
-        .padding(30)
+        .padding(50)
         .frame(maxWidth: .infinity)
         .frame(height: 300)
         .glassEffect(in: .rect(cornerRadius: 30.0))

@@ -4,6 +4,7 @@ struct Column1: View {
     var body: some View {
         VStack {
             CurrentEnergyFlow()
+                .padding()
                 .frame(maxWidth: .infinity)
 
             Spacer()
