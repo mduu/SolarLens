@@ -10,7 +10,8 @@ struct ConsumptionView: View {
                 .font(.system(size: 50))
 
             Text(
-                currentOverallConsumptionInW?.formatAsKiloWatts(widthUnit: true)
+                currentOverallConsumptionInW?
+                    .formatWattsAsKiloWatts(widthUnit: true)
                 ?? "-"
             )
 

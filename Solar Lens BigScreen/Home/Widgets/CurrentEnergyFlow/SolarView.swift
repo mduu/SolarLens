@@ -10,7 +10,8 @@ struct SolarView: View {
                 .font(.system(size: 50))
 
             Text(
-                currentSolarProductionInW?.formatAsKiloWatts(widthUnit: true)
+                currentSolarProductionInW?
+                    .formatWattsAsKiloWatts(widthUnit: true)
                     ?? "-"
             )
 
