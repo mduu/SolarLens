@@ -15,8 +15,13 @@ struct CurrentEnergyFlow: View {
                 EmptyView()
                     .frame(maxWidth: .infinity)
 
-                EmptyView()
-                    .frame(maxWidth: .infinity)
+                CurrentGridView(
+                    currentGridInW:
+                        buildings.overviewData.isFlowSolarToGrid()
+                        ? buildings.overviewData.currentSolarToGrid
+                        : buildings.overviewData.currentGridToHouse
+                )
+                .frame(maxWidth: .infinity)
             }
 
             GridRow {
@@ -34,8 +39,13 @@ struct CurrentEnergyFlow: View {
 
             GridRow {
 
-                EmptyView()
-                    .frame(maxWidth: .infinity)
+                CurrentBatteryView(
+                    currentBatteryLevel: buildings.overviewData
+                        .currentBatteryLevel,
+                    currentChargeRate: buildings.overviewData
+                        .currentBatteryChargeRate
+                )
+                .frame(maxWidth: .infinity)
 
                 EmptyView()
                     .frame(maxWidth: .infinity)
