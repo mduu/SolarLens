@@ -1,16 +1,27 @@
 import Foundation
 
 actor ForegroundTimer {
-    nonisolated let action: (() -> Void)? = nil
+    nonisolated let action: (() -> Void)
 
+    static private let interval: TimeInterval = 5
     private var timer: Timer?
+
+    init(action: @escaping (() -> Void)) {
+        self.action = action
+    }
 
     public func startTimer() {
         stopTimer()
-        timer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true)
-        { [weak self] _ in
-            self?.timerFired()
-        }
+        timer =
+            Timer
+            .scheduledTimer(
+                withTimeInterval: ForegroundTimer.interval,
+                repeats: true
+            ) { [weak self] _ in
+                Task {
+                    await self?.timerFired()
+                }
+            }
     }
 
     public func stopTimer() {
@@ -19,10 +30,10 @@ actor ForegroundTimer {
         }
         self.timer = nil
     }
-    
-    nonisolated func timerFired() {
+
+    nonisolated func timerFired() async {
         print("ForegroundTimer: Timer fired!")
-        action?()
+        action()
     }
 
 }
