@@ -18,9 +18,7 @@ actor ForegroundTimer {
                 withTimeInterval: ForegroundTimer.interval,
                 repeats: true
             ) { [weak self] _ in
-                Task {
-                    await self?.timerFired()
-                }
+                self?.timerFired()
             }
     }
 
@@ -31,7 +29,7 @@ actor ForegroundTimer {
         self.timer = nil
     }
 
-    nonisolated func timerFired() async {
+    nonisolated func timerFired() {
         print("ForegroundTimer: Timer fired!")
         action()
     }

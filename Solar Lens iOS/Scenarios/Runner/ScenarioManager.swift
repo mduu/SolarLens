@@ -72,6 +72,11 @@ public final class ScenarioManager: ScenarioHost {
         scenario: Scenario,
         parameters: ScenarioParameters
     ) {
+        if activeState != nil {
+            print("ScenarioManager: A scenario is already running!")
+            return
+        }
+
         activeState = ScenarioState(scenario: scenario)
         activeTaskParameters = parameters
 
@@ -160,8 +165,10 @@ public final class ScenarioManager: ScenarioHost {
         }
     }
 
-    private func foregroundTimerFired() {
+    func foregroundTimerFired() {
         let state = self.activeState
+
+        print("Foreground timer fired")
 
         guard let nextRunAfter = state?.nextTaskRun else {
             return
