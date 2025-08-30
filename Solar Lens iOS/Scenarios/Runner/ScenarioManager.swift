@@ -8,13 +8,15 @@ public final class ScenarioManager: ScenarioHost {
 
     private let identifier =
         "com.marcduerst.SolarManagerWatch.ScenarioRunner"
+    static private let foregroundTimerInterval: TimeInterval = 5
 
     private var activeState: ScenarioState? = nil
     private var activeTaskParameters: ScenarioParameters? = nil
     private var activeScenarioName: LocalizedStringResource {
         activeState?.scenario?.getScenarioTask()?.scenarioName ?? "-"
     }
-    private var timer: ForegroundTimer?
+
+    private var timer: Timer?
 
     public var activeScenario: Scenario? {
         activeState?.scenario
@@ -44,11 +46,11 @@ public final class ScenarioManager: ScenarioHost {
             }
 
             logDebug(message: "App became active - start timer")
-            Task {
-                await ensureForegroundTimerStarted()
-            }
+            ensureForegroundTimerStarted()
+
         case .inactive:
             logDebug(message: "App became inactive")
+
         case .background:
             if activeState?.scenario == nil {
                 logDebug(
@@ -59,10 +61,10 @@ public final class ScenarioManager: ScenarioHost {
             logDebug(
                 message: "App moved to background - scheduling background tasks"
             )
-            Task {
-                await timer?.stopTimer()
-            }
+
+            stopTimer()
             scheduleNextBackgroundCall()
+
         @unknown default:
             break
         }
@@ -86,9 +88,7 @@ public final class ScenarioManager: ScenarioHost {
             await runActiveScenario()
         }
 
-        Task {
-            await ensureForegroundTimerStarted()
-        }
+        ensureForegroundTimerStarted()
     }
 
     func logSuccess() {
@@ -98,6 +98,7 @@ public final class ScenarioManager: ScenarioHost {
                 level: .Success
             )
         )
+
         print(
             "SCENARIO SUCCESS: Successfully ran scenario \(activeScenarioName)"
         )
@@ -107,6 +108,7 @@ public final class ScenarioManager: ScenarioHost {
         ScenarioLogManager.shared.log(
             .init(time: Date(), message: message, level: .Info)
         )
+
         print("SCENARIO INFO: \(message)")
     }
 
@@ -122,6 +124,7 @@ public final class ScenarioManager: ScenarioHost {
         ScenarioLogManager.shared.log(
             .init(time: Date(), message: message, level: .Debug)
         )
+
         print("SCENARIO DEBUG: \(message)")
     }
 
@@ -132,6 +135,7 @@ public final class ScenarioManager: ScenarioHost {
                 level: .Failure
             )
         )
+
         print(
             "SCENARIO FAILURE: Successfully ran scenario \(activeScenarioName)"
         )
@@ -165,22 +169,6 @@ public final class ScenarioManager: ScenarioHost {
         }
     }
 
-    func foregroundTimerFired() {
-        let state = self.activeState
-
-        print("Foreground timer fired")
-
-        guard let nextRunAfter = state?.nextTaskRun else {
-            return
-        }
-
-        if nextRunAfter < Date() {
-            Task {
-                await self.runActiveScenario()
-            }
-        }
-    }
-
     private func scheduleNextBackgroundCall() {
         guard let activeTaskNextRun = activeState?.nextTaskRun else {
             logError(
@@ -202,6 +190,7 @@ public final class ScenarioManager: ScenarioHost {
         do {
 
             try BGTaskScheduler.shared.submit(request)
+
             logDebug(
                 message:
                     "Next background check scheduled successfully at \(nextRunIn)"
@@ -287,12 +276,7 @@ public final class ScenarioManager: ScenarioHost {
         logDebug(message: "Scenarion \(activeScenarioName) terminating")
 
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
-
-        Task {
-            if timer != nil {
-                await timer?.stopTimer()
-            }
-        }
+        stopTimer()
 
         // TODO Push notification
 
@@ -300,11 +284,38 @@ public final class ScenarioManager: ScenarioHost {
         activeTaskParameters = nil
     }
 
-    private func ensureForegroundTimerStarted() async {
+    private func ensureForegroundTimerStarted() {
         if timer == nil {
-            timer = ForegroundTimer(action: foregroundTimerFired)
+            timer =
+                Timer
+                .scheduledTimer(
+                    withTimeInterval: Self.foregroundTimerInterval,
+                    repeats: true
+                ) { [weak self] _ in
+
+                    let state = self?.activeState
+
+                    print("Foreground timer fired")
+
+                    guard let nextRunAfter = state?.nextTaskRun else {
+                        return
+                    }
+
+                    if nextRunAfter < Date() {
+                        Task {
+                            await self?.runActiveScenario()
+                        }
+                    }
+                }
+        }
+    }
+
+    private func stopTimer() {
+        guard timer != nil else {
+            return
         }
 
-        await timer?.startTimer()
+        timer!.invalidate()
+        timer = nil
     }
 }
