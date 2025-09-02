@@ -10,17 +10,18 @@ public final class ScenarioManager: ScenarioHost {
         "com.marcduerst.SolarManagerWatch.ScenarioRunner"
     static private let foregroundTimerInterval: TimeInterval = 5
 
+    public var activeScenario: Scenario? {
+        activeState?.scenario
+    }
+    
+    internal var energyManager: any EnergyManager = SolarManager.instance()
+
     private var activeState: ScenarioState? = nil
     private var activeTaskParameters: ScenarioParameters? = nil
     private var activeScenarioName: LocalizedStringResource {
         activeState?.scenario?.getScenarioTask()?.scenarioName ?? "-"
     }
-
     private var timer: Timer?
-
-    public var activeScenario: Scenario? {
-        activeState?.scenario
-    }
 
     public func registerBackgroundTask() {
         BGTaskScheduler.shared.register(

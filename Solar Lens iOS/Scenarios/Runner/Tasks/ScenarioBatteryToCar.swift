@@ -1,12 +1,12 @@
 import BackgroundTasks
 import Foundation
-import UIKit
 
 final class ScenarioBatteryToCar: ScenarioTask {
     public static let shared = ScenarioBatteryToCar()
 
     let scenarioName: LocalizedStringResource = "Battery to Car"
-    let fiveMinutes: TimeInterval = 5 * 60
+    let tenSeconds: TimeInterval = 10
+    let fiveMinutes: TimeInterval = 5 * 1  // 5 * 60 = 5 minutes
 
     func run(
         host: any ScenarioHost,
@@ -15,31 +15,44 @@ final class ScenarioBatteryToCar: ScenarioTask {
     )
         async throws -> ScenarioState
     {
-        let previousNumberOfWork = state.batteryToCar?.numberOfWork ?? 0
+        var overviewData = try? await host.energyManager.fetchOverviewData(lastOverviewData: nil)
+        guard
+            let overviewData = overviewData,
+            let currentBatteryLevel = overviewData.currentBatteryLevel else {
+            host.logError(message: "Battery to car: Unable to fetch overview data")
+            return state // keep current state for retry
+        }
 
-        let numberOfWork = previousNumberOfWork + 1
+        if state.batteryToCar?.lastBatteryPercentage == nil {
+            await startScenario(
+                host: host,
+                parameters: parameters,
+                state: state,
+                overviewData: overviewData)
+        }
 
-        host.logInfo(message: "Battery to car: Doing work #\(numberOfWork)")
+        let isWorkDone: Bool = currentBatteryLevel <= parameters.batteryToCar!.minBatteryLevel
 
-        // TODO Do work
-
-        if numberOfWork < 2 {
+        if !isWorkDone {
+            // Continue scenario and schedule next run
             host.logInfo(message: "Battery to car: scheduled next call")
-            let nextRun = Date().addingTimeInterval(fiveMinutes)
-
             return ScenarioState(
                 scenario: state.scenario!,
                 status: ScenarioStatus.running,
-                nextTaskRun: nextRun,
+                nextTaskRun: Date().addingTimeInterval(fiveMinutes),
                 batteryToCar: ScenarioBatteryToCarState(
-                    numberOfWork: numberOfWork,
-                    isStopped: false
+                    // TODO
                 )
             )
         }
 
-        host.logSuccess()
+        await stopScenario(
+            host: host,
+            parameters: parameters,
+            state: state,
+            overviewData: overviewData)
 
+        host.logSuccess()
         return ScenarioState(
             scenario: state.scenario!,
             status: ScenarioStatus.finishedSuccessful,
@@ -48,28 +61,63 @@ final class ScenarioBatteryToCar: ScenarioTask {
         )
     }
 
+    func startScenario(
+        host: any ScenarioHost,
+        parameters: ScenarioParameters,
+        state: ScenarioState,
+        overviewData: OverviewData
+    ) async {
+        host.logDebug(message: "Battery to car: start scenario")
+
+        state.batteryToCar!.lastBatteryPercentage = overviewData.currentBatteryLevel;
+
+        // Deactivate car charging if previously activated by scenario
+
+        // TODO
+
+        host.logDebug(message: "Battery to car: Scenario started")
+    }
+
+    func stopScenario(
+        host: any ScenarioHost,
+        parameters: ScenarioParameters,
+        state: ScenarioState,
+        overviewData: OverviewData
+    ) async {
+        host.logDebug(message: "Battery to car: stopping scenario")
+
+        // TODO
+
+        host.logDebug(message: "Battery to car: Scenario stopped")
+    }
+
 }
 
 class ScenarioBatteryToCarParameters: Codable {
     var minBatteryLevel: Int = 20
-    
+
     init() {}
-    
-    init(minBatteryLevel: Int)
-    {
+
+    init(minBatteryLevel: Int) {
         self.minBatteryLevel = minBatteryLevel
     }
 }
 
 class ScenarioBatteryToCarState: Codable {
-    var numberOfWork: Int = 0
-    var isStopped: Bool = false
+    var lastBatteryPercentage: Int? = nil
+    var previousChargingDeviceId: String? = nil
+    var previousChargingMode: ChargingMode? = nil
 
     init() {
     }
 
-    init(numberOfWork: Int, isStopped: Bool) {
-        self.numberOfWork = numberOfWork
-        self.isStopped = isStopped
+    init(
+        lastBatteryPercentage: Int?,
+        previousChargingDeviceId: String,
+        previousChargeMode: ChargingMode
+    ) {
+        self.lastBatteryPercentage = lastBatteryPercentage
+        self.previousChargingDeviceId = previousChargingDeviceId
+        self.previousChargingMode = previousChargeMode
     }
 }
