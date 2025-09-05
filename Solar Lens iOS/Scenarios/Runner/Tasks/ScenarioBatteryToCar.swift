@@ -97,8 +97,6 @@ final class ScenarioBatteryToCar: ScenarioTask {
             return
         }
 
-        // TODO Restore previous state
-
         let previousChargingMode = state.batteryToCar?.previousChargingMode ?? ChargingMode.withSolarPower
 
         let chargingRequest = ControlCarChargingRequest(
