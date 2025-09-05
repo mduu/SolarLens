@@ -801,10 +801,22 @@
     "Battery to Car" : {
 
     },
-    "Battery to car: Doing work #%lld" : {
+    "Battery to car: Scenario started" : {
+
+    },
+    "Battery to car: Scenario stopped" : {
 
     },
     "Battery to car: scheduled next call" : {
+
+    },
+    "Battery to car: start scenario" : {
+
+    },
+    "Battery to car: stopping scenario" : {
+
+    },
+    "Battery to car: Unable to fetch overview data" : {
 
     },
     "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {

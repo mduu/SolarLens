@@ -18,9 +18,10 @@ final class ScenarioBatteryToCar: ScenarioTask {
         var overviewData = try? await host.energyManager.fetchOverviewData(lastOverviewData: nil)
         guard
             let overviewData = overviewData,
-            let currentBatteryLevel = overviewData.currentBatteryLevel else {
+            let currentBatteryLevel = overviewData.currentBatteryLevel
+        else {
             host.logError(message: "Battery to car: Unable to fetch overview data")
-            return state // keep current state for retry
+            return state  // keep current state for retry
         }
 
         if state.batteryToCar?.lastBatteryPercentage == nil {
@@ -28,7 +29,8 @@ final class ScenarioBatteryToCar: ScenarioTask {
                 host: host,
                 parameters: parameters,
                 state: state,
-                overviewData: overviewData)
+                overviewData: overviewData
+            )
         }
 
         let isWorkDone: Bool = currentBatteryLevel <= parameters.batteryToCar!.minBatteryLevel
@@ -41,7 +43,9 @@ final class ScenarioBatteryToCar: ScenarioTask {
                 status: ScenarioStatus.running,
                 nextTaskRun: Date().addingTimeInterval(fiveMinutes),
                 batteryToCar: ScenarioBatteryToCarState(
-                    // TODO
+                    lastBatteryPercentage: currentBatteryLevel,
+                    previousChargingDeviceId: (state.batteryToCar?.previousChargingDeviceId)!,
+                    previousChargeMode: state.batteryToCar!.previousChargingMode!
                 )
             )
         }
@@ -50,7 +54,8 @@ final class ScenarioBatteryToCar: ScenarioTask {
             host: host,
             parameters: parameters,
             state: state,
-            overviewData: overviewData)
+            overviewData: overviewData
+        )
 
         host.logSuccess()
         return ScenarioState(
@@ -69,11 +74,13 @@ final class ScenarioBatteryToCar: ScenarioTask {
     ) async {
         host.logDebug(message: "Battery to car: start scenario")
 
-        state.batteryToCar!.lastBatteryPercentage = overviewData.currentBatteryLevel;
+        state.batteryToCar!.lastBatteryPercentage = overviewData.currentBatteryLevel
 
         // Deactivate car charging if previously activated by scenario
 
-        // TODO
+        // TODO Backup previous state
+
+        // TODO Set charging mode
 
         host.logDebug(message: "Battery to car: Scenario started")
     }
@@ -86,7 +93,22 @@ final class ScenarioBatteryToCar: ScenarioTask {
     ) async {
         host.logDebug(message: "Battery to car: stopping scenario")
 
-        // TODO
+        guard let previousDeviceId = state.batteryToCar!.previousChargingDeviceId else {
+            return
+        }
+
+        // TODO Restore previous state
+
+        let previousChargingMode = state.batteryToCar?.previousChargingMode ?? ChargingMode.withSolarPower
+
+        let chargingRequest = ControlCarChargingRequest(
+            chargingMode: previousChargingMode
+        )
+
+        let result = try? await host.energyManager.setCarChargingMode(
+            sensorId: previousDeviceId,
+            carCharging: chargingRequest
+        )
 
         host.logDebug(message: "Battery to car: Scenario stopped")
     }
