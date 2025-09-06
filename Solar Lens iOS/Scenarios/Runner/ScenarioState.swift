@@ -25,5 +25,21 @@ public struct ScenarioState: Codable {
 
     init(scenario: Scenario) {
         self.scenario = scenario
+
+        switch scenario {
+        case .BatteryToCar:
+            batteryToCar = .init()
+        case .OneTimeTariff:
+            break
+        }
+    }
+
+    func failed() -> ScenarioState {
+        return .init(
+            scenario: scenario!,
+            status: .failed,
+            nextTaskRun: nil as Date?,
+            batteryToCar: nil as ScenarioBatteryToCarState?
+        )
     }
 }

@@ -15,6 +15,12 @@ final class ScenarioBatteryToCar: ScenarioTask {
     )
         async throws -> ScenarioState
     {
+        guard let batteryToCarState = state.batteryToCar else {
+            host.logError(message: "No state for Battery to Car")
+            host.logFailure()
+            return state.failed()
+        }
+
         var overviewData = try? await host.energyManager.fetchOverviewData(lastOverviewData: nil)
         guard
             let overviewData = overviewData,
@@ -24,8 +30,10 @@ final class ScenarioBatteryToCar: ScenarioTask {
             return state  // keep current state for retry
         }
 
-        if state.batteryToCar?.lastBatteryPercentage == nil {
-            await startScenario(
+        var newState = state
+
+        if !batteryToCarState.isStarted {
+            newState = await startScenario(
                 host: host,
                 parameters: parameters,
                 state: state,
@@ -35,35 +43,18 @@ final class ScenarioBatteryToCar: ScenarioTask {
 
         let isWorkDone: Bool = currentBatteryLevel <= parameters.batteryToCar!.minBatteryLevel
 
-        if !isWorkDone {
-            // Continue scenario and schedule next run
-            host.logInfo(message: "Battery to car: scheduled next call")
-            return ScenarioState(
-                scenario: state.scenario!,
-                status: ScenarioStatus.running,
-                nextTaskRun: Date().addingTimeInterval(fiveMinutes),
-                batteryToCar: ScenarioBatteryToCarState(
-                    lastBatteryPercentage: currentBatteryLevel,
-                    previousChargingDeviceId: (state.batteryToCar?.previousChargingDeviceId)!,
-                    previousChargeMode: state.batteryToCar!.previousChargingMode!
-                )
+        return !isWorkDone
+            ? continueScenario(
+                host: host,
+                state: newState,
+                lastBatteryPercentage: currentBatteryLevel
             )
-        }
-
-        await stopScenario(
-            host: host,
-            parameters: parameters,
-            state: state,
-            overviewData: overviewData
-        )
-
-        host.logSuccess()
-        return ScenarioState(
-            scenario: state.scenario!,
-            status: ScenarioStatus.finishedSuccessful,
-            nextTaskRun: nil as Date?,
-            batteryToCar: nil as ScenarioBatteryToCarState?
-        )
+            : await stopScenario(
+                host: host,
+                parameters: parameters,
+                state: newState,
+                overviewData: overviewData
+            )
     }
 
     func startScenario(
@@ -71,18 +62,56 @@ final class ScenarioBatteryToCar: ScenarioTask {
         parameters: ScenarioParameters,
         state: ScenarioState,
         overviewData: OverviewData
-    ) async {
+    ) async -> ScenarioState {
         host.logDebug(message: "Battery to car: start scenario")
 
         state.batteryToCar!.lastBatteryPercentage = overviewData.currentBatteryLevel
 
-        // Deactivate car charging if previously activated by scenario
+        // Backup previous state
+        let charingStation = overviewData.chargingStations
+            .first { $0.id == parameters.batteryToCar!.chargingDeviceId }
 
-        // TODO Backup previous state
+        guard let previousChargeMode: ChargingMode = charingStation?.chargingMode
+        else {
+            host.logError(message: "Failed to query previous charge mode")
+            host.logFailure()
+
+            return state.failed()
+        }
 
         // TODO Set charging mode
 
         host.logDebug(message: "Battery to car: Scenario started")
+
+        return ScenarioState(
+            scenario: state.scenario!,
+            status: ScenarioStatus.running,
+            nextTaskRun: nil as Date?,
+            batteryToCar: ScenarioBatteryToCarState(
+                isStarted: true,
+                lastBatteryPercentage: overviewData.currentBatteryLevel,
+                previousChargeMode: previousChargeMode
+            )
+        )
+    }
+
+    func continueScenario(
+        host: any ScenarioHost,
+        state: ScenarioState,
+        lastBatteryPercentage: Int
+    ) -> ScenarioState {
+        host.logInfo(message: "Battery to car: scheduled next call")
+
+        return ScenarioState(
+            scenario: state.scenario!,
+            status: ScenarioStatus.running,
+            nextTaskRun: Date().addingTimeInterval(fiveMinutes),
+            batteryToCar: ScenarioBatteryToCarState(
+                isStarted: true,
+                lastBatteryPercentage: lastBatteryPercentage,
+                previousChargeMode: state.batteryToCar!.previousChargingMode!
+            )
+        )
     }
 
     func stopScenario(
@@ -90,54 +119,55 @@ final class ScenarioBatteryToCar: ScenarioTask {
         parameters: ScenarioParameters,
         state: ScenarioState,
         overviewData: OverviewData
-    ) async {
+    ) async -> ScenarioState {
         host.logDebug(message: "Battery to car: stopping scenario")
 
-        guard let previousDeviceId = state.batteryToCar!.previousChargingDeviceId else {
-            return
-        }
-
-        let previousChargingMode = state.batteryToCar?.previousChargingMode ?? ChargingMode.withSolarPower
-
-        let chargingRequest = ControlCarChargingRequest(
-            chargingMode: previousChargingMode
-        )
-
+        // Reset charging mode
         let result = try? await host.energyManager.setCarChargingMode(
-            sensorId: previousDeviceId,
-            carCharging: chargingRequest
+            sensorId: parameters.batteryToCar!.chargingDeviceId,
+            carCharging: ControlCarChargingRequest(
+                chargingMode: state.batteryToCar?.previousChargingMode ?? ChargingMode.withSolarPower
+            )
         )
 
-        host.logDebug(message: "Battery to car: Scenario stopped")
-    }
+        host.logDebug(message: "Battery to car: Stopped at battery level \(overviewData.currentBatteryLevel ?? -1) %")
+        host.logSuccess()
 
+        return ScenarioState(
+            scenario: state.scenario!,
+            status: ScenarioStatus.finishedSuccessful,
+            nextTaskRun: nil as Date?,
+            batteryToCar: nil as ScenarioBatteryToCarState?
+        )
+    }
 }
 
 class ScenarioBatteryToCarParameters: Codable {
+    var chargingDeviceId: String
     var minBatteryLevel: Int = 20
 
     init() {}
 
-    init(minBatteryLevel: Int) {
+    init(chargingDeviceId: String, minBatteryLevel: Int) {
         self.minBatteryLevel = minBatteryLevel
     }
 }
 
 class ScenarioBatteryToCarState: Codable {
+    var isStarted: Bool = false
     var lastBatteryPercentage: Int? = nil
-    var previousChargingDeviceId: String? = nil
     var previousChargingMode: ChargingMode? = nil
 
     init() {
     }
 
     init(
+        isStarted: Bool,
         lastBatteryPercentage: Int?,
-        previousChargingDeviceId: String,
         previousChargeMode: ChargingMode
     ) {
+        self.isStarted = isStarted
         self.lastBatteryPercentage = lastBatteryPercentage
-        self.previousChargingDeviceId = previousChargingDeviceId
         self.previousChargingMode = previousChargeMode
     }
 }
