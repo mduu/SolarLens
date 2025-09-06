@@ -79,7 +79,23 @@ final class ScenarioBatteryToCar: ScenarioTask {
             return state.failed()
         }
 
-        // TODO Set charging mode
+        func convertkWToAmps(kW: Double, voltage: Double) -> Double {
+            // kW * 1000 wandelt Kilowatt in Watt um
+            return (kW * 1000) / voltage
+        }
+
+        let totalMaxBatteryOutput = overviewData.devices
+            .filter { $0.deviceType == .battery && $0.batteryInfo != nil }
+            .reduce(0) { $0 + $1.batteryInfo!.maxDischargePower }
+
+        // Set charging mode to constant
+        let setChargingModeResult = try? await host.energyManager.setCarChargingMode(
+            sensorId: parameters.batteryToCar!.chargingDeviceId,
+            carCharging: ControlCarChargingRequest(
+                constantCurrent: 6 // TODO
+            )
+        )
+
 
         host.logDebug(message: "Battery to car: Scenario started")
 
@@ -143,12 +159,13 @@ final class ScenarioBatteryToCar: ScenarioTask {
 }
 
 class ScenarioBatteryToCarParameters: Codable {
-    var chargingDeviceId: String
+    var chargingDeviceId: String = ""
     var minBatteryLevel: Int = 20
 
     init() {}
 
     init(chargingDeviceId: String, minBatteryLevel: Int) {
+        self.chargingDeviceId = chargingDeviceId
         self.minBatteryLevel = minBatteryLevel
     }
 }
