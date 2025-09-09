@@ -84,15 +84,17 @@ final class ScenarioBatteryToCar: ScenarioTask {
             return (kW * 1000) / voltage
         }
 
-        let totalMaxBatteryOutput = overviewData.devices
+        let totalMaxBatteryOutputKw = overviewData.devices
             .filter { $0.deviceType == .battery && $0.batteryInfo != nil }
             .reduce(0) { $0 + $1.batteryInfo!.maxDischargePower }
+
+        // TODO Convert totalMaxBatteryOutputKw into Ampere
 
         // Set charging mode to constant
         let setChargingModeResult = try? await host.energyManager.setCarChargingMode(
             sensorId: parameters.batteryToCar!.chargingDeviceId,
             carCharging: ControlCarChargingRequest(
-                constantCurrent: 6 // TODO
+                constantCurrent: 6 // TODO Replace with calcualted Ampere
             )
         )
 
