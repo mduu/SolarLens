@@ -1,12 +1,9 @@
-import BackgroundTasks
 import Foundation
 
-final class ScenarioBatteryToCar: ScenarioTask {
-    public static let shared = ScenarioBatteryToCar()
+final class ScenarioOneTimeTariff: ScenarioTask {
+    public static let shared = ScenarioOneTimeTariff()
 
-    let scenarioName: LocalizedStringResource = "Battery to Car"
-    let tenSeconds: TimeInterval = 10
-    let fiveMinutes: TimeInterval = 5 * 1  // 5 * 60 = 5 minutes
+    let scenarioName: LocalizedStringResource = "1x Tariff"
 
     func run(
         host: any ScenarioHost,
@@ -15,24 +12,23 @@ final class ScenarioBatteryToCar: ScenarioTask {
     )
         async throws -> ScenarioState
     {
-        guard let batteryToCarState = state.batteryToCar else {
-            host.logError(message: "No state for Battery to Car")
+        guard let oneTimeTariffState = state.oneTimeTariff else {
+            host.logError(message: "No state for One Time Tariff")
             host.logFailure()
             return state.failed()
         }
 
         var overviewData = try? await host.energyManager.fetchOverviewData(lastOverviewData: nil)
         guard
-            let overviewData = overviewData,
-            let currentBatteryLevel = overviewData.currentBatteryLevel
+            let overviewData = overviewData
         else {
-            host.logError(message: "Battery to car: Unable to fetch overview data")
+            host.logError(message: "One time tariff: Unable to fetch overview data")
             return state  // keep current state for retry
         }
 
         var newState = state
 
-        if !batteryToCarState.isStarted {
+        if !oneTimeTariffState.isStarted {
             newState = await startScenario(
                 host: host,
                 parameters: parameters,
@@ -41,20 +37,19 @@ final class ScenarioBatteryToCar: ScenarioTask {
             )
         }
 
-        let isWorkDone: Bool = currentBatteryLevel <= parameters.batteryToCar!.minBatteryLevel
+        let isWorkDone: Bool = // TODO
 
         return !isWorkDone
-            ? continueScenario(
-                host: host,
-                state: newState,
-                lastBatteryPercentage: currentBatteryLevel
-            )
-            : await stopScenario(
-                host: host,
-                parameters: parameters,
-                state: newState,
-                overviewData: overviewData
-            )
+        ? continueScenario(
+            host: host,
+            state: newState
+        )
+        : await stopScenario(
+            host: host,
+            parameters: parameters,
+            state: newState,
+            overviewData: overviewData
+        )
     }
 
     func startScenario(
@@ -63,7 +58,7 @@ final class ScenarioBatteryToCar: ScenarioTask {
         state: ScenarioState,
         overviewData: OverviewData
     ) async -> ScenarioState {
-        host.logDebug(message: "Battery to car: start scenario")
+        host.logDebug(message: "One time tariff: start scenario")
 
         state.batteryToCar!.lastBatteryPercentage = overviewData.currentBatteryLevel
 
@@ -79,34 +74,24 @@ final class ScenarioBatteryToCar: ScenarioTask {
             return state.failed()
         }
 
-        func convertkWToAmps(kW: Double, voltage: Double) -> Double {
-            // kW * 1000 wandelt Kilowatt in Watt um
-            return (kW * 1000) / voltage
-        }
-
-        let totalMaxBatteryOutputKw = overviewData.devices
-            .filter { $0.deviceType == .battery && $0.batteryInfo != nil }
-            .reduce(0) { $0 + $1.batteryInfo!.maxDischargePower }
-
-        // TODO Convert totalMaxBatteryOutputKw into Ampere
-
         // Set charging mode to constant
         let setChargingModeResult = try? await host.energyManager.setCarChargingMode(
             sensorId: parameters.batteryToCar!.chargingDeviceId,
             carCharging: ControlCarChargingRequest(
-                constantCurrent: 6 // TODO Replace with calcualted Ampere
+                chargingMode: .withSolarOrLowTariff
             )
         )
 
-        host.logDebug(message: "Battery to car: Scenario started")
+        var endTime = // TODO Calculate end of tariff
+
+        host.logDebug(message: "One time tariff: Scenario started")
 
         return ScenarioState(
             scenario: state.scenario!,
             status: ScenarioStatus.running,
             nextTaskRun: nil as Date?,
-            batteryToCar: ScenarioBatteryToCarState(
+            oneTimeTariff: ScenarioOneTimeTariffState(
                 isStarted: true,
-                lastBatteryPercentage: overviewData.currentBatteryLevel,
                 previousChargeMode: previousChargeMode
             )
         )
@@ -114,8 +99,7 @@ final class ScenarioBatteryToCar: ScenarioTask {
 
     func continueScenario(
         host: any ScenarioHost,
-        state: ScenarioState,
-        lastBatteryPercentage: Int
+        state: ScenarioState
     ) -> ScenarioState {
         host.logInfo(message: "Battery to car: scheduled next call")
 
@@ -123,9 +107,8 @@ final class ScenarioBatteryToCar: ScenarioTask {
             scenario: state.scenario!,
             status: ScenarioStatus.running,
             nextTaskRun: Date().addingTimeInterval(fiveMinutes),
-            batteryToCar: ScenarioBatteryToCarState(
+            oneTimeTariff: ScenarioOneTimeTariffState(
                 isStarted: true,
-                lastBatteryPercentage: lastBatteryPercentage,
                 previousChargeMode: state.batteryToCar!.previousChargingMode!
             )
         )
@@ -137,7 +120,7 @@ final class ScenarioBatteryToCar: ScenarioTask {
         state: ScenarioState,
         overviewData: OverviewData
     ) async -> ScenarioState {
-        host.logDebug(message: "Battery to car: stopping scenario")
+        host.logDebug(message: "One time tariff: stopping scenario")
 
         // Reset charging mode
         let result = try? await host.energyManager.setCarChargingMode(
@@ -147,7 +130,7 @@ final class ScenarioBatteryToCar: ScenarioTask {
             )
         )
 
-        host.logDebug(message: "Battery to car: Stopped at battery level \(overviewData.currentBatteryLevel ?? -1) %")
+        host.logDebug(message: "One time tariff: Stopped at battery level \(overviewData.currentBatteryLevel ?? -1) %")
         host.logSuccess()
 
         return ScenarioState(
@@ -156,35 +139,34 @@ final class ScenarioBatteryToCar: ScenarioTask {
             nextTaskRun: nil as Date?
         )
     }
+
 }
 
-class ScenarioBatteryToCarParameters: Codable {
+class ScenarioOneTimeTariffParameters: Codable {
     var chargingDeviceId: String = ""
-    var minBatteryLevel: Int = 20
 
     init() {}
 
-    init(chargingDeviceId: String, minBatteryLevel: Int) {
+    init(chargingDeviceId: String) {
         self.chargingDeviceId = chargingDeviceId
-        self.minBatteryLevel = minBatteryLevel
     }
 }
 
-class ScenarioBatteryToCarState: Codable {
+class ScenarioOneTimeTariffState: Codable {
     var isStarted: Bool = false
-    var lastBatteryPercentage: Int? = nil
     var previousChargingMode: ChargingMode? = nil
+    var endtime: Date? = nil
 
     init() {
     }
 
     init(
         isStarted: Bool,
-        lastBatteryPercentage: Int?,
-        previousChargeMode: ChargingMode
+        previousChargeMode: ChargingMode,
+        endTime: Date?
     ) {
         self.isStarted = isStarted
-        self.lastBatteryPercentage = lastBatteryPercentage
         self.previousChargingMode = previousChargeMode
+        self.endtime = endTime
     }
 }

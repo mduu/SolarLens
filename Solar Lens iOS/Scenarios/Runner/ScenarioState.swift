@@ -7,6 +7,7 @@ public struct ScenarioState: Codable {
 
     // Scenario-specific states
     var batteryToCar: ScenarioBatteryToCarState? = nil
+    var oneTimeTariff: ScenarioOneTimeTariffState? = nil
 
     init() {
     }
@@ -15,12 +16,14 @@ public struct ScenarioState: Codable {
         scenario: Scenario,
         status: ScenarioStatus,
         nextTaskRun: Date?,
-        batteryToCar: ScenarioBatteryToCarState?
+        batteryToCar: ScenarioBatteryToCarState? = nil,
+        oneTimeTariff: ScenarioOneTimeTariffState? = nil
     ) {
         self.scenario = scenario
         self.status = status
         self.nextTaskRun = nextTaskRun
         self.batteryToCar = batteryToCar
+        self.oneTimeTariff = oneTimeTariff
     }
 
     init(scenario: Scenario) {
@@ -30,7 +33,7 @@ public struct ScenarioState: Codable {
         case .BatteryToCar:
             batteryToCar = .init()
         case .OneTimeTariff:
-            break
+                oneTimeTariff = .init()
         }
     }
 
@@ -39,7 +42,8 @@ public struct ScenarioState: Codable {
             scenario: scenario!,
             status: .failed,
             nextTaskRun: nil as Date?,
-            batteryToCar: nil as ScenarioBatteryToCarState?
+            batteryToCar: nil as ScenarioBatteryToCarState?,
+            oneTimeTariff: nil as ScenarioOneTimeTariffState?
         )
     }
 }
