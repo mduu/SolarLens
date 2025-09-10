@@ -40,7 +40,8 @@ struct ConsumptionScreen: View {
                     Divider()
 
                     DeviceList(
-                        devices: buildingState.overviewData.devices
+                        devices: buildingState.overviewData.devices,
+                        cars: buildingState.overviewData.cars
                     ) { deviceId, newPriority in
                         print(
                             "Setting prio of device \(deviceId) to \(newPriority)"

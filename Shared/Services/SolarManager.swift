@@ -218,8 +218,7 @@ actor SolarManager: EnergyManager {
 
     }
 
-    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData
-    {
+    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
         try await ensureSmId()
 
         print("Fetching gateway consumptions&productions ...")
@@ -628,12 +627,26 @@ actor SolarManager: EnergyManager {
             return []
         }
 
+        let localIsoDateFormatter = ISO8601DateFormatter()
+        localIsoDateFormatter.timeZone = TimeZone.current
+        localIsoDateFormatter.formatOptions = [
+            .withFullDate,
+            .withTime,
+            .withDashSeparatorInDate,
+            .withColonSeparatorInTime,
+        ]
+
         return
             sensorInfos
             .filter { (sensor: SensorInfosV1Response) -> Bool in sensor.isCar()
             }
             .map { sensorInfo -> Car in
                 let streamInfo = streamSensorInfos?.deviceById(sensorInfo._id)
+                let dateString: String = streamInfo?.lastUpdate ?? ""
+                let lastUpdate =
+                    streamInfo?.lastUpdate != nil
+                    ? localIsoDateFormatter.date(from: dateString)
+                    : nil
 
                 return Car.init(
                     id: sensorInfo._id,
@@ -641,6 +654,8 @@ actor SolarManager: EnergyManager {
                     priority: sensorInfo.priority,
                     batteryPercent: sensorInfo.soc,
                     batteryCapacity: sensorInfo.data?.batteryCapacity,
+                    remainingDistance: streamInfo?.remainingDistance,
+                    lastUpdate: lastUpdate,
                     signal: sensorInfo.signal,
                     currentPowerInWatts: streamInfo?.currentPower
                         ?? 0,

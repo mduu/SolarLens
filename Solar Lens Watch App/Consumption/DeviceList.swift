@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DeviceList: View {
     var devices: [Device]
+    var cars: [Car] = []
     var onSetNewPriority: (_ deviceId: String, _ newPriority: Int) -> Void
 
     var body: some View {
@@ -23,6 +24,19 @@ struct DeviceList: View {
                 device in
                 DeviceRow(device: device) { deviceId, newPriority in
                     self.onSetNewPriority(deviceId, newPriority)
+                }
+            }
+
+            if cars.count > 0 {
+                VStack {
+                    Text("Cars")
+                        .font(.headline)
+                        .foregroundColor(.cyan)
+                    
+                    ForEach(cars) {
+                        car in
+                        CarRow(car: car)
+                    }
                 }
             }
         }
