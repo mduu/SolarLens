@@ -91,6 +91,16 @@ class SolarManagerApi: RestClient {
         return response
     }
 
+    func getV1InfoGateway(solarManagerId smId: String) async throws
+    -> GetV1InfoGatewayResponse?
+    {
+        let response: GetV1InfoGatewayResponse? = try await get(
+            serviceUrl: "/v1/info/gateway/\(smId)"
+        )
+        
+        return response
+    }
+
     func getV1StreamGateway(solarManagerId smId: String) async throws
         -> StreamSensorsV1Response?
     {

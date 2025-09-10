@@ -218,6 +218,7 @@
 				Services/SolarManagerApi/DTOs/ForecastItemV3Response.swift,
 				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
 				Services/SolarManagerApi/DTOs/GetV1ChartResponse.swift,
+				Services/SolarManagerApi/DTOs/GetV1InfoGatewayResponse.swift,
 				Services/SolarManagerApi/DTOs/GetV1UsersResponse.swift,
 				Services/SolarManagerApi/DTOs/LoginRequest.swift,
 				Services/SolarManagerApi/DTOs/LoginResponse.swift,
