@@ -2,6 +2,10 @@ import Combine
 import Foundation
 
 class FakeEnergyManager: EnergyManager {
+    func fetchEnergyOverview() async throws -> EnergyOverview {
+        return EnergyOverview()
+    }
+
     func fetchServerInfo() async throws -> ServerInfo {
         ServerInfo.fake()
     }

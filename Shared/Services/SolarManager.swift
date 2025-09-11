@@ -333,6 +333,70 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    func fetchEnergyOverview() async throws -> EnergyOverview {
+        try await ensureSystemInfomation()
+
+        let response = try? await solarManagerApi.getV1Overview()
+        guard let response else {
+            return EnergyOverview()
+        }
+
+        return EnergyOverview(
+            loaded: true,
+            plants: response.plants,
+            supportContracts: response.supportContracts,
+            production: EnergyProduction(
+                today: response.production?.today,
+                last7Days: response.production?.last7Days,
+                thisMonth: response.production?.thisMonth,
+                thisYear: response.production?.thisYear
+            ),
+            consumption: EnergyConsumption(
+                today: response.consumption?.today,
+                last7Days: response.consumption?.last7Days,
+                thisMonth: response.consumption?.thisMonth,
+                thisYear: response.consumption?.thisYear,
+                lastMonth: response.consumption?.lastMonth,
+                lastYear: response.consumption?.lastYear,
+                overall: response.consumption?.overall
+            ),
+            autarchy: EnergyAutarchy(
+                last24hr: response.autarchy?.last24hr ?? 0,
+                lastMonth: response.autarchy?.lastMonth ?? 0,
+                lastYear: response.autarchy?.lastYear ?? 0,
+                overall: response.autarchy?.overall ?? 0
+            ),
+            totalEnergy: EnergyTotalEnergy(
+                carChargers: EnergyCarChargers(
+                    total: response.totalEnergy?.carChargers?.total ?? 0,
+                    today: response.totalEnergy?.carChargers?.today ?? 0,
+                    last7Days: response.totalEnergy?.carChargers?.last7Days ?? 0
+                ),
+                waterHeaters: EnergyWaterHeaters(
+                    total: response.totalEnergy?.waterHeaters?.total ?? 0,
+                    today: response.totalEnergy?.waterHeaters?.today ?? 0,
+                    last7Days: response.totalEnergy?.waterHeaters?.last7Days ?? 0
+                ),
+                heatpumps: EnergyHeadpumps(
+                    total: response.totalEnergy?.heatpumps?.total ?? 0,
+                    today: response.totalEnergy?.heatpumps?.today ?? 0,
+                    last7Days: response.totalEnergy?.heatpumps?.last7Days ?? 0
+                ),
+                v2xChargers: EnergyV2xChargers(
+                    total: response.totalEnergy?.v2xChargers?.total ?? 0,
+                    charged: EnergyChargingInfo(
+                        today: response.totalEnergy?.v2xChargers?.charged.today ?? 0,
+                        last7Days: response.totalEnergy?.v2xChargers?.charged.last7Days ?? 0
+                    ),
+                    discharged: EnergyChargingInfo(
+                        today: response.totalEnergy?.v2xChargers?.discharged.today ?? 0,
+                        last7Days: response.totalEnergy?.v2xChargers?.discharged.last7Days ?? 0
+                    )
+                )
+            )
+        )
+    }
+
     func setCarChargingMode(
         sensorId: String,
         carCharging: ControlCarChargingRequest

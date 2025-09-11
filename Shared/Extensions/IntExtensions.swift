@@ -21,7 +21,11 @@ extension Int {
             ? "\(String(format: "%.1f", self)) \(getUnitKw())"
             : String(format: "%.1f", self)
     }
-    
+
+    func formatIntoPercentage() -> String {
+        return "\(Int(self))%"
+    }
+
     private func getUnitKw() -> String {
         "kW"
     }

@@ -37,9 +37,14 @@ struct GridBoubleView: View {
                 )
             )
             .padding(3)
+            .background(Color.gray.opacity(0.3))
+            .cornerRadius(22)
 
-            Image(systemName: "network")
-                .padding(.top, 3)
+            HStack(alignment: VerticalAlignment.bottom) {
+                Image(systemName: "network")
+                    .padding(.top, 3)
+            }
+            .padding(.top, 3)
         }
     }
 

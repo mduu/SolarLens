@@ -81,6 +81,14 @@ class SolarManagerApi: RestClient {
         return response
     }
 
+    func getV1Overview() async throws -> OverviewV1Response? {
+        let response: OverviewV1Response? = try await get(
+            serviceUrl: "/v1/overview"
+        )
+
+        return response
+    }
+
     func getV1InfoSensors(solarManagerId smId: String) async throws
         -> [SensorInfosV1Response]?
     {

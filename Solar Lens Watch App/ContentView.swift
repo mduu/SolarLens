@@ -113,6 +113,23 @@ struct ContentView: View {
                             .tag(4)
                     }
 
+                    GridScreen()
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                HStack {
+                                    HomeButton()
+
+                                    Text("Grid")
+                                        .foregroundColor(.indigo)
+                                        .font(.headline)
+
+                                    Spacer()
+                                }  // :HStack
+                            }  // :ToolbarItem
+                        }  // :.toolbar
+                        .tag(5)
+
+
                 }  // :TabView
                 .tabViewStyle(.verticalPage(transitionStyle: .blur))
                 .sheet(isPresented: $showAppRateRequest) {
