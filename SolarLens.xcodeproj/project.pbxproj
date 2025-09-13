@@ -204,6 +204,8 @@
 				Services/Model/OverviewDataExtensions.swift,
 				Services/Model/ServerInfo.swift,
 				Services/Model/SolarDetailsData.swift,
+				Services/Model/Statistics.swift,
+				Services/Model/StatisticsOverview.swift,
 				Services/Rest/DateHelper.swift,
 				Services/Rest/NoRequestBody.swift,
 				Services/Rest/RestClient.swift,
@@ -755,7 +757,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.8.0;
-				APP_VERSION_BUILDNO = 232;
+				APP_VERSION_BUILDNO = 233;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -829,7 +831,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 3.8.0;
-				APP_VERSION_BUILDNO = 232;
+				APP_VERSION_BUILDNO = 233;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

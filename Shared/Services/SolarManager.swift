@@ -397,14 +397,73 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    func fetchStatisticsOverview() async throws -> StatisticsOverview {
+        try await ensureSystemInfomation()
+
+        let now = Date()
+        let calendar = Calendar.current
+
+        async let last7Days = fetchStatistics(
+            from: calendar.date(byAdding: .day, value: -7, to: now)!,
+            to: Date(),
+            accuracy: .medium
+        )
+
+        async let last30Days = fetchStatistics(
+            from: calendar.date(byAdding: .month, value: -1, to: now)!,
+            to: Date(),
+            accuracy: .medium
+        )
+
+        async let last365Days = fetchStatistics(
+            from: calendar.date(byAdding: .year, value: -1, to: now)!,
+            to: Date(),
+            accuracy: .low
+        )
+
+        async let overallStatsTask = fetchStatistics(
+            from: systemInformation!.registrationDate,
+            to: Date(),
+            accuracy: .high
+        )
+
+        return StatisticsOverview(
+            week: (try? await last7Days) ?? Statistics(),
+            month: (try? await last30Days) ?? Statistics(),
+            year: (try? await last365Days) ?? Statistics(),
+            overall: (try? await overallStatsTask) ?? Statistics()
+        )
+    }
+
+    func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics {
+        try await ensureSmId()
+
+        let result = try? await solarManagerApi.getV1Statistics(
+            solarManagerId: systemInformation!.sm_id,
+            from: from,
+            to: to,
+            accuracy: accuracy
+        )
+
+        guard let result else {
+            return Statistics()
+        }
+
+        return Statistics(
+            consumption: result.consumption,
+            production: result.production,
+            selfConsumption: result.selfConsumption,
+            selfConsumptionRate: result.selfConsumptionRate,
+            autarchyDegree: result.autarchyDegree
+        )
+    }
+
     func setCarChargingMode(
         sensorId: String,
         carCharging: ControlCarChargingRequest
     ) async throws
         -> Bool
     {
-        try await ensureLoggedIn()
-        try await ensureSmId()
         try await ensureSensorInfosAreCurrent()
 
         do {

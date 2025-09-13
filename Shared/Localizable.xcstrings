@@ -195,6 +195,15 @@
     "0" : {
       "shouldTranslate" : false
     },
+    "7d" : {
+
+    },
+    "30d" : {
+
+    },
+    "365d" : {
+
+    },
     "A car is chariging." : {
       "localizations" : {
         "da" : {
@@ -306,6 +315,9 @@
           }
         }
       }
+    },
+    "All" : {
+
     },
     "Allow standalone" : {
       "localizations" : {
@@ -3943,9 +3955,6 @@
         }
       }
     },
-    "Month" : {
-
-    },
     "Morning:" : {
       "localizations" : {
         "da" : {
@@ -4304,9 +4313,6 @@
           }
         }
       }
-    },
-    "Overall" : {
-
     },
     "Password" : {
       "localizations" : {
@@ -4937,6 +4943,9 @@
           }
         }
       }
+    },
+    "Self-consumption" : {
+
     },
     "Self-consumption: %lf%% and autarky: %lf%%" : {
       "localizations" : {
@@ -7480,9 +7489,6 @@
           }
         }
       }
-    },
-    "Year" : {
-
     },
     "You can ask Siri thinkg like the following:" : {
       "localizations" : {

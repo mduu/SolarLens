@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AutarkyDetails: View {
+struct SelfConsumption: View {
     var weekStatistics: Statistics
     var monthStatistics: Statistics
     var yearStatistics: Statistics
@@ -9,22 +9,22 @@ struct AutarkyDetails: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Autarky")
+                Text("Self-consumption")
                     .font(.subheadline)
 
                 Spacer()
             }
             .padding(.vertical, 4)
 
-            ScrollView(.horizontal, showsIndicators: true) {
+            ScrollView(.horizontal) {
                 HStack(alignment: .center, spacing: 5) {
-                    AutarkyDonut(percent: Int(weekStatistics.autarchyDegree ?? 0), text: "7d")
+                    SelfConsumptionDonut(percent: Int(weekStatistics.selfConsumptionRate ?? 0), text: "7d")
                     Spacer()
-                    AutarkyDonut(percent: Int(monthStatistics.autarchyDegree ?? 0), text: "30d")
+                    SelfConsumptionDonut(percent: Int(monthStatistics.selfConsumptionRate ?? 0), text: "30d")
                     Spacer()
-                    AutarkyDonut(percent: Int(yearStatistics.autarchyDegree ?? 0), text: "365d")
+                    SelfConsumptionDonut(percent: Int(yearStatistics.selfConsumptionRate ?? 0), text: "365d")
                     Spacer()
-                    AutarkyDonut(percent: Int(overallStatistics.autarchyDegree ?? 0), text: "All")
+                    SelfConsumptionDonut(percent: Int(overallStatistics.selfConsumptionRate ?? 0), text: "All")
                 }
             }
         }
@@ -32,7 +32,7 @@ struct AutarkyDetails: View {
 }
 
 #Preview {
-    AutarkyDetails(
+    SelfConsumption(
         weekStatistics: Statistics(),
         monthStatistics: Statistics(),
         yearStatistics: Statistics(),

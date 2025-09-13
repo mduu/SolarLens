@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AutarkyDonut: View {
+struct SelfConsumptionDonut: View {
     var percent: Int?
     var text: LocalizedStringResource
 
@@ -8,16 +8,16 @@ struct AutarkyDonut: View {
         VStack {
             let percentage = percent ?? 0
 
-            MiniDonut(percentage: Double(percentage), color: .purple, lineWidth: 3)
+            MiniDonut(percentage: Double(percentage), color: .indigo, lineWidth: 3)
                 .frame(width: 35, height: 35)
 
             Text(text)
-                .foregroundColor(.purple)
+                .foregroundColor(.indigo)
                 .font(.system(size: 14))
         }
     }
 }
 
 #Preview {
-    AutarkyDonut(percent: 42, text: "Month")
+    SelfConsumptionDonut(percent: 42, text: "Month")
 }
