@@ -37,7 +37,7 @@ extension Int {
     }
 
     private func getUnitKwh() -> String {
-        "kW"
+        "kWh"
     }
     
     private func getUnitW() -> String {

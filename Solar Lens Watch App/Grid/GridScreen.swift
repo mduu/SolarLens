@@ -44,10 +44,6 @@ struct GridScreen: View {
 
                     VStack(alignment: .leading) {
 
-                        Text("Today")
-                            .font(.subheadline)
-                            .padding(.bottom, 4)
-
                         GridToday(
                             importToday: importToday,
                             exportToday: exportToday
