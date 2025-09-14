@@ -15,7 +15,7 @@ struct AutarkyDetails: View {
 
                 Spacer()
             }
-            .padding(.vertical, 4)
+            .padding(.bottom, 4)
 
             ScrollView(.horizontal, showsIndicators: true) {
                 HStack(alignment: .center, spacing: 5) {

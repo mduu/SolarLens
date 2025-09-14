@@ -5,6 +5,25 @@ struct GridScreen: View {
     @State var isLoading = false
     @State var energyManager: EnergyManager = SolarManager()
     @State var statisticsOverview: StatisticsOverview? = nil
+    @State var lastStatisticsUpdate: Date? = nil
+
+    var importToday: Int {
+        let importDegree = 100 - (model.overviewData.todayAutarchyDegree ?? 0.0)
+
+        return Int(
+            (model.overviewData.todayConsumption ?? 0)
+                * (importDegree / 100)
+        )
+    }
+
+    var exportToday: Int {
+        let exportDegree = 100 - (model.overviewData.todaySelfConsumptionRate ?? 0.0)
+
+        return Int(
+            (model.overviewData.todayProduction ?? 0.0)
+                * (exportDegree / 100)
+        )
+    }
 
     var body: some View {
         ZStack {
@@ -27,7 +46,12 @@ struct GridScreen: View {
 
                         Text("Today")
                             .font(.subheadline)
+                            .padding(.bottom, 4)
 
+                        GridToday(
+                            importToday: importToday,
+                            exportToday: exportToday
+                        )
 
                         HStack {
                             EfficiencyInfoView(
@@ -41,10 +65,11 @@ struct GridScreen: View {
                                 showTitle: false,
                                 legendAtBottom: false
                             )
-                            .frame(minWidth: 47, maxHeight: 47)
+                            .frame(maxHeight: 47)
 
                             Spacer()
                         }
+                        .padding(.top, 14)
 
                         if statisticsOverview != nil {
 
@@ -57,6 +82,7 @@ struct GridScreen: View {
                                     overallStatistics: statisticsOverview!.overall,
                                     isSmall: isSmallScreen
                                 )
+                                .padding(.top, 22)
 
                                 AutarkyDetails(
                                     weekStatistics: statisticsOverview!.week,
@@ -65,8 +91,8 @@ struct GridScreen: View {
                                     overallStatistics: statisticsOverview!.overall,
                                     isSmall: isSmallScreen
                                 )
+                                .padding(.top, 11)
                             }
-                            .padding(.top, 12)
 
                         }  // :VStack
                     }
@@ -97,7 +123,12 @@ struct GridScreen: View {
     }
 
     func fetchData() async {
-        statisticsOverview = try? await energyManager.fetchStatisticsOverview()
+        let fifteenMinutesAgo = Date().addingTimeInterval(-15 * 60)
+
+        if lastStatisticsUpdate == nil || lastStatisticsUpdate! < fifteenMinutesAgo {
+            statisticsOverview = try? await energyManager.fetchStatisticsOverview()
+            lastStatisticsUpdate = Date()
+        }
     }
 }
 

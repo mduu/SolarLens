@@ -931,6 +931,9 @@
         }
       }
     },
+    "Bezug:" : {
+
+    },
     "Cancel" : {
       "localizations" : {
         "da" : {
@@ -2550,6 +2553,9 @@
           }
         }
       }
+    },
+    "Export:" : {
+
     },
     "Exporting %@ kilo-watts to grid" : {
       "localizations" : {

@@ -15,7 +15,7 @@ struct SelfConsumption: View {
 
                 Spacer()
             }
-            .padding(.vertical, 4)
+            .padding(.bottom, 4)
 
             ScrollView(.horizontal) {
                 HStack(alignment: .center, spacing: 5) {
