@@ -18,7 +18,7 @@ struct GridToday: View {
             .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(alignment: .leading) {
-                Text("Bezug:")
+                Text("Import:")
                     .font(.footnote)
 
                 Text(importToday.formatWatthoursAsKiloWattsHours(widthUnit: true))

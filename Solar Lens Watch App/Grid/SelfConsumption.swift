@@ -10,7 +10,7 @@ struct SelfConsumption: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Self-consumption")
+                Text("Self consumption")
                     .font(.subheadline)
 
                 Spacer()
