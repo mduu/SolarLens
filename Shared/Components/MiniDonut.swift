@@ -6,6 +6,7 @@ struct MiniDonut: View {
     var color: Color = .primary
     var showPerentage: Bool = true
     var lineWidth: Int = 4
+    var textFont: Font = .system(size: 10, weight: .bold)
 
     func angle(from percentage: Double) -> Double {
         return percentage * 360.0 / 100.0
@@ -51,7 +52,7 @@ struct MiniDonut: View {
                             VStack {
                                 Text("\(String(format: "%.0f", percentage))%")
                                     .foregroundColor(color)
-                                    .font(.system(size: 10, weight: .bold))
+                                    .font(textFont)
                             }  // :VStack
                             .position(x: frame.midX, y: frame.midY)
 

@@ -19,6 +19,7 @@ struct GridScreen: View {
             .edgesIgnoringSafeArea(.all)
 
             GeometryReader { geometry in
+                let isSmallScreen = geometry.size.width < 180
 
                 ScrollView {
 
@@ -53,14 +54,16 @@ struct GridScreen: View {
                                     weekStatistics: statisticsOverview!.week,
                                     monthStatistics: statisticsOverview!.month,
                                     yearStatistics: statisticsOverview!.year,
-                                    overallStatistics: statisticsOverview!.overall
+                                    overallStatistics: statisticsOverview!.overall,
+                                    isSmall: isSmallScreen
                                 )
 
                                 AutarkyDetails(
                                     weekStatistics: statisticsOverview!.week,
                                     monthStatistics: statisticsOverview!.month,
                                     yearStatistics: statisticsOverview!.year,
-                                    overallStatistics: statisticsOverview!.overall
+                                    overallStatistics: statisticsOverview!.overall,
+                                    isSmall: isSmallScreen
                                 )
                             }
                             .padding(.top, 12)
