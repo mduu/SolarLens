@@ -25,7 +25,7 @@ class V1User: Codable {
     var installer: String?
 
     var registrationDate: Date {
-        var isoFormatter = ISO8601DateFormatter()
+        let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]
 
         return
