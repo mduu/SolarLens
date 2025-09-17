@@ -1,4 +1,5 @@
 import Observation
+import Foundation
 
 @Observable
 class Car: Identifiable {
@@ -7,6 +8,8 @@ class Car: Identifiable {
     var priority: Int
     var batteryPercent: Double?
     var batteryCapacity: Double?
+    var remainingDistance: Int?
+    var lastUpdate: Date?
     var signal: SensorConnectionStatus
     var currentPowerInWatts: Int = 0
     var hasError: Bool = false
@@ -17,6 +20,8 @@ class Car: Identifiable {
         priority: Int,
         batteryPercent: Double?,
         batteryCapacity: Double?,
+        remainingDistance: Int?,
+        lastUpdate: Date?,
         signal: SensorConnectionStatus,
         currentPowerInWatts: Int,
         hasError: Bool
@@ -26,6 +31,8 @@ class Car: Identifiable {
         self.priority = priority
         self.batteryPercent = batteryPercent
         self.batteryCapacity = batteryCapacity
+        self.remainingDistance = remainingDistance
+        self.lastUpdate = lastUpdate
         self.signal = signal
         self.currentPowerInWatts = currentPowerInWatts
         self.hasError = hasError

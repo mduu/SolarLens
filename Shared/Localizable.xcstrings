@@ -12,9 +12,6 @@
       },
       "shouldTranslate" : false
     },
-    "-" : {
-
-    },
     "'Peak Shaving' uses your battery to supply power during high-demand periods, reducing the amount of expensive electricity drawn from the grid and lowering your overall costs." : {
       "localizations" : {
         "da" : {
@@ -89,9 +86,6 @@
     "%@%%" : {
       "shouldTranslate" : false
     },
-    "%lld" : {
-
-    },
     "%lld %%" : {
       "localizations" : {
         "en" : {
@@ -162,10 +156,10 @@
       "shouldTranslate" : false
     },
     "%lld W" : {
-
+      "shouldTranslate" : false
     },
     "%lld%%" : {
-
+      "shouldTranslate" : false
     },
     "%lld%%  %@ kW" : {
       "localizations" : {
@@ -175,13 +169,14 @@
             "value" : "%1$lld%%  %2$@ kW"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "☀️ %@" : {
-
+      "shouldTranslate" : false
     },
     "☀️ %lld W" : {
-
+      "shouldTranslate" : false
     },
     "♻️ %@, 🍃 %@" : {
       "localizations" : {
@@ -191,16 +186,98 @@
             "value" : "♻️ %1$@, 🍃 %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "🔋%@ %%" : {
-
+      "shouldTranslate" : false
     },
     "0" : {
-
+      "shouldTranslate" : false
     },
-    "1x Tariff" : {
-
+    "7d" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7d"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7T"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7j"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7g"
+          }
+        }
+      }
+    },
+    "30d" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30d"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30T"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30j"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30g"
+          }
+        }
+      }
+    },
+    "365d" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "365d"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "365T"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "365j"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "365g"
+          }
+        }
+      }
     },
     "A car is chariging." : {
       "localizations" : {
@@ -314,8 +391,33 @@
         }
       }
     },
-    "Active" : {
-
+    "All" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Totale"
+          }
+        }
+      }
     },
     "Allow standalone" : {
       "localizations" : {
@@ -379,15 +481,6 @@
         }
       }
     },
-    "App became active - no scenarion running" : {
-
-    },
-    "App became active - start timer" : {
-
-    },
-    "App became inactive" : {
-
-    },
     "App icon" : {
       "localizations" : {
         "da" : {
@@ -443,12 +536,6 @@
           }
         }
       }
-    },
-    "App moved to background - no scenarion running" : {
-
-    },
-    "App moved to background - scheduling background tasks" : {
-
     },
     "Appearance" : {
       "localizations" : {
@@ -533,15 +620,6 @@
           }
         }
       }
-    },
-    "Background tasks registered with iOS" : {
-
-    },
-    "Background trigger received" : {
-
-    },
-    "Background trigger received but active scenario. Abort background task." : {
-
     },
     "Battery" : {
       "localizations" : {
@@ -794,30 +872,6 @@
           }
         }
       }
-    },
-    "Battery to car" : {
-
-    },
-    "Battery to Car" : {
-
-    },
-    "Battery to car: Scenario started" : {
-
-    },
-    "Battery to car: Scenario stopped" : {
-
-    },
-    "Battery to car: scheduled next call" : {
-
-    },
-    "Battery to car: start scenario" : {
-
-    },
-    "Battery to car: stopping scenario" : {
-
-    },
-    "Battery to car: Unable to fetch overview data" : {
-
     },
     "Battery will be charged to the 'Morning' level in the morning. Then other devices can be charged. The battery will be charged to 'Max' until the eventing." : {
       "localizations" : {
@@ -1123,8 +1177,33 @@
         }
       }
     },
-    "Charge car with tariff optimized, then switch back to previouse mode." : {
-
+    "Cars" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biler"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voitures"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automobili"
+          }
+        }
+      }
     },
     "Charging" : {
       "localizations" : {
@@ -2544,9 +2623,6 @@
         }
       }
     },
-    "ERROR: Could not schedule app refresh: %@" : {
-
-    },
     "Explanation" : {
       "localizations" : {
         "da" : {
@@ -2571,6 +2647,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spiegazione"
+          }
+        }
+      }
+    },
+    "Export:" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksport:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esportazione:"
           }
         }
       }
@@ -2604,7 +2708,7 @@
       }
     },
     "Favorite Emoji" : {
-
+      "shouldTranslate" : false
     },
     "Forecast" : {
       "localizations" : {
@@ -3060,6 +3164,34 @@
         }
       }
     },
+    "Import:" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezug:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importation:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione:"
+          }
+        }
+      }
+    },
     "In:" : {
       "localizations" : {
         "da" : {
@@ -3387,7 +3519,7 @@
       }
     },
     "kWh" : {
-
+      "shouldTranslate" : false
     },
     "Licence:" : {
       "localizations" : {
@@ -4035,22 +4167,6 @@
         }
       }
     },
-    "Next background check scheduled successfully at %lf" : {
-
-    },
-    "Next scenario '%@' run at %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Next scenario '%1$@' run at %2$@"
-          }
-        }
-      }
-    },
-    "No 'nextRun' date set, cannot schedule background task" : {
-
-    },
     "No battery data present!" : {
       "localizations" : {
         "da" : {
@@ -4191,15 +4307,6 @@
         }
       }
     },
-    "No parameters provided for scenario %@" : {
-
-    },
-    "No scenario state found!" : {
-
-    },
-    "No scenario task found!" : {
-
-    },
     "Not supported!" : {
       "localizations" : {
         "da" : {
@@ -4227,9 +4334,6 @@
           }
         }
       }
-    },
-    "Now" : {
-
     },
     "Off" : {
       "localizations" : {
@@ -4816,39 +4920,6 @@
         }
       }
     },
-    "Run scenario %@" : {
-
-    },
-    "RunActiveScenario: All %lld attempts failed." : {
-
-    },
-    "RunActiveScenario: Retrying in 1 second..." : {
-
-    },
-    "Scenario" : {
-
-    },
-    "Scenario %@ failed!" : {
-
-    },
-    "Scenario %@ started" : {
-
-    },
-    "Scenario Logs" : {
-
-    },
-    "Scenarion %@ terminating" : {
-
-    },
-    "Scenarios" : {
-
-    },
-    "Scenarios are practical automations that help you to control your energy in your house the smart way." : {
-
-    },
-    "Search logs..." : {
-
-    },
     "Select car to query" : {
       "localizations" : {
         "da" : {
@@ -5103,7 +5174,7 @@
       "shouldTranslate" : false
     },
     "Series:" : {
-
+      "shouldTranslate" : false
     },
     "Server" : {
       "localizations" : {
@@ -6143,35 +6214,6 @@
         }
       }
     },
-    "Something went wrong..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noget gik galt..."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etwas ist schiefgelaufen..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quelque chose s'est mal passé..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qualcosa è andato storto..."
-          }
-        }
-      }
-    },
     "Stale data!" : {
       "localizations" : {
         "da" : {
@@ -6311,9 +6353,6 @@
           }
         }
       }
-    },
-    "Successfully ran scenario %@." : {
-
     },
     "Target %" : {
       "localizations" : {
@@ -6794,7 +6833,7 @@
       }
     },
     "This is an example widget." : {
-
+      "shouldTranslate" : false
     },
     "Time" : {
       "localizations" : {
@@ -6881,7 +6920,7 @@
       }
     },
     "To implement" : {
-
+      "shouldTranslate" : false
     },
     "To let Solar Manager control the battery disable 'Allow standalone'." : {
       "localizations" : {
@@ -7191,9 +7230,6 @@
         }
       }
     },
-    "Transfer energy from battery to car." : {
-
-    },
     "Try again" : {
       "localizations" : {
         "da" : {
@@ -7257,7 +7293,7 @@
       }
     },
     "Unknown charging mode" : {
-
+      "shouldTranslate" : false
     },
     "Updated %@" : {
       "localizations" : {
@@ -7456,7 +7492,7 @@
       }
     },
     "v%@" : {
-
+      "shouldTranslate" : false
     },
     "Version %@" : {
       "localizations" : {
@@ -7487,7 +7523,7 @@
       }
     },
     "W" : {
-
+      "shouldTranslate" : false
     },
     "Watts" : {
       "localizations" : {

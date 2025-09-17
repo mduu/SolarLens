@@ -38,6 +38,10 @@ struct EnergyFlowView: View {
                         .isFlowSolarToGrid()
                 )
                 .frame(maxWidth: 50, maxHeight: 50)
+                .onTapGesture {
+                    navigationState.navigate(to: .grid)
+                }
+
             }
 
             GridRow(alignment: .center) {

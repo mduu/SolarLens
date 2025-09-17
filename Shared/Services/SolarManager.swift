@@ -218,8 +218,7 @@ actor SolarManager: EnergyManager {
 
     }
 
-    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData
-    {
+    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
         try await ensureSmId()
 
         print("Fetching gateway consumptions&productions ...")
@@ -334,14 +333,137 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    func fetchEnergyOverview() async throws -> EnergyOverview {
+        try await ensureSystemInfomation()
+
+        let response = try? await solarManagerApi.getV1Overview()
+        guard let response else {
+            return EnergyOverview()
+        }
+
+        return EnergyOverview(
+            loaded: true,
+            plants: response.plants,
+            supportContracts: response.supportContracts,
+            production: EnergyProduction(
+                today: response.production?.today,
+                last7Days: response.production?.last7Days,
+                thisMonth: response.production?.thisMonth,
+                thisYear: response.production?.thisYear
+            ),
+            consumption: EnergyConsumption(
+                today: response.consumption?.today,
+                last7Days: response.consumption?.last7Days,
+                thisMonth: response.consumption?.thisMonth,
+                thisYear: response.consumption?.thisYear,
+                lastMonth: response.consumption?.lastMonth,
+                lastYear: response.consumption?.lastYear,
+                overall: response.consumption?.overall
+            ),
+            autarchy: EnergyAutarchy(
+                last24hr: response.autarchy?.last24hr ?? 0,
+                lastMonth: response.autarchy?.lastMonth ?? 0,
+                lastYear: response.autarchy?.lastYear ?? 0,
+                overall: response.autarchy?.overall ?? 0
+            ),
+            totalEnergy: EnergyTotalEnergy(
+                carChargers: EnergyCarChargers(
+                    total: response.totalEnergy?.carChargers?.total ?? 0,
+                    today: response.totalEnergy?.carChargers?.today ?? 0,
+                    last7Days: response.totalEnergy?.carChargers?.last7Days ?? 0
+                ),
+                waterHeaters: EnergyWaterHeaters(
+                    total: response.totalEnergy?.waterHeaters?.total ?? 0,
+                    today: response.totalEnergy?.waterHeaters?.today ?? 0,
+                    last7Days: response.totalEnergy?.waterHeaters?.last7Days ?? 0
+                ),
+                heatpumps: EnergyHeadpumps(
+                    total: response.totalEnergy?.heatpumps?.total ?? 0,
+                    today: response.totalEnergy?.heatpumps?.today ?? 0,
+                    last7Days: response.totalEnergy?.heatpumps?.last7Days ?? 0
+                ),
+                v2xChargers: EnergyV2xChargers(
+                    total: response.totalEnergy?.v2xChargers?.total ?? 0,
+                    charged: EnergyChargingInfo(
+                        today: response.totalEnergy?.v2xChargers?.charged.today ?? 0,
+                        last7Days: response.totalEnergy?.v2xChargers?.charged.last7Days ?? 0
+                    ),
+                    discharged: EnergyChargingInfo(
+                        today: response.totalEnergy?.v2xChargers?.discharged.today ?? 0,
+                        last7Days: response.totalEnergy?.v2xChargers?.discharged.last7Days ?? 0
+                    )
+                )
+            )
+        )
+    }
+
+    func fetchStatisticsOverview() async throws -> StatisticsOverview {
+        try await ensureSystemInfomation()
+
+        let now = Date()
+        let calendar = Calendar.current
+
+        async let last7Days = fetchStatistics(
+            from: calendar.date(byAdding: .day, value: -7, to: now)!,
+            to: Date(),
+            accuracy: .medium
+        )
+
+        async let last30Days = fetchStatistics(
+            from: calendar.date(byAdding: .month, value: -1, to: now)!,
+            to: Date(),
+            accuracy: .medium
+        )
+
+        async let last365Days = fetchStatistics(
+            from: calendar.date(byAdding: .year, value: -1, to: now)!,
+            to: Date(),
+            accuracy: .low
+        )
+
+        async let overallStatsTask = fetchStatistics(
+            from: systemInformation!.registrationDate,
+            to: Date(),
+            accuracy: .high
+        )
+
+        return StatisticsOverview(
+            week: (try? await last7Days) ?? Statistics(),
+            month: (try? await last30Days) ?? Statistics(),
+            year: (try? await last365Days) ?? Statistics(),
+            overall: (try? await overallStatsTask) ?? Statistics()
+        )
+    }
+
+    func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics {
+        try await ensureSmId()
+
+        let result = try? await solarManagerApi.getV1Statistics(
+            solarManagerId: systemInformation!.sm_id,
+            from: from,
+            to: to,
+            accuracy: accuracy
+        )
+
+        guard let result else {
+            return Statistics()
+        }
+
+        return Statistics(
+            consumption: result.consumption,
+            production: result.production,
+            selfConsumption: result.selfConsumption,
+            selfConsumptionRate: result.selfConsumptionRate,
+            autarchyDegree: result.autarchyDegree
+        )
+    }
+
     func setCarChargingMode(
         sensorId: String,
         carCharging: ControlCarChargingRequest
     ) async throws
         -> Bool
     {
-        try await ensureLoggedIn()
-        try await ensureSmId()
         try await ensureSensorInfosAreCurrent()
 
         do {
@@ -628,12 +750,26 @@ actor SolarManager: EnergyManager {
             return []
         }
 
+        let localIsoDateFormatter = ISO8601DateFormatter()
+        localIsoDateFormatter.timeZone = TimeZone.current
+        localIsoDateFormatter.formatOptions = [
+            .withFullDate,
+            .withTime,
+            .withDashSeparatorInDate,
+            .withColonSeparatorInTime,
+        ]
+
         return
             sensorInfos
             .filter { (sensor: SensorInfosV1Response) -> Bool in sensor.isCar()
             }
             .map { sensorInfo -> Car in
                 let streamInfo = streamSensorInfos?.deviceById(sensorInfo._id)
+                let dateString: String = streamInfo?.lastUpdate ?? ""
+                let lastUpdate =
+                    streamInfo?.lastUpdate != nil
+                    ? localIsoDateFormatter.date(from: dateString)
+                    : nil
 
                 return Car.init(
                     id: sensorInfo._id,
@@ -641,6 +777,8 @@ actor SolarManager: EnergyManager {
                     priority: sensorInfo.priority,
                     batteryPercent: sensorInfo.soc,
                     batteryCapacity: sensorInfo.data?.batteryCapacity,
+                    remainingDistance: streamInfo?.remainingDistance,
+                    lastUpdate: lastUpdate,
                     signal: sensorInfo.signal,
                     currentPowerInWatts: streamInfo?.currentPower
                         ?? 0,
