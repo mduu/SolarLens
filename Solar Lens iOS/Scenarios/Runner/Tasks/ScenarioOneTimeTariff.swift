@@ -1,6 +1,9 @@
 import Foundation
 
 final class ScenarioOneTimeTariff: ScenarioTask {
+    let tenSeconds: TimeInterval = 10
+    let fiveMinutes: TimeInterval = 5 * 1  // 5 * 60 = 5 minutes
+
     public static let shared = ScenarioOneTimeTariff()
 
     let scenarioName: LocalizedStringResource = "1x Tariff"
@@ -37,7 +40,7 @@ final class ScenarioOneTimeTariff: ScenarioTask {
             )
         }
 
-        let isWorkDone: Bool = // TODO
+        let isWorkDone: Bool = false // TODO
 
         return !isWorkDone
         ? continueScenario(
@@ -82,7 +85,7 @@ final class ScenarioOneTimeTariff: ScenarioTask {
             )
         )
 
-        var endTime = // TODO Calculate end of tariff
+        var endTime = false // TODO Calculate end of tariff
 
         host.logDebug(message: "One time tariff: Scenario started")
 
