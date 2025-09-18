@@ -46,8 +46,8 @@ struct VariableTariff : Decodable {
     var numberOfActiveTariffs: Double?
     var prices: TariffPrice
     var isWinterTimeEnabled: Bool
-    var commonSeason: CommonSeason
-    var winterSeason: WinterSeason?
+    var commonSeason: SeasonalTariff
+    var winterSeason: SeasonalTariff?
 }
 
 struct TariffPrice : Decodable {
@@ -57,4 +57,24 @@ struct TariffPrice : Decodable {
     var tariff4: Double?
     var tariff5: Double?
     var tariff6: Double?
+}
+
+struct SeasonalTariff : Decodable {
+    var mondayFriday: SeasonalTariffPeriod
+    var saturday: SeasonalTariffPeriod
+    var sunday: SeasonalTariffPeriod
+}
+
+struct SeasonalTariffPeriod : Decodable {
+    var fromTime: String // "HH:mm"
+    var tariffOption: SeasonalTariffOption
+}
+
+enum SeasonalTariffOption : String, Decodable {
+    case low = "low"
+    case high = "high"
+    case standard = "standard"
+    case tariff4 = "tariff4"
+    case tariff5 = "tariff5"
+    case tariff6 = "tariff6"
 }
