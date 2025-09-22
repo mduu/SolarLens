@@ -705,7 +705,7 @@ actor SolarManager: EnergyManager {
                     .from(battery.batteryChargingMode),
                 batteryMode:
                     BatteryMode
-                    .from(battery.batteryMode!),
+                    .from(battery.batteryMode),
                 batteryManualMode:
                     BatteryManualMode
                     .from(battery.batteryManualMode ?? 0),
