@@ -1,4 +1,4 @@
-struct TariffSettingsResponseArray : Decodable {
+struct TariffSettingsResponse : Decodable {
     var purchase: Tariff?
     var feedIn: Tariff?
 }

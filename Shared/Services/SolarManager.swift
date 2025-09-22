@@ -458,6 +458,75 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    func fetchTariffInfos() async throws -> TariffInfo {
+        try await ensureSmId()
+
+        let tariffResponse = try? await solarManagerApi.getV3UserTariffs(
+            solarManagerId: systemInformation!.sm_id
+        )
+
+        // Shortcut for inactive tariff infos
+        if tariffResponse?.purchase?.state != .active {
+            return TariffInfo(currentTariffType: .low)
+        }
+
+        // Shortcut for single tariff which is always returned as low tariff
+        if tariffResponse?.purchase?.tariffType != nil && tariffResponse?.purchase?.tariffType == .single {
+
+            return TariffInfo(
+                tariffKind: .single,
+                currentTariffType: .low
+            )
+        }
+
+        // TODO Handle dynamic tariffs
+
+        guard tariffResponse?.purchase?.tariffType == .variable,
+            let variableTariff = tariffResponse?.purchase?.variableTariff
+        else {
+            // Fallback to low if not variable and not single, or missing data
+            return TariffInfo(currentTariffType: .low)
+        }
+
+        // Determine weekday (1 = Sunday ... 7 = Saturday in Gregorian by default)
+        let cal = Calendar.current
+        let weekday = cal.component(.weekday, from: Date())
+
+        // TODO Handle winter season tariffs when isWinterTimeEnabled == true and winterSeason != nil
+        let seasonal = variableTariff.commonSeason
+
+        let period: SeasonalTariffPeriod?
+        switch weekday {
+        case 2...6:  // Monday (2) - Friday (6)
+            period = seasonal.mondayFriday
+        case 7:  // Saturday
+            period = seasonal.saturday
+        case 1:  // Sunday
+            period = seasonal.sunday
+        default:
+            period = nil
+        }
+
+        guard let period else {
+            throw EnergyManagerClientError.unableToDetermineTariff
+        }
+
+        let mappedType: TariffInfoType
+        switch period.tariffOption {
+        case .low: mappedType = .low
+        case .high: mappedType = .high
+        case .standard: mappedType = .standard
+        case .tariff4: mappedType = .tariff4
+        case .tariff5: mappedType = .tariff5
+        case .tariff6: mappedType = .tariff6
+        }
+
+        return TariffInfo(
+            tariffKind: .variable,
+            currentTariffType: mappedType
+        )
+    }
+
     func setCarChargingMode(
         sensorId: String,
         carCharging: ControlCarChargingRequest

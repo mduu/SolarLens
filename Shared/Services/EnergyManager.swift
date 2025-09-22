@@ -23,6 +23,8 @@ protocol EnergyManager {
 
     func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics
 
+    func fetchTariffInfos() async throws -> TariffInfo
+
     func setCarChargingMode(
         sensorId: String, carCharging: ControlCarChargingRequest
     ) async throws -> Bool
