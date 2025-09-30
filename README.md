@@ -41,9 +41,6 @@ Solar Lens is a powerful app that gives you a comprehensive overview of your hom
 
 - Solar Lens is not affiliated with Solar Manager AG. The app is designed to work with Solar Manager systems, but it is a separate product developed by Marc Dürst.
 
-# Insights
-![Alt](https://repobeats.axiom.co/api/embed/a821d1e0baa53aeefedef143a20f06fb801b3d57.svg "Repobeats analytics image")
-
 # Technology
 
 * XCode
