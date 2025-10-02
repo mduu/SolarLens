@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CurrentEnergyFlow: View {
+struct CurrentEnergyFlowWidget: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
 
     var body: some View {
@@ -82,7 +82,7 @@ struct CurrentEnergyFlow: View {
     VStack {
 
         HStack {
-            CurrentEnergyFlow()
+            CurrentEnergyFlowWidget()
         }
         .frame(maxWidth: .infinity)
 

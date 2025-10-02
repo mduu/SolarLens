@@ -3,7 +3,7 @@ import SwiftUI
 struct Column1: View {
     var body: some View {
         VStack {
-            CurrentEnergyFlow()
+            CurrentEnergyFlowWidget()
                 .padding()
                 .frame(maxWidth: .infinity)
 
