@@ -71,7 +71,7 @@ struct CurrentEnergyFlowWidget: View {
         .foregroundColor(.white.opacity(0.9))
         .padding(50)
         .frame(maxWidth: .infinity)
-        .frame(height: 300)
+        .frame(height: 350)
         .glassEffect(in: .rect(cornerRadius: 30.0))
 
     }
@@ -79,15 +79,15 @@ struct CurrentEnergyFlowWidget: View {
 }
 
 #Preview {
-    VStack {
+    VStack(alignment: .leading) {
 
-        HStack {
+        HStack(alignment: .top) {
             CurrentEnergyFlowWidget()
         }
-        .frame(maxWidth: .infinity)
-
+        .frame(width: 550, height: 400)
     }
-    .frame(maxHeight: .infinity)
-    .background(.cyan.opacity(0.4))
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(.blue.opacity(0.4))
+    .environment(CurrentBuildingState.fake())
 
 }
