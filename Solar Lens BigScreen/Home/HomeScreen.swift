@@ -6,13 +6,20 @@ struct HomeScreen: View {
     @State var solarForecastTimer: Timer?
 
     var body: some View {
-        StandardLayout()
-            .onAppear {
-                startRefreshing()
-            }
-            .onDisappear() {
-                stopRefreshing()
-            }
+        ZStack {
+            StandardLayout()
+
+            FooterView(
+                isLoading: buildings.isLoading,
+                lastUpdate: buildings.overviewData.lastSuccessServerFetch
+            )
+        }
+        .onAppear {
+            startRefreshing()
+        }
+        .onDisappear {
+            stopRefreshing()
+        }
     }
 
     private func startRefreshing() {
@@ -64,7 +71,6 @@ struct HomeScreen: View {
         }
     }
 
-
     private func fetchAndStartRefreshTimerForSolarDetailData() {
         if buildings.solarDetailsData == nil {
             print("fetch solarDetailsData on appear")
@@ -90,8 +96,6 @@ struct HomeScreen: View {
 
         return Date().timeIntervalSince(lastUpdate)
     }
-
-
 }
 
 #Preview {
