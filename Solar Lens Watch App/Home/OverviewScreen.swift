@@ -130,13 +130,7 @@ struct OverviewScreen: View {
                                 .onDisappear {
                                     model.resumeFetching()
                                 }  // :SettingsView
-                                .toolbar {
-                                    ToolbarItem(placement: .topBarTrailing) {
-                                        Text("Settings")
-                                            .foregroundColor(.accentColor)
-                                            .font(.headline)
-                                    }  // :ToolbarItem
-                                }  // :.toolbar
+                                .navigationTitle("Settings")
                         }  // :sheet
                     }  // :HStack
                     .padding(.bottom, -7)

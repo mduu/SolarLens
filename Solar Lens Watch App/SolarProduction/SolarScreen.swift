@@ -162,13 +162,7 @@ struct SolarScreen: View {
             SolarChartView(
                 maxProductionkW: $viewModel.overviewData.solarProductionMax
             )
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Text("Production")
-                        .foregroundColor(.accentColor)
-                        .font(.headline)
-                }  // :ToolbarItem
-            }  // :.toolbar
+            .navigationTitle("Production")
             .onDisappear {
                 print("Hide solar chart sheet")
                 viewModel.fetchingIsPaused = false

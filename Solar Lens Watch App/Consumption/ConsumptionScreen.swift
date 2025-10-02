@@ -11,7 +11,9 @@ struct ConsumptionScreen: View {
             LinearGradient(
                 gradient: Gradient(colors: [
                     .cyan.opacity(0.5), .cyan.opacity(0.2),
-                ]), startPoint: .top, endPoint: .bottom
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
 
@@ -38,7 +40,8 @@ struct ConsumptionScreen: View {
                     Divider()
 
                     DeviceList(
-                        devices: buildingState.overviewData.devices
+                        devices: buildingState.overviewData.devices,
+                        cars: buildingState.overviewData.cars
                     ) { deviceId, newPriority in
                         print(
                             "Setting prio of device \(deviceId) to \(newPriority)"
@@ -46,13 +49,16 @@ struct ConsumptionScreen: View {
 
                         Task {
                             await buildingState.setSensorPriority(
-                                sensorId: deviceId, newPriority: newPriority)
+                                sensorId: deviceId,
+                                newPriority: newPriority
+                            )
                         }
 
                         print(
-                            "Prio of device \(deviceId) set to \(newPriority).")
+                            "Prio of device \(deviceId) set to \(newPriority)."
+                        )
                     }
-                    
+
                     UpdateTimeStampView(
                         isStale: buildingState.overviewData.isStaleData,
                         updateTimeStamp: buildingState.overviewData.lastUpdated,
@@ -87,13 +93,11 @@ struct ConsumptionScreen: View {
                     .currentOverallConsumption,
                 devices: buildingState.overviewData.devices
             )
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Text("Current consumption")
-                        .foregroundColor(.cyan)
-                        .font(.headline)
-                }  // :ToolbarItem
-            }  // :.toolbar
+            .navigationTitle {
+                Text("Consumption")
+                    .foregroundColor(.cyan)
+                    .font(.headline)
+            }
         }
     }
 }

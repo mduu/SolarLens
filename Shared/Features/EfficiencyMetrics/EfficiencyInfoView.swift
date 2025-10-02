@@ -17,10 +17,10 @@ struct EfficiencyInfoView: View {
                     .font(.headline)
                     .foregroundColor(.indigo)
             }
-            
+
             VStack {
                 HStack {
-                    
+
                     ZStack {
                         MiniDonut(
                             percentage: selfConsumption,
@@ -29,12 +29,12 @@ struct EfficiencyInfoView: View {
                             lineWidth: 7
                         )
                         .frame(maxWidth: 60)
-                        
-#if os(watchOS)
-                        let ringSize = 30
-#else
-                        let ringSize = 42
-#endif
+
+                        #if os(watchOS)
+                            let ringSize = 30
+                        #else
+                            let ringSize = 42
+                        #endif
                         MiniDonut(
                             percentage: autarky,
                             color: .purple,
@@ -43,7 +43,7 @@ struct EfficiencyInfoView: View {
                         )
                         .frame(maxWidth: CGFloat(ringSize))
                     }
-                    
+
                     if showLegend && !legendAtBottom {
                         VStack(alignment: .leading) {
                             VStack(alignment: .leading, spacing: 1) {
@@ -51,34 +51,44 @@ struct EfficiencyInfoView: View {
                                     "Self consumption"
                                 )
                                 .font(.system(size: 9))
-                                
+                                #if os(watchOS)
+                                    .padding(.bottom, 0)
+                                #endif
+
                                 Text(
                                     "\(selfConsumption.formatIntoPercentage())"
                                 )
                                 .foregroundColor(.indigo)
                                 .font(.subheadline)
                                 .fontWeight(.bold)
+                                #if os(watchOS)
+                                    .padding(.top, 0)
+                                #endif
+
                             }
-                            
+
                             VStack(alignment: .leading, spacing: 1) {
                                 Text(
                                     "Autarky"
                                 )
                                 .font(.system(size: 8))
-                                
+
                                 Text(
                                     "\(autarky.formatIntoPercentage())"
                                 )
                                 .foregroundColor(.purple)
                                 .font(.subheadline)
                                 .fontWeight(.bold)
+
                             }
-                            .padding(.top, 2)
-                            
+                            #if !os(watchOS)
+                                .padding(.top, 2)
+                            #endif
+
                         }
-                    } // :if
+                    }  // :if
                 }
-                
+
                 if showLegend && legendAtBottom {
                     VStack(alignment: .center, spacing: 0) {
                         VStack(alignment: .center) {
@@ -86,7 +96,7 @@ struct EfficiencyInfoView: View {
                                 "Self consumption"
                             )
                             .font(.system(size: 9))
-                            
+
                             Text(
                                 "\(selfConsumption.formatIntoPercentage())"
                             )
@@ -94,13 +104,13 @@ struct EfficiencyInfoView: View {
                             .font(.subheadline)
                             .fontWeight(.bold)
                         }
-                        
+
                         VStack(alignment: .center) {
                             Text(
                                 "Autarky"
                             )
                             .font(.system(size: 8))
-                            
+
                             Text(
                                 "\(autarky.formatIntoPercentage())"
                             )
@@ -109,9 +119,9 @@ struct EfficiencyInfoView: View {
                             .fontWeight(.bold)
                         }
                         .padding(.top, 2)
-                        
+
                     }
-                } // :if
+                }  // :if
             }
         }
     }
@@ -124,7 +134,7 @@ struct EfficiencyInfoView: View {
             todayAutarchyDegree: 92.1
         )
         .frame(maxWidth: 180, maxHeight: 120)
-        
+
         Spacer()
     }
 }

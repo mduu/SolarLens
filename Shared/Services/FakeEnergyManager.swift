@@ -2,6 +2,53 @@ import Combine
 internal import Foundation
 
 class FakeEnergyManager: EnergyManager {
+    func fetchStatisticsOverview() async throws -> StatisticsOverview {
+        StatisticsOverview(
+            week: Statistics(
+                consumption: 1234.22,
+                production: 987.21,
+                selfConsumption: 801.99,
+                selfConsumptionRate: 100 / 987.21 * 801.99,
+                autarchyDegree: 100 / 1234.22 * 987.21
+            ),
+            month: Statistics(
+                consumption: 1234.22,
+                production: 987.21,
+                selfConsumption: 801.99,
+                selfConsumptionRate: 100 / 987.21 * 801.99,
+                autarchyDegree: 100 / 1234.22 * 987.21
+            ),
+            year: Statistics(
+                consumption: 1234.22,
+                production: 987.21,
+                selfConsumption: 801.99,
+                selfConsumptionRate: 100 / 987.21 * 801.99,
+                autarchyDegree: 100 / 1234.22 * 987.21
+            ),
+            overall: Statistics(
+                consumption: 1234.22,
+                production: 987.21,
+                selfConsumption: 801.99,
+                selfConsumptionRate: 100 / 987.21 * 801.99,
+                autarchyDegree: 100 / 1234.22 * 987.21
+            )
+        )
+    }
+
+    func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics {
+        Statistics(
+            consumption: 1234.22,
+            production: 987.21,
+            selfConsumption: 801.99,
+            selfConsumptionRate: 100 / 987.21 * 801.99,
+            autarchyDegree: 100 / 1234.22 * 987.21
+        )
+    }
+
+    func fetchEnergyOverview() async throws -> EnergyOverview {
+        return EnergyOverview()
+    }
+
     func fetchServerInfo() async throws -> ServerInfo {
         ServerInfo.fake()
     }

@@ -149,8 +149,6 @@
 				AppIntents/Intents/SetChargingModeIntent.swift,
 				AppIntents/Shortcuts/Shortcuts.swift,
 				AppShortcuts.xcstrings,
-				Components/MiniDonut.swift,
-				Features/EfficiencyMetrics/EfficiencyInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
 				Widgets/BatteryWidgets/BatteryWidget.swift,
 				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
@@ -203,10 +201,13 @@
 				Services/Model/ChargingStation.swift,
 				Services/Model/ConsumptionData.swift,
 				Services/Model/Device.swift,
+				Services/Model/EnergyOverview.swift,
 				Services/Model/OverviewData.swift,
 				Services/Model/OverviewDataExtensions.swift,
 				Services/Model/ServerInfo.swift,
 				Services/Model/SolarDetailsData.swift,
+				Services/Model/Statistics.swift,
+				Services/Model/StatisticsOverview.swift,
 				Services/Rest/DateHelper.swift,
 				Services/Rest/NoRequestBody.swift,
 				Services/Rest/RestClient.swift,
@@ -224,6 +225,7 @@
 				Services/SolarManagerApi/DTOs/LoginRequest.swift,
 				Services/SolarManagerApi/DTOs/LoginResponse.swift,
 				Services/SolarManagerApi/DTOs/NoContentResponse.swift,
+				Services/SolarManagerApi/DTOs/OverviewV1Response.swift,
 				Services/SolarManagerApi/DTOs/Period.swift,
 				Services/SolarManagerApi/DTOs/PutSensorPriorityRequest.swift,
 				Services/SolarManagerApi/DTOs/RefreshRequest.swift,
@@ -851,9 +853,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.7.4;
-				APP_VERSION_BUILDNO = 231;
+				APP_VERSION = 3.8.1;
+				APP_VERSION_BUILDNO = 240;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -925,9 +929,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.7.4;
-				APP_VERSION_BUILDNO = 231;
+				APP_VERSION = 3.8.1;
+				APP_VERSION_BUILDNO = 240;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
