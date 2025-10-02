@@ -6,15 +6,14 @@ struct PoweredBySolarLens: View {
             Image("SolarLensLogo")
                 .resizable()
                 .scaledToFit()
-                .frame(maxHeight: 60)
+                .frame(maxHeight: 40)
                 .padding(.all, 0)
 
             VStack(alignment: .leading) {
                 Text("powerd by:")
-                    .font(.system(size: 24))
+                    .font(.system(size: 18))
                 Text(verbatim: "Solar Lens")
-                    .font(.system(size: 32))
-                    .foregroundColor(.accent)
+                    .font(.system(size: 22))
             }
         }
     }
