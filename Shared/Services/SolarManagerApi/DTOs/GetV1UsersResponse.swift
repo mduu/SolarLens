@@ -1,4 +1,5 @@
-import Foundation
+internal import Foundation
+
 class V1User: Codable {
     var status: String  // active
     var language: String?  // Deutsch
