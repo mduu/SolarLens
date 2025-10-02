@@ -1,11 +1,4 @@
-//
-//  BatteryAppIntent.swift
-//  Solar Lens Watch App
-//
-//  Created by Marc Dürst on 02.12.2024.
-//
-
-import Foundation
+internal import Foundation
 import AppIntents
 import WidgetKit
 
