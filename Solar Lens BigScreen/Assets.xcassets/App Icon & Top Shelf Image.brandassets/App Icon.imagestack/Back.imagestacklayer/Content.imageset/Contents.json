@@ -1,11 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "tvOS_400x240_1.png",
+      "filename" : "0_back_x1.png",
       "idiom" : "tv",
       "scale" : "1x"
     },
     {
+      "filename" : "0_back_x2.png",
       "idiom" : "tv",
       "scale" : "2x"
     }
