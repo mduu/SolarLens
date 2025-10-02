@@ -15,4 +15,5 @@ struct Column1: View {
 
 #Preview {
     Column1()
+        .environment(CurrentBuildingState.fake())
 }

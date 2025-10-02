@@ -35,5 +35,6 @@ struct StandardLayout: View {
 
 #Preview {
     StandardLayout()
+        .environment(CurrentBuildingState.fake())
         .environment(UiContext())
 }
