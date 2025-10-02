@@ -2,7 +2,8 @@ import Foundation
 
 final class ScenarioOneTimeTariff: ScenarioTask {
     let tenSeconds: TimeInterval = 10
-    let fiveMinutes: TimeInterval = 5 * 1  // 5 * 60 = 5 minutes
+    //let checkInterval: TimeInterval = 15 * 60  // 15 * 60 = 15 minutes
+    let checkInterval: TimeInterval = 15 * 1  // 15 * 1 = 15 seconds - for debugging
 
     public static let shared = ScenarioOneTimeTariff()
 
@@ -40,7 +41,7 @@ final class ScenarioOneTimeTariff: ScenarioTask {
             )
         }
 
-        let isWorkDone: Bool = false // TODO
+        let isWorkDone: Bool = false // TODO Check if tariff ended
 
         return !isWorkDone
         ? continueScenario(
@@ -85,7 +86,7 @@ final class ScenarioOneTimeTariff: ScenarioTask {
             )
         )
 
-        var endTime = false // TODO Calculate end of tariff
+        var endTime:Date = Date() // TODO Calculate end of tariff
 
         host.logDebug(message: "One time tariff: Scenario started")
 
@@ -95,7 +96,8 @@ final class ScenarioOneTimeTariff: ScenarioTask {
             nextTaskRun: nil as Date?,
             oneTimeTariff: ScenarioOneTimeTariffState(
                 isStarted: true,
-                previousChargeMode: previousChargeMode
+                previousChargeMode: previousChargeMode,
+                endTime: endTime
             )
         )
     }
@@ -109,7 +111,7 @@ final class ScenarioOneTimeTariff: ScenarioTask {
         return ScenarioState(
             scenario: state.scenario!,
             status: ScenarioStatus.running,
-            nextTaskRun: Date().addingTimeInterval(fiveMinutes),
+            nextTaskRun: Date().addingTimeInterval(fivetenMinutes),
             oneTimeTariff: ScenarioOneTimeTariffState(
                 isStarted: true,
                 previousChargeMode: state.batteryToCar!.previousChargingMode!
