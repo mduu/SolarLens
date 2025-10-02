@@ -12,8 +12,8 @@ struct PoweredBySolarLens: View {
             VStack(alignment: .leading) {
                 Text("powerd by:")
                     .font(.system(size: 24))
-                Text(verbatim: "Solar Lens BigScreen")
-                    .font(.footnote)
+                Text(verbatim: "Solar Lens")
+                    .font(.system(size: 32))
                     .foregroundColor(.accent)
             }
         }
