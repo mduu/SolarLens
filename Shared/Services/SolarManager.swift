@@ -26,12 +26,12 @@ actor SolarManager: EnergyManager {
     {
         try await ensureSensorInfosAreCurrent()
 
-        guard systemInformation != nil else {
+        guard let systemInformation else {
             return lastOverviewData ?? OverviewData.empty()
         }
 
         if let chart = try await solarManagerApi.getV1Chart(
-            solarManagerId: systemInformation!.sm_id
+            solarManagerId: systemInformation.sm_id
         ) {
             let batteryChargingRate =
                 chart.battery != nil
@@ -43,12 +43,12 @@ actor SolarManager: EnergyManager {
 
             let streamSensorInfos =
                 try await solarManagerApi.getV1StreamGateway(
-                    solarManagerId: systemInformation!.sm_id
+                    solarManagerId: systemInformation.sm_id
                 )
 
             let todayGatewayStatistics =
                 try await solarManagerApi.getV1Statistics(
-                    solarManagerId: systemInformation!.sm_id,
+                    solarManagerId: systemInformation.sm_id,
                     from: Date.todayStartOfDay(),
                     to: Date.todayEndOfDay(),
                     accuracy: .high
@@ -75,7 +75,7 @@ actor SolarManager: EnergyManager {
                     .arrows?.first(
                         where: { $0.direction == .fromPVToConsumer }
                     )?.value ?? 0,
-                solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000,
+                solarProductionMax: (systemInformation.kWp ?? 0.0) * 1000,
                 hasConnectionError: false,
                 lastUpdated: lastUpdated,
                 lastSuccessServerFetch: Date(),

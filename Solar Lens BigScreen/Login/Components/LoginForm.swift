@@ -5,6 +5,8 @@ struct LoginForm: View {
     @State var email: String = ""
     @State var password: String = ""
 
+    @Namespace private var focusNamespace
+
     var body: some View {
         GlassEffectContainer(spacing: 40.0) {
             VStack(alignment: .leading) {
@@ -12,10 +14,12 @@ struct LoginForm: View {
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
-                
+                    .prefersDefaultFocus(email.isEmpty, in: focusNamespace)
+
                 SecureField("Password", text: $password)
                     .textContentType(.password)
-                
+                    .prefersDefaultFocus(!email.isEmpty && password.isEmpty, in: focusNamespace)
+
                 Button(action: {
                     Task {
                         await model.tryLogin(
@@ -33,7 +37,8 @@ struct LoginForm: View {
                 .font(.title2)
                 .buttonStyle(.borderedProminent)
                 .disabled(isValidLogin())
-                
+                .prefersDefaultFocus(!email.isEmpty && !password.isEmpty, in: focusNamespace)
+
                 if model.didLoginSucceed == false {
                     VStack(alignment: HorizontalAlignment.center, spacing: 8) {
                         Text("Login failed!")
@@ -56,6 +61,7 @@ struct LoginForm: View {
                 }
             }
             .padding(.horizontal, 30)
+            .focusScope(focusNamespace)
         }
     }
 
