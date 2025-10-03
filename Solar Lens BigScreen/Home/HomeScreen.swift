@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeScreen: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
+    @Environment(\.resetFocus) var resetFocus
 
     @State private var refreshTimer: Timer?
     @State private var solarForecastTimer: Timer?
@@ -12,8 +13,10 @@ struct HomeScreen: View {
 
             if showMenu {
                 SettingsView()
+
             } else {
                 StandardLayout()
+                    .focusable()
 
                 FooterView(
                     isLoading: buildings.isLoading,
