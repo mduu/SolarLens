@@ -2,17 +2,24 @@ import SwiftUI
 
 struct HomeScreen: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
-    @State var refreshTimer: Timer?
-    @State var solarForecastTimer: Timer?
+
+    @State private var refreshTimer: Timer?
+    @State private var solarForecastTimer: Timer?
+    @State var showMenu: Bool = false
 
     var body: some View {
         ZStack {
-            StandardLayout()
 
-            FooterView(
-                isLoading: buildings.isLoading,
-                lastUpdate: buildings.overviewData.lastSuccessServerFetch
-            )
+            if showMenu {
+                SettingsView()
+            } else {
+                StandardLayout()
+
+                FooterView(
+                    isLoading: buildings.isLoading,
+                    lastUpdate: buildings.overviewData.lastSuccessServerFetch
+                )
+            }
         }
         .onAppear {
             startRefreshing()
@@ -20,9 +27,19 @@ struct HomeScreen: View {
         .onDisappear {
             stopRefreshing()
         }
+        .onTapGesture {
+            print("remote tap - refresh all")
+            refreshAll()
+        }
+        .onExitCommand {
+            print("toggle menu")
+            showMenu.toggle()
+        }
     }
 
     private func startRefreshing() {
+        refreshAll()
+
         fetchAndStartRefreshTimerForOverviewData()
         fetchAndStartRefreshTimerForSolarDetailData()
     }
@@ -42,7 +59,7 @@ struct HomeScreen: View {
     private func fetchAndStartRefreshTimerForOverviewData() {
         if getAgeOfData() > 30 {
             print("forced fetch: overview data")
-            refreshAll()
+            fetchOverviewData()
         }
 
         if refreshTimer == nil {
@@ -98,8 +115,14 @@ struct HomeScreen: View {
     }
 }
 
-#Preview {
+#Preview("Standard") {
     HomeScreen()
+        .environment(CurrentBuildingState.fake())
+        .environment(UiContext())
+}
+
+#Preview("Settings Menu") {
+    HomeScreen(showMenu: true)
         .environment(CurrentBuildingState.fake())
         .environment(UiContext())
 }
