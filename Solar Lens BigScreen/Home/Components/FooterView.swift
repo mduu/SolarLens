@@ -33,6 +33,7 @@ struct FooterView: View {
                 }
             }
         }
+        .foregroundColor(.white.opacity(0.95))
     }
 }
 

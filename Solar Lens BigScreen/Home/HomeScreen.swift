@@ -7,6 +7,8 @@ struct HomeScreen: View {
     @State private var solarForecastTimer: Timer?
 
     @State private var showMenu: Bool = false
+    @Environment(\.resetFocus) var resetFocus
+    @Namespace private var namespace
 
     var body: some View {
         ZStack {
@@ -24,10 +26,29 @@ struct HomeScreen: View {
             )
 
             if showMenu {
-                MainMenu()
+                MainMenu(action: { mainMenuItem in
+                    print("selected menu item: \(mainMenuItem)")
+
+                    switch mainMenuItem {
+                    case .home:
+                        showMenu = false
+
+                    case .settings:
+                        withAnimation(.easeOut) {
+                            showMenu = false
+                        }
+
+                    case .logout:
+                        Task {
+                            buildings.logout()
+                        }
+                    }
+                })
             }
         }
+        .focusScope(namespace)
         .onAppear {
+            resetFocus(in: namespace)
             startRefreshing()
         }
         .onDisappear {
@@ -38,7 +59,13 @@ struct HomeScreen: View {
             refreshAll()
         }
         .onExitCommand {
-            showMenu.toggle()
+            if !showMenu {
+                print("exit command - show menu")
+                showMenu = true
+            } else {
+                print("exit command - dismiss")
+                exit(0)
+            }
         }
 
     }
