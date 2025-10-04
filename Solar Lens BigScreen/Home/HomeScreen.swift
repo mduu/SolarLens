@@ -6,16 +6,26 @@ struct HomeScreen: View {
     @State private var refreshTimer: Timer?
     @State private var solarForecastTimer: Timer?
 
+    @State private var showMenu: Bool = false
+
     var body: some View {
         ZStack {
 
-            StandardLayout()
-                .focusable()
+            if showMenu {
+                StandardLayout()
+            } else {
+                StandardLayout()
+                    .focusable()
+            }
 
             FooterView(
                 isLoading: buildings.isLoading,
                 lastUpdate: buildings.overviewData.lastSuccessServerFetch
             )
+
+            if showMenu {
+                MainMenu()
+            }
         }
         .onAppear {
             startRefreshing()
@@ -26,6 +36,9 @@ struct HomeScreen: View {
         .onTapGesture {
             print("remote tap - refresh all")
             refreshAll()
+        }
+        .onExitCommand {
+            showMenu.toggle()
         }
 
     }
