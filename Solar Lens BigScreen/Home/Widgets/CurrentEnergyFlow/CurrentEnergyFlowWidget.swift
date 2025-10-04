@@ -72,7 +72,7 @@ struct CurrentEnergyFlowWidget: View {
         .padding(50)
         .frame(maxWidth: .infinity)
         .frame(height: 350)
-        .glassEffect(in: .rect(cornerRadius: 30.0))
+        .glassEffect(.clear, in: .rect(cornerRadius: 30.0))
 
     }
 

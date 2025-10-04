@@ -2,27 +2,20 @@ import SwiftUI
 
 struct HomeScreen: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
-    @Environment(\.resetFocus) var resetFocus
 
     @State private var refreshTimer: Timer?
     @State private var solarForecastTimer: Timer?
-    @State var showMenu: Bool = false
 
     var body: some View {
         ZStack {
 
-            if showMenu {
-                SettingsView()
+            StandardLayout()
+                .focusable()
 
-            } else {
-                StandardLayout()
-                    .focusable()
-
-                FooterView(
-                    isLoading: buildings.isLoading,
-                    lastUpdate: buildings.overviewData.lastSuccessServerFetch
-                )
-            }
+            FooterView(
+                isLoading: buildings.isLoading,
+                lastUpdate: buildings.overviewData.lastSuccessServerFetch
+            )
         }
         .onAppear {
             startRefreshing()
@@ -34,10 +27,7 @@ struct HomeScreen: View {
             print("remote tap - refresh all")
             refreshAll()
         }
-        .onExitCommand {
-            print("toggle menu")
-            showMenu.toggle()
-        }
+
     }
 
     private func startRefreshing() {
@@ -120,12 +110,6 @@ struct HomeScreen: View {
 
 #Preview("Standard") {
     HomeScreen()
-        .environment(CurrentBuildingState.fake())
-        .environment(UiContext())
-}
-
-#Preview("Settings Menu") {
-    HomeScreen(showMenu: true)
         .environment(CurrentBuildingState.fake())
         .environment(UiContext())
 }
