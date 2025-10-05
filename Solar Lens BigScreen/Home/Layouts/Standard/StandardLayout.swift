@@ -12,14 +12,11 @@ struct StandardLayout: View {
                 .backgroundExtensionEffect()
 
             HStack {
-                Column1()
+                Column1View()
                     .frame(maxWidth: .infinity)
 
-                VStack {
-                    Text("Center")
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity)
+                Column2View()
+                    .frame(maxWidth: .infinity)
 
                 VStack {
                     Text("Right")

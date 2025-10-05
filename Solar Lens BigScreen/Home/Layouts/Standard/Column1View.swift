@@ -1,10 +1,9 @@
 import SwiftUI
 
-struct Column1: View {
+struct Column1View: View {
     var body: some View {
         VStack {
             CurrentEnergyFlowWidget()
-                .padding()
                 .frame(maxWidth: .infinity)
 
             Spacer()
@@ -14,6 +13,12 @@ struct Column1: View {
 }
 
 #Preview {
-    Column1()
-        .environment(CurrentBuildingState.fake())
+    HStack {
+        Column1View()
+            .environment(CurrentBuildingState.fake())
+            .frame(maxWidth: 400)
+
+        Spacer()
+    }
+    .background(.blue.gradient)
 }

@@ -5,10 +5,7 @@ struct CurrentEnergyFlowWidget: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Text("Now")
-                    .font(.title2)
-            }
+            WidgetHeaderView(title: "Now")
 
             Grid {
                 GridRow {
@@ -78,7 +75,7 @@ struct CurrentEnergyFlowWidget: View {
             .padding(.horizontal, 10)
         }
         .padding(20)
-        .foregroundColor(.white.opacity(0.9))
+        .foregroundColor(.white)
         .frame(maxWidth: .infinity)
         .glassEffect(.clear, in: .rect(cornerRadius: 30.0))
 

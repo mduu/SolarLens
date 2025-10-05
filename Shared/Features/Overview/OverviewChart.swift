@@ -9,6 +9,7 @@ struct OverviewChart: View {
     var isAccent: Bool = false
     var showBatteryCharge: Bool = true
     var showBatteryDischange: Bool = true
+    var useAlternativeColors: Bool = false
 
     var body: some View {
 
@@ -16,9 +17,10 @@ struct OverviewChart: View {
 
             ProductionConsumptionSeries(
                 data: consumption.data,
-                isAccent: isAccent
+                isAccent: isAccent,
+                useAlternativeColors: useAlternativeColors
             )
-            
+
             if !batteries.isEmpty {
                 BatterySeries(
                     batteries: batteries,
@@ -27,7 +29,7 @@ struct OverviewChart: View {
                     showDischarging: showBatteryDischange
                 )
             }
-            
+
         }
         .chartYAxis {
             AxisMarks(preset: .automatic) { value in
@@ -49,14 +51,14 @@ struct OverviewChart: View {
         }
         .chartLegend(isSmall ? .hidden : .visible)
         .chartForegroundStyleScale([
-                    "Production": .yellow,
-                    "Consumption": .teal,
-                    (showBatteryDischange ? "Battery consumption" : ""): (showBatteryDischange ? .indigo : .clear),
-                    (showBatteryCharge ? "Battery charged" : ""): (showBatteryCharge ? .purple : .clear),
-                ])
+            "Production": SerieColors.productionColor(useAlternativeColors: useAlternativeColors),
+            "Consumption": SerieColors.consumptionColor(useDarkerColors: useAlternativeColors),
+            (showBatteryDischange ? "Battery consumption" : ""): (showBatteryDischange ? .indigo : .clear),
+            (showBatteryCharge ? "Battery charged" : ""): (showBatteryCharge ? .purple : .clear),
+        ])
         .frame(maxHeight: .infinity)
     }
-    
+
     private func getTimeFormatter() -> DateFormatter {
         let result = DateFormatter()
         result.setLocalizedDateFormatFromTemplate("HH:mm")

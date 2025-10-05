@@ -150,6 +150,25 @@ class CurrentBuildingState {
     }
 
     @MainActor
+    func fetchConsumptionForToday() async -> ConsumptionData? {
+        let calendar = Calendar.current
+        let now = Date()
+        let components = calendar.dateComponents(
+            [.year, .month, .day], from: now)
+        let endOfDayComponents = DateComponents(
+            year: components.year, month: components.month,
+            day: components.day,
+            hour: 23, minute: 59, second: 59)
+        let toDate = calendar.date(from: endOfDayComponents)!
+
+        let consumptionData = try? await energyManager.fetchConsumptions(
+            from: Calendar.current.startOfDay(for: .now),
+            to: toDate)
+
+        return consumptionData
+    }
+
+    @MainActor
     func setCarCharging(
         sensorId: String,
         newCarCharging: ControlCarChargingRequest

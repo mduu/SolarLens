@@ -183,6 +183,7 @@
 				Features/EfficiencyMetrics/EfficiencyInfoView.swift,
 				Features/Overview/ChartSeries/BatterySeries.swift,
 				Features/Overview/ChartSeries/ProductionConsumptionSeries.swift,
+				Features/Overview/ChartSeries/SerieColors.swift,
 				Features/Overview/OverviewChart.swift,
 				Features/Solar/ForecastItemView.swift,
 				Features/Solar/ForecastListView.swift,

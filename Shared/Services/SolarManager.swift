@@ -546,6 +546,7 @@ actor SolarManager: EnergyManager {
             return
         }
 
+        /*
         if let refreshToken = refreshToken {
             print("Refresh token exists. Refreshing access-token...")
 
@@ -578,6 +579,7 @@ actor SolarManager: EnergyManager {
                 )
             }
         }
+         */
 
         let credentials = await KeychainHelper.loadCredentials()
         if (credentials.username?.isEmpty ?? true)
@@ -600,7 +602,6 @@ actor SolarManager: EnergyManager {
     }
 
     private func ensureSmId() async throws {
-        try await ensureLoggedIn()
         try await ensureSystemInfomation()
     }
 
