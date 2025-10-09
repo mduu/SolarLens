@@ -72,7 +72,7 @@ struct CurrentEnergyFlowWidget: View {
                 }
             }
             .frame(height: 350)
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 50)
         }
         .padding(20)
         .foregroundColor(.white)
