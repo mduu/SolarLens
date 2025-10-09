@@ -38,20 +38,22 @@ class SolarManagerApi: RestClient {
 
     func refresh(refreshToken: String) async throws -> RefreshResponse {
         do {
-            if let refreshResponse: RefreshResponse? = try await post(
+            let refreshResponse: RefreshResponse? = try? await post(
                 serviceUrl: "/v1/oauth/refresh",
                 requestBody: RefreshRequest(refreshToken: refreshToken),
                 useAccessToken: false
-            ) {
-                storeLogin(
-                    accessToken: refreshResponse!.accessToken,
-                    refreshToken: refreshResponse!.refreshToken
-                )
+            )
 
-                return refreshResponse!
+            guard let refreshResponse else {
+                throw SolarManagerApiClientError.communicationError
             }
 
-            throw SolarManagerApiClientError.communicationError
+            storeLogin(
+                accessToken: refreshResponse.accessToken,
+                refreshToken: refreshResponse.refreshToken
+            )
+
+            return refreshResponse
 
         } catch {
             clearLogin()
