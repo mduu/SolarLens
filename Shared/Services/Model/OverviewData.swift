@@ -27,8 +27,23 @@ class OverviewData {
     var todayAutarchyDegree: Double? = nil
     var todayProduction: Double? = nil
     var todayConsumption: Double? = nil
-    var todayGridImported: Double? = nil
-    var todayGridExported: Double? = nil
+    var todayGridImported: Int?
+    {
+        let importDegree = 100 - (todayAutarchyDegree ?? 0.0)
+
+        return Int(
+            (todayConsumption ?? 0)
+            * (importDegree / 100)
+        )
+    }
+    var todayGridExported: Int {
+        let exportDegree = 100 - (todaySelfConsumptionRate ?? 0.0)
+
+        return Int(
+            (todayProduction ?? 0.0)
+            * (exportDegree / 100)
+        )
+    }
     var todayBatteryCharged: Double? = nil
     var cars: [Car] = []
     var isOutdatedData: Bool {
@@ -93,8 +108,6 @@ class OverviewData {
         self.todayAutarchyDegree = todayAutarchyDegree
         self.todayProduction = todayProduction
         self.todayConsumption = todayConsumption
-        self.todayGridImported = todayGridImported
-        self.todayGridExported = todayGridExported
         self.todayBatteryCharged = todayBatteryCharged
         self.cars = cars
     }

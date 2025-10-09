@@ -7,24 +7,6 @@ struct GridScreen: View {
     @State var statisticsOverview: StatisticsOverview? = nil
     @State var lastStatisticsUpdate: Date? = nil
 
-    var importToday: Int {
-        let importDegree = 100 - (model.overviewData.todayAutarchyDegree ?? 0.0)
-
-        return Int(
-            (model.overviewData.todayConsumption ?? 0)
-                * (importDegree / 100)
-        )
-    }
-
-    var exportToday: Int {
-        let exportDegree = 100 - (model.overviewData.todaySelfConsumptionRate ?? 0.0)
-
-        return Int(
-            (model.overviewData.todayProduction ?? 0.0)
-                * (exportDegree / 100)
-        )
-    }
-
     var body: some View {
         ZStack {
 
@@ -45,8 +27,8 @@ struct GridScreen: View {
                     VStack(alignment: .leading) {
 
                         GridToday(
-                            importToday: importToday,
-                            exportToday: exportToday
+                            importToday: model.overviewData.todayGridImported ?? 0,
+                            exportToday: model.overviewData.todayGridExported ?? 0
                         )
 
                         HStack {

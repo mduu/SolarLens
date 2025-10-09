@@ -12,6 +12,7 @@ struct TodayWidget: View {
             WidgetHeaderView(title: "Today")
 
             if let todayConsumption {
+                
                 OverviewChart(
                     consumption: todayConsumption,
                     showBatteryCharge: false,
@@ -19,9 +20,17 @@ struct TodayWidget: View {
                     useAlternativeColors: true
                 )
                 .frame(maxHeight: 400)
+
             } else {
-                Text("No data")
+                ProgressView()
             }
+
+            TodayConsumptionView(
+                consumptionTodayInWatts: buildings.overviewData.todayConsumption,
+                todayGridImported: buildings.overviewData.todayGridImported)
+            .padding(.top)
+
+
         }
         .padding(20)
         .foregroundColor(.white)

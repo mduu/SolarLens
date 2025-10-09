@@ -341,6 +341,7 @@
 				Features/Consumption/Charging/ChargingModeLabelView.swift,
 				Features/Consumption/Charging/ChargingOptionsPopupView.swift,
 				Features/Consumption/ConsumptionPieChart.swift,
+				Features/Consumption/ConsumptionSourcePieChart.swift,
 				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Features/Consumption/DeviceIconView.swift,
 				Layouts/FlowLayout.swift,
