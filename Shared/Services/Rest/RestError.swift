@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 
 enum RestError: Error {
     case responseError(response: URLResponse)

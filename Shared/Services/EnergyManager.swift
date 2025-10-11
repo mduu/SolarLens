@@ -1,5 +1,5 @@
 import Combine
-import Foundation
+internal import Foundation
 
 protocol EnergyManager {
     func login(username: String, password: String) async -> Bool

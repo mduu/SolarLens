@@ -5,7 +5,7 @@
 //  Created by Marc Dürst on 22.11.2024.
 //
 
-import Foundation
+internal import Foundation
 import AppIntents
 import WidgetKit
 

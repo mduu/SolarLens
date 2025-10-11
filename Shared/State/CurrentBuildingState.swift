@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 import SwiftUI
 
 @Observable
@@ -9,6 +9,7 @@ class CurrentBuildingState {
     var loginCredentialsExists: Bool = false
     var didLoginSucceed: Bool? = nil
     var overviewData: OverviewData = .init()
+    var solarDetailsData: SolarDetailsData?
     var isChangingCarCharger: Bool = false
     var carChargerSetSuccessfully: Bool? = nil
     var isChangingSensorPriority: Bool = false
@@ -28,6 +29,10 @@ class CurrentBuildingState {
     init() {
         self.energyManager = SolarManager.instance()
         updateCredentialsExists()
+    }
+
+    static func fake() -> CurrentBuildingState {
+        return .fake(overviewData: .fake())
     }
 
     static func fake(
@@ -133,6 +138,37 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
+    func fetchSolarDetails() async {
+        let fetchedSolarDetailsData = try? await energyManager.fetchSolarDetails()
+
+        guard let fetchedSolarDetailsData else {
+            return
+        }
+
+        solarDetailsData = fetchedSolarDetailsData
+    }
+
+    @MainActor
+    func fetchConsumptionForToday() async -> ConsumptionData? {
+        let calendar = Calendar.current
+        let now = Date()
+        let components = calendar.dateComponents(
+            [.year, .month, .day], from: now)
+        let endOfDayComponents = DateComponents(
+            year: components.year, month: components.month,
+            day: components.day,
+            hour: 23, minute: 59, second: 59)
+        let toDate = calendar.date(from: endOfDayComponents)!
+
+        let consumptionData = try? await energyManager.fetchConsumptions(
+            from: Calendar.current.startOfDay(for: .now),
+            to: toDate)
+
+        return consumptionData
+    }
+
+    @MainActor
     func setCarCharging(
         sensorId: String,
         newCarCharging: ControlCarChargingRequest
@@ -174,6 +210,7 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
     func setSensorPriority(sensorId: String, newPriority: Int) async {
         guard loginCredentialsExists && !isChangingSensorPriority
         else {
@@ -212,6 +249,7 @@ class CurrentBuildingState {
         }
     }
     
+    @MainActor
     func setBatteryMode(
         sensorId: String,
         batteryModeInfo: BatteryModeInfo
@@ -259,13 +297,14 @@ class CurrentBuildingState {
         }
     }
 
-
+    @MainActor
     func logout() {
         KeychainHelper.deleteCredentials()
         updateCredentialsExists()
         resetError()
     }
 
+    @MainActor
     func checkForCredentions() {
         updateCredentialsExists()
     }

@@ -1,5 +1,5 @@
 import Combine
-import Foundation
+internal import Foundation
 
 class RestClient {
     let baseUrl: String
@@ -102,7 +102,7 @@ class RestClient {
             return nil
         }
 
-        var request = URLRequest(url: url, timeoutInterval: 20)
+        var request = URLRequest(url: url, timeoutInterval: 120)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = httpMethod
         if requestBody != nil {

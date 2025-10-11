@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 
 struct SensorDataV1Response: Decodable {
     /// Timestamp (Time & Date) of the entry

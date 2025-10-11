@@ -1,3 +1,5 @@
+internal import Foundation
+
 extension Int {
 
     func formatWattsAsKiloWatts(widthUnit: Bool = false) -> String {

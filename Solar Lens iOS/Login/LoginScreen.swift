@@ -88,7 +88,7 @@ struct LoginScreen: View {
 
 #Preview("English") {
     LoginScreen()
-        .environment(CurrentBuildingState())
+        .environment(CurrentBuildingState.fake())
 }
 
 #Preview("Failed") {

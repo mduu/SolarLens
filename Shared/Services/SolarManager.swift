@@ -10,28 +10,29 @@ actor SolarManager: EnergyManager {
         return _instance!
     }
 
-    private var expireAt: Date?
-    private var accessClaims: [String]?
-    private var solarManagerApi = SolarManagerApi()
-    private var systemInformation: V1User?
-    private var sensorInfos: [SensorInfosV1Response]?
-    private var sensorInfosUpdatedAt: Date?
+    @MainActor private var expireAt: Date?
+    @MainActor private var accessClaims: [String]?
+    @MainActor private var solarManagerApi = SolarManagerApi()
+    @MainActor private var systemInformation: V1User?
+    @MainActor private var sensorInfos: [SensorInfosV1Response]?
+    @MainActor private var sensorInfosUpdatedAt: Date?
 
     func login(username: String, password: String) async -> Bool {
         return await doLogin(email: username, password: password)
     }
 
+    @MainActor
     func fetchOverviewData(lastOverviewData: OverviewData?) async throws
         -> OverviewData
     {
         try await ensureSensorInfosAreCurrent()
 
-        guard systemInformation != nil else {
+        guard let systemInformation else {
             return lastOverviewData ?? OverviewData.empty()
         }
 
         if let chart = try await solarManagerApi.getV1Chart(
-            solarManagerId: systemInformation!.sm_id
+            solarManagerId: systemInformation.sm_id
         ) {
             let batteryChargingRate =
                 chart.battery != nil
@@ -43,12 +44,12 @@ actor SolarManager: EnergyManager {
 
             let streamSensorInfos =
                 try await solarManagerApi.getV1StreamGateway(
-                    solarManagerId: systemInformation!.sm_id
+                    solarManagerId: systemInformation.sm_id
                 )
 
             let todayGatewayStatistics =
                 try await solarManagerApi.getV1Statistics(
-                    solarManagerId: systemInformation!.sm_id,
+                    solarManagerId: systemInformation.sm_id,
                     from: Date.todayStartOfDay(),
                     to: Date.todayEndOfDay(),
                     accuracy: .high
@@ -75,7 +76,7 @@ actor SolarManager: EnergyManager {
                     .arrows?.first(
                         where: { $0.direction == .fromPVToConsumer }
                     )?.value ?? 0,
-                solarProductionMax: (systemInformation?.kWp ?? 0.0) * 1000,
+                solarProductionMax: (systemInformation.kWp ?? 0.0) * 1000,
                 hasConnectionError: false,
                 lastUpdated: lastUpdated,
                 lastSuccessServerFetch: Date(),
@@ -133,6 +134,7 @@ actor SolarManager: EnergyManager {
         return errorOverviewData
     }
 
+    @MainActor
     func fetchChargingData() async throws -> CharingInfoData {
         try await ensureLoggedIn()
         try await ensureSmId()
@@ -171,6 +173,7 @@ actor SolarManager: EnergyManager {
         return .init(totalCharedToday: total, currentCharging: current)
     }
 
+    @MainActor
     func fetchSolarDetails() async throws -> SolarDetailsData {
         try await ensureSmId()
 
@@ -218,6 +221,7 @@ actor SolarManager: EnergyManager {
 
     }
 
+    @MainActor
     func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
         try await ensureSmId()
 
@@ -247,6 +251,7 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    @MainActor
     func fetchTodaysBatteryHistory() async throws -> [BatteryHistory] {
         try await ensureSensorInfosAreCurrent()
 
@@ -297,6 +302,7 @@ actor SolarManager: EnergyManager {
         return result
     }
 
+    @MainActor
     func fetchServerInfo() async throws -> ServerInfo {
         try await ensureSystemInfomation()
 
@@ -338,7 +344,7 @@ actor SolarManager: EnergyManager {
 
         let response = try? await solarManagerApi.getV1Overview()
         guard let response else {
-            return EnergyOverview()
+            return await EnergyOverview()
         }
 
         return EnergyOverview(
@@ -397,6 +403,7 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    @MainActor
     func fetchStatisticsOverview() async throws -> StatisticsOverview {
         try await ensureSystemInfomation()
 
@@ -435,6 +442,7 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    @MainActor
     func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics {
         try await ensureSmId()
 
@@ -477,6 +485,7 @@ actor SolarManager: EnergyManager {
         }
     }
 
+    @MainActor
     func setSensorPriority(
         sensorId: String,
         priority: Int
@@ -496,6 +505,7 @@ actor SolarManager: EnergyManager {
         }
     }
 
+    @MainActor
     func setBatteryMode(
         sensorId: String,
         batteryModeInfo: BatteryModeInfo
@@ -538,6 +548,7 @@ actor SolarManager: EnergyManager {
         }
     }
 
+    @MainActor
     private func ensureLoggedIn() async throws {
         let accessToken = KeychainHelper.accessToken
         let refreshToken = KeychainHelper.refreshToken
@@ -563,7 +574,7 @@ actor SolarManager: EnergyManager {
 
                 self.accessClaims = refreshResponse.accessClaims
 
-                if accessToken != nil && expireAt != nil && expireAt! > Date() {
+                if expireAt != nil && expireAt! > Date() {
                     print(
                         "Refresh auth-token succeeded. Token will expire at \(expireAt!)"
                     )
@@ -599,11 +610,12 @@ actor SolarManager: EnergyManager {
         }
     }
 
+    @MainActor
     private func ensureSmId() async throws {
-        try await ensureLoggedIn()
         try await ensureSystemInfomation()
     }
 
+    @MainActor
     private func ensureSystemInfomation() async throws {
         if self.systemInformation != nil {
             return
@@ -625,6 +637,7 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    @MainActor
     private func ensureSensorInfosAreCurrent() async throws {
         try await ensureLoggedIn()
         try await ensureSmId()
@@ -641,6 +654,7 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    @MainActor
     private func getIsAnyCarCharing(streamSensors: StreamSensorsV1Response?)
         -> Bool
     {
@@ -657,6 +671,7 @@ actor SolarManager: EnergyManager {
         return charingPower > 0
     }
 
+    @MainActor
     private func getCharingStationSensorIds() -> [String] {
         return
             sensorInfos != nil
@@ -666,6 +681,7 @@ actor SolarManager: EnergyManager {
             : []
     }
 
+    @MainActor
     private func mapDevice(
         _ sensorInfo: SensorInfosV1Response,
         _ streamInfo: StreamSensorsV1Device?
@@ -688,6 +704,7 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    @MainActor
     private func mapBatteryInfo(battery: SensorInfosV1Data?) -> BatteryInfo? {
         guard let battery = battery else {
             return nil
@@ -745,6 +762,7 @@ actor SolarManager: EnergyManager {
         )
     }
 
+    @MainActor
     private func mapCars(streamSensorInfos: StreamSensorsV1Response?) -> [Car] {
         guard let sensorInfos = sensorInfos else {
             return []
@@ -787,6 +805,7 @@ actor SolarManager: EnergyManager {
             }
     }
 
+    @MainActor
     private func doLogin(email: String, password: String) async -> Bool {
         do {
             let loginSuccess = try await solarManagerApi.login(
@@ -794,7 +813,9 @@ actor SolarManager: EnergyManager {
                 password: password
             )
 
-            KeychainHelper.saveCredentials(username: email, password: password)
+            KeychainHelper
+                .saveCredentials(username: email, password: password)
+
             self.expireAt = Date().addingTimeInterval(
                 TimeInterval(loginSuccess.expiresIn)
             )
@@ -809,6 +830,7 @@ actor SolarManager: EnergyManager {
         }
     }
 
+    @MainActor
     private func getCumSumPerLocalStartOfDay(data: [ForecastItemV3Response])
         -> [Date: ForecastItem?]
     {
@@ -848,6 +870,7 @@ actor SolarManager: EnergyManager {
         return dailyKWh
     }
 
+    @MainActor
     func parseSolarManagerDateTime(_ solarManagerDateTime: String?) -> Date? {
         guard let dateTime = solarManagerDateTime else {
             return nil

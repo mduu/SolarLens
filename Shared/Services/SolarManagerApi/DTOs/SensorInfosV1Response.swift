@@ -1,3 +1,4 @@
+internal import Foundation
 struct SensorInfosV1Response : Codable {
     var _id: String
     var device_type: String // device, smart-meter, inverter, car, input-device, sub-meter

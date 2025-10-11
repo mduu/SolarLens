@@ -130,42 +130,46 @@ struct ConsumptionPieChart: View {
                                 Text(consumption.name)
                                     .foregroundColor(consumption.color2)
                             }
-                            .gesture(
-                                DragGesture(minimumDistance: 0)  // Detect press and release
-                                    .onChanged { _ in
-                                        DispatchQueue.global().async {
+                            #if !os(tvOS)
 
-                                            self.overrideLabelText =
-                                                consumption.name
-                                            self.overrideLabelColor =
-                                                consumption.color2
-                                            self.overrideValue = consumption
-                                                .consumptionInWatt
-                                                .formatWattsAsWattsKiloWatts(
-                                                    widthUnit: true
-                                                )
-
-                                            print(
-                                                "long press start on \(consumption.name), value: \(String(describing: overrideValue))"
-                                            )
-                                        }
-                                    }
-                                    .onEnded { _ in
-
-                                        if self.overrideLabelText != nil {
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)  // Detect press and release
+                                        .onChanged { _ in
                                             DispatchQueue.global().async {
 
-                                                self.overrideLabelText = nil
-                                                self.overrideLabelColor = nil
-                                                self.overrideValue = nil
+                                                self.overrideLabelText =
+                                                    consumption.name
+                                                self.overrideLabelColor =
+                                                    consumption.color2
+                                                self.overrideValue = consumption
+                                                    .consumptionInWatt
+                                                    .formatWattsAsWattsKiloWatts(
+                                                        widthUnit: true
+                                                    )
 
                                                 print(
-                                                    "long press ended on \(consumption.name)"
+                                                    "long press start on \(consumption.name), value: \(String(describing: overrideValue))"
                                                 )
                                             }
                                         }
-                                    }
-                            )
+                                        .onEnded { _ in
+
+                                            if self.overrideLabelText != nil {
+                                                DispatchQueue.global().async {
+
+                                                    self.overrideLabelText = nil
+                                                    self.overrideLabelColor =
+                                                        nil
+                                                    self.overrideValue = nil
+
+                                                    print(
+                                                        "long press ended on \(consumption.name)"
+                                                    )
+                                                }
+                                            }
+                                        }
+                                )
+                            #endif
                         }
 
                     }  // :FlowLayout
@@ -185,39 +189,42 @@ struct ConsumptionPieChart: View {
                             Text(consumption.name)
                                 .foregroundColor(consumption.color2)
                         }
-                        .gesture(
-                            DragGesture(minimumDistance: 0)  // Detect press and release
-                                .onChanged { _ in
-                                    DispatchQueue.global().async {
+                        #if !os(tvOS)
 
-                                        self.overrideLabelText =
-                                            consumption.name
-                                        self.overrideLabelColor =
-                                            consumption.color2
-                                        self.overrideValue = consumption
-                                            .consumptionInWatt
-                                            .formatWattsAsWattsKiloWatts(
-                                                widthUnit: true
+                            .gesture(
+                                DragGesture(minimumDistance: 0)  // Detect press and release
+                                    .onChanged { _ in
+                                        DispatchQueue.global().async {
+
+                                            self.overrideLabelText =
+                                                consumption.name
+                                            self.overrideLabelColor =
+                                                consumption.color2
+                                            self.overrideValue = consumption
+                                                .consumptionInWatt
+                                                .formatWattsAsWattsKiloWatts(
+                                                    widthUnit: true
+                                                )
+
+                                            print(
+                                                "long press start on \(consumption.name), value: \(overrideValue ?? "")"
                                             )
-
-                                        print(
-                                            "long press start on \(consumption.name), value: \(overrideValue ?? "")"
-                                        )
+                                        }
                                     }
-                                }
-                                .onEnded { _ in
-                                    DispatchQueue.global().async {
+                                    .onEnded { _ in
+                                        DispatchQueue.global().async {
 
-                                        self.overrideLabelText = nil
-                                        self.overrideLabelColor = nil
-                                        self.overrideValue = nil
+                                            self.overrideLabelText = nil
+                                            self.overrideLabelColor = nil
+                                            self.overrideValue = nil
 
-                                        print(
-                                            "long press ended on \(consumption.name)"
-                                        )
+                                            print(
+                                                "long press ended on \(consumption.name)"
+                                            )
+                                        }
                                     }
-                                }
-                        )
+                            )
+                        #endif
                     }
 
                 }  // :FlowLayout
