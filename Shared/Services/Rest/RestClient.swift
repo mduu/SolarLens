@@ -3,6 +3,7 @@ internal import Foundation
 
 class RestClient {
     let baseUrl: String
+    var defaultTimeout: TimeInterval = 30 // Set timeout to 40 seconds
     private let session: URLSession
     private let jsonEncoder: JSONEncoder = .init()
     private let jsonDecoder: JSONDecoder = .init()
@@ -12,11 +13,10 @@ class RestClient {
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:00.000"
-        //dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         self.jsonEncoder.dateEncodingStrategy = .formatted(dateFormatter)
 
         let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 10  // Set timeout to 30 seconds
+        configuration.timeoutIntervalForRequest = defaultTimeout
         session = URLSession(configuration: configuration)
     }
 
@@ -102,7 +102,7 @@ class RestClient {
             return nil
         }
 
-        var request = URLRequest(url: url, timeoutInterval: 120)
+        var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = httpMethod
         if requestBody != nil {
