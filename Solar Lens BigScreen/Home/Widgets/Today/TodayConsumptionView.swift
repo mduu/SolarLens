@@ -1,12 +1,6 @@
 import Charts
 import SwiftUI
 
-struct EnergyData: Identifiable {
-    let id = UUID()
-    let type: String  // "Solar" or "Grid"
-    let kwh: Double
-}
-
 struct TodayConsumptionView: View {
     var consumptionTodayInWatts: Double?
     var todayGridImported: Int?

@@ -2,7 +2,7 @@ internal import Foundation
 
 @Observable()
 class ChartViewModel: ObservableObject {
-    var consumptionData: ConsumptionData? = nil
+    var consumptionData: MainData? = nil
     var batteryHistory: [BatteryHistory]?
     var isLoading = false
     var errorMessage: String? = nil
@@ -44,7 +44,7 @@ class ChartViewModel: ObservableObject {
                     hour: 23, minute: 59, second: 59)
                 let toDate = calendar.date(from: endOfDayComponents)!
 
-                let consumptionData = try await energyManager.fetchConsumptions(
+                let consumptionData = try await energyManager.fetchMainData(
                     from: Calendar.current.startOfDay(for: .now),
                     to: toDate)
 

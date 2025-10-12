@@ -2,7 +2,7 @@ internal import Foundation
 
 @Observable()
 class OverviewChartViewModel: ObservableObject {
-    var consumptionData: ConsumptionData? = nil
+    var consumptionData: MainData? = nil
     var batteryHistory: [BatteryHistory]?
     var isLoading = false
     var errorMessage: String? = nil
@@ -36,7 +36,7 @@ class OverviewChartViewModel: ObservableObject {
             {
                 print("Fetching consumption data server data...")
 
-                let consumptionData = try await energyManager.fetchConsumptions(
+                let consumptionData = try await energyManager.fetchMainData(
                     from: Date.todayStartOfDay(),
                     to: Date.todayEndOfDay()
                 )

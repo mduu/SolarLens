@@ -8,6 +8,12 @@ struct ConsumptionSourcePieChart: View {
     let solarColor: Color = .yellow.lighten()
     let gridColor: Color = .orange.lighten()
 
+    struct EnergyData: Identifiable {
+        let id = UUID()
+        let type: String  // "Solar" or "Grid"
+        let kwh: Double
+    }
+
     var body: some View {
         let todayFromSolar = (consumptionTodayInWatts ?? 0) - (todayGridImported ?? 0)
         let todayFromGrid = todayGridImported ?? 0

@@ -222,12 +222,12 @@ actor SolarManager: EnergyManager {
     }
 
     @MainActor
-    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData {
+    func fetchMainData(from: Date, to: Date) async throws -> MainData {
         try await ensureSmId()
 
         print("Fetching gateway consumptions&productions ...")
 
-        let consumptions = try await solarManagerApi.getV1GatewayConsumption(
+        let mainData = try await solarManagerApi.getV3UserDataRange(
             solarManagerId: systemInformation!.sm_id,
             from: from,
             to: to
@@ -235,16 +235,14 @@ actor SolarManager: EnergyManager {
 
         print("Fetched gateway consumptions&productions.")
 
-        return ConsumptionData(
-            from: RestDateHelper.date(from: consumptions?.from),
-            to: RestDateHelper.date(from: consumptions?.to),
-            interval: consumptions?.interval ?? 300,
-            data: consumptions?.data
+        return MainData(
+            data: mainData?.data
                 .map {
-                    ConsumptionItem.init(
-                        date: RestDateHelper.date(from: $0.date) ?? Date(),
+                    MainDataItem.init(
+                        date: RestDateHelper.date(from: $0.t) ?? Date(),
                         consumptionWatts: $0.cW,
-                        productionWatts: $0.pW
+                        productionWatts: $0.pW,
+                        batteryLevel: $0.soc
                     )
                 }
                 ?? []
@@ -344,7 +342,7 @@ actor SolarManager: EnergyManager {
 
         let response = try? await solarManagerApi.getV1Overview()
         guard let response else {
-            return await EnergyOverview()
+            return EnergyOverview()
         }
 
         return EnergyOverview(

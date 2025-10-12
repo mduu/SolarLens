@@ -11,7 +11,7 @@ protocol EnergyManager {
     
     func fetchSolarDetails() async throws -> SolarDetailsData
     
-    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData
+    func fetchMainData(from: Date, to: Date) async throws -> MainData
     
     func fetchTodaysBatteryHistory() async throws -> [BatteryHistory]
     

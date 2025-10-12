@@ -2,7 +2,7 @@ import SwiftUI
 import Charts
 
 struct ProductionConsumptionSeries: ChartContent {
-    var data: [ConsumptionItem]
+    var data: [MainDataItem]
     var isAccent: Bool
     var useAlternativeColors: Bool
 
@@ -87,7 +87,7 @@ struct ProductionConsumptionSeries: ChartContent {
     HStack {
         Chart {
             ProductionConsumptionSeries(
-                data: ConsumptionData.fake().data,
+                data: MainData.fake().data,
                 isAccent: false,
                 useAlternativeColors: false
             )
@@ -106,7 +106,7 @@ struct ProductionConsumptionSeries: ChartContent {
     HStack {
         Chart {
             ProductionConsumptionSeries(
-                data: ConsumptionData.fake().data,
+                data: MainData.fake().data,
                 isAccent: false,
                 useAlternativeColors: false
             )
@@ -125,7 +125,7 @@ struct ProductionConsumptionSeries: ChartContent {
     HStack {
         Chart {
             ProductionConsumptionSeries(
-                data: ConsumptionData.fake().data,
+                data: MainData.fake().data,
                 isAccent: false,
                 useAlternativeColors: true
             )

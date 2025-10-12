@@ -3,7 +3,7 @@ import SwiftUI
 
 struct OverviewChart: View {
 
-    var consumption: ConsumptionData
+    var consumption: MainData
     var batteries: [BatteryHistory] = []
     var isSmall: Bool = false
     var isAccent: Bool = false
@@ -67,7 +67,7 @@ struct OverviewChart: View {
 
     private func getYMax() -> Double {
         let maxkW: Double? = consumption.data
-            .map { max($0.productionWatts, $0.consumptionWatts) / 1000 }
+            .map { Double(max($0.productionWatts, $0.consumptionWatts)) / 1000 }
             .max()
 
         guard let maxkW else { return 2.0 }
@@ -81,13 +81,13 @@ struct OverviewChart: View {
 
 #Preview("Normal") {
     OverviewChart(
-        consumption: ConsumptionData.fake()
+        consumption: MainData.fake()
     )
 }
 
 #Preview("Small") {
     OverviewChart(
-        consumption: ConsumptionData.fake(),
+        consumption: MainData.fake(),
         batteries: BatteryHistory.fakeHistory(),
         isSmall: true
     )

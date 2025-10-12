@@ -148,19 +148,19 @@ class SolarManagerApi: RestClient {
         return response
     }
 
-    func getV1GatewayConsumption(
+    func getV3UserDataRange(
         solarManagerId smId: String,
         from: Date,
         to: Date
     ) async throws
-        -> GatewayIntervalConsumption?
+        -> DataMainV3Schema?
     {
         let fromIso = RestDateHelper.string(from: from)
         let toIso = RestDateHelper.string(from: to)
 
-        let response: GatewayIntervalConsumption? = try await get(
+        let response: DataMainV3Schema? = try await get(
             serviceUrl:
-                "/v1/consumption/gateway/\(smId)/range?from=\(fromIso)&to=\(toIso)&interval=300"
+                "/v3/users/\(smId)/data/range?from=\(fromIso)&to=\(toIso)&interval=300"
         )
 
         return response

@@ -150,7 +150,7 @@ class CurrentBuildingState {
     }
 
     @MainActor
-    func fetchConsumptionForToday() async -> ConsumptionData? {
+    func fetchConsumptionForToday() async -> MainData? {
         let calendar = Calendar.current
         let now = Date()
         let components = calendar.dateComponents(
@@ -161,7 +161,7 @@ class CurrentBuildingState {
             hour: 23, minute: 59, second: 59)
         let toDate = calendar.date(from: endOfDayComponents)!
 
-        let consumptionData = try? await energyManager.fetchConsumptions(
+        let consumptionData = try? await energyManager.fetchMainData(
             from: Calendar.current.startOfDay(for: .now),
             to: toDate)
 

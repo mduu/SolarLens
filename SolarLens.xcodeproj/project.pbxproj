@@ -200,9 +200,9 @@
 				Services/Model/Car.swift,
 				Services/Model/ChargingInfoData.swift,
 				Services/Model/ChargingStation.swift,
-				Services/Model/ConsumptionData.swift,
 				Services/Model/Device.swift,
 				Services/Model/EnergyOverview.swift,
+				Services/Model/MainData.swift,
 				Services/Model/OverviewData.swift,
 				Services/Model/OverviewDataExtensions.swift,
 				Services/Model/ServerInfo.swift,
@@ -218,6 +218,7 @@
 				Services/SolarManagerApi/DTOs/ChargingMode.swift,
 				Services/SolarManagerApi/DTOs/ControlBatteryV2Request.swift,
 				Services/SolarManagerApi/DTOs/ControlCarChargingRequest.swift,
+				Services/SolarManagerApi/DTOs/DataMainV3Schema.swift,
 				Services/SolarManagerApi/DTOs/ErrorCode.swift,
 				Services/SolarManagerApi/DTOs/ForecastItemV3Response.swift,
 				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
@@ -278,6 +279,8 @@
 				Features/Consumption/Charging/ChargingButtonView.swift,
 				Features/Consumption/Charging/ChargingModeConfiguration.swift,
 				Features/Consumption/Charging/ChargingOptionsPopupView.swift,
+				Features/Consumption/ConsumptionPieChart.swift,
+				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
 				Widgets/BatteryWidgets/BatteryWidget.swift,
 				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
@@ -364,6 +367,13 @@
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
 		};
+		49F4F4102E9B83A000F5E705 /* Exceptions for "Solar Lens BigScreen" folder in "Solar Lens Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Home/Widgets/Today/TodayConsumptionView.swift,
+			);
+			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -397,6 +407,9 @@
 		};
 		494F1A922E4BB61C00647150 /* Solar Lens BigScreen */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				49F4F4102E9B83A000F5E705 /* Exceptions for "Solar Lens BigScreen" folder in "Solar Lens Watch App" target */,
+			);
 			path = "Solar Lens BigScreen";
 			sourceTree = "<group>";
 		};

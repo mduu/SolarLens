@@ -28,7 +28,7 @@ struct GridScreen: View {
 
                         GridToday(
                             importToday: model.overviewData.todayGridImported ?? 0,
-                            exportToday: model.overviewData.todayGridExported ?? 0
+                            exportToday: model.overviewData.todayGridExported
                         )
 
                         HStack {

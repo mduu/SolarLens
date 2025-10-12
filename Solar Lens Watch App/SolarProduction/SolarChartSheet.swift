@@ -77,7 +77,7 @@ struct SolarChartView: View {
         guard consumptionData.data.isEmpty == false else { return 0 }
         
         let maxProduction: Double? = consumptionData.data
-            .map { $0.productionWatts / 1000 }
+            .map { Double($0.productionWatts) / 1000 }
             .max()
 
         guard let maxProduction else { return 0 }

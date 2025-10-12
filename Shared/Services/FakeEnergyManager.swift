@@ -116,9 +116,9 @@ class FakeEnergyManager: EnergyManager {
         return BatteryHistory.fakeHistory()
     }
 
-    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData
+    func fetchMainData(from: Date, to: Date) async throws -> MainData
     {
-        return ConsumptionData.fake()
+        return MainData.fake()
     }
 
     func setCarChargingMode(
