@@ -9,6 +9,8 @@ struct OverviewChartView: View {
         var showBatteryCharging: Bool = false
     @AppStorage("showBatteryDischargingWatch") private
         var showBatteryDischarging: Bool = false
+    @AppStorage("showBatteryPercentWatch") private
+        var showBatteryPercentage: Bool = true
     @State var showSeriesConfiguration: Bool = false
 
     var body: some View {
@@ -26,7 +28,8 @@ struct OverviewChartView: View {
                                     consumption: viewModel.consumptionData!,
                                     batteries: viewModel.batteryHistory ?? [],
                                     showBatteryCharge: showBatteryCharging,
-                                    showBatteryDischange: showBatteryDischarging
+                                    showBatteryDischange: showBatteryDischarging,
+                                    showBatteryPercentage: showBatteryPercentage
                                 )
 
                                 HStack {
@@ -67,6 +70,10 @@ struct OverviewChartView: View {
                                     Text("Series:")
                                         .font(.headline)
 
+                                    Toggle(isOn: $showBatteryPercentage) {
+                                        Text("Battery level %")
+                                    }
+                                    
                                     Toggle(isOn: $showBatteryCharging) {
                                         Text("Battery charging")
                                     }

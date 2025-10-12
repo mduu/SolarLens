@@ -181,6 +181,7 @@
 				Extensions/DoubleExtensions.swift,
 				Extensions/TimeIntervalExtensions.swift,
 				Features/EfficiencyMetrics/EfficiencyInfoView.swift,
+				Features/Overview/ChartSeries/BatteryLevelSeries.swift,
 				Features/Overview/ChartSeries/BatterySeries.swift,
 				Features/Overview/ChartSeries/ProductionConsumptionSeries.swift,
 				Features/Overview/ChartSeries/SerieColors.swift,

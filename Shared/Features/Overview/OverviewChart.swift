@@ -9,7 +9,12 @@ struct OverviewChart: View {
     var isAccent: Bool = false
     var showBatteryCharge: Bool = true
     var showBatteryDischange: Bool = true
+    var showBatteryPercentage: Bool = true
     var useAlternativeColors: Bool = false
+
+    var anyBatteryLevel: Bool {
+        consumption.data.isEmpty == false && consumption.data.contains(where: { $0.batteryLevel != nil })
+    }
 
     var body: some View {
 
@@ -27,6 +32,15 @@ struct OverviewChart: View {
                     isAccent: isAccent,
                     showCharging: showBatteryCharge,
                     showDischarging: showBatteryDischange
+                )
+            }
+
+            if showBatteryPercentage && anyBatteryLevel {
+                BatteryLevelSeries(
+                    data: consumption.data,
+                    maxY: getYMax(),
+                    isAccent: isAccent,
+                    useAlternativeColors: useAlternativeColors
                 )
             }
 
@@ -50,12 +64,17 @@ struct OverviewChart: View {
             }
         }
         .chartLegend(isSmall ? .hidden : .visible)
-        .chartForegroundStyleScale([
-            "Production": SerieColors.productionColor(useAlternativeColors: useAlternativeColors),
-            "Consumption": SerieColors.consumptionColor(useDarkerColors: useAlternativeColors),
-            (showBatteryDischange ? "Battery consumption" : ""): (showBatteryDischange ? .indigo : .clear),
-            (showBatteryCharge ? "Battery charged" : ""): (showBatteryCharge ? .purple : .clear),
-        ])
+        .chartForegroundStyleScale(
+            [
+                "Production": SerieColors.productionColor(useAlternativeColors: useAlternativeColors),
+                "Consumption": SerieColors.consumptionColor(useDarkerColors: useAlternativeColors),
+                (showBatteryDischange ? "Battery consumption" : ""): (showBatteryDischange ? .indigo : .clear),
+                (showBatteryCharge ? "Battery charged" : ""): (showBatteryCharge ? .purple : .clear),
+                (showBatteryPercentage ? "Battery" : ""):
+                    (showBatteryPercentage
+                    ? SerieColors.batteryLevelColor(useDarkerColors: useAlternativeColors) : .clear),
+            ]
+        )
         .frame(maxHeight: .infinity)
     }
 
@@ -90,6 +109,16 @@ struct OverviewChart: View {
         consumption: MainData.fake(),
         batteries: BatteryHistory.fakeHistory(),
         isSmall: true
+    )
+    .frame(height: 80)
+}
+
+#Preview("Alternative Colors") {
+    OverviewChart(
+        consumption: MainData.fake(),
+        batteries: BatteryHistory.fakeHistory(),
+        isSmall: true,
+        useAlternativeColors: true
     )
     .frame(height: 80)
 }

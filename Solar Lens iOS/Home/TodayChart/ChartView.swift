@@ -7,6 +7,8 @@ struct ChartView: View {
         var showBatteryCharging: Bool = false
     @AppStorage("showBatteryDischarging") private
         var showBatteryDischarging: Bool = false
+    @AppStorage("showBatteryPercentag") private
+        var showBatteryPercentage: Bool = true
 
     @State var viewModel = ChartViewModel()
     @State private var refreshTimer: Timer?
@@ -23,9 +25,21 @@ struct ChartView: View {
 
                             HStack {
                                 Button(action: {
-                                    showBatteryCharging.toggle()
+                                    showBatteryPercentage.toggle()
                                 }) {
                                     Image(systemName: "battery.100percent.bolt")
+                                        .font(.system(size: 14))
+                                        .padding(4)
+
+                                }
+                                .buttonBorderShape(.circle)
+                                .buttonStyle(.bordered)
+                                .tint(showBatteryPercentage ? .green : .gray)
+
+                                Button(action: {
+                                    showBatteryCharging.toggle()
+                                }) {
+                                    Image(systemName: "battery.100percent.circle")
                                         .font(.system(size: 14))
                                         .padding(4)
 
@@ -53,7 +67,8 @@ struct ChartView: View {
                                 consumption: viewModel.consumptionData!,
                                 batteries: viewModel.batteryHistory ?? [],
                                 showBatteryCharge: showBatteryCharging,
-                                showBatteryDischange: showBatteryDischarging
+                                showBatteryDischange: showBatteryDischarging,
+                                showBatteryPercentage: showBatteryPercentage
                             )
 
                             HStack {
