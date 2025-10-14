@@ -21,9 +21,8 @@ struct SerieColors {
     }
 
     static func batteryLevelColor(useDarkerColors: Bool) -> Color {
-
         if useDarkerColors {
-            return .white
+            return .gray
         }
 
         return .green

@@ -23,7 +23,7 @@ struct BatteryLevelSeries: ChartContent {
             )
             .interpolationMethod(.cardinal)
             .lineStyle(
-                StrokeStyle(lineWidth: 1, dash: isAccent ? [5, 2] : [5, 2])
+                StrokeStyle(lineWidth: 1, dash: isAccent ? [4, 3] : [4, 3])
             )
             .accessibilityLabel("Battery")
             .foregroundStyle(by: .value("Series", "Battery"))
