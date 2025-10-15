@@ -13,7 +13,7 @@ struct ProductionConsumptionSeries: ChartContent {
             if !isAccent {
                 AreaMark(
                     x: .value("Time", dataPoint.date.convertToLocalTime()),
-                    y: .value("kW", dataPoint.productionWatts / 1000),
+                    y: .value("kW", Double(dataPoint.productionWatts) / 1000),
                     stacking: .unstacked
                 )
                 .interpolationMethod(.cardinal)
@@ -35,7 +35,7 @@ struct ProductionConsumptionSeries: ChartContent {
 
             LineMark(
                 x: .value("Time", dataPoint.date.convertToLocalTime()),
-                y: .value("kW", dataPoint.productionWatts / 1000)
+                y: .value("kW", Double(dataPoint.productionWatts) / 1000)
             )
             .interpolationMethod(.cardinal)
             .lineStyle(
@@ -48,7 +48,7 @@ struct ProductionConsumptionSeries: ChartContent {
             if !isAccent {
                 AreaMark(
                     x: .value("Time", dataPoint.date.convertToLocalTime()),
-                    y: .value("kW", dataPoint.consumptionWatts / 1000),
+                    y: .value("kW", Double(dataPoint.consumptionWatts) / 1000),
                     stacking: .unstacked
                 )
                 .interpolationMethod(.cardinal)
@@ -70,7 +70,7 @@ struct ProductionConsumptionSeries: ChartContent {
 
             LineMark(
                 x: .value("Time", dataPoint.date.convertToLocalTime()),
-                y: .value("kW", dataPoint.consumptionWatts / 1000)
+                y: .value("kW", Double(dataPoint.consumptionWatts) / 1000)
             )
             .interpolationMethod(.cardinal)
             .lineStyle(
