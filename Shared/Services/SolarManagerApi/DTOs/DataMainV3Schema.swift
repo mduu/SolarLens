@@ -22,7 +22,7 @@ struct DataMainV3SchemaData: Codable {
     var pWh: Double = 0
 
     /// Battery state of charge in [%]
-    var soc: Int = 0
+    var soc: Int? = nil
 
     /// Battery charging power in [watt]
     var bcW: Int = 0
