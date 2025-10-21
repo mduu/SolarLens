@@ -1,12 +1,16 @@
 import SwiftUI
 
 struct WidgetHeaderView: View {
-    var title: LocalizedStringResource
+    var title: LocalizedStringResource?
 
     var body: some View {
-        HStack {
-            Text(title)
-                .font(.headline)
+        Group {
+            if let title {
+                HStack {
+                    Text(title)
+                        .font(.headline)
+                }
+            }
         }
     }
 }

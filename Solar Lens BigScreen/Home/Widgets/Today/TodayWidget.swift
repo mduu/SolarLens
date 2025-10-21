@@ -8,11 +8,10 @@ struct TodayWidget: View {
     @State private var refreshTimer: Timer?
 
     var body: some View {
-        VStack {
-            WidgetHeaderView(title: "Today")
+        WidgetBase(title: "Today") {
 
             if let todayConsumption {
-                
+
                 OverviewChart(
                     consumption: todayConsumption,
                     showBatteryCharge: false,
@@ -27,15 +26,11 @@ struct TodayWidget: View {
 
             TodayConsumptionView(
                 consumptionTodayInWatts: buildings.overviewData.todayConsumption,
-                todayGridImported: buildings.overviewData.todayGridImported)
+                todayGridImported: buildings.overviewData.todayGridImported
+            )
             .padding(.top)
 
-
         }
-        .padding(20)
-        .foregroundColor(.white)
-        .frame(maxWidth: .infinity)
-        .glassEffect(.clear, in: .rect(cornerRadius: 30.0))
         .onAppear {
 
             Task {
@@ -62,6 +57,7 @@ struct TodayWidget: View {
                 self.refreshTimer = nil
             }
         }
+
     }
 
     private func fetch() async {
@@ -81,8 +77,12 @@ struct TodayWidget: View {
 
         HStack(alignment: .top) {
             TodayWidget()
+
+            Spacer()
         }
         .frame(width: 550, height: 400)
+
+        Spacer()
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(.blue.opacity(0.4))

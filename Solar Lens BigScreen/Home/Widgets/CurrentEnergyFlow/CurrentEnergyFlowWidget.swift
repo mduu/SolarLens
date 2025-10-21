@@ -4,8 +4,7 @@ struct CurrentEnergyFlowWidget: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
 
     var body: some View {
-        VStack {
-            WidgetHeaderView(title: "Now")
+        WidgetBase(title: "Now") {
 
             Grid {
                 GridRow {
@@ -23,8 +22,8 @@ struct CurrentEnergyFlowWidget: View {
                     CurrentGridView(
                         currentGridInW:
                             buildings.overviewData.isFlowSolarToGrid()
-                        ? buildings.overviewData.currentSolarToGrid
-                        : buildings.overviewData.currentGridToHouse
+                            ? buildings.overviewData.currentSolarToGrid
+                            : buildings.overviewData.currentGridToHouse
                     )
                     .frame(maxWidth: .infinity)
                 }
@@ -74,10 +73,7 @@ struct CurrentEnergyFlowWidget: View {
             .frame(height: 350)
             .padding(.horizontal, 50)
         }
-        .padding(20)
-        .foregroundColor(.white)
-        .frame(maxWidth: .infinity)
-        .glassEffect(.clear, in: .rect(cornerRadius: 30.0))
+        .frame(maxHeight: 450)
 
     }
 
