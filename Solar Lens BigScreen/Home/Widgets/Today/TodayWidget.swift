@@ -24,6 +24,9 @@ struct TodayWidget: View {
                 ProgressView()
             }
 
+            Divider()
+                .padding(.top)
+
             TodayConsumptionView(
                 consumptionTodayInWatts: buildings.overviewData.todayConsumption,
                 todayGridImported: buildings.overviewData.todayGridImported
