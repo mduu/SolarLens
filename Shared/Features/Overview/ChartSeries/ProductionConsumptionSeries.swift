@@ -55,8 +55,8 @@ struct ProductionConsumptionSeries: ChartContent {
                 .foregroundStyle(
                     .linearGradient(
                         colors: [
-                            SerieColors.consumptionColor(useDarkerColors: useAlternativeColors).opacity(0.5),
-                            SerieColors.consumptionColor(useDarkerColors: useAlternativeColors).opacity(0.1),
+                            SerieColors.consumptionColor(useAlternativeColors: useAlternativeColors).opacity(0.5),
+                            SerieColors.consumptionColor(useAlternativeColors: useAlternativeColors).opacity(0.1),
                         ],
                         startPoint: .top,
                         endPoint: .bottom

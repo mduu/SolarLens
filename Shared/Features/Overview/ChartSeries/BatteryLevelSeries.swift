@@ -51,7 +51,7 @@ struct BatteryLevelSeries: ChartContent {
         }
         .chartForegroundStyleScale(
             [
-                "Battery": SerieColors.batteryLevelColor(useDarkerColors: false)
+                "Battery": SerieColors.batteryLevelColor(useAlternativeColors: false)
             ]
         )
     }
@@ -76,7 +76,7 @@ struct BatteryLevelSeries: ChartContent {
         }
         .chartForegroundStyleScale(
             [
-                "Battery": SerieColors.batteryLevelColor(useDarkerColors: false)
+                "Battery": SerieColors.batteryLevelColor(useAlternativeColors: false)
             ]
         )
     }

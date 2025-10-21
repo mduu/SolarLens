@@ -48,7 +48,10 @@ struct OverviewChart: View {
         .chartYAxis {
             AxisMarks(preset: .automatic) { value in
                 AxisGridLine()
+                    .foregroundStyle(useAlternativeColors ? .white : .primary)
+
                 AxisValueLabel()
+                    .foregroundStyle(useAlternativeColors ? .white : .primary)
             }
         }
         .chartYAxisLabel(isSmall ? "" : "kW")
@@ -56,23 +59,27 @@ struct OverviewChart: View {
         .chartXAxis {
             AxisMarks { value in
                 AxisGridLine()
+                    .foregroundStyle(useAlternativeColors ? .white : .primary)
+
                 AxisValueLabel(
                     format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(
                         .twoDigits
                     )
                 )
+                .foregroundStyle(useAlternativeColors ? .white : .primary)
+
             }
         }
         .chartLegend(isSmall ? .hidden : .visible)
         .chartForegroundStyleScale(
             [
                 "Production": SerieColors.productionColor(useAlternativeColors: useAlternativeColors),
-                "Consumption": SerieColors.consumptionColor(useDarkerColors: useAlternativeColors),
+                "Consumption": SerieColors.consumptionColor(useAlternativeColors: useAlternativeColors),
                 (showBatteryDischange ? "Battery consumption" : ""): (showBatteryDischange ? .indigo : .clear),
                 (showBatteryCharge ? "Battery charged" : ""): (showBatteryCharge ? .purple : .clear),
                 (showBatteryPercentage ? "Battery" : ""):
                     (showBatteryPercentage
-                    ? SerieColors.batteryLevelColor(useDarkerColors: useAlternativeColors) : .clear),
+                    ? SerieColors.batteryLevelColor(useAlternativeColors: useAlternativeColors) : .clear),
             ]
         )
         .frame(maxHeight: .infinity)

@@ -5,7 +5,7 @@ struct ConsumptionSourcePieChart: View {
     var consumptionTodayInWatts: Double?
     var todayGridImported: Double?
 
-    let solarColor: Color = .yellow.lighten()
+    let solarColor: Color = .yellow.lighten(0.95)
     let gridColor: Color = .orange.lighten()
 
     struct EnergyData: Identifiable {

@@ -11,18 +11,18 @@ struct SerieColors {
         return .yellow
     }
 
-    static func consumptionColor(useDarkerColors: Bool) -> Color {
+    static func consumptionColor(useAlternativeColors: Bool) -> Color {
 
-        if useDarkerColors {
+        if useAlternativeColors {
             return .white
         }
 
         return .teal
     }
 
-    static func batteryLevelColor(useDarkerColors: Bool) -> Color {
-        if useDarkerColors {
-            return .gray
+    static func batteryLevelColor(useAlternativeColors: Bool) -> Color {
+        if useAlternativeColors {
+            return .black
         }
 
         return .green
