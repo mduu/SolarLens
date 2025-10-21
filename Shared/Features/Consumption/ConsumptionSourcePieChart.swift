@@ -21,6 +21,7 @@ struct ConsumptionSourcePieChart: View {
             EnergyData(type: "Grid", kwh: todayFromGrid),
             EnergyData(type: "Solar", kwh: todayFromSolar),
         ]
+        let todayTotal = todayFromSolar + todayFromGrid
 
         ZStack {
 
@@ -47,16 +48,16 @@ struct ConsumptionSourcePieChart: View {
                 }
             }
 
-
             Chart {
 
                 ForEach(energyConsumption) { data in
                     SectorMark(
                         angle: .value("kWh", data.kwh),
-                        innerRadius: 35,
+                        innerRadius: 40,
                         outerRadius: 50,
                         angularInset: 15
                     )
+                    .cornerRadius(10)
                     .foregroundStyle(by: .value("Source", data.type))
                 }
 
@@ -67,6 +68,20 @@ struct ConsumptionSourcePieChart: View {
                 "Grid": gridColor,
             ])
             .chartLegend(.hidden)
+            .chartBackground { chartProxy in
+                GeometryReader { geometry in
+                    if let anchor = chartProxy.plotFrame {
+                        let frame = geometry[anchor]
+
+                        VStack {
+                            Text("\(todayTotal.formatWattHoursAsKiloWattsHours(widthUnit: false))")
+                                .font(.footnote)
+                        }  // :VStack
+                        .position(x: frame.midX, y: frame.midY)
+
+                    }
+                }
+            }
         }
         .frame(maxHeight: 100)
     }
