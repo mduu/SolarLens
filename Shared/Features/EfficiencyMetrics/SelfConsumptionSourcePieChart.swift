@@ -1,51 +1,51 @@
 import Charts
 import SwiftUI
 
-struct ConsumptionSourcePieChart: View {
-    var consumptionTodayInWatts: Double?
-    var todayGridImported: Double?
+struct SelfConsumptionSourcePieChart: View {
+    var productionTodayInWatts: Double?
+    var todayGridExported: Double?
 
-    let solarColor: Color = .yellow.lighten(0.95)
-    let gridColor: Color = .orange.lighten()
+    let selfConsumptionColor: Color = .indigo
+    let gridColor: Color = .purple
 
     struct EnergyData: Identifiable {
         let id = UUID()
-        let type: String  // "Solar" or "Grid"
+        let type: String  // "SelfConsumption" or "Grid"
         let kwh: Double
     }
 
     var body: some View {
-        let todayFromSolar = (consumptionTodayInWatts ?? 0) - (todayGridImported ?? 0)
-        let todayFromGrid = todayGridImported ?? 0
+        let todaySelfConsumption = (productionTodayInWatts ?? 0) - (todayGridExported ?? 0)
+        let todayToGrid = todayGridExported ?? 0
         let energyConsumption: [EnergyData] = [
-            EnergyData(type: "Grid", kwh: todayFromGrid),
-            EnergyData(type: "Solar", kwh: todayFromSolar),
+            EnergyData(type: "Exported", kwh: todayToGrid),
+            EnergyData(type: "Self consumption", kwh: todaySelfConsumption),
         ]
-        let todayTotal = todayFromSolar + todayFromGrid
+        let todayTotal = todaySelfConsumption + todayToGrid
 
         ZStack {
 
             VStack {
 
                 HStack {
-                    Text("Solar")
-                        .foregroundColor(solarColor)
+                    Text("Self consumption")
+                        .foregroundColor(selfConsumptionColor)
                         .font(.system(size: 24))
 
                     Spacer()
 
-                    Text("Grid")
+                    Text("Exported")
                         .foregroundColor(gridColor)
                         .font(.system(size: 24))
                 }
 
                 HStack {
-                    Text(todayFromSolar.formatWattHoursAsKiloWattsHours(widthUnit: true))
+                    Text(todaySelfConsumption.formatWattHoursAsKiloWattsHours(widthUnit: true))
                         .font(.footnote)
 
                     Spacer()
 
-                    Text(todayFromGrid.formatWattHoursAsKiloWattsHours(widthUnit: true))
+                    Text(todayToGrid.formatWattHoursAsKiloWattsHours(widthUnit: true))
                         .font(.footnote)
                 }
             }
@@ -66,8 +66,8 @@ struct ConsumptionSourcePieChart: View {
             }
             .aspectRatio(1, contentMode: .fit)
             .chartForegroundStyleScale([
-                "Solar": solarColor,
-                "Grid": gridColor,
+                "Self consumption": selfConsumptionColor,
+                "Exported": gridColor,
             ])
             .chartLegend(.hidden)
             .chartBackground { chartProxy in
@@ -93,11 +93,11 @@ struct ConsumptionSourcePieChart: View {
     VStack {
         HStack {
 
-            ConsumptionSourcePieChart(
-                consumptionTodayInWatts: 15000,
-                todayGridImported: 2413
+            SelfConsumptionSourcePieChart(
+                productionTodayInWatts: 15000,
+                todayGridExported: 2413
             )
-            .frame(maxWidth: 400, maxHeight: 200)
+            .frame(maxWidth: 600, maxHeight: 200)
 
             Spacer()
         }

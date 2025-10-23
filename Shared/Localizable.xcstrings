@@ -2695,6 +2695,9 @@
         }
       }
     },
+    "Exported" : {
+
+    },
     "Exporting %@ kilo-watts to grid" : {
       "localizations" : {
         "da" : {

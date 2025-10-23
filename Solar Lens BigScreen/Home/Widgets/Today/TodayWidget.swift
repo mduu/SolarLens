@@ -18,7 +18,7 @@ struct TodayWidget: View {
                     showBatteryDischange: false,
                     useAlternativeColors: true
                 )
-                .frame(maxHeight: 400)
+                .frame(height: 400)
 
             } else {
                 ProgressView()
@@ -26,12 +26,21 @@ struct TodayWidget: View {
 
             Divider()
                 .padding(.top)
+                .padding(.horizontal, 50)
 
             TodayConsumptionView(
                 consumptionTodayInWatts: buildings.overviewData.todayConsumption,
                 todayGridImported: buildings.overviewData.todayGridImported
             )
             .padding(.top)
+
+            TodayProductionView(
+                productionTodayInWatts: buildings.overviewData.todayProduction,
+                todayGridExported: buildings.overviewData.todayGridExported
+            )
+            .padding(.top)
+
+            Spacer()
 
         }
         .onAppear {
@@ -83,7 +92,7 @@ struct TodayWidget: View {
 
             Spacer()
         }
-        .frame(width: 550, height: 400)
+        .frame(width: 550, height: .infinity)
 
         Spacer()
     }

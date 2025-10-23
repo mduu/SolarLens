@@ -55,6 +55,7 @@ struct OverviewChart: View {
             }
         }
         .chartYAxisLabel(isSmall ? "" : "kW")
+            .foregroundStyle(useAlternativeColors ? .white : .primary)
         .chartYScale(domain: 0...getYMax())
         .chartXAxis {
             AxisMarks { value in
