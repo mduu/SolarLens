@@ -52,15 +52,32 @@ struct ConsumptionSourcePieChart: View {
 
             Chart {
 
-                ForEach(energyConsumption) { data in
+                if todayTotal == 0
+                {
+
                     SectorMark(
-                        angle: .value("kWh", data.kwh),
+                        angle: .value("kWh", 100),
                         innerRadius: 40,
                         outerRadius: 50,
                         angularInset: 15
                     )
                     .cornerRadius(10)
-                    .foregroundStyle(by: .value("Source", data.type))
+                    .foregroundStyle(.white.opacity(0.1))
+
+
+                } else {
+                    
+                    ForEach(energyConsumption) { data in
+                        SectorMark(
+                            angle: .value("kWh", data.kwh),
+                            innerRadius: 40,
+                            outerRadius: 50,
+                            angularInset: 15
+                        )
+                        .cornerRadius(10)
+                        .foregroundStyle(by: .value("Source", data.type))
+                    }
+                    
                 }
 
             }
