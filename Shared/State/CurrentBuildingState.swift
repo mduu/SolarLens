@@ -150,7 +150,7 @@ class CurrentBuildingState {
     }
 
     @MainActor
-    func fetchConsumptionForToday() async -> MainData? {
+    func fetchMainDataForToday() async -> MainData? {
         let calendar = Calendar.current
         let now = Date()
         let components = calendar.dateComponents(
@@ -167,6 +167,7 @@ class CurrentBuildingState {
 
         return consumptionData
     }
+
 
     @MainActor
     func setCarCharging(

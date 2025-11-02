@@ -73,7 +73,7 @@ struct TodayWidget: View {
     }
 
     private func fetch() async {
-        let newConsumptionData = await buildings.fetchConsumptionForToday()
+        let newConsumptionData = await buildings.fetchMainDataForToday()
 
         guard let newConsumptionData else {
             return

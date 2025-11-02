@@ -18,11 +18,8 @@ struct StandardLayout: View {
                 Column2View()
                     .frame(maxWidth: .infinity)
 
-                VStack {
-                    Text("Right")
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity)
+                Column3View()
+                    .frame(maxWidth: .infinity)
             }
             .frame(maxWidth: .infinity)
 

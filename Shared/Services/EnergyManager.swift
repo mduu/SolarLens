@@ -11,8 +11,8 @@ protocol EnergyManager {
     
     func fetchSolarDetails() async throws -> SolarDetailsData
     
-    func fetchMainData(from: Date, to: Date) async throws -> MainData
-    
+    func fetchMainData(from: Date, to: Date, interval: Int) async throws -> MainData
+
     func fetchTodaysBatteryHistory() async throws -> [BatteryHistory]
     
     func fetchServerInfo() async throws -> ServerInfo
@@ -35,4 +35,10 @@ protocol EnergyManager {
         sensorId: String,
         batteryModeInfo: BatteryModeInfo
     ) async throws -> Bool
+}
+
+extension EnergyManager {
+    func fetchMainData(from: Date, to: Date, interval: Int = 300) async throws -> MainData {
+        return try await self.fetchMainData(from: from, to: to, interval: interval)
+    }
 }

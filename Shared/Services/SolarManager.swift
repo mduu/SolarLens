@@ -222,7 +222,7 @@ actor SolarManager: EnergyManager {
     }
 
     @MainActor
-    func fetchMainData(from: Date, to: Date) async throws -> MainData {
+    func fetchMainData(from: Date, to: Date, interval: Int = 300) async throws -> MainData {
         try await ensureSmId()
 
         print("Fetching gateway consumptions&productions ...")
@@ -230,7 +230,8 @@ actor SolarManager: EnergyManager {
         let mainData = try await solarManagerApi.getV3UserDataRange(
             solarManagerId: systemInformation!.sm_id,
             from: from,
-            to: to
+            to: to,
+            interval: interval
         )
 
         print("Fetched gateway consumptions&productions.")

@@ -151,7 +151,8 @@ class SolarManagerApi: RestClient {
     func getV3UserDataRange(
         solarManagerId smId: String,
         from: Date,
-        to: Date
+        to: Date,
+        interval: Int = 300
     ) async throws
         -> DataMainV3Schema?
     {
@@ -160,7 +161,7 @@ class SolarManagerApi: RestClient {
 
         let response: DataMainV3Schema? = try await get(
             serviceUrl:
-                "/v3/users/\(smId)/data/range?from=\(fromIso)&to=\(toIso)&interval=300"
+                "/v3/users/\(smId)/data/range?from=\(fromIso)&to=\(toIso)&interval=\(interval)"
         )
 
         return response
