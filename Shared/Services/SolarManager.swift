@@ -343,7 +343,7 @@ actor SolarManager: EnergyManager {
 
         let response = try? await solarManagerApi.getV1Overview()
         guard let response else {
-            return EnergyOverview()
+            return await EnergyOverview()
         }
 
         return EnergyOverview(

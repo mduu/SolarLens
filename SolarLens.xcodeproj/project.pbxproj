@@ -177,6 +177,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Components/MiniDonut.swift,
+				Extensions/ColorExtensions.swift,
 				Extensions/DateExtensions.swift,
 				Extensions/DoubleExtensions.swift,
 				Extensions/TimeIntervalExtensions.swift,
@@ -329,7 +330,6 @@
 				AppIntents/Shortcuts/Shortcuts.swift,
 				AppShortcuts.xcstrings,
 				Components/UpdateTimeStampView.swift,
-				Extensions/ColorExtensions.swift,
 				Features/Battery/BatteryForecastView.swift,
 				Features/Battery/BatteryIndicator.swift,
 				Features/Battery/BatteryModeButton.swift,

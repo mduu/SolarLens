@@ -106,7 +106,7 @@ class CurrentBuildingState {
             print(
                 "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
             )
-            
+
             isLoading = false
         } catch {
             if error is RestError {
@@ -151,23 +151,40 @@ class CurrentBuildingState {
 
     @MainActor
     func fetchMainDataForToday() async -> MainData? {
-        let calendar = Calendar.current
-        let now = Date()
-        let components = calendar.dateComponents(
-            [.year, .month, .day], from: now)
-        let endOfDayComponents = DateComponents(
-            year: components.year, month: components.month,
-            day: components.day,
-            hour: 23, minute: 59, second: 59)
-        let toDate = calendar.date(from: endOfDayComponents)!
-
         let consumptionData = try? await energyManager.fetchMainData(
-            from: Calendar.current.startOfDay(for: .now),
-            to: toDate)
+            from: Date.todayStartOfDay(),
+            to: Date.todayEndOfDay()
+        )
 
         return consumptionData
     }
 
+    @MainActor
+    func fetchMainDataForPast7Days() async -> MainData? {
+        let calendar = Calendar.current
+        let start = calendar.date(byAdding: .day, value: -7, to: Date.todayStartOfDay())
+
+        guard let start else {
+            return nil
+        }
+
+        let consumptionData = try? await energyManager.fetchMainData(
+            from: start,
+            to: Date.todayEndOfDay()
+        )
+
+        return consumptionData
+    }
+
+    @MainActor
+    func fetchStatsForPast7Days() async -> Statistics? {
+        guard let from = Calendar.current.date(byAdding: .day, value: -7, to: Date.todayStartOfDay()) else {
+            return nil
+        }
+        let to = Date.todayEndOfDay()
+
+        return try? await energyManager.fetchStatistics(from: from, to: to, accuracy: .high)
+    }
 
     @MainActor
     func setCarCharging(
@@ -249,7 +266,7 @@ class CurrentBuildingState {
             sensorPrioritySetSuccessfully = false
         }
     }
-    
+
     @MainActor
     func setBatteryMode(
         sensorId: String,

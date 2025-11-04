@@ -34,7 +34,10 @@ struct ChartView: View {
                                 }
                                 .buttonBorderShape(.circle)
                                 .buttonStyle(.bordered)
-                                .tint(showBatteryPercentage ? SerieColors.batteryLevelColor(useDarkerColors: false) : .gray)
+                                .tint(
+                                    showBatteryPercentage ? SerieColors
+                                        .batteryLevelColor(useAlternativeColors: false) : .gray
+                                )
 
                                 Button(action: {
                                     showBatteryCharging.toggle()
