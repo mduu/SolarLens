@@ -168,18 +168,42 @@ class RestClient {
 
                 do {
                     return try jsonDecoder.decode(TResponse.self, from: data!)
-                } catch let error {
-                    print(
-                        "Error deserializing response: \(error.localizedDescription)"
-                    )
-                    print("Debug-Description: \(response.debugDescription)")
+                } catch let error as DecodingError {
+                    print("🔴 Decoding Error: \(error)")
+
+                    switch error {
+                        case .keyNotFound(let key, let context):
+                            print("--- Key Not Found ---")
+                            print("Missing Key: \(key.stringValue)")
+                            print("Context: \(context.debugDescription)")
+
+                        case .typeMismatch(let type, let context):
+                            print("--- Type Mismatch ---")
+                            print("Type Expected: \(type)")
+                            print("Context: \(context.debugDescription)")
+
+                        case .valueNotFound(let type, let context):
+                            print("--- Value Not Found ---")
+                            print("Value of Type \(type) not found.")
+                            print("Context: \(context.debugDescription)")
+
+                        case .dataCorrupted(let context):
+                            print("--- Data Corrupted ---")
+                            print("Context: \(context.debugDescription)")
+
+                        @unknown default:
+                            print("An unknown decoding error occurred.")
+                    }
+
+                    print("--- Response Content ---")
                     debugPrint(
                         String(data: data!, encoding: .utf8)
-                            ?? "Data could not be decoded as UTF-8"
+                        ?? "Data could not be decoded as UTF-8"
                     )
 
                     return nil
                 }
+
             case 201, 202, 204:  // OK no data
                 return nil
             case 400:  // Bad request
