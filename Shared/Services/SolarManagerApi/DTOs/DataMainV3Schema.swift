@@ -1,6 +1,7 @@
 struct DataMainV3Schema: Codable {
 
     var data: [DataMainV3SchemaData] = []
+    var interval: Int = 0
 
 }
 
@@ -10,10 +11,10 @@ struct DataMainV3SchemaData: Codable {
     var t: String
 
     /// Consumption power in [watt]
-    var cW: Int = 0
+    var cW: Double = 0
 
     /// Production power in [watt]
-    var pW: Int = 0
+    var pW: Double = 0
 
     /// Consumption energy in [watt-hour] over the specified interval
     var cWh: Double = 0
@@ -25,10 +26,10 @@ struct DataMainV3SchemaData: Codable {
     var soc: Int? = nil
 
     /// Battery charging power in [watt]
-    var bcW: Int = 0
+    var bcW: Double = 0
 
     /// Battery discharge power in [watt]
-    var bdW: Int = 0
+    var bdW: Double = 0
 
     /// Battery charging energy in [watt-hour] over the specified interval
     var bcWh: Double = 0

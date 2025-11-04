@@ -241,8 +241,8 @@ actor SolarManager: EnergyManager {
                 .map {
                     MainDataItem.init(
                         date: RestDateHelper.date(from: $0.t) ?? Date(),
-                        consumptionWatts: $0.cW,
-                        productionWatts: $0.pW,
+                        consumptionWatts: Int($0.cW),
+                        productionWatts: Int($0.pW),
                         batteryLevel: $0.soc
                     )
                 }
