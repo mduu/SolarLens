@@ -48,14 +48,21 @@ struct OverviewChart: View {
         .chartYAxis {
             AxisMarks(preset: .automatic) { value in
                 AxisGridLine()
-                    .foregroundStyle(useAlternativeColors ? .white : .primary)
+                    #if os(tvOS)
+                        .foregroundStyle(useAlternativeColors ? .white : .primary)
+                    #endif
 
                 AxisValueLabel()
-                    .foregroundStyle(useAlternativeColors ? .white : .primary)
+                    #if os(tvOS)
+                        .foregroundStyle(useAlternativeColors ? .white : .primary)
+                    #endif
             }
         }
         .chartYAxisLabel(isSmall ? "" : "kW")
+        #if os(tvOS)
             .foregroundStyle(useAlternativeColors ? .white : .primary)
+        #endif
+
         .chartYScale(domain: 0...getYMax())
         .chartXAxis {
             AxisMarks { value in
