@@ -243,7 +243,7 @@ actor SolarManager: EnergyManager {
                         date: RestDateHelper.date(from: $0.t) ?? Date(),
                         consumptionWatts: Int($0.cW),
                         productionWatts: Int($0.pW),
-                        batteryLevel: $0.soc
+                        batteryLevel: Int($0.soc ?? 0)
                     )
                 }
                 ?? []
