@@ -8,10 +8,12 @@ struct CurrentWeekWdiget: View {
     var body: some View {
         WidgetBase(title: "Week") {
             VStack {
+                WeekOverviewChartView(weekData: weekData)
+
                 Spacer()
             }
         }
-        .frame(maxHeight: 600)
+        .frame(maxHeight: 500)
         .onAppear {
 
             Task {

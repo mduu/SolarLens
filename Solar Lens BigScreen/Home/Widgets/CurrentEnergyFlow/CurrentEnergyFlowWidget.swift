@@ -70,10 +70,10 @@ struct CurrentEnergyFlowWidget: View {
 
                 }
             }
-            .frame(height: 350)
+            .frame(height: 370)
             .padding(.horizontal, 50)
         }
-        .frame(maxHeight: 450)
+        .frame(maxHeight: 470)
 
     }
 
