@@ -3,7 +3,7 @@ import SwiftUI
 struct CurrentWeekWdiget: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
     @State private var refreshTimer: Timer?
-    @State private var weekData: MainData?
+    @State private var weekData: [DayStatistic]?
 
     var body: some View {
         WidgetBase(title: "Week") {
@@ -42,7 +42,7 @@ struct CurrentWeekWdiget: View {
     }
 
     private func fetch() async {
-        let newConsumptionData = await buildings.fetchMainDataForPast7Days()
+        let newConsumptionData = await buildings.fetchStatisticsForPast7Days()
 
         guard let newConsumptionData else {
             return

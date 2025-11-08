@@ -202,6 +202,7 @@
 				Services/Model/Car.swift,
 				Services/Model/ChargingInfoData.swift,
 				Services/Model/ChargingStation.swift,
+				Services/Model/DayStatistic.swift,
 				Services/Model/Device.swift,
 				Services/Model/EnergyOverview.swift,
 				Services/Model/MainData.swift,

@@ -12,6 +12,7 @@ struct WeekOverviewChartView: View {
 
     private func getSumPerDay() -> [DaySum]
     {
+        
         return []
     }
 

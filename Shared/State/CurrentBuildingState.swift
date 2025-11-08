@@ -160,7 +160,7 @@ class CurrentBuildingState {
     }
 
     @MainActor
-    func fetchMainDataForPast7Days() async -> MainData? {
+    func fetchStatisticsForPast7Days() async -> [DayStatistic]? {
         let calendar = Calendar.current
         let start = calendar.date(byAdding: .day, value: -7, to: Date.todayStartOfDay())
 
@@ -168,14 +168,53 @@ class CurrentBuildingState {
             return nil
         }
 
-        let consumptionData = try? await energyManager.fetchMainData(
+        let mainData = try? await energyManager.fetchMainData(
             from: start,
-            to: Date.todayEndOfDay()
+            to: Date.todayEndOfDay(),
+            interval: 300
         )
 
-        return consumptionData
+        guard let mainData else {
+            return nil
+        }
+
+        var staticsPerDay: [DayStatistic] = calculateDailyStatistics(dataPoints: mainData.data)
+
+        return staticsPerDay
+
     }
 
+    private func calculateDailyStatistics(dataPoints: [MainDataItem]) -> [DayStatistic] {
+        // Group data points by calendar day
+        let calendar = Calendar.current
+
+        // Dictionary to store data points grouped by day
+        var dataPointsByDay: [Date: [MainDataItem]] = [:]
+
+        for dataPoint in dataPoints {
+            // Get the start of the day for this data point's timestamp
+            let dayStart = calendar.startOfDay(for: dataPoint.date)
+
+            if dataPointsByDay[dayStart] == nil {
+                dataPointsByDay[dayStart] = []
+            }
+            dataPointsByDay[dayStart]?.append(dataPoint)
+        }
+
+        // Create DayStatistic for each day by aggregating the values
+        let dayStatistics = dataPointsByDay.map { (day, itemsForDay) -> DayStatistic in
+            return DayStatistic(
+                day: day,
+                consumption: itemsForDay.reduce(0.0) { $0 + $1.consumptionOverTimeWatthours },
+                production: itemsForDay.reduce(0.0) { $0 + $1.productionOverTimeWatthours },
+                imported: itemsForDay.reduce(0.0) { $0 + $1.importedOverTimeWhatthours },
+                exported: itemsForDay.reduce(0.0) { $0 + $1.exportedOverTimeWhatthours }
+            )
+        }
+
+        // Sort by day in ascending order
+        return dayStatistics.sorted { $0.day < $1.day }
+    }
     @MainActor
     func fetchStatsForPast7Days() async -> Statistics? {
         guard let from = Calendar.current.date(byAdding: .day, value: -7, to: Date.todayStartOfDay()) else {
