@@ -178,7 +178,7 @@ class CurrentBuildingState {
             return nil
         }
 
-        var staticsPerDay: [DayStatistic] = calculateDailyStatistics(dataPoints: mainData.data)
+        let staticsPerDay: [DayStatistic] = calculateDailyStatistics(dataPoints: mainData.data)
 
         return staticsPerDay
 
@@ -214,15 +214,6 @@ class CurrentBuildingState {
 
         // Sort by day in ascending order
         return dayStatistics.sorted { $0.day < $1.day }
-    }
-    @MainActor
-    func fetchStatsForPast7Days() async -> Statistics? {
-        guard let from = Calendar.current.date(byAdding: .day, value: -7, to: Date.todayStartOfDay()) else {
-            return nil
-        }
-        let to = Date.todayEndOfDay()
-
-        return try? await energyManager.fetchStatistics(from: from, to: to, accuracy: .high)
     }
 
     @MainActor
