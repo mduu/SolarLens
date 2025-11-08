@@ -446,8 +446,14 @@ actor SolarManager: EnergyManager {
     }
 
     @MainActor
-    func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics {
+    func fetchStatistics(from: Date?, to: Date, accuracy: Accuracy) async throws -> Statistics? {
         try await ensureSmId()
+
+        guard let registrationDate = systemInformation?.registrationDate else {
+            return nil
+        }
+
+        let from = from ?? registrationDate
 
         let result = try? await solarManagerApi.getV1Statistics(
             solarManagerId: systemInformation!.sm_id,

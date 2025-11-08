@@ -217,6 +217,11 @@ class CurrentBuildingState {
     }
 
     @MainActor
+    func fetchAllimeStatistics() async -> Statistics? {
+        return try? await energyManager.fetchStatistics(from: nil, to: Date(), accuracy: .low)
+    }
+
+    @MainActor
     func setCarCharging(
         sensorId: String,
         newCarCharging: ControlCarChargingRequest

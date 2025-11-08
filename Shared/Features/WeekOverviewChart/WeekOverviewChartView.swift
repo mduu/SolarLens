@@ -18,9 +18,9 @@ struct WeekOverviewChartView: View {
             case .production:
                 return .yellow.opacity(0.9)
             case .imported:
-                return .orange.opacity(0.9)
+                return .red.opacity(0.9)
             case .exported:
-                return .pink.opacity(0.9)
+                return .orange.opacity(0.9)
             }
         }
     }

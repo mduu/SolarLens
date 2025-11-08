@@ -4,6 +4,7 @@ struct Column3View: View {
     var body: some View {
         VStack {
             CurrentWeekWdiget()
+            AllTimesStatsWidget()
             Spacer()
         }
         .frame(maxWidth: .infinity)

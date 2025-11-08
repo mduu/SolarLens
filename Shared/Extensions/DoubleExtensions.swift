@@ -26,6 +26,12 @@ extension Double {
             : String(format: "%.1f", Double(self) / 1000)
     }
 
+    func formatWattHoursAsMegaWattsHours(widthUnit: Bool = false) -> String {
+        widthUnit
+        ? "\(String(format: "%.2f", Double(self) / 10000000.0))  \(getUnitMwh())"
+        : String(format: "%.2f", Double(self) / 10000000.0)
+    }
+
     func formatIntoPercentage() -> String {
         String(
             format: "%.0f%%",
@@ -39,6 +45,10 @@ extension Double {
 
     private func getUnitKwh() -> String {
         "kWh"
+    }
+
+    private func getUnitMwh() -> String {
+        "MWh"
     }
 }
 

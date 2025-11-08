@@ -2,6 +2,7 @@ import Combine
 internal import Foundation
 
 class FakeEnergyManager: EnergyManager {
+
     func fetchStatisticsOverview() async throws -> StatisticsOverview {
         StatisticsOverview(
             week: Statistics(
@@ -35,7 +36,7 @@ class FakeEnergyManager: EnergyManager {
         )
     }
 
-    func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics {
+    func fetchStatistics(from: Date?, to: Date, accuracy: Accuracy) async throws -> Statistics? {
         Statistics(
             consumption: 1234.22,
             production: 987.21,
