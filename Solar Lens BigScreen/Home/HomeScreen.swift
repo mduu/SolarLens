@@ -20,11 +20,6 @@ struct HomeScreen: View {
                     .focusable()
             }
 
-            FooterView(
-                isLoading: buildings.isLoading,
-                lastUpdate: buildings.overviewData.lastSuccessServerFetch
-            )
-
             if showMenu {
                 MainMenu(action: { mainMenuItem in
                     print("selected menu item: \(mainMenuItem)")

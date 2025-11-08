@@ -25,7 +25,6 @@ struct TodayWidget: View {
             }
 
             Divider()
-                .padding(.top)
                 .padding(.horizontal, 50)
 
             TodayConsumptionView(
@@ -33,6 +32,9 @@ struct TodayWidget: View {
                 todayGridImported: buildings.overviewData.todayGridImported
             )
             .padding(.top)
+
+            Divider()
+                .padding(.horizontal, 50)
 
             TodayProductionView(
                 productionTodayInWatts: buildings.overviewData.todayProduction,
