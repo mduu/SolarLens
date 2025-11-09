@@ -1,13 +1,27 @@
 import SwiftUI
 
 struct SettingsScreen: View {
+    var closeAction: () -> Void
+
     var body: some View {
 
-        Text("Settings View")
-            .font(.largeTitle)
+        VStack {
+            Text("Settings View")
+                .font(.largeTitle)
+
+            Spacer()
+
+            Button(action: {
+                closeAction()
+            }, label: {
+                Text("Close")
+            })
+        }
     }
 }
 
 #Preview {
-    SettingsScreen()
+    SettingsScreen(
+        closeAction: {}
+    )
 }

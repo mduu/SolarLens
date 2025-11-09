@@ -7,13 +7,20 @@ struct HomeScreen: View {
     @State private var solarForecastTimer: Timer?
 
     @State private var showMenu: Bool = false
+    @State private var showSettings: Bool = false
     @Environment(\.resetFocus) var resetFocus
     @Namespace private var namespace
 
     var body: some View {
         ZStack {
 
-            if showMenu {
+            if showSettings {
+                SettingsScreen(closeAction: {
+                    withAnimation {
+                        showSettings = false;
+                    }
+                })
+            } else if showMenu {
                 StandardLayout()
             } else {
                 StandardLayout()
@@ -31,6 +38,7 @@ struct HomeScreen: View {
                     case .settings:
                         withAnimation(.easeOut) {
                             showMenu = false
+                            showSettings = true
                         }
 
                     case .logout:
