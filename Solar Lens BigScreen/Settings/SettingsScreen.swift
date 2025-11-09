@@ -9,6 +9,15 @@ struct SettingsScreen: View {
             Text("Settings View")
                 .font(.largeTitle)
 
+            HStack {
+                VStack {
+                    LogoConfigurationView()
+                }
+                .frame(minWidth: 600)
+
+                Spacer()
+            }
+
             Spacer()
 
             Button(action: {
