@@ -222,6 +222,7 @@
 				Services/SolarManagerApi/DTOs/ControlBatteryV2Request.swift,
 				Services/SolarManagerApi/DTOs/ControlCarChargingRequest.swift,
 				Services/SolarManagerApi/DTOs/DataMainV3Schema.swift,
+				Services/SolarManagerApi/DTOs/DataStreamV3Response.swift,
 				Services/SolarManagerApi/DTOs/ErrorCode.swift,
 				Services/SolarManagerApi/DTOs/ForecastItemV3Response.swift,
 				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
