@@ -111,6 +111,16 @@ class SolarManagerApi: RestClient {
         return response
     }
 
+    func getV3StreamGateway(solarManagerId smId: String) async throws
+        -> DataStreamV3Response?
+    {
+        let response: DataStreamV3Response? = try await get(
+            serviceUrl: "v3/users/\(smId)/data/stream"
+        )
+
+        return response
+    }
+
     func getV1ConsumptionSensor(sensorId: String, period: Period = .day)
         async throws -> SensorConsumptionV1Response?
     {
