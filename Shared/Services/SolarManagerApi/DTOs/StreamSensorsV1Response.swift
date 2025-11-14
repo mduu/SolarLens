@@ -15,7 +15,7 @@ struct StreamSensorsV1Device : Codable {
     var currentPower: Int?
     var deviceStatus: Int?
     var signal: SensorConnectionStatus?
-    var remainingDistance: Int? // Car
+    var remainingDistance: Double? // Car
     var lastUpdate: String? // Car: lastUpdate SOC
     var soc: Int? // Car: SOC
 }

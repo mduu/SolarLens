@@ -804,7 +804,9 @@ actor SolarManager: EnergyManager {
                     priority: sensorInfo.priority,
                     batteryPercent: sensorInfo.soc,
                     batteryCapacity: sensorInfo.data?.batteryCapacity,
-                    remainingDistance: streamInfo?.remainingDistance,
+                    remainingDistance: streamInfo?.remainingDistance == nil
+                        ? nil
+                        : Int((streamInfo?.remainingDistance)!),
                     lastUpdate: lastUpdate,
                     signal: sensorInfo.signal,
                     currentPowerInWatts: streamInfo?.currentPower
