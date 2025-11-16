@@ -353,7 +353,7 @@ actor SolarManager: EnergyManager {
 
         let response = try? await solarManagerApi.getV1Overview()
         guard let response else {
-            return await EnergyOverview()
+            return EnergyOverview()
         }
 
         return EnergyOverview(
@@ -727,9 +727,11 @@ actor SolarManager: EnergyManager {
 
         return BatteryInfo(
             favorite: battery.favorite ?? false,
-            maxDischargePower: battery.maxDischargePower
-                ?? 1000,
-            maxChargePower: battery.maxChargePower ?? 1000,
+            maxDischargePower: Int(
+                battery.maxDischargePower
+                    ?? 1000
+            ),
+            maxChargePower: Int(battery.maxChargePower ?? 1000),
             batteryCapacityKwh: battery.batteryCapacity ?? 5,
             modeInfo: BatteryModeInfo(
                 batteryChargingMode:
@@ -743,24 +745,26 @@ actor SolarManager: EnergyManager {
                     .from(battery.batteryManualMode ?? 0),
 
                 // Manual
-                upperSocLimit: battery.upperSocLimit ?? 95,
-                lowerSocLimit: battery.lowerSocLimit ?? 15,
+                upperSocLimit: Int(battery.upperSocLimit ?? 95),
+                lowerSocLimit: Int(battery.lowerSocLimit ?? 15),
 
                 // Eco
-                dischargeSocLimit: battery.dischargeSocLimit ?? 30,
-                chargingSocLimit: battery.chargingSocLimit ?? 100,
-                morningSocLimit: battery.morningSocLimit ?? 80,
+                dischargeSocLimit: Int(battery.dischargeSocLimit ?? 30),
+                chargingSocLimit: Int(battery.chargingSocLimit ?? 100),
+                morningSocLimit: Int(battery.morningSocLimit ?? 80),
 
                 // Peak shaving
-                peakShavingSocDischargeLimit: battery
-                    .peakShavingSocDischargeLimit
-                    ?? 10,
-                peakShavingSocMaxLimit: battery.peakShavingSocMaxLimit ?? 40,
-                peakShavingMaxGridPower: battery.peakShavingMaxGridPower ?? 0,
-                peakShavingRechargePower: battery.peakShavingRechargePower ?? 0,
+                peakShavingSocDischargeLimit: Int(
+                    battery
+                        .peakShavingSocDischargeLimit
+                        ?? 10
+                ),
+                peakShavingSocMaxLimit: Int(battery.peakShavingSocMaxLimit ?? 40),
+                peakShavingMaxGridPower: Int(battery.peakShavingMaxGridPower ?? 0),
+                peakShavingRechargePower: Int(battery.peakShavingRechargePower ?? 0),
 
                 // Tariff optimized
-                tariffPriceLimitSocMax: battery.tariffPriceLimitSocMax ?? 0,
+                tariffPriceLimitSocMax: Int(battery.tariffPriceLimitSocMax ?? 0),
                 tariffPriceLimit: battery.tariffPriceLimit ?? 0,
                 tariffPriceLimitForecast: battery.tariffPriceLimitForecast
                     ?? false,
@@ -768,11 +772,11 @@ actor SolarManager: EnergyManager {
                 // Standard
                 standardStandaloneAllowed: battery.standardStandaloneAllowed
                     ?? false,
-                standardLowerSocLimit: battery.standardLowerSocLimit ?? 10,
-                standardUpperSocLimit: battery.standardUpperSocLimit ?? 90,
+                standardLowerSocLimit: Int(battery.standardLowerSocLimit ?? 10),
+                standardUpperSocLimit: Int(battery.standardUpperSocLimit ?? 90),
 
-                powerCharge: battery.powerCharge ?? 0,
-                powerDischarge: battery.powerDischarge ?? 0
+                powerCharge: Int(battery.powerCharge ?? 0),
+                powerDischarge: Int(battery.powerDischarge ?? 0)
             )
         )
     }

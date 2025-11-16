@@ -74,25 +74,25 @@ struct SensorInfosV1Data: Codable {
     var batteryChargingMode: Int?
     var batteryMode: Int?
     var batteryManualMode: Int?
-    var upperSocLimit: Int?
-    var lowerSocLimit: Int?
-    var dischargeSocLimit: Int?
-    var chargingSocLimit: Int?
-    var morningSocLimit: Int?
-    var peakShavingSocDischargeLimit: Int?
-    var peakShavingSocMaxLimit: Int?
-    var peakShavingMaxGridPower: Int?
-    var peakShavingRechargePower: Int?
-    var tariffPriceLimitSocMax: Int?
+    var upperSocLimit: Double?
+    var lowerSocLimit: Double?
+    var dischargeSocLimit: Double?
+    var chargingSocLimit: Double?
+    var morningSocLimit: Double?
+    var peakShavingSocDischargeLimit: Double?
+    var peakShavingSocMaxLimit: Double?
+    var peakShavingMaxGridPower: Double?
+    var peakShavingRechargePower: Double?
+    var tariffPriceLimitSocMax: Double?
     var tariffPriceLimit: Double?
     var tariffPriceLimitForecast: Bool?
     var standardStandaloneAllowed: Bool?
-    var standardLowerSocLimit: Int?
-    var standardUpperSocLimit: Int?
-    var powerCharge: Int?
-    var powerDischarge: Int?
-    
+    var standardLowerSocLimit: Double?
+    var standardUpperSocLimit: Double?
+    var powerCharge: Double?
+    var powerDischarge: Double?
+
     var favorite: Bool?
-    var maxDischargePower: Int?
-    var maxChargePower: Int?
+    var maxDischargePower: Double?
+    var maxChargePower: Double?
 }
