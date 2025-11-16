@@ -79,7 +79,7 @@ class RestClient {
 
     internal func handleForbidden(failedResponse: HTTPURLResponse) async -> Bool
     {
-        return false
+        return true
     }
 
     private func exponentialWait(attempt: Int, maxDelay: Double = 20.0) async {
