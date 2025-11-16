@@ -67,15 +67,18 @@ struct OverviewChart: View {
         .chartXAxis {
             AxisMarks { value in
                 AxisGridLine()
-                    .foregroundStyle(useAlternativeColors ? .white : .primary)
+                    #if os(tvOS)
+                        .foregroundStyle(useAlternativeColors ? .white : .primary)
+                    #endif
 
                 AxisValueLabel(
                     format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(
                         .twoDigits
                     )
                 )
-                .foregroundStyle(useAlternativeColors ? .white : .primary)
-
+                #if os(tvOS)
+                    .foregroundStyle(useAlternativeColors ? .white : .primary)
+                #endif
             }
         }
         .chartLegend(isSmall ? .hidden : .visible)
