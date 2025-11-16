@@ -35,10 +35,10 @@ actor SolarManager: EnergyManager {
             solarManagerId: systemInformation.sm_id
         ) {
             let batteryChargingRate =
-                chart.battery != nil
-                ? chart.battery!.batteryCharging
-                    - chart.battery!.batteryDischarging
-                : nil
+                (chart.battery != nil
+                    ? chart.battery!.batteryCharging
+                        - chart.battery!.batteryDischarging
+                    : nil) ?? 0
 
             let lastUpdated = parseSolarManagerDateTime(chart.lastUpdate)
 
@@ -60,22 +60,28 @@ actor SolarManager: EnergyManager {
             )
 
             return OverviewData.init(
-                currentSolarProduction: chart.production,
-                currentOverallConsumption: chart.consumption,
-                currentBatteryLevel: chart.battery?.capacity ?? 0,
-                currentBatteryChargeRate: batteryChargingRate,
-                currentSolarToGrid: chart
-                    .arrows?.first(
-                        where: { $0.direction == .fromPVToGrid }
-                    )?.value ?? 0,
-                currentGridToHouse: chart
-                    .arrows?.first(
-                        where: { $0.direction == .fromGridToConsumer }
-                    )?.value ?? 0,
-                currentSolarToHouse: chart
-                    .arrows?.first(
-                        where: { $0.direction == .fromPVToConsumer }
-                    )?.value ?? 0,
+                currentSolarProduction: Int(chart.production),
+                currentOverallConsumption: Int(chart.consumption),
+                currentBatteryLevel: Int(chart.battery?.capacity ?? 0),
+                currentBatteryChargeRate: Int(batteryChargingRate),
+                currentSolarToGrid: Int(
+                    chart
+                        .arrows?.first(
+                            where: { $0.direction == .fromPVToGrid }
+                        )?.value ?? 0
+                ),
+                currentGridToHouse: Int(
+                    chart
+                        .arrows?.first(
+                            where: { $0.direction == .fromGridToConsumer }
+                        )?.value ?? 0
+                ),
+                currentSolarToHouse: Int(
+                    chart
+                        .arrows?.first(
+                            where: { $0.direction == .fromPVToConsumer }
+                        )?.value ?? 0
+                ),
                 solarProductionMax: (systemInformation.kWp ?? 0.0) * 1000,
                 hasConnectionError: false,
                 lastUpdated: lastUpdated,
