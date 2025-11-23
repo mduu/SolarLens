@@ -31,36 +31,6 @@ class CurrentBuildingState {
         updateCredentialsExists()
     }
 
-    static func fake() -> CurrentBuildingState {
-        return .fake(overviewData: .fake())
-    }
-
-    static func fake(
-        overviewData: OverviewData = OverviewData.fake(),
-        loggedIn: Bool = true,
-        isLoading: Bool = false,
-        didLoginSucceed: Bool? = nil,
-        error: EnergyManagerClientError? = nil,
-        errorMessage: String? = nil
-    ) -> CurrentBuildingState {
-        let result = CurrentBuildingState.init(
-            energyManagerClient: FakeEnergyManager.init(data: overviewData)
-        )
-        result.isLoading = false
-        result.loginCredentialsExists = loggedIn
-
-        Task {
-            await result.fetchServerData()
-        }
-
-        result.isLoading = isLoading
-        result.didLoginSucceed = didLoginSucceed
-        result.error = error
-        result.errorMessage = errorMessage
-
-        return result
-    }
-
     func pauseFetching() {
         fetchingIsPaused = true
         print("fetching paused")
@@ -374,4 +344,38 @@ class CurrentBuildingState {
         errorMessage = nil
         error = nil
     }
+}
+
+extension CurrentBuildingState {
+    
+    static func fake() -> CurrentBuildingState {
+        return .fake(overviewData: .fake())
+    }
+
+    static func fake(
+        overviewData: OverviewData = OverviewData.fake(),
+        loggedIn: Bool = true,
+        isLoading: Bool = false,
+        didLoginSucceed: Bool? = nil,
+        error: EnergyManagerClientError? = nil,
+        errorMessage: String? = nil
+    ) -> CurrentBuildingState {
+        let result = CurrentBuildingState.init(
+            energyManagerClient: FakeEnergyManager.init(data: overviewData)
+        )
+        result.isLoading = false
+        result.loginCredentialsExists = loggedIn
+
+        Task {
+            await result.fetchServerData()
+        }
+
+        result.isLoading = isLoading
+        result.didLoginSucceed = didLoginSucceed
+        result.error = error
+        result.errorMessage = errorMessage
+
+        return result
+    }
+
 }

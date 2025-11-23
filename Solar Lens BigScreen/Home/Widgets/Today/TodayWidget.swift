@@ -4,7 +4,6 @@ struct TodayWidget: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
 
     @State private var todayConsumption: MainData? = nil
-    @State private var initialLoadTimer: Timer?
     @State private var refreshTimer: Timer?
 
     var body: some View {

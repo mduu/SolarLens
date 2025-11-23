@@ -6,6 +6,8 @@ struct Column1View: View {
             CurrentEnergyFlowWidget()
                 .frame(maxWidth: .infinity)
 
+            SolarForecastWidget()
+
             Spacer()
         }
         .frame(maxWidth: .infinity)
