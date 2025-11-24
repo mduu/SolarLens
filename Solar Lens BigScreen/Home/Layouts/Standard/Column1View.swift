@@ -5,10 +5,11 @@ struct Column1View: View {
         VStack {
             CurrentEnergyFlowWidget()
                 .frame(maxWidth: .infinity)
+                .padding(.bottom, 30)
 
             SolarForecastWidget()
+                .frame(maxHeight: .infinity)
 
-            Spacer()
         }
         .frame(maxWidth: .infinity)
     }

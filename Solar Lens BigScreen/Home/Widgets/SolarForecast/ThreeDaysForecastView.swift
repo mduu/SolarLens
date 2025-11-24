@@ -24,12 +24,16 @@ struct ThreeDaysForecastView: View {
                         overallMaximum: overallMax
                     )
 
+                    Spacer()
+
                     DayForecastView(
                         dayForecast: solarDetails?.forecastTomorrow,
                         dayLabel: "Tomorrow",
                         overallMinimum: overallMin,
                         overallMaximum: overallMax
                     )
+
+                    Spacer()
 
                     DayForecastView(
                         dayForecast: solarDetails?.forecastDayAfterTomorrow,

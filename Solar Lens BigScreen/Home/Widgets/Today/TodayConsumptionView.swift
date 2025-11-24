@@ -9,11 +9,11 @@ struct TodayConsumptionView: View {
         let importFromGrid: Double? = todayGridImported != nil ? Double(todayGridImported!) : 0.0
 
         VStack {
-            Text("Verbrauch")
+            Text("Consumption")
 
             ConsumptionSourcePieChart(
                 consumptionTodayInWatts: consumptionTodayInWatts,
-                todayGridImported: importFromGrid,
+                todayGridImported: importFromGrid
             )
 
             Spacer()

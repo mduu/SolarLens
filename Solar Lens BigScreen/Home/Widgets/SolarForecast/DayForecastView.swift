@@ -68,7 +68,6 @@ struct DayForecastView: View {
             // Day label
             Text(dayLabel)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
                 .frame(width: 170, alignment: .leading)
 
             // Bar with range and expected
@@ -124,7 +123,6 @@ struct DayForecastView: View {
                 if let expectedText {
                     Text(expectedText)
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
                 }

@@ -68,6 +68,10 @@ struct WeekOverviewChartView: View {
                         if let date = value.as(Date.self) {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.weekday(.abbreviated))
+                                    #if os(tvOS)
+                                        .font(.system(size: 18))
+                                        .foregroundColor(.white)
+                                    #endif
                             }
                         }
                         AxisGridLine()
@@ -80,6 +84,9 @@ struct WeekOverviewChartView: View {
                         AxisValueLabel {
                             if let energy = value.as(Double.self) {
                                 Text("\(energy, specifier: "%.0f") kWh")
+                                    #if os(tvOS)
+                                        .foregroundColor(.white)
+                                    #endif
                             }
                         }
                     }
@@ -121,6 +128,7 @@ struct WeekOverviewChartView: View {
     }.reversed()
 
     return WeekOverviewChartView(weekData: sampleData)
+        .frame(maxWidth: 500, maxHeight: 300)
 }
 
 #Preview("No Data") {

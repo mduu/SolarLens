@@ -58,9 +58,18 @@ struct OverviewChart: View {
                     #endif
             }
         }
-        .chartYAxisLabel(isSmall ? "" : "kW")
+        .chartYAxisLabel {
+            if !isSmall {
+                Text("kW")
+                    #if os(tvOS)
+                        .foregroundStyle(.white)
+                    #endif
+            }
+        }
         #if os(tvOS)
-            .foregroundStyle(useAlternativeColors ? .white : .primary)
+            .chartYAxisStyle { axis in
+                axis.foregroundStyle(.white)
+            }
         #endif
 
         .chartYScale(domain: 0...getYMax())
@@ -77,6 +86,7 @@ struct OverviewChart: View {
                     )
                 )
                 #if os(tvOS)
+                    .font(.system(size: 18))
                     .foregroundStyle(useAlternativeColors ? .white : .primary)
                 #endif
             }

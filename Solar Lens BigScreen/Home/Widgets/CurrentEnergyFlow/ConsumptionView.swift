@@ -6,7 +6,7 @@ struct ConsumptionView: View {
     var body: some View {
         VStack {
 
-            Image(systemName: "bolt.house")
+            Image(systemName: "house")
                 .font(.system(size: 50))
 
             Text(

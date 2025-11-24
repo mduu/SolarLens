@@ -20,7 +20,7 @@ struct AllTimesStatsWidget: View {
                         : "-"
 
                     Text(totalConsumption)
-                        .font(.system(size: 32, weight: .black))
+                        .font(.system(size: 32))
                         .foregroundColor(.blue)
                 }
 
@@ -36,7 +36,7 @@ struct AllTimesStatsWidget: View {
                         : "-"
 
                     Text(totalProduction)
-                        .font(.system(size: 32, weight: .black))
+                        .font(.system(size: 32))
                         .foregroundColor(.yellow)
                 }
 
@@ -52,7 +52,7 @@ struct AllTimesStatsWidget: View {
                         : "-"
 
                     Text(totalSelfConsumption)
-                        .font(.system(size: 32, weight: .black))
+                        .font(.system(size: 32))
                         .foregroundColor(.indigo)
                 }
 
@@ -65,7 +65,7 @@ struct AllTimesStatsWidget: View {
                         : "-"
 
                     Text(totalSelfConsumptionRate)
-                        .font(.system(size: 32, weight: .black))
+                        .font(.system(size: 32))
                         .foregroundColor(.indigo)
                 }
 
@@ -82,7 +82,7 @@ struct AllTimesStatsWidget: View {
                         : "-"
 
                     Text(totalAutarky)
-                        .font(.system(size: 32, weight: .black))
+                        .font(.system(size: 32))
                         .foregroundColor(.purple)
                 }
 
@@ -90,7 +90,6 @@ struct AllTimesStatsWidget: View {
             }
             .padding(.top)
         }
-        .frame(maxHeight: 400)
         .onAppear {
 
             Task {

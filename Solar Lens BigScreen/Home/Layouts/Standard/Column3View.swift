@@ -4,6 +4,8 @@ struct Column3View: View {
     var body: some View {
         VStack {
             CurrentWeekWdiget()
+                .padding(.bottom, 30)
+
             AllTimesStatsWidget()
                 .frame(maxHeight: .infinity)
         }
