@@ -69,7 +69,7 @@ struct DayForecastView: View {
             Text(dayLabel)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
-                .frame(width: 60, alignment: .leading)
+                .frame(width: 170, alignment: .leading)
 
             // Bar with range and expected
             GeometryReader { geo in

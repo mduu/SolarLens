@@ -4,39 +4,43 @@ struct ThreeDaysForecastView: View {
     var solarDetails: SolarDetailsData?
 
     var body: some View {
-        if solarDetails == nil {
-            ContentUnavailableView(
-                "No Data Available",
-                systemImage: "sun.rain",
-                description: Text("Forecast will appear here when data is available.")
-            )
-            .frame(height: 300)
-
-        } else {
-            VStack {
-                let overallMin = getOverallMin()
-                let overallMax = getOverallMax()
-
-                DayForecastView(
-                    dayForecast: solarDetails?.forecastToday,
-                    dayLabel: "Today",
-                    overallMinimum: overallMin,
-                    overallMaximum: overallMax
+        VStack {
+            if solarDetails == nil {
+                ContentUnavailableView(
+                    "No Data Available",
+                    systemImage: "sun.rain",
+                    description: Text("Forecast will appear here when data is available.")
                 )
 
-                DayForecastView(
-                    dayForecast: solarDetails?.forecastTomorrow,
-                    dayLabel: "Tomorrow",
-                    overallMinimum: overallMin,
-                    overallMaximum: overallMax
-                )
+            } else {
+                VStack {
+                    let overallMin = getOverallMin()
+                    let overallMax = getOverallMax()
 
-                DayForecastView(
-                    dayForecast: solarDetails?.forecastDayAfterTomorrow,
-                    dayLabel: "After tomorrow",
-                    overallMinimum: overallMin,
-                    overallMaximum: overallMax
-                )            }
+                    DayForecastView(
+                        dayForecast: solarDetails?.forecastToday,
+                        dayLabel: "Today",
+                        overallMinimum: overallMin,
+                        overallMaximum: overallMax
+                    )
+
+                    DayForecastView(
+                        dayForecast: solarDetails?.forecastTomorrow,
+                        dayLabel: "Tomorrow",
+                        overallMinimum: overallMin,
+                        overallMaximum: overallMax
+                    )
+
+                    DayForecastView(
+                        dayForecast: solarDetails?.forecastDayAfterTomorrow,
+                        dayLabel: "After tomorrow",
+                        overallMinimum: overallMin,
+                        overallMaximum: overallMax
+                    )
+                }
+            }
+
+            Spacer()
         }
     }
 
