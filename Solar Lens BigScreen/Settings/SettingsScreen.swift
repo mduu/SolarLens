@@ -6,17 +6,19 @@ struct SettingsScreen: View {
     var body: some View {
 
         VStack {
-            Text("Settings View")
+            Text("Settings")
                 .font(.largeTitle)
+                .padding(.bottom, 30)
 
             HStack {
                 VStack {
                     BackgroundConfiguratonView()
+                        .frame(minWidth: 800)
+                    Spacer()
                 }
-                .frame(minWidth: 600)
-
-                Spacer()
+                .frame(maxWidth: .infinity)
             }
+            .frame(maxWidth: .infinity)
 
             Spacer()
         }

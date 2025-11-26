@@ -118,8 +118,6 @@ struct MainMenu: View {
             Spacer()
 
         }
-        .padding()
-        .ignoresSafeArea()
         .frame(maxWidth: .infinity)
     }
 }

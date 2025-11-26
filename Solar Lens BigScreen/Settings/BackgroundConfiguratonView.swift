@@ -9,22 +9,20 @@ struct BackgroundConfiguratonView: View {
     ]
 
     var body: some View {
-        VStack {
-            Text("Background")
-                .font(.title3)
-
-            Picker("Select Background", selection: $backgroundImage) {
-
-                ForEach(BackgroundConfiguratonView.availableBackgroundImages.keys.sorted(), id: \.self) { key in
-                    Text(BackgroundConfiguratonView.availableBackgroundImages[key]!)
-                        .tag(key as String?)
+        BorderBox {
+            VStack {
+                Text("Background")
+                    .font(.title3)
+                
+                Picker("Select Background", selection: $backgroundImage) {
+                    ForEach(BackgroundConfiguratonView.availableBackgroundImages.keys.sorted(), id: \.self) { key in
+                        Text(BackgroundConfiguratonView.availableBackgroundImages[key]!)
+                            .tag(key)
+                    }
                 }
-
+                .pickerStyle(.menu)
+                .padding()
             }
-            .pickerStyle(.menu)
-            .padding()
-
-            Spacer()
         }
     }
 }

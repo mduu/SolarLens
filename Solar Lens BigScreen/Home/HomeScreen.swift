@@ -5,9 +5,9 @@ struct HomeScreen: View {
 
     @State private var refreshTimer: Timer?
     @State private var solarForecastTimer: Timer?
-
     @State private var showMenu: Bool = false
     @State private var showSettings: Bool = false
+
     @Environment(\.resetFocus) var resetFocus
     @Namespace private var namespace
 
@@ -20,11 +20,13 @@ struct HomeScreen: View {
                         showSettings = false
                     }
                 })
-            } else if showMenu {
-                StandardLayout()
             } else {
-                StandardLayout()
-                    .focusable()
+                if showMenu {
+                    StandardLayout()
+                } else {
+                    StandardLayout()
+                        .focusable()
+                }
             }
 
             if showMenu {
@@ -58,8 +60,10 @@ struct HomeScreen: View {
             stopRefreshing()
         }
         .onTapGesture {
-            print("remote tap - refresh all")
-            refreshAll()
+            if !showMenu && !showSettings {
+                print("remote tap - refresh all")
+                refreshAll()
+            }
         }
         .onExitCommand {
             if showSettings {
@@ -76,14 +80,12 @@ struct HomeScreen: View {
 
             print("exit command - dismiss")
             exit(0)
-
         }
 
     }
 
     private func startRefreshing() {
         refreshAll()
-
         fetchAndStartRefreshTimerForOverviewData()
         fetchAndStartRefreshTimerForSolarDetailData()
     }
