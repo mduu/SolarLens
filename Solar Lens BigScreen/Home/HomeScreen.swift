@@ -17,7 +17,7 @@ struct HomeScreen: View {
             if showSettings {
                 SettingsScreen(closeAction: {
                     withAnimation {
-                        showSettings = false;
+                        showSettings = false
                     }
                 })
             } else if showMenu {
@@ -62,13 +62,21 @@ struct HomeScreen: View {
             refreshAll()
         }
         .onExitCommand {
+            if showSettings {
+                print("exit command - close settings")
+                showSettings = false
+                return
+            }
+
             if !showMenu {
                 print("exit command - show menu")
                 showMenu = true
-            } else {
-                print("exit command - dismiss")
-                exit(0)
+                return
             }
+
+            print("exit command - dismiss")
+            exit(0)
+
         }
 
     }

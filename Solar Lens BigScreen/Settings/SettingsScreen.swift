@@ -11,7 +11,7 @@ struct SettingsScreen: View {
 
             HStack {
                 VStack {
-                    LogoConfigurationView()
+                    BackgroundConfiguratonView()
                 }
                 .frame(minWidth: 600)
 
@@ -19,12 +19,6 @@ struct SettingsScreen: View {
             }
 
             Spacer()
-
-            Button(action: {
-                closeAction()
-            }, label: {
-                Text("Close")
-            })
         }
     }
 }
