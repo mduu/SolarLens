@@ -8,7 +8,7 @@ struct SolarForecastWidget: View {
     @State private var solarDetails: SolarDetailsData?
 
     var body: some View {
-        WidgetBase(title: "Today") {
+        WidgetBase(title: "Forecast") {
             ThreeDaysForecastView(solarDetails: solarDetails)
             Spacer()
         }
