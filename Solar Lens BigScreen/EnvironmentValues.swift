@@ -10,6 +10,11 @@ extension EnvironmentValues {
         get { self[UiContextKey.self] }
         set { self[UiContextKey.self] = newValue }
     }
+
+    var energyManager: EnergyManager {
+        get { self[EnergyManagerKey.self] }
+        set { self[EnergyManagerKey.self] = newValue }
+    }
 }
 
 private struct CurrentBuildingStateKey: EnvironmentKey {
@@ -21,5 +26,11 @@ private struct CurrentBuildingStateKey: EnvironmentKey {
 private struct UiContextKey: EnvironmentKey {
     static var defaultValue: UiContext {
         return UiContext()
+    }
+}
+
+private struct EnergyManagerKey: EnvironmentKey {
+    static var defaultValue: EnergyManager {
+        return SolarManager()
     }
 }

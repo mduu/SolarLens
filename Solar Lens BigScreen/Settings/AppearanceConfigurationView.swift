@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct BackgroundConfiguratonView: View {
+struct AppearanceConfigurationView: View {
     @AppStorage("backgroundImageV2") var backgroundImage: String = availableBackgroundImages.first!.key
 
     static let availableBackgroundImages: [String: LocalizedStringKey] = [
@@ -21,19 +21,28 @@ struct BackgroundConfiguratonView: View {
 
     var body: some View {
         BorderBox {
-            VStack {
-                Text("Background")
+            VStack(alignment: .leading) {
+                Text("Appearance")
                     .font(.title3)
-                
-                Picker("Select Background", selection: $backgroundImage) {
-                    ForEach(BackgroundConfiguratonView.availableBackgroundImages.keys.sorted(), id: \.self) { key in
-                        Text(BackgroundConfiguratonView.availableBackgroundImages[key]!)
-                            .tag(key)
+
+                HStack(alignment: .firstTextBaseline) {
+
+                    Text("Background")
+                        .frame(width: 200)
+
+                    Picker("Select Background", selection: $backgroundImage) {
+                        ForEach(AppearanceConfigurationView.availableBackgroundImages.keys.sorted(), id: \.self) { key in
+                            Text(AppearanceConfigurationView.availableBackgroundImages[key]!)
+                                .tag(key)
+                        }
                     }
+                    .pickerStyle(.menu)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+
                 }
-                .pickerStyle(.menu)
-                .padding()
             }
+            .frame(maxWidth: .infinity)
         }
     }
 }
@@ -41,13 +50,13 @@ struct BackgroundConfiguratonView: View {
 #Preview {
     VStack {
         HStack {
-            BackgroundConfiguratonView()
-                .frame(width: 600, height: 400)
+            AppearanceConfigurationView()
+                .frame(width: 1000, height: 400)
                 .border(.white)
 
             Spacer()
         }
 
         Spacer()
-    }.background(.blue.gradient)
+    }
 }

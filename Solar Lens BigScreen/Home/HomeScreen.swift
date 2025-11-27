@@ -5,7 +5,6 @@ struct HomeScreen: View {
 
     @State private var refreshTimer: Timer?
     @State private var solarForecastTimer: Timer?
-    @State private var showMenu: Bool = false
     @State private var showSettings: Bool = false
 
     @Environment(\.resetFocus) var resetFocus
@@ -21,36 +20,14 @@ struct HomeScreen: View {
                     }
                 })
             } else {
-                if showMenu {
-                    StandardLayout()
-                } else {
-                    StandardLayout()
-                        .focusable()
-                }
-            }
+                BackgroundView()
 
-            if showMenu {
-                MainMenu(action: { mainMenuItem in
-                    print("selected menu item: \(mainMenuItem)")
-
-                    switch mainMenuItem {
-                    case .home:
-                        showMenu = false
-
-                    case .settings:
-                        withAnimation(.easeOut) {
-                            showMenu = false
-                            showSettings = true
-                        }
-
-                    case .logout:
-                        Task {
-                            buildings.logout()
-                        }
-                    }
-                })
+                StandardLayout()
+                    .padding(.all, 30)
+                    .focusable()
             }
         }
+        .ignoresSafeArea(.all)
         .focusScope(namespace)
         .onAppear {
             resetFocus(in: namespace)
@@ -59,27 +36,8 @@ struct HomeScreen: View {
         .onDisappear {
             stopRefreshing()
         }
-        .onTapGesture {
-            if !showMenu && !showSettings {
-                print("remote tap - refresh all")
-                refreshAll()
-            }
-        }
         .onExitCommand {
-            if showSettings {
-                print("exit command - close settings")
-                showSettings = false
-                return
-            }
-
-            if !showMenu {
-                print("exit command - show menu")
-                showMenu = true
-                return
-            }
-
-            print("exit command - dismiss")
-            exit(0)
+            showSettings = !showSettings
         }
 
     }
