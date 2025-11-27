@@ -14,6 +14,9 @@ struct BackgroundConfiguratonView: View {
         "bg_solar_roof_4k": "Solar Roof",
         "bg_solar_sunset_4k": "Solar Sunset",
         "bg_sunny_forrest_4k": "Sunny Forrest",
+        "bg_green_gradient_4k": "Green Gradient",
+        "bg_blue_gradient_4k": "Blue Gradient",
+        "bg_red_gradient_4k": "Red Gradient",
     ]
 
     var body: some View {
