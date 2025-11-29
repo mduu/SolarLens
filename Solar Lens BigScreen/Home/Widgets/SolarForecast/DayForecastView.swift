@@ -51,8 +51,9 @@ struct DayForecastView: View {
             minStr = String(format: "%.0f", f.min)
             maxStr = String(format: "%.0f", f.max)
         } else {
-            minStr = String(format: "%.1f", f.min)
-            maxStr = String(format: "%.1f", f.max)
+            // The forecast is so low that it get hard to say
+            minStr = String(format: "%.0f", 0)
+            maxStr = String(format: "%.0f", 1)
         }
         return minStr == maxStr ? "\(minStr) kWh" : "\(minStr)–\(maxStr) kWh"
     }
