@@ -11,22 +11,9 @@ struct AllTimesStatsWidget: View {
     var body: some View {
         WidgetBase(title: "All times") {
             VStack {
-                HStack {
-                    Label("Consumption", systemImage: "sun.max")
-
-                    Spacer()
-
-                    let totalConsumption =
-                        alltimesStats?.consumption != nil
-                        ? alltimesStats!.consumption!.formatWattHoursAsMegaWattsHours(widthUnit: true)
-                        : "-"
-
-                    Text(totalConsumption)
-                        .font(.system(size: 32))
-                }
 
                 HStack {
-                    Label("Production", systemImage: "powerplug")
+                    Label("Production", systemImage: "sun.max")
 
                     Spacer()
 
@@ -40,11 +27,28 @@ struct AllTimesStatsWidget: View {
                 }
 
                 HStack {
+                    Label("Consumption", systemImage: "powerplug")
+
+                    Spacer()
+
+                    let totalConsumption =
+                    alltimesStats?.consumption != nil
+                    ? alltimesStats!.consumption!.formatWattHoursAsMegaWattsHours(widthUnit: true)
+                    : "-"
+
+                    Text(totalConsumption)
+                        .font(.system(size: 32))
+                }
+
+                HStack {
                     let totalSelfConsumptionRate = alltimesStats?.selfConsumptionRate ?? 0
                     SelfConsumptionDonut(selfConsumptionPercent: totalSelfConsumptionRate)
 
                     let totalAutarky = alltimesStats?.autarchyDegree ?? 0
                     AutarkyDonut(autarkyPercent: totalAutarky)
+
+                    let totalSoluarProduction = alltimesStats?.production ?? 0
+                    EcoMeter(totalSolarProduction: totalSoluarProduction)
                 }
 
                 Spacer()
