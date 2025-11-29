@@ -12,8 +12,7 @@ struct AllTimesStatsWidget: View {
         WidgetBase(title: "All times") {
             VStack {
                 HStack {
-                    Text("Consumption")
-                        .foregroundColor(.blue)
+                    Label("Consumption", systemImage: "sun.max")
 
                     Spacer()
 
@@ -24,12 +23,10 @@ struct AllTimesStatsWidget: View {
 
                     Text(totalConsumption)
                         .font(.system(size: 32))
-                        .foregroundColor(.blue)
                 }
 
                 HStack {
-                    Text("Production")
-                        .foregroundColor(.yellow)
+                    Label("Production", systemImage: "powerplug")
 
                     Spacer()
 
@@ -40,53 +37,14 @@ struct AllTimesStatsWidget: View {
 
                     Text(totalProduction)
                         .font(.system(size: 32))
-                        .foregroundColor(.yellow)
                 }
 
                 HStack {
-                    Text("Self consumption")
-                        .foregroundColor(.indigo)
+                    let totalSelfConsumptionRate = alltimesStats?.selfConsumptionRate ?? 0
+                    SelfConsumptionDonut(selfConsumptionPercent: totalSelfConsumptionRate)
 
-                    Spacer()
-
-                    let totalSelfConsumption =
-                        alltimesStats?.selfConsumption != nil
-                        ? alltimesStats!.selfConsumption!.formatWattHoursAsMegaWattsHours(widthUnit: true)
-                        : "-"
-
-                    Text(totalSelfConsumption)
-                        .font(.system(size: 32))
-                        .foregroundColor(.indigo)
-                }
-
-                HStack {
-                    Spacer()
-
-                    let totalSelfConsumptionRate =
-                        alltimesStats?.selfConsumptionRate != nil
-                        ? alltimesStats!.selfConsumptionRate!.formatIntoPercentage()
-                        : "-"
-
-                    Text(totalSelfConsumptionRate)
-                        .font(.system(size: 32))
-                        .foregroundColor(.indigo)
-                }
-
-                HStack {
-
-                    Text("Autarky")
-                        .foregroundColor(.purple)
-
-                    Spacer()
-
-                    let totalAutarky =
-                        alltimesStats?.autarchyDegree != nil
-                        ? alltimesStats!.autarchyDegree!.formatIntoPercentage()
-                        : "-"
-
-                    Text(totalAutarky)
-                        .font(.system(size: 32))
-                        .foregroundColor(.purple)
+                    let totalAutarky = alltimesStats?.autarchyDegree ?? 0
+                    AutarkyDonut(autarkyPercent: totalAutarky)
                 }
 
                 Spacer()
@@ -143,7 +101,7 @@ struct AllTimesStatsWidget: View {
 
             Spacer()
         }
-        .frame(width: 600)
+        .frame(width: 600, height: 600)
 
         Spacer()
     }
