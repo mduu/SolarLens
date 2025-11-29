@@ -4,6 +4,7 @@ struct CurrentWeekWdiget: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
     @State private var refreshTimer: Timer?
     @State private var weekData: [DayStatistic]?
+    @State private var lastSuccessfulFetch: Date?
 
     var body: some View {
         WidgetBase(title: "Week") {
@@ -22,12 +23,14 @@ struct CurrentWeekWdiget: View {
 
             if refreshTimer == nil {
                 refreshTimer = Timer.scheduledTimer(
-                    withTimeInterval: 120,
+                    withTimeInterval: 15,
                     repeats: true
                 ) {
                     _ in
-                    Task {
-                        await fetch()
+                    if lastSuccessfulFetch.isOlderThen(secondsSinceNow: 120) {
+                        Task {
+                            await fetch()
+                        }
                     }
                 }
 

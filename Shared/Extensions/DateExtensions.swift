@@ -12,6 +12,10 @@ extension Date {
         return self.addingTimeInterval(timeZoneOffset)
     }
 
+    func isOlderThen(secondsSinceNow seconds: Int) -> Bool {
+        self.addingTimeInterval(TimeInterval(seconds)) <= Date()
+    }
+
     static func todayStartOfDay() -> Date {
         return Calendar.current.startOfDay(for: Date())
     }
@@ -24,5 +28,11 @@ extension Date {
             of: Date()
         )!
     }
+}
 
+extension Date? {
+    func isOlderThen(secondsSinceNow seconds: Int) -> Bool {
+        guard let self else { return true }
+        return self.isOlderThen(secondsSinceNow: seconds)
+    }
 }

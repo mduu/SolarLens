@@ -4,6 +4,9 @@ struct AllTimesStatsWidget: View {
     @Environment(CurrentBuildingState.self) var buildings: CurrentBuildingState
     @State private var refreshTimer: Timer?
     @State private var alltimesStats: Statistics?
+    @State private var lastSuccessfulUpdate: Date?
+
+    let refreshIntervalInSeconds = 4 * 60 * 60  // 4h
 
     var body: some View {
         WidgetBase(title: "All times") {
@@ -98,12 +101,14 @@ struct AllTimesStatsWidget: View {
 
             if refreshTimer == nil {
                 refreshTimer = Timer.scheduledTimer(
-                    withTimeInterval: 4 * 60 * 60,  // 4h
+                    withTimeInterval: 15,
                     repeats: true
                 ) {
                     _ in
-                    Task {
-                        await fetch()
+                    if lastSuccessfulUpdate.isOlderThen(secondsSinceNow: refreshIntervalInSeconds) {
+                        Task {
+                            await fetch()
+                        }
                     }
                 }
 

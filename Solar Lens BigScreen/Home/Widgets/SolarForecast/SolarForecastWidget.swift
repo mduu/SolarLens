@@ -6,6 +6,7 @@ struct SolarForecastWidget: View {
     @State private var initialLoadTimer: Timer?
     @State private var refreshTimer: Timer?
     @State private var solarDetails: SolarDetailsData?
+    @State private var lastSuccessfulRefresh: Date?
 
     var body: some View {
         WidgetBase(title: "Forecast") {
@@ -20,12 +21,14 @@ struct SolarForecastWidget: View {
 
             if refreshTimer == nil {
                 refreshTimer = Timer.scheduledTimer(
-                    withTimeInterval: 120,
+                    withTimeInterval: 15,
                     repeats: true
                 ) {
                     _ in
-                    Task {
-                        await fetch()
+                    if lastSuccessfulRefresh.isOlderThen(secondsSinceNow: 120) {
+                        Task {
+                            await fetch()
+                        }
                     }
                 }
 
@@ -48,6 +51,7 @@ struct SolarForecastWidget: View {
         }
 
         self.solarDetails = solarDetailsData
+        lastSuccessfulRefresh = Date()
     }
 }
 
