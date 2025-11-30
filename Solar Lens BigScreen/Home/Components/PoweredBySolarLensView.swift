@@ -10,7 +10,7 @@ struct PoweredBySolarLens: View {
                 .padding(.all, 0)
 
             VStack(alignment: .leading) {
-                Text("powerd by:")
+                Text("powered by:")
                     .font(.system(size: 18))
                 Text(verbatim: "Solar Lens")
                     .font(.system(size: 22))
