@@ -4,8 +4,10 @@ internal import Foundation
 class SolarManagerApi: RestClient {
 
     private let apiBaseUrl: String = "https://cloud.solar-manager.ch"
+    private let onTokenExpired: (() async -> Bool)
 
-    init() {
+    init(onTokenExpired: @escaping () async -> Bool) {
+        self.onTokenExpired = onTokenExpired
         super.init(baseUrl: apiBaseUrl)
     }
 
@@ -41,7 +43,8 @@ class SolarManagerApi: RestClient {
             let refreshResponse: RefreshResponse? = try? await post(
                 serviceUrl: "/v1/oauth/refresh",
                 requestBody: RefreshRequest(refreshToken: refreshToken),
-                useAccessToken: false
+                useAccessToken: false,
+                maxRetry: 0
             )
 
             guard let refreshResponse else {
@@ -227,6 +230,10 @@ class SolarManagerApi: RestClient {
         )
 
         return
+    }
+
+    override func handleTokenExpired(failedResponse: HTTPURLResponse) async -> Bool {
+        return await onTokenExpired()
     }
 
     private func storeLogin(accessToken: String, refreshToken: String) {

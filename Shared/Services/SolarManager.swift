@@ -12,7 +12,9 @@ actor SolarManager: EnergyManager {
 
     @MainActor private var expireAt: Date?
     @MainActor private var accessClaims: [String]?
-    @MainActor private var solarManagerApi = SolarManagerApi()
+    @MainActor private lazy var solarManagerApi = SolarManagerApi(onTokenExpired: { [weak self] in
+        await self?.handleOnTokenExpired() ?? false
+    })
     @MainActor private var systemInformation: V1User?
     @MainActor private var sensorInfos: [SensorInfosV1Response]?
     @MainActor private var sensorInfosUpdatedAt: Date?
@@ -353,7 +355,7 @@ actor SolarManager: EnergyManager {
 
         let response = try? await solarManagerApi.getV1Overview()
         guard let response else {
-            return EnergyOverview()
+            return await EnergyOverview()
         }
 
         return EnergyOverview(
@@ -597,10 +599,10 @@ actor SolarManager: EnergyManager {
                     return
                 }
 
-                print("Refresh access-token succeeded.")
+                print("🟢🔑 Refresh access-token succeeded.")
             } catch {
                 print(
-                    "Refresh access-token failed. Will performan a regular login."
+                    "🟡🔑 Refresh access-token failed. Will performan a regular login."
                 )
             }
         }
@@ -621,6 +623,10 @@ actor SolarManager: EnergyManager {
         )
 
         if !loginSuccess {
+            print(
+                "🔴🔑 Regular login failed. Will throw an error."
+            )
+
             throw EnergyManagerClientError.loginFailed
         }
     }
@@ -903,6 +909,24 @@ actor SolarManager: EnergyManager {
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)  // Explicitly set to UTC if 'Z' should be treated as UTC, which is common.
 
         return dateFormatter.date(from: dateTime)
+    }
+
+    @MainActor
+    private func handleOnTokenExpired() async -> Bool {
+        print("🔑 Token expired. Attempting to refresh or re-login...")
+        
+        // Clear the expired token info
+        self.expireAt = nil
+        
+        do {
+            // Try to ensure we're logged in (this will attempt refresh or re-login)
+            try await ensureLoggedIn()
+            print("🟢🔑 Successfully recovered from token expiration.")
+            return true
+        } catch {
+            print("🔴🔑 Failed to recover from token expiration: \(error)")
+            return false
+        }
     }
 
 }
