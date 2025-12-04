@@ -17,6 +17,9 @@ struct AppearanceConfigurationView: View {
         "bg_green_gradient_4k": "Green Gradient",
         "bg_blue_gradient_4k": "Blue Gradient",
         "bg_red_gradient_4k": "Red Gradient",
+        "bg_black_gradient_4k": "Black Gradient",
+        "bg_dark_panels_4k": "Dark Panels",
+        "bg_eclipse_4k": "Dark Eclipse",
     ]
 
     var body: some View {
