@@ -70,7 +70,6 @@ struct WeekOverviewChartView: View {
                                 Text(date, format: .dateTime.weekday(.abbreviated))
                                     #if os(tvOS)
                                         .font(.system(size: 18))
-                                        .foregroundColor(.white)
                                     #endif
                             }
                         }

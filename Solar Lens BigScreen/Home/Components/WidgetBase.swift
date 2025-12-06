@@ -4,11 +4,33 @@ struct WidgetBase<Content: View>: View {
     var title: LocalizedStringResource?
     var content: Content
 
-    @AppStorage("widgetsTransparent") var widgetsTransparent: Bool = false
+    @AppStorage("widgetsDarkmode") var widgetsDarkMode: Bool = false
 
     init(title: LocalizedStringResource?, @ViewBuilder content: () -> Content) {
         self.title = title
         self.content = content()
+    }
+
+    var glassMaterial: Glass {
+        .clear.tint(
+            widgetsDarkMode
+                ? .black.opacity(0.28)  // increase to darken more
+                : .white.opacity(0.24)  // increase to brighten more
+        )
+    }
+
+    // Optional overlay to force a deterministic luminance shift regardless of backdrop.
+    // Increase/decrease the opacities below to taste, or make them user-controllable.
+    @ViewBuilder
+    var luminanceOverlay: some View {
+        let cornerRadius: CGFloat = 30.0
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            .fill(
+                widgetsDarkMode
+                    ? Color.black.opacity(0.3)  // darken
+                    : Color.white.opacity(0.12)  // brighten
+            )
+            .allowsHitTesting(false)
     }
 
     var body: some View {
@@ -19,9 +41,15 @@ struct WidgetBase<Content: View>: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .foregroundColor(.white)
-        .glassEffect(widgetsTransparent ? .clear : .regular, in: .rect(cornerRadius: 30.0))
-
+        .foregroundStyle(.primary)
+        .glassEffect(
+            glassMaterial,
+            in: .rect(cornerRadius: 30.0)
+        )
+        // Force a predictable darken/brighten on top of glass
+        .overlay(luminanceOverlay)
+        // Align hit-testing with the visual shape
+        .contentShape(.rect(cornerRadius: 30.0))
     }
 }
 

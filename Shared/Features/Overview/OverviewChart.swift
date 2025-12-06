@@ -39,8 +39,7 @@ struct OverviewChart: View {
                 BatteryLevelSeries(
                     data: consumption.data,
                     maxY: getYMax(),
-                    isAccent: isAccent,
-                    useAlternativeColors: useAlternativeColors
+                    isAccent: isAccent
                 )
             }
 
@@ -49,36 +48,25 @@ struct OverviewChart: View {
             AxisMarks(preset: .automatic) { value in
                 AxisGridLine()
                     #if os(tvOS)
-                        .foregroundStyle(useAlternativeColors ? .white : .primary)
+                        .foregroundStyle(.primary)
                     #endif
 
                 AxisValueLabel()
                     #if os(tvOS)
-                        .foregroundStyle(useAlternativeColors ? .white : .primary)
+                        .foregroundStyle(.primary)
                     #endif
             }
         }
         .chartYAxisLabel {
             if !isSmall {
                 Text("kW")
-                    #if os(tvOS)
-                        .foregroundStyle(.white)
-                    #endif
             }
         }
-        #if os(tvOS)
-            .chartYAxisStyle { axis in
-                axis.foregroundStyle(.white)
-            }
-        #endif
 
         .chartYScale(domain: 0...getYMax())
         .chartXAxis {
             AxisMarks { value in
                 AxisGridLine()
-                    #if os(tvOS)
-                        .foregroundStyle(useAlternativeColors ? .white : .primary)
-                    #endif
 
                 AxisValueLabel(
                     format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(
@@ -87,7 +75,6 @@ struct OverviewChart: View {
                 )
                 #if os(tvOS)
                     .font(.system(size: 18))
-                    .foregroundStyle(useAlternativeColors ? .white : .primary)
                 #endif
             }
         }

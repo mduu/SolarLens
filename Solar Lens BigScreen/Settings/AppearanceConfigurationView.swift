@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AppearanceConfigurationView: View {
     @AppStorage("backgroundImageV2") var backgroundImage: String = availableBackgroundImages.first!.key
-    @AppStorage("widgetsTransparent") var widgetsTransparent: Bool = false
+    @AppStorage("widgetsDarkmode") var widgetsDarkMode: Bool = false
 
     static let availableBackgroundImages: [String: LocalizedStringKey] = [
         "bg_blue_sunny_clouds_4k": "Blue Sky",
@@ -45,11 +45,17 @@ struct AppearanceConfigurationView: View {
                 }
 
                 HStack(alignment: .center, spacing: 12) {
-                    Text("Widget transparency")
+                    Text("Darken widgets")
                         .frame(width: 500, alignment: .leading)
 
-                    Toggle("Transparent", isOn: $widgetsTransparent)
+                    Toggle("", isOn: $widgetsDarkMode)
                         .labelsHidden()
+                }
+
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    Image(systemName: "info.circle")
+                    Text("Please note that the effect highly depends if the tvOS system setting is 'dark' or 'light' mode. Try change the system setting as well.")
+                        .font(.footnote)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -5,7 +5,6 @@ struct BatteryLevelSeries: ChartContent {
     var data: [MainDataItem]
     var maxY: Double
     var isAccent: Bool
-    var useAlternativeColors: Bool
 
     func getValue(_ percent: Int?) -> Double {
         let doubleValue = percent != nil ? Double(percent!) : 0.0
@@ -40,7 +39,6 @@ struct BatteryLevelSeries: ChartContent {
                 data: MainData.fake().data,
                 maxY: 5.3,
                 isAccent: false,
-                useAlternativeColors: false
             )
         }
         .chartYAxis {
@@ -65,7 +63,6 @@ struct BatteryLevelSeries: ChartContent {
                 data: MainData.fake().data,
                 maxY: 5.3,
                 isAccent: false,
-                useAlternativeColors: false
             )
         }
         .chartYAxis {
