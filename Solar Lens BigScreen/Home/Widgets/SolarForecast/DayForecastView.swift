@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DayForecastView: View {
     var dayForecast: ForecastItem?
-    var dayLabel: String
+    var dayLabel: LocalizedStringKey
     var overallMinimum: Double
     var overallMaximum: Double
 
