@@ -4,6 +4,8 @@ struct WidgetBase<Content: View>: View {
     var title: LocalizedStringResource?
     var content: Content
 
+    @AppStorage("widgetsTransparent") var widgetsTransparent: Bool = false
+
     init(title: LocalizedStringResource?, @ViewBuilder content: () -> Content) {
         self.title = title
         self.content = content()
@@ -18,7 +20,7 @@ struct WidgetBase<Content: View>: View {
         .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .foregroundColor(.white)
-        .glassEffect(.regular, in: .rect(cornerRadius: 30.0))
+        .glassEffect(widgetsTransparent ? .clear : .regular, in: .rect(cornerRadius: 30.0))
 
     }
 }

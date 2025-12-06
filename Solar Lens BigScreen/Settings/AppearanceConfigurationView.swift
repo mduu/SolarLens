@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AppearanceConfigurationView: View {
     @AppStorage("backgroundImageV2") var backgroundImage: String = availableBackgroundImages.first!.key
+    @AppStorage("widgetsTransparent") var widgetsTransparent: Bool = false
 
     static let availableBackgroundImages: [String: LocalizedStringKey] = [
         "bg_blue_sunny_clouds_4k": "Blue Sky",
@@ -20,18 +21,19 @@ struct AppearanceConfigurationView: View {
         "bg_black_gradient_4k": "Black Gradient",
         "bg_dark_panels_4k": "Dark Panels",
         "bg_eclipse_4k": "Dark Eclipse",
+        "bg_earth_4k": "Earth",
     ]
 
     var body: some View {
         BorderBox {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 30) {
                 Text("Appearance")
                     .font(.title3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                HStack(alignment: .firstTextBaseline) {
-
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
                     Text("Background")
-                        .frame(width: 200)
+                        .frame(width: 500, alignment: .leading)
 
                     Picker("Select Background", selection: $backgroundImage) {
                         ForEach(AppearanceConfigurationView.availableBackgroundImages.keys.sorted(), id: \.self) { key in
@@ -40,12 +42,18 @@ struct AppearanceConfigurationView: View {
                         }
                     }
                     .pickerStyle(.menu)
-                    .padding()
-                    .frame(maxWidth: .infinity)
+                }
 
+                HStack(alignment: .center, spacing: 12) {
+                    Text("Widget transparency")
+                        .frame(width: 500, alignment: .leading)
+
+                    Toggle("Transparent", isOn: $widgetsTransparent)
+                        .labelsHidden()
                 }
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 4)
         }
     }
 }
