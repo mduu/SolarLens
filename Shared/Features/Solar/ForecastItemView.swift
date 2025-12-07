@@ -1,5 +1,8 @@
 import SwiftUI
-import WidgetKit
+
+#if !os(tvOS)
+    import WidgetKit
+#endif
 
 struct ForecastItemView: View {
     var date: Date?
@@ -31,7 +34,9 @@ struct ForecastItemView: View {
                             width: geometry.size.width,
                             height: geometry.size.height
                         )
-                        .widgetAccentable()
+                        #if !os(tvOS)
+                            .widgetAccentable()
+                        #endif
 
                     RoundedRectangle(cornerRadius: 5)
                         .fill(
@@ -46,9 +51,11 @@ struct ForecastItemView: View {
                                 : LinearGradient(
                                     gradient: Gradient(colors: [
                                         getColor().opacity(
-                                            intense ? 0.30 : 0.15),
+                                            intense ? 0.30 : 0.15
+                                        ),
                                         getColor().opacity(
-                                            intense ? 0.05 : 0.01),
+                                            intense ? 0.05 : 0.01
+                                        ),
                                     ]),
                                     startPoint: .top,
                                     endPoint: .bottom
@@ -62,7 +69,9 @@ struct ForecastItemView: View {
                             x: geometry.size.width / 2,
                             y: geometry.size.height * (1 - getPercentage() / 2)
                         )  // Position relative to parent's height
-                        .widgetAccentable()
+                        #if !os(tvOS)
+                            .widgetAccentable()
+                        #endif
                 }
             }
 
@@ -78,7 +87,9 @@ struct ForecastItemView: View {
                     #else
                         .font(.system(size: 10))
                     #endif
-                    .widgetAccentable()
+                    #if !os(tvOS)
+                        .widgetAccentable()
+                    #endif
 
                     Text("\(forecast?.stringRange ?? "")")
                         .foregroundColor(

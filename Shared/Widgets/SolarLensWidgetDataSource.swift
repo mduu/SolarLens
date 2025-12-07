@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 
 class SolarLensWidgetDataSource {
     private let solarManager = SolarManager()
@@ -7,7 +7,7 @@ class SolarLensWidgetDataSource {
     private var lastFetchConsumptionData: Date?
     private var overviewData: OverviewData?
     private var solarData: SolarDetailsData?
-    private var consumptionData: ConsumptionData?
+    private var consumptionData: MainData?
 
     func getOverviewData() async throws -> OverviewData? {
 
@@ -43,12 +43,12 @@ class SolarLensWidgetDataSource {
         return solarData
     }
     
-    func getComsumptionData() async throws -> ConsumptionData? {
+    func getComsumptionData() async throws -> MainData? {
 
         if consumptionData == nil
             || lastFetchConsumptionData?.timeIntervalSinceNow ?? 0 < -4 * 60
         {
-            let data = try? await solarManager.fetchConsumptions(
+            let data = try? await solarManager.fetchMainData(
                 from: Date.todayStartOfDay(), to: Date.todayEndOfDay())
 
             consumptionData = data

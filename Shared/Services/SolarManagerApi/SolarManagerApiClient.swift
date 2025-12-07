@@ -1,11 +1,13 @@
 import Combine
-import Foundation
+internal import Foundation
 
 class SolarManagerApi: RestClient {
 
     private let apiBaseUrl: String = "https://cloud.solar-manager.ch"
+    private let onTokenExpired: (() async -> Bool)
 
-    init() {
+    init(onTokenExpired: @escaping () async -> Bool) {
+        self.onTokenExpired = onTokenExpired
         super.init(baseUrl: apiBaseUrl)
     }
 
@@ -38,20 +40,23 @@ class SolarManagerApi: RestClient {
 
     func refresh(refreshToken: String) async throws -> RefreshResponse {
         do {
-            if let refreshResponse: RefreshResponse? = try await post(
+            let refreshResponse: RefreshResponse? = try? await post(
                 serviceUrl: "/v1/oauth/refresh",
                 requestBody: RefreshRequest(refreshToken: refreshToken),
-                useAccessToken: false
-            ) {
-                storeLogin(
-                    accessToken: refreshResponse!.accessToken,
-                    refreshToken: refreshResponse!.refreshToken
-                )
+                useAccessToken: false,
+                maxRetry: 0
+            )
 
-                return refreshResponse!
+            guard let refreshResponse else {
+                throw SolarManagerApiClientError.communicationError
             }
 
-            throw SolarManagerApiClientError.communicationError
+            storeLogin(
+                accessToken: refreshResponse.accessToken,
+                refreshToken: refreshResponse.refreshToken
+            )
+
+            return refreshResponse
 
         } catch {
             clearLogin()
@@ -129,6 +134,16 @@ class SolarManagerApi: RestClient {
         return response
     }
 
+    func getV3StreamGateway(solarManagerId smId: String) async throws
+        -> DataStreamV3Response?
+    {
+        let response: DataStreamV3Response? = try await get(
+            serviceUrl: "v3/users/\(smId)/data/stream"
+        )
+
+        return response
+    }
+
     func getV1ConsumptionSensor(sensorId: String, period: Period = .day)
         async throws -> SensorConsumptionV1Response?
     {
@@ -166,19 +181,20 @@ class SolarManagerApi: RestClient {
         return response
     }
 
-    func getV1GatewayConsumption(
+    func getV3UserDataRange(
         solarManagerId smId: String,
         from: Date,
-        to: Date
+        to: Date,
+        interval: Int = 300
     ) async throws
-        -> GatewayIntervalConsumption?
+        -> DataMainV3Schema?
     {
         let fromIso = RestDateHelper.string(from: from)
         let toIso = RestDateHelper.string(from: to)
 
-        let response: GatewayIntervalConsumption? = try await get(
+        let response: DataMainV3Schema? = try await get(
             serviceUrl:
-                "/v1/consumption/gateway/\(smId)/range?from=\(fromIso)&to=\(toIso)&interval=300"
+                "/v3/users/\(smId)/data/range?from=\(fromIso)&to=\(toIso)&interval=\(interval)"
         )
 
         return response
@@ -234,6 +250,10 @@ class SolarManagerApi: RestClient {
         )
 
         return
+    }
+
+    override func handleTokenExpired(failedResponse: HTTPURLResponse) async -> Bool {
+        return await onTokenExpired()
     }
 
     private func storeLogin(accessToken: String, refreshToken: String) {

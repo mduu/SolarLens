@@ -1,8 +1,9 @@
 import Combine
-import Foundation
+internal import Foundation
 
 class RestClient {
     let baseUrl: String
+    var defaultTimeout: TimeInterval = 30 // Set timeout to 40 seconds
     private let session: URLSession
     private let jsonEncoder: JSONEncoder = .init()
     private let jsonDecoder: JSONDecoder = .init()
@@ -12,11 +13,10 @@ class RestClient {
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:00.000"
-        //dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         self.jsonEncoder.dateEncodingStrategy = .formatted(dateFormatter)
 
         let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 10  // Set timeout to 30 seconds
+        configuration.timeoutIntervalForRequest = defaultTimeout
         session = URLSession(configuration: configuration)
     }
 
@@ -41,7 +41,8 @@ class RestClient {
         serviceUrl: String,
         requestBody: TRequest,
         parameters: Encodable? = nil,
-        useAccessToken: Bool = true
+        useAccessToken: Bool = true,
+        maxRetry: Int = 4
     ) async throws
         -> TResponse? where TRequest: Encodable, TResponse: Decodable
     {
@@ -50,7 +51,8 @@ class RestClient {
             httpMethod: "POST",
             requestBody: requestBody,
             parameters: parameters,
-            useAccessToken: useAccessToken
+            useAccessToken: useAccessToken,
+            maxRetry: maxRetry
         )
     }
 
@@ -102,7 +104,7 @@ class RestClient {
             return nil
         }
 
-        var request = URLRequest(url: url, timeoutInterval: 20)
+        var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = httpMethod
         if requestBody != nil {
@@ -127,7 +129,7 @@ class RestClient {
         repeat {
 
             if retryAttempt > 0 {
-                await exponentialWait(attempt: retryAttempt)
+                await waitFor(seconds: 2)
                 print("Retrying request...")
             }
 
@@ -141,8 +143,9 @@ class RestClient {
                 )
                 data = responseData
                 response = responseMeta as? HTTPURLResponse
+
                 print(
-                    "HTTP \(httpMethod) done. Status-Code: \(response?.statusCode ?? -1)"
+                    "🟢 HTTP \(httpMethod) \(serviceUrl) -> Status-Code: \(response?.statusCode ?? -1)"
                 )
 
             } catch let error {
@@ -152,6 +155,7 @@ class RestClient {
                 if isTimeout {
                     print("Server request timeout")
                     retryAttempt += 1
+                    await waitFor(seconds: 2)
                     continue
                 } else {
                     throw error
@@ -168,23 +172,47 @@ class RestClient {
 
                 do {
                     return try jsonDecoder.decode(TResponse.self, from: data!)
-                } catch let error {
-                    print(
-                        "Error deserializing response: \(error.localizedDescription)"
-                    )
-                    print("Debug-Description: \(response.debugDescription)")
+                } catch let error as DecodingError {
+                    print("🔴📄 Decoding Error: \(error)")
+
+                    switch error {
+                        case .keyNotFound(let key, let context):
+                            print("--- Key Not Found ---")
+                            print("Missing Key: \(key.stringValue)")
+                            print("Context: \(context.debugDescription)")
+
+                        case .typeMismatch(let type, let context):
+                            print("--- Type Mismatch ---")
+                            print("Type Expected: \(type)")
+                            print("Context: \(context.debugDescription)")
+
+                        case .valueNotFound(let type, let context):
+                            print("--- Value Not Found ---")
+                            print("Value of Type \(type) not found.")
+                            print("Context: \(context.debugDescription)")
+
+                        case .dataCorrupted(let context):
+                            print("--- Data Corrupted ---")
+                            print("Context: \(context.debugDescription)")
+
+                        @unknown default:
+                            print("An unknown decoding error occurred.")
+                    }
+
+                    print("--- Response Content ---")
                     debugPrint(
                         String(data: data!, encoding: .utf8)
-                            ?? "Data could not be decoded as UTF-8"
+                        ?? "Data could not be decoded as UTF-8"
                     )
 
                     return nil
                 }
+
             case 201, 202, 204:  // OK no data
                 return nil
             case 400:  // Bad request
                 canRetry = false
-                print("ERROR: BAD REQUEST (400)")
+                print("🔴 ERROR: BAD REQUEST (400)")
                 print("Debug-Description: \(response.debugDescription)")
                 let bodyText =
                     request.httpBody == nil
@@ -199,27 +227,40 @@ class RestClient {
                     response: response,
                     details: "\(request.httpMethod ?? "-") \(url)\n \(bodyText)")
             case 401:  // Unauthorized / Token expired
+                print("🔴🔑 ERROR: FORBIDDEN (403)")
                 canRetry = await handleTokenExpired(
                     failedResponse: response!
                 )
             case 403:  // Forbidden
-                print("ERROR: FORBIDDEN (403)")
+                print("🔴🔓 ERROR: FORBIDDEN (403)")
                 canRetry = await handleForbidden(
                     failedResponse: response!
                 )
             default:
                 print(
-                    "ERROR HTTP \(httpMethod): \(response!.statusCode), \(String(describing: HTTPURLResponse.localizedString))"
+                    "🔴 ERROR HTTP \(httpMethod): \(response!.statusCode), \(String(describing: HTTPURLResponse.localizedString))"
                 )
             }
 
             if canRetry && maxRetry > retryAttempt {
                 retryAttempt += 1
+                let millisecondsToWait = UInt64(500 * pow(2, Double(retryAttempt - 1)))
+                await waitFor(milliseconds: millisecondsToWait)
             } else {
                 print("Request failed after #\(retryAttempt) attempts")
                 throw RestError.responseError(response: response!)
             }
 
         } while true
+    }
+
+    private func waitFor(seconds: UInt16) async {
+        print("Waiting \(seconds) seconds before retry...")
+        try? await Task.sleep(nanoseconds: UInt64(seconds) * 1_000_000_000)
+    }
+
+    private func waitFor(milliseconds: UInt64) async {
+        print("Waiting \(milliseconds) seconds before retry...")
+        try? await Task.sleep(nanoseconds: UInt64(milliseconds) * 1_000_000)
     }
 }

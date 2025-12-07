@@ -1,5 +1,5 @@
 import Combine
-import Foundation
+internal import Foundation
 
 protocol EnergyManager {
     func login(username: String, password: String) async -> Bool
@@ -11,8 +11,8 @@ protocol EnergyManager {
     
     func fetchSolarDetails() async throws -> SolarDetailsData
     
-    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData
-    
+    func fetchMainData(from: Date, to: Date, interval: Int) async throws -> MainData
+
     func fetchTodaysBatteryHistory() async throws -> [BatteryHistory]
     
     func fetchServerInfo() async throws -> ServerInfo
@@ -21,7 +21,7 @@ protocol EnergyManager {
 
     func fetchStatisticsOverview() async throws -> StatisticsOverview
 
-    func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics
+    func fetchStatistics(from: Date?, to: Date, accuracy: Accuracy) async throws -> Statistics?
 
     func fetchTariffInfos() async throws -> TariffInfo
 
@@ -37,4 +37,10 @@ protocol EnergyManager {
         sensorId: String,
         batteryModeInfo: BatteryModeInfo
     ) async throws -> Bool
+}
+
+extension EnergyManager {
+    func fetchMainData(from: Date, to: Date, interval: Int = 300) async throws -> MainData {
+        return try await self.fetchMainData(from: from, to: to, interval: interval)
+    }
 }

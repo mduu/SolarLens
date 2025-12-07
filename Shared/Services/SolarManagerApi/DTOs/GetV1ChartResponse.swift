@@ -1,20 +1,20 @@
 struct GetV1ChartResponse : Codable {
     var lastUpdate: String
-    var production: Int
-    var consumption: Int
+    var production: Double
+    var consumption: Double
     var battery: BatteryStatusResponse?
     var arrows: [ArrowResponse]?
 }
 
 struct BatteryStatusResponse : Codable {
-    var capacity: Int
-    var batteryCharging: Int
-    var batteryDischarging: Int
+    var capacity: Double
+    var batteryCharging: Double
+    var batteryDischarging: Double
 }
 
 struct ArrowResponse: Codable {
     var direction: ArrowType
-    var value: Int
+    var value: Double
 }
 
 enum ArrowType: String, Codable {

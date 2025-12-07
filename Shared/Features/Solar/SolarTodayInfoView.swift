@@ -1,10 +1,3 @@
-//
-//  SolarInfoView.swift
-//  Solar Lens Watch App
-//
-//  Created by Marc Dürst on 13.12.2024.
-//
-
 import SwiftUI
 
 struct SolarTodayInfoView: View {
@@ -22,7 +15,9 @@ struct SolarTodayInfoView: View {
                         kWValueText(
                             kwValue: Double(totalProducedToday!) / 1000
                         )
-                        .widgetAccentable()
+                        #if !os(tvOS)
+                            .widgetAccentable()
+                        #endif
                     }  // :if
                 }
 
@@ -38,7 +33,9 @@ struct SolarTodayInfoView: View {
                         kWValueText(
                             kwValue: Double(currentProduction!) / 1000
                         )
-                        .widgetAccentable()
+                        #if !os(tvOS)
+                            .widgetAccentable()
+                        #endif
                     }  // :if
 
                 }  // :VStack
@@ -65,5 +62,6 @@ struct SolarTodayInfoView: View {
 #Preview {
     SolarTodayInfoView(
         totalProducedToday: .constant(2340),
-        currentProduction: .constant(1420))
+        currentProduction: .constant(1420)
+    )
 }

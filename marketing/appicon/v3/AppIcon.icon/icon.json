@@ -71,27 +71,34 @@
       }
     },
     {
+      "blend-mode" : "overlay",
       "blur-material" : null,
+      "hidden" : false,
       "layers" : [
         {
           "blend-mode" : "normal",
-          "image-name" : "0_background 3.svg",
-          "name" : "0_background 3",
-          "opacity-specializations" : [
-            {
-              "value" : 1
-            },
-            {
-              "appearance" : "tinted",
-              "value" : 0.3
-            }
-          ]
+          "fill" : {
+            "automatic-gradient" : "extended-srgb:1.00000,0.80000,0.00000,1.00000"
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "0_background 2.svg",
+          "name" : "0_background 2",
+          "opacity" : 0.54
         }
       ],
       "lighting" : "combined",
       "name" : "Background",
+      "opacity" : 0.29,
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [
+          -40.7734375,
+          -82.0625
+        ]
+      },
       "shadow" : {
-        "kind" : "neutral",
+        "kind" : "layer-color",
         "opacity" : 1
       },
       "specular" : true,

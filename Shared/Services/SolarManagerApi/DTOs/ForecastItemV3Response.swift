@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 
 struct ForecastV3Response: Codable {
     var data: [ForecastItemV3Response] = []

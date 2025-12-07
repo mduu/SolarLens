@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 import KeychainAccess
 
 class KeychainHelper {
@@ -64,28 +64,8 @@ class KeychainHelper {
     }
 
     private static func getKeychain() -> Keychain {
-        let shared = Keychain(service: serviceName, accessGroup: accessGroup)
+        return Keychain(service: serviceName, accessGroup: accessGroup)
             .synchronizable(true)
             .comment(serviceComment)
-
-        // Migrate from old Keychain if needed
-        if shared[usernameKey] == nil || shared[passwordKey] == nil {
-            let oldKeychain = getOldKeychain()
-            if oldKeychain["username"] != nil && oldKeychain["password"] != nil
-            {
-                shared[usernameKey] = oldKeychain["username"]
-                shared[passwordKey] = oldKeychain["password"]
-                shared[accessTokenKey] = oldKeychain["accessToken"]
-                shared[refreshTokenKey] = oldKeychain["refreshToken"]
-                
-                try! oldKeychain.removeAll()
-            }
-        }
-        
-        return shared
-    }
-
-    private static func getOldKeychain() -> Keychain {
-        return Keychain(service: "com.marcduerst.SolarManagerWatch")
     }
 }

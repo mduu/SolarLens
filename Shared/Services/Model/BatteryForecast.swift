@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 
 struct BatteryForecast : Sendable {
     let durationUntilFullyCharged: TimeInterval?

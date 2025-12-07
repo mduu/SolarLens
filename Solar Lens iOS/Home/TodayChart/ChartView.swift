@@ -7,6 +7,8 @@ struct ChartView: View {
         var showBatteryCharging: Bool = false
     @AppStorage("showBatteryDischarging") private
         var showBatteryDischarging: Bool = false
+    @AppStorage("showBatteryPercentag") private
+        var showBatteryPercentage: Bool = true
 
     @State var viewModel = ChartViewModel()
     @State private var refreshTimer: Timer?
@@ -23,9 +25,24 @@ struct ChartView: View {
 
                             HStack {
                                 Button(action: {
-                                    showBatteryCharging.toggle()
+                                    showBatteryPercentage.toggle()
                                 }) {
                                     Image(systemName: "battery.100percent.bolt")
+                                        .font(.system(size: 14))
+                                        .padding(4)
+
+                                }
+                                .buttonBorderShape(.circle)
+                                .buttonStyle(.bordered)
+                                .tint(
+                                    showBatteryPercentage ? SerieColors
+                                        .batteryLevelColor(useAlternativeColors: false) : .gray
+                                )
+
+                                Button(action: {
+                                    showBatteryCharging.toggle()
+                                }) {
+                                    Image(systemName: "battery.100percent.circle")
                                         .font(.system(size: 14))
                                         .padding(4)
 
@@ -53,7 +70,8 @@ struct ChartView: View {
                                 consumption: viewModel.consumptionData!,
                                 batteries: viewModel.batteryHistory ?? [],
                                 showBatteryCharge: showBatteryCharging,
-                                showBatteryDischange: showBatteryDischarging
+                                showBatteryDischange: showBatteryDischarging,
+                                showBatteryPercentage: showBatteryPercentage
                             )
 
                             HStack {
@@ -132,7 +150,7 @@ struct ChartView: View {
         guard consumptionData.data.isEmpty == false else { return 0 }
 
         let maxProduction: Double? = consumptionData.data
-            .map { $0.productionWatts / 1000 }
+            .map { Double($0.productionWatts) / 1000 }
             .max()
 
         guard let maxProduction else { return 0 }
@@ -145,7 +163,7 @@ struct ChartView: View {
         guard consumptionData.data.isEmpty == false else { return 0 }
 
         let maxConsumption: Double? = consumptionData.data
-            .map { $0.consumptionWatts / 1000 }
+            .map { Double($0.consumptionWatts) / 1000 }
             .max()
 
         guard let maxConsumption else { return 0 }

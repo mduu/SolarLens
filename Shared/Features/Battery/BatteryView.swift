@@ -70,7 +70,8 @@ struct BatteryView: View {
                             .font(.headline)
                     }
             }
-        #else
+        #endif
+        #if os(iOS)
             .sheet(isPresented: $showModeSheet) {
                 NavigationView {
                     BatteryModeSheet(battery: battery)

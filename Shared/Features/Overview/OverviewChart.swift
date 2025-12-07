@@ -3,12 +3,18 @@ import SwiftUI
 
 struct OverviewChart: View {
 
-    var consumption: ConsumptionData
+    var consumption: MainData
     var batteries: [BatteryHistory] = []
     var isSmall: Bool = false
     var isAccent: Bool = false
     var showBatteryCharge: Bool = true
     var showBatteryDischange: Bool = true
+    var showBatteryPercentage: Bool = true
+    var useAlternativeColors: Bool = false
+
+    var anyBatteryLevel: Bool {
+        consumption.data.isEmpty == false && consumption.data.contains(where: { $0.batteryLevel != nil })
+    }
 
     var body: some View {
 
@@ -16,9 +22,10 @@ struct OverviewChart: View {
 
             ProductionConsumptionSeries(
                 data: consumption.data,
-                isAccent: isAccent
+                isAccent: isAccent,
+                useAlternativeColors: useAlternativeColors
             )
-            
+
             if !batteries.isEmpty {
                 BatterySeries(
                     batteries: batteries,
@@ -27,36 +34,65 @@ struct OverviewChart: View {
                     showDischarging: showBatteryDischange
                 )
             }
-            
+
+            if showBatteryPercentage && anyBatteryLevel {
+                BatteryLevelSeries(
+                    data: consumption.data,
+                    maxY: getYMax(),
+                    isAccent: isAccent
+                )
+            }
+
         }
         .chartYAxis {
             AxisMarks(preset: .automatic) { value in
                 AxisGridLine()
+                    #if os(tvOS)
+                        .foregroundStyle(.primary)
+                    #endif
+
                 AxisValueLabel()
+                    #if os(tvOS)
+                        .foregroundStyle(.primary)
+                    #endif
             }
         }
-        .chartYAxisLabel(isSmall ? "" : "kW")
+        .chartYAxisLabel {
+            if !isSmall {
+                Text("kW")
+            }
+        }
+
         .chartYScale(domain: 0...getYMax())
         .chartXAxis {
             AxisMarks { value in
                 AxisGridLine()
+
                 AxisValueLabel(
                     format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(
                         .twoDigits
                     )
                 )
+                #if os(tvOS)
+                    .font(.system(size: 18))
+                #endif
             }
         }
         .chartLegend(isSmall ? .hidden : .visible)
-        .chartForegroundStyleScale([
-                    "Production": .yellow,
-                    "Consumption": .teal,
-                    (showBatteryDischange ? "Battery consumption" : ""): (showBatteryDischange ? .indigo : .clear),
-                    (showBatteryCharge ? "Battery charged" : ""): (showBatteryCharge ? .purple : .clear),
-                ])
+        .chartForegroundStyleScale(
+            [
+                "Production": SerieColors.productionColor(useAlternativeColors: useAlternativeColors),
+                "Consumption": SerieColors.consumptionColor(useAlternativeColors: useAlternativeColors),
+                (showBatteryDischange ? "Battery consumption" : ""): (showBatteryDischange ? .indigo : .clear),
+                (showBatteryCharge ? "Battery charged" : ""): (showBatteryCharge ? .purple : .clear),
+                (showBatteryPercentage ? "Battery" : ""):
+                    (showBatteryPercentage
+                    ? SerieColors.batteryLevelColor(useAlternativeColors: useAlternativeColors) : .clear),
+            ]
+        )
         .frame(maxHeight: .infinity)
     }
-    
+
     private func getTimeFormatter() -> DateFormatter {
         let result = DateFormatter()
         result.setLocalizedDateFormatFromTemplate("HH:mm")
@@ -65,7 +101,7 @@ struct OverviewChart: View {
 
     private func getYMax() -> Double {
         let maxkW: Double? = consumption.data
-            .map { max($0.productionWatts, $0.consumptionWatts) / 1000 }
+            .map { Double(max($0.productionWatts, $0.consumptionWatts)) / 1000 }
             .max()
 
         guard let maxkW else { return 2.0 }
@@ -79,15 +115,25 @@ struct OverviewChart: View {
 
 #Preview("Normal") {
     OverviewChart(
-        consumption: ConsumptionData.fake()
+        consumption: MainData.fake()
     )
 }
 
 #Preview("Small") {
     OverviewChart(
-        consumption: ConsumptionData.fake(),
+        consumption: MainData.fake(),
         batteries: BatteryHistory.fakeHistory(),
         isSmall: true
+    )
+    .frame(height: 80)
+}
+
+#Preview("Alternative Colors") {
+    OverviewChart(
+        consumption: MainData.fake(),
+        batteries: BatteryHistory.fakeHistory(),
+        isSmall: true,
+        useAlternativeColors: true
     )
     .frame(height: 80)
 }

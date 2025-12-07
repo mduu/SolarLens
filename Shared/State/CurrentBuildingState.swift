@@ -1,4 +1,4 @@
-import Foundation
+internal import Foundation
 import SwiftUI
 
 @Observable
@@ -9,6 +9,7 @@ class CurrentBuildingState {
     var loginCredentialsExists: Bool = false
     var didLoginSucceed: Bool? = nil
     var overviewData: OverviewData = .init()
+    var solarDetailsData: SolarDetailsData?
     var isChangingCarCharger: Bool = false
     var carChargerSetSuccessfully: Bool? = nil
     var isChangingSensorPriority: Bool = false
@@ -28,32 +29,6 @@ class CurrentBuildingState {
     init() {
         self.energyManager = SolarManager.instance()
         updateCredentialsExists()
-    }
-
-    static func fake(
-        overviewData: OverviewData = OverviewData.fake(),
-        loggedIn: Bool = true,
-        isLoading: Bool = false,
-        didLoginSucceed: Bool? = nil,
-        error: EnergyManagerClientError? = nil,
-        errorMessage: String? = nil
-    ) -> CurrentBuildingState {
-        let result = CurrentBuildingState.init(
-            energyManagerClient: FakeEnergyManager.init(data: overviewData)
-        )
-        result.isLoading = false
-        result.loginCredentialsExists = loggedIn
-
-        Task {
-            await result.fetchServerData()
-        }
-
-        result.isLoading = isLoading
-        result.didLoginSucceed = didLoginSucceed
-        result.error = error
-        result.errorMessage = errorMessage
-
-        return result
     }
 
     func pauseFetching() {
@@ -101,7 +76,7 @@ class CurrentBuildingState {
             print(
                 "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
             )
-            
+
             isLoading = false
         } catch {
             if error is RestError {
@@ -133,6 +108,90 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
+    func fetchSolarDetails() async {
+        let fetchedSolarDetailsData = try? await energyManager.fetchSolarDetails()
+
+        guard let fetchedSolarDetailsData else {
+            return
+        }
+
+        solarDetailsData = fetchedSolarDetailsData
+    }
+
+    @MainActor
+    func fetchMainDataForToday() async -> MainData? {
+        let consumptionData = try? await energyManager.fetchMainData(
+            from: Date.todayStartOfDay(),
+            to: Date.todayEndOfDay()
+        )
+
+        return consumptionData
+    }
+
+    @MainActor
+    func fetchStatisticsForPast7Days() async -> [DayStatistic]? {
+        let calendar = Calendar.current
+        let start = calendar.date(byAdding: .day, value: -7, to: Date.todayStartOfDay())
+
+        guard let start else {
+            return nil
+        }
+
+        let mainData = try? await energyManager.fetchMainData(
+            from: start,
+            to: Date.todayEndOfDay(),
+            interval: 300
+        )
+
+        guard let mainData else {
+            return nil
+        }
+
+        let staticsPerDay: [DayStatistic] = calculateDailyStatistics(dataPoints: mainData.data)
+
+        return staticsPerDay
+
+    }
+
+    private func calculateDailyStatistics(dataPoints: [MainDataItem]) -> [DayStatistic] {
+        // Group data points by calendar day
+        let calendar = Calendar.current
+
+        // Dictionary to store data points grouped by day
+        var dataPointsByDay: [Date: [MainDataItem]] = [:]
+
+        for dataPoint in dataPoints {
+            // Get the start of the day for this data point's timestamp
+            let dayStart = calendar.startOfDay(for: dataPoint.date)
+
+            if dataPointsByDay[dayStart] == nil {
+                dataPointsByDay[dayStart] = []
+            }
+            dataPointsByDay[dayStart]?.append(dataPoint)
+        }
+
+        // Create DayStatistic for each day by aggregating the values
+        let dayStatistics = dataPointsByDay.map { (day, itemsForDay) -> DayStatistic in
+            return DayStatistic(
+                day: day,
+                consumption: itemsForDay.reduce(0.0) { $0 + $1.consumptionOverTimeWatthours },
+                production: itemsForDay.reduce(0.0) { $0 + $1.productionOverTimeWatthours },
+                imported: itemsForDay.reduce(0.0) { $0 + $1.importedOverTimeWhatthours },
+                exported: itemsForDay.reduce(0.0) { $0 + $1.exportedOverTimeWhatthours }
+            )
+        }
+
+        // Sort by day in ascending order
+        return dayStatistics.sorted { $0.day < $1.day }
+    }
+
+    @MainActor
+    func fetchAllimeStatistics() async -> Statistics? {
+        return try? await energyManager.fetchStatistics(from: nil, to: Date(), accuracy: .low)
+    }
+
+    @MainActor
     func setCarCharging(
         sensorId: String,
         newCarCharging: ControlCarChargingRequest
@@ -174,6 +233,7 @@ class CurrentBuildingState {
         }
     }
 
+    @MainActor
     func setSensorPriority(sensorId: String, newPriority: Int) async {
         guard loginCredentialsExists && !isChangingSensorPriority
         else {
@@ -211,7 +271,8 @@ class CurrentBuildingState {
             sensorPrioritySetSuccessfully = false
         }
     }
-    
+
+    @MainActor
     func setBatteryMode(
         sensorId: String,
         batteryModeInfo: BatteryModeInfo
@@ -259,13 +320,14 @@ class CurrentBuildingState {
         }
     }
 
-
+    @MainActor
     func logout() {
         KeychainHelper.deleteCredentials()
         updateCredentialsExists()
         resetError()
     }
 
+    @MainActor
     func checkForCredentions() {
         updateCredentialsExists()
     }
@@ -282,4 +344,38 @@ class CurrentBuildingState {
         errorMessage = nil
         error = nil
     }
+}
+
+extension CurrentBuildingState {
+    
+    static func fake() -> CurrentBuildingState {
+        return .fake(overviewData: .fake())
+    }
+
+    static func fake(
+        overviewData: OverviewData = OverviewData.fake(),
+        loggedIn: Bool = true,
+        isLoading: Bool = false,
+        didLoginSucceed: Bool? = nil,
+        error: EnergyManagerClientError? = nil,
+        errorMessage: String? = nil
+    ) -> CurrentBuildingState {
+        let result = CurrentBuildingState.init(
+            energyManagerClient: FakeEnergyManager.init(data: overviewData)
+        )
+        result.isLoading = false
+        result.loginCredentialsExists = loggedIn
+
+        Task {
+            await result.fetchServerData()
+        }
+
+        result.isLoading = isLoading
+        result.didLoginSucceed = didLoginSucceed
+        result.error = error
+        result.errorMessage = errorMessage
+
+        return result
+    }
+
 }

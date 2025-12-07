@@ -1,5 +1,5 @@
 import AppIntents
-import Foundation
+internal import Foundation
 import WidgetKit
 
 struct ConsumptionAppIntent: WidgetConfigurationIntent {

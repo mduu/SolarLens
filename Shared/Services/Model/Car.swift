@@ -1,5 +1,5 @@
 import Observation
-import Foundation
+internal import Foundation
 
 @Observable
 class Car: Identifiable {

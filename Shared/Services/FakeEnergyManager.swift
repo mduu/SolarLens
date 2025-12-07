@@ -1,7 +1,8 @@
 import Combine
-import Foundation
+internal import Foundation
 
 class FakeEnergyManager: EnergyManager {
+
     func fetchStatisticsOverview() async throws -> StatisticsOverview {
         StatisticsOverview(
             week: Statistics(
@@ -35,7 +36,7 @@ class FakeEnergyManager: EnergyManager {
         )
     }
 
-    func fetchStatistics(from: Date, to: Date, accuracy: Accuracy) async throws -> Statistics {
+    func fetchStatistics(from: Date?, to: Date, accuracy: Accuracy) async throws -> Statistics? {
         Statistics(
             consumption: 1234.22,
             production: 987.21,
@@ -116,9 +117,9 @@ class FakeEnergyManager: EnergyManager {
         return BatteryHistory.fakeHistory()
     }
 
-    func fetchConsumptions(from: Date, to: Date) async throws -> ConsumptionData
+    func fetchMainData(from: Date, to: Date) async throws -> MainData
     {
-        return ConsumptionData.fake()
+        return MainData.fake()
     }
 
     func setCarChargingMode(

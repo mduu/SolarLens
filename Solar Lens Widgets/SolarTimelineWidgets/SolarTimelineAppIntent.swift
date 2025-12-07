@@ -5,7 +5,7 @@
 //  Created by Marc Dürst on 22.11.2024.
 //
 
-import Foundation
+internal import Foundation
 import AppIntents
 import WidgetKit
 
@@ -15,7 +15,7 @@ struct SolarTimelineAppIntent : WidgetConfigurationIntent {
 
 struct SolarTimelineEntry: TimelineEntry {
     var date: Date
-    var history: ConsumptionData?
+    var history: MainData?
     var currentProduction: Int?
     var maxProduction: Double?
     var todaySolarProduction: Double?
@@ -23,7 +23,7 @@ struct SolarTimelineEntry: TimelineEntry {
     static func previewData() -> SolarTimelineEntry {
         .init(
             date: Date(),
-            history: ConsumptionData.fake(),
+            history: MainData.fake(),
             currentProduction: 4540,
             maxProduction: 11000,
             todaySolarProduction: 6530

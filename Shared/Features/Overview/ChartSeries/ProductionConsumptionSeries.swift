@@ -2,8 +2,9 @@ import SwiftUI
 import Charts
 
 struct ProductionConsumptionSeries: ChartContent {
-    var data: [ConsumptionItem]
+    var data: [MainDataItem]
     var isAccent: Bool
+    var useAlternativeColors: Bool
 
     var body: some ChartContent {
         ForEach(data) { dataPoint in
@@ -12,15 +13,15 @@ struct ProductionConsumptionSeries: ChartContent {
             if !isAccent {
                 AreaMark(
                     x: .value("Time", dataPoint.date.convertToLocalTime()),
-                    y: .value("kW", dataPoint.productionWatts / 1000),
+                    y: .value("kW", Double(dataPoint.productionWatts) / 1000),
                     stacking: .unstacked
                 )
                 .interpolationMethod(.cardinal)
                 .foregroundStyle(
                     .linearGradient(
                         colors: [
-                            .yellow.opacity(0.5),
-                            .yellow.opacity(0.1),
+                            SerieColors.productionColor(useAlternativeColors: useAlternativeColors).opacity(0.5),
+                            SerieColors.productionColor(useAlternativeColors: useAlternativeColors).opacity(0.1),
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -34,7 +35,7 @@ struct ProductionConsumptionSeries: ChartContent {
 
             LineMark(
                 x: .value("Time", dataPoint.date.convertToLocalTime()),
-                y: .value("kW", dataPoint.productionWatts / 1000)
+                y: .value("kW", Double(dataPoint.productionWatts) / 1000)
             )
             .interpolationMethod(.cardinal)
             .lineStyle(
@@ -47,15 +48,15 @@ struct ProductionConsumptionSeries: ChartContent {
             if !isAccent {
                 AreaMark(
                     x: .value("Time", dataPoint.date.convertToLocalTime()),
-                    y: .value("kW", dataPoint.consumptionWatts / 1000),
+                    y: .value("kW", Double(dataPoint.consumptionWatts) / 1000),
                     stacking: .unstacked
                 )
                 .interpolationMethod(.cardinal)
                 .foregroundStyle(
                     .linearGradient(
                         colors: [
-                            .teal.opacity(0.5),
-                            .teal.opacity(0.1),
+                            SerieColors.consumptionColor(useAlternativeColors: useAlternativeColors).opacity(0.5),
+                            SerieColors.consumptionColor(useAlternativeColors: useAlternativeColors).opacity(0.1),
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -69,7 +70,7 @@ struct ProductionConsumptionSeries: ChartContent {
 
             LineMark(
                 x: .value("Time", dataPoint.date.convertToLocalTime()),
-                y: .value("kW", dataPoint.consumptionWatts / 1000)
+                y: .value("kW", Double(dataPoint.consumptionWatts) / 1000)
             )
             .interpolationMethod(.cardinal)
             .lineStyle(
@@ -82,12 +83,13 @@ struct ProductionConsumptionSeries: ChartContent {
     }
 }
 
-#Preview {
+#Preview("On white") {
     HStack {
         Chart {
             ProductionConsumptionSeries(
-                data: ConsumptionData.fake().data,
-                isAccent: false
+                data: MainData.fake().data,
+                isAccent: false,
+                useAlternativeColors: false
             )
         }
         .chartYAxis {
@@ -97,4 +99,43 @@ struct ProductionConsumptionSeries: ChartContent {
             }
         }
     }
+    .background(.white)
+}
+
+#Preview("On black") {
+    HStack {
+        Chart {
+            ProductionConsumptionSeries(
+                data: MainData.fake().data,
+                isAccent: false,
+                useAlternativeColors: false
+            )
+        }
+        .chartYAxis {
+            AxisMarks(preset: .automatic) { value in
+                AxisGridLine()
+                AxisValueLabel()
+            }
+        }
+    }
+    .background(.black)
+}
+
+#Preview("Darker Colors") {
+    HStack {
+        Chart {
+            ProductionConsumptionSeries(
+                data: MainData.fake().data,
+                isAccent: false,
+                useAlternativeColors: true
+            )
+        }
+        .chartYAxis {
+            AxisMarks(preset: .automatic) { value in
+                AxisGridLine()
+                AxisValueLabel()
+            }
+        }
+    }
+    .background(.blue.gradient)
 }

@@ -9,6 +9,8 @@ struct OverviewChartView: View {
         var showBatteryCharging: Bool = false
     @AppStorage("showBatteryDischargingWatch") private
         var showBatteryDischarging: Bool = false
+    @AppStorage("showBatteryPercentWatch") private
+        var showBatteryPercentage: Bool = true
     @State var showSeriesConfiguration: Bool = false
 
     var body: some View {
@@ -26,7 +28,8 @@ struct OverviewChartView: View {
                                     consumption: viewModel.consumptionData!,
                                     batteries: viewModel.batteryHistory ?? [],
                                     showBatteryCharge: showBatteryCharging,
-                                    showBatteryDischange: showBatteryDischarging
+                                    showBatteryDischange: showBatteryDischarging,
+                                    showBatteryPercentage: showBatteryPercentage
                                 )
 
                                 HStack {
@@ -67,6 +70,10 @@ struct OverviewChartView: View {
                                     Text("Series:")
                                         .font(.headline)
 
+                                    Toggle(isOn: $showBatteryPercentage) {
+                                        Text("Battery level %")
+                                    }
+                                    
                                     Toggle(isOn: $showBatteryCharging) {
                                         Text("Battery charging")
                                     }
@@ -160,7 +167,7 @@ struct OverviewChartView: View {
         guard consumptionData.data.isEmpty == false else { return 0 }
 
         let maxProduction: Double? = consumptionData.data
-            .map { $0.productionWatts / 1000 }
+            .map { Double($0.productionWatts) / 1000 }
             .max()
 
         guard let maxProduction else { return 0 }
@@ -173,7 +180,7 @@ struct OverviewChartView: View {
         guard consumptionData.data.isEmpty == false else { return 0 }
 
         let maxConsumption: Double? = consumptionData.data
-            .map { $0.consumptionWatts / 1000 }
+            .map { Double($0.consumptionWatts) / 1000 }
             .max()
 
         guard let maxConsumption else { return 0 }

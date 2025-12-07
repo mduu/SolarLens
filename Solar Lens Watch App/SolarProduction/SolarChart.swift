@@ -10,7 +10,7 @@ struct SolarDataPoint: Identifiable {
 struct SolarChart: View {
 
     var maxProductionkW: Double
-    var solarProduction: ConsumptionData
+    var solarProduction: MainData
     var isSmall: Bool = false
     var isAccent: Bool = false
 
@@ -21,7 +21,7 @@ struct SolarChart: View {
                     solarProduction.data.map {
                         SolarDataPoint(
                             time: $0.date.convertToLocalTime(),
-                            production: $0.productionWatts / 1000
+                            production: Double($0.productionWatts) / 1000
                         )
                     }
             )
@@ -100,7 +100,7 @@ struct SolarChart: View {
 
     private func getYMax() -> Double {
         let maxProduction: Double? = solarProduction.data
-            .map { $0.productionWatts / 1000 }
+            .map { Double($0.productionWatts) / 1000 }
             .max()
 
         guard let maxProduction, maxProduction > 2 else { return 2.0 }
@@ -141,14 +141,14 @@ struct SolarChart: View {
 #Preview("Normal") {
     SolarChart(
         maxProductionkW: 11000,
-        solarProduction: ConsumptionData.fake()
+        solarProduction: MainData.fake()
     )
 }
 
 #Preview("Small") {
     SolarChart(
         maxProductionkW: 11000,
-        solarProduction: ConsumptionData.fake(),
+        solarProduction: MainData.fake(),
         isSmall: true
     )
     .frame(height: 80)

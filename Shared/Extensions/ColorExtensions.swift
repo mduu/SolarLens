@@ -33,6 +33,17 @@ extension Color {
         }
     }
 
+    // Helper initializer for 0-255 RGB values
+    init(r: Int, g: Int, b: Int, a: Double = 1.0) {
+        self.init(
+            .sRGB,
+            red: Double(r) / 255.0,
+            green: Double(g) / 255.0,
+            blue: Double(b) / 255.0,
+            opacity: a
+        )
+    }
+
     func darken(_ amount: Double = 0.2) -> Color {
         let uiColor = UIColor(self)
         var hue: CGFloat = 0
@@ -44,6 +55,24 @@ extension Color {
             alpha: &alpha)
 
         let newBrightness = CGFloat(max(0, Double(brightness) - amount))
+
+        return Color(
+            UIColor(
+                hue: hue, saturation: saturation, brightness: newBrightness,
+                alpha: alpha))
+    }
+
+    func lighten(_ amount: Double = 0.2) -> Color {
+        let uiColor = UIColor(self)
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        uiColor.getHue(
+            &hue, saturation: &saturation, brightness: &brightness,
+            alpha: &alpha)
+
+        let newBrightness = CGFloat(max(0, Double(brightness) + amount))
 
         return Color(
             UIColor(
