@@ -104,6 +104,7 @@ class SolarManagerApi: RestClient {
         return response
     }
 
+    /*
     func getV1StreamGateway(solarManagerId smId: String) async throws
         -> StreamSensorsV1Response?
     {
@@ -113,6 +114,7 @@ class SolarManagerApi: RestClient {
 
         return response
     }
+     */
 
     func getV3StreamGateway(solarManagerId smId: String) async throws
         -> DataStreamV3Response?

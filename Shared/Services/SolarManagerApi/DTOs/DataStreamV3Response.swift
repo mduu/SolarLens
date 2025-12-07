@@ -17,7 +17,7 @@ struct DataStreamV3Response : Codable {
     /// Battery state of charge in [%]
     var soc: Double = 0
 
-    /// Battery state of charge in [%]
+    /// Battery charge power in [watt]
     var bcW: Double = 0
 
     /// Battery discharge power in [watt]
@@ -54,6 +54,9 @@ struct DataStreamV3Device : Codable {
 
     /// Heating adjustment
     var heatingAdjustment: Double?
+
+    /// Car: remaining Range in km
+    var remainingRange: Double?
 }
 
 extension DataStreamV3Response {

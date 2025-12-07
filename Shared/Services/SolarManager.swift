@@ -45,7 +45,7 @@ actor SolarManager: EnergyManager {
             let lastUpdated = parseSolarManagerDateTime(chart.lastUpdate)
 
             let streamSensorInfos =
-                try await solarManagerApi.getV1StreamGateway(
+                try await solarManagerApi.getV3StreamGateway(
                     solarManagerId: systemInformation.sm_id
                 )
 
@@ -101,10 +101,10 @@ actor SolarManager: EnergyManager {
                             return ChargingStation.init(
                                 id: $0._id,
                                 name: $0.getSensorName(),
-                                chargingMode: streamInfo?.currentMode
+                                chargingMode: $0.data?.chargingMode
                                     ?? ChargingMode.off,
                                 priority: $0.priority,
-                                currentPower: streamInfo?.currentPower ?? 0,
+                                currentPower: Int(streamInfo?.power ?? 0),
                                 signal: $0.signal
                             )
                         },
@@ -355,7 +355,7 @@ actor SolarManager: EnergyManager {
 
         let response = try? await solarManagerApi.getV1Overview()
         guard let response else {
-            return await EnergyOverview()
+            return EnergyOverview()
         }
 
         return EnergyOverview(
@@ -676,7 +676,7 @@ actor SolarManager: EnergyManager {
     }
 
     @MainActor
-    private func getIsAnyCarCharing(streamSensors: StreamSensorsV1Response?)
+    private func getIsAnyCarCharing(streamSensors: DataStreamV3Response?)
         -> Bool
     {
         guard streamSensors != nil else { return false }
@@ -686,7 +686,7 @@ actor SolarManager: EnergyManager {
 
         let charingPower = streamSensors!.devices
             .filter { chargingSensorIds.contains($0._id) }
-            .map { $0.currentPower ?? 0 }
+            .map { $0.power ?? 0 }
             .reduce(0, +)
 
         return charingPower > 0
@@ -705,7 +705,7 @@ actor SolarManager: EnergyManager {
     @MainActor
     private func mapDevice(
         _ sensorInfo: SensorInfosV1Response,
-        _ streamInfo: StreamSensorsV1Device?
+        _ streamInfo: DataStreamV3Device?
     ) -> Device {
         return Device.init(
             id: sensorInfo._id,
@@ -715,7 +715,7 @@ actor SolarManager: EnergyManager {
             name: sensorInfo.getSensorName(),
 
             priority: sensorInfo.priority,
-            currentPowerInWatts: streamInfo?.currentPower ?? 0,
+            currentPowerInWatts: Int(streamInfo?.power ?? 0),
             color: sensorInfo.tag?.color,
             signal: sensorInfo.signal,
             hasError: sensorInfo.hasErrors(),
@@ -788,7 +788,7 @@ actor SolarManager: EnergyManager {
     }
 
     @MainActor
-    private func mapCars(streamSensorInfos: StreamSensorsV1Response?) -> [Car] {
+    private func mapCars(streamSensorInfos: DataStreamV3Response?) -> [Car] {
         guard let sensorInfos = sensorInfos else {
             return []
         }
@@ -808,9 +808,9 @@ actor SolarManager: EnergyManager {
             }
             .map { sensorInfo -> Car in
                 let streamInfo = streamSensorInfos?.deviceById(sensorInfo._id)
-                let dateString: String = streamInfo?.lastUpdate ?? ""
+                let dateString: String = streamInfo?.updatedAt ?? ""
                 let lastUpdate =
-                    streamInfo?.lastUpdate != nil
+                    streamInfo?.updatedAt != nil
                     ? localIsoDateFormatter.date(from: dateString)
                     : nil
 
@@ -820,13 +820,15 @@ actor SolarManager: EnergyManager {
                     priority: sensorInfo.priority,
                     batteryPercent: sensorInfo.soc,
                     batteryCapacity: sensorInfo.data?.batteryCapacity,
-                    remainingDistance: streamInfo?.remainingDistance == nil
+                    remainingDistance: streamInfo?.remainingRange == nil
                         ? nil
-                        : Int((streamInfo?.remainingDistance)!),
+                        : Int((streamInfo?.remainingRange)!),
                     lastUpdate: lastUpdate,
                     signal: sensorInfo.signal,
-                    currentPowerInWatts: streamInfo?.currentPower
-                        ?? 0,
+                    currentPowerInWatts: Int(
+                        streamInfo?.power
+                            ?? 0
+                    ),
                     hasError: sensorInfo.hasErrors()
                 )
             }
@@ -914,10 +916,10 @@ actor SolarManager: EnergyManager {
     @MainActor
     private func handleOnTokenExpired() async -> Bool {
         print("🔑 Token expired. Attempting to refresh or re-login...")
-        
+
         // Clear the expired token info
         self.expireAt = nil
-        
+
         do {
             // Try to ensure we're logged in (this will attempt refresh or re-login)
             try await ensureLoggedIn()

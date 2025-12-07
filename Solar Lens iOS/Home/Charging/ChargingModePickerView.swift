@@ -14,8 +14,8 @@ struct ChargingModePickerView: View {
                 chargingMode in
 
                 if chargingModeConfiguration.chargingModeVisibillity[
-                    chargingMode] ?? true
-                {
+                    chargingMode
+                ] ?? true {
 
                     ChargingButtonView(
                         chargingMode: chargingMode,
