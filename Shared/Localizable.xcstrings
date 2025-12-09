@@ -567,31 +567,31 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Levetid"
+            "value" : "Sidste 7 dage"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Langzeit"
+            "value" : "7 Tage"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All times"
+            "value" : "Last 7 days"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toutes les heures"
+            "value" : "7 derniers jours"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tutti gli orari"
+            "value" : "Ultimi 7 giorni"
           }
         }
       }
