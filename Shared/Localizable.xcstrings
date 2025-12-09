@@ -10530,31 +10530,31 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uge"
+            "value" : "Sidste 7 dage"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Woche"
+            "value" : "Letzte 7 Tage"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Week"
+            "value" : "Last 7 days"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Semaine"
+            "value" : "Les 7 derniers jours"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Settimana"
+            "value" : "Ultimi 7 giorni"
           }
         }
       }
