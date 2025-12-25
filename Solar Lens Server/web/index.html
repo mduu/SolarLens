@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Lens - Upload Custom Image</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Solar Lens</h1>
+            <p class="subtitle">Upload Custom Image</p>
+        </header>
+
+        <div id="errorContainer" class="error-container hidden">
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+
+        <div id="deviceInfo" class="device-info hidden">
+            <p>Device ID: <strong id="deviceIdDisplay"></strong></p>
+        </div>
+
+        <div id="uploadContainer" class="upload-container">
+            <div class="upload-section">
+                <h2>Select Image Type</h2>
+                <div class="image-type-selector">
+                    <label class="radio-option">
+                        <input type="radio" name="imageType" value="logo" checked>
+                        <span class="radio-label">
+                            <strong>Logo</strong>
+                            <small>Max 512x512px, 2MB</small>
+                        </span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="imageType" value="background">
+                        <span class="radio-label">
+                            <strong>Background</strong>
+                            <small>Max 3840x2160px (4K), 8MB</small>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <h2>Choose Image File</h2>
+                <div class="file-input-container">
+                    <input type="file" id="fileInput" accept="image/png,image/jpeg" class="file-input">
+                    <label for="fileInput" class="file-input-label">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                        </svg>
+                        <span id="fileInputText">Tap to select image</span>
+                    </label>
+                </div>
+                <div id="imagePreview" class="image-preview hidden">
+                    <img id="previewImage" alt="Preview">
+                    <div class="preview-info">
+                        <p id="fileName"></p>
+                        <p id="fileSize"></p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="uploadButton" class="upload-button" disabled>
+                <span id="uploadButtonText">Upload Image</span>
+                <svg id="uploadSpinner" class="spinner hidden" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25"/>
+                    <path d="M12 2 A10 10 0 0 1 22 12" stroke="currentColor" stroke-width="4" fill="none"/>
+                </svg>
+            </button>
+
+            <div id="progressContainer" class="progress-container hidden">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Uploading...</p>
+            </div>
+
+            <div id="successContainer" class="success-container hidden">
+                <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <h3>Upload Successful!</h3>
+                <p>Your image has been uploaded to your Apple TV.</p>
+                <p class="success-note">You can close this page now.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Solar Lens &copy; 2024 | Secure Image Upload</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

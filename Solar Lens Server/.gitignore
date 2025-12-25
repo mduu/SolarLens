@@ -1,0 +1,57 @@
+# Azure Functions
+local.settings.json
+bin/
+obj/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.cache
+*.log
+
+# Build outputs
+publish/
+deploy.zip
+
+# Azurite (local storage emulator)
+azurite/
+__blobstorage__/
+__queuestorage__/
+__azurite_db*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+*.DotSettings.user
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Azure publish profiles
+*.pubxml
+*.PublishSettings
+
+# Package files
+*.nupkg
+*.snupkg
+
+# Azure
+.azure/
+
+# Environment files
+.env
+.env.local
