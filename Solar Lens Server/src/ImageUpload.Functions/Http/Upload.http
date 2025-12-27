@@ -1,0 +1,21 @@
+### POST Upload Logo
+POST {{baseUrl}}/api/upload
+Content-Type: application/json
+
+{
+  "deviceId": "{{deviceId}}",
+  "imageType": "logo",
+  "imageData": "{{logoData}}",
+  "format": "png"
+}
+
+### POST Upload Background
+POST {{baseUrl}}/api/upload
+Content-Type: application/json
+
+{
+  "deviceId": "{{deviceId}}",
+  "imageType": "background",
+  "imageData": "{{logoData}}",
+  "format": "png"
+}

@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageUpload.Functions", "src\ImageUpload.Functions\ImageUpload.Functions.csproj", "{A1B2C3D4-E5F6-4G7H-8I9J-0K1L2M3N4O5P}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageUpload.Functions", "src\ImageUpload.Functions\ImageUpload.Functions.csproj", "{00000000-0000-0000-0000-000000000000}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{CF01354E-C718-4BC0-8192-311BF1D20866}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		test-download.png = test-download.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,9 +17,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A1B2C3D4-E5F6-4G7H-8I9J-0K1L2M3N4O5P}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1B2C3D4-E5F6-4G7H-8I9J-0K1L2M3N4O5P}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1B2C3D4-E5F6-4G7H-8I9J-0K1L2M3N4O5P}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1B2C3D4-E5F6-4G7H-8I9J-0K1L2M3N4O5P}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00000000-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00000000-0000-0000-0000-000000000000}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00000000-0000-0000-0000-000000000000}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

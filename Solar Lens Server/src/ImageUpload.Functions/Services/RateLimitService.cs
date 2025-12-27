@@ -5,16 +5,16 @@ namespace ImageUpload.Functions.Services;
 
 public class RateLimitService
 {
-    private readonly IMemoryCache _cache;
-    private readonly ILogger<RateLimitService> _logger;
-    private readonly int _requestsPerMinute;
+    private readonly IMemoryCache cache;
+    private readonly ILogger<RateLimitService> logger;
+    private readonly int requestsPerMinute;
 
     public RateLimitService(IMemoryCache cache, ILogger<RateLimitService> logger)
     {
-        _cache = cache;
-        _logger = logger;
+        this.cache = cache;
+        this.logger = logger;
 
-        _requestsPerMinute = int.TryParse(
+        requestsPerMinute = int.TryParse(
             Environment.GetEnvironmentVariable("RateLimitRequestsPerMinute"),
             out var limit) ? limit : 10;
     }
@@ -23,20 +23,20 @@ public class RateLimitService
     {
         var key = $"ratelimit_{operation}_{identifier}";
 
-        if (!_cache.TryGetValue(key, out int requestCount))
+        if (!cache.TryGetValue(key, out int requestCount))
         {
             requestCount = 0;
         }
 
-        if (requestCount >= _requestsPerMinute)
+        if (requestCount >= requestsPerMinute)
         {
-            _logger.LogWarning("Rate limit exceeded for {Identifier} on {Operation}: {Count}/{Max}",
-                identifier, operation, requestCount, _requestsPerMinute);
+            logger.LogWarning("Rate limit exceeded for {Identifier} on {Operation}: {Count}/{Max}",
+                identifier, operation, requestCount, requestsPerMinute);
             return false;
         }
 
         // Increment counter with sliding expiration
-        _cache.Set(key, requestCount + 1, TimeSpan.FromMinutes(1));
+        cache.Set(key, requestCount + 1, TimeSpan.FromMinutes(1));
 
         return true;
     }
@@ -45,23 +45,23 @@ public class RateLimitService
     {
         var key = $"ratelimit_{operation}_{identifier}";
 
-        if (!_cache.TryGetValue(key, out int requestCount))
+        if (!cache.TryGetValue(key, out int requestCount))
         {
             requestCount = 0;
         }
 
-        _cache.Set(key, requestCount + 1, TimeSpan.FromMinutes(1));
+        cache.Set(key, requestCount + 1, TimeSpan.FromMinutes(1));
     }
 
     public int GetRemainingRequests(string identifier, string operation)
     {
         var key = $"ratelimit_{operation}_{identifier}";
 
-        if (!_cache.TryGetValue(key, out int requestCount))
+        if (!cache.TryGetValue(key, out int requestCount))
         {
-            return _requestsPerMinute;
+            return requestsPerMinute;
         }
 
-        return Math.Max(0, _requestsPerMinute - requestCount);
+        return Math.Max(0, requestsPerMinute - requestCount);
     }
 }

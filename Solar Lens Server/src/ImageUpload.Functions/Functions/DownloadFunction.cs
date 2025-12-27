@@ -8,24 +8,26 @@ namespace ImageUpload.Functions.Functions;
 
 public class DownloadFunction
 {
-    private readonly BlobStorageService _blobStorage;
-    private readonly RateLimitService _rateLimit;
-    private readonly ILogger<DownloadFunction> _logger;
+    private readonly BlobStorageService blobStorage;
+    private readonly RateLimitService rateLimit;
+    private readonly ILogger<DownloadFunction> logger;
 
     public DownloadFunction(
         BlobStorageService blobStorage,
         RateLimitService rateLimit,
         ILogger<DownloadFunction> logger)
     {
-        _blobStorage = blobStorage;
-        _rateLimit = rateLimit;
-        _logger = logger;
+        this.blobStorage = blobStorage;
+        this.rateLimit = rateLimit;
+        this.logger = logger;
     }
 
     [Function("Download")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "download/{deviceId}")] HttpRequestData req,
-        string deviceId)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "download/{deviceId}/{imageType}")]
+        HttpRequestData req,
+        string deviceId,
+        string imageType)
     {
         try
         {
@@ -35,9 +37,9 @@ public class DownloadFunction
                 : "unknown";
 
             // Check rate limit
-            if (!_rateLimit.IsAllowed(clientIp, "download"))
+            if (!rateLimit.IsAllowed(clientIp, "download"))
             {
-                _logger.LogWarning("Rate limit exceeded for IP: {IP}", clientIp);
+                logger.LogWarning("Rate limit exceeded for IP: {IP}", clientIp);
                 var rateLimitResponse = req.CreateResponse(HttpStatusCode.TooManyRequests);
                 await rateLimitResponse.WriteStringAsync("Rate limit exceeded");
                 return rateLimitResponse;
@@ -51,11 +53,19 @@ public class DownloadFunction
                 return invalidResponse;
             }
 
+            // Validate imageType
+            if (imageType != "logo" && imageType != "background")
+            {
+                var invalidResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                await invalidResponse.WriteStringAsync("Invalid imageType. Must be either 'logo' or 'background'");
+                return invalidResponse;
+            }
+
             // Initialize blob storage if needed
-            await _blobStorage.InitializeAsync();
+            await blobStorage.InitializeAsync();
 
             // Get image metadata first
-            var metadata = await _blobStorage.GetImageMetadataAsync(deviceId.ToLowerInvariant());
+            var metadata = await blobStorage.GetImageMetadataAsync(deviceId.ToLowerInvariant(), imageType);
 
             if (metadata == null)
             {
@@ -65,7 +75,7 @@ public class DownloadFunction
             }
 
             // Download the image
-            var imageData = await _blobStorage.DownloadImageAsync(deviceId.ToLowerInvariant());
+            var imageData = await blobStorage.DownloadImageAsync(deviceId.ToLowerInvariant(), imageType);
 
             if (imageData == null)
             {
@@ -78,11 +88,11 @@ public class DownloadFunction
             _ = Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(5)); // Small delay to ensure download completes
-                await _blobStorage.DeleteImageAsync(deviceId.ToLowerInvariant());
-                _logger.LogInformation("Auto-deleted image after download for device {DeviceId}", deviceId);
+                await blobStorage.DeleteImageAsync(deviceId.ToLowerInvariant(), imageType);
+                logger.LogInformation("Auto-deleted image after download for device {DeviceId}", deviceId);
             });
 
-            _logger.LogInformation("Image downloaded for device {DeviceId}: {Type}",
+            logger.LogInformation("Image downloaded for device {DeviceId}: {Type}",
                 deviceId, metadata.ImageType);
 
             // Return the image with appropriate content type
@@ -95,7 +105,7 @@ public class DownloadFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error downloading image for device {DeviceId}", deviceId);
+            logger.LogError(ex, "Error downloading image for device {DeviceId}", deviceId);
             var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
             await errorResponse.WriteStringAsync("An error occurred");
             return errorResponse;

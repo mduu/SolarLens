@@ -9,10 +9,7 @@ public class ImageMetadata
     public DateTime UploadedAt { get; set; }
     public int DownloadCount { get; set; }
 
-    public string GetBlobName()
-    {
-        return $"{DeviceId}_{ImageType}.{Format}";
-    }
+    public string GetBlobName() => $"{DeviceId}_{ImageType}.{Format}";
 }
 
 public class ImageUploadRequest

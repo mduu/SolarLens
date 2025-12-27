@@ -8,25 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace ImageUpload.Functions.Functions;
 
-public class UploadFunction
+public class UploadFunction(
+    BlobStorageService blobStorage,
+    RateLimitService rateLimit,
+    ILogger<UploadFunction> logger)
 {
-    private readonly BlobStorageService _blobStorage;
-    private readonly RateLimitService _rateLimit;
-    private readonly ILogger<UploadFunction> _logger;
-
-    public UploadFunction(
-        BlobStorageService blobStorage,
-        RateLimitService rateLimit,
-        ILogger<UploadFunction> logger)
-    {
-        _blobStorage = blobStorage;
-        _rateLimit = rateLimit;
-        _logger = logger;
-    }
-
     [Function("Upload")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "upload")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "upload")]
+        HttpRequestData req)
     {
         try
         {
@@ -36,9 +26,9 @@ public class UploadFunction
                 : "unknown";
 
             // Check rate limit
-            if (!_rateLimit.IsAllowed(clientIp, "upload"))
+            if (!rateLimit.IsAllowed(clientIp, "upload"))
             {
-                _logger.LogWarning("Rate limit exceeded for IP: {IP}", clientIp);
+                logger.LogWarning("Rate limit exceeded for IP: {IP}", clientIp);
                 var rateLimitResponse = req.CreateResponse(HttpStatusCode.TooManyRequests);
                 await rateLimitResponse.WriteStringAsync("Rate limit exceeded. Please try again later.");
                 return rateLimitResponse;
@@ -46,10 +36,7 @@ public class UploadFunction
 
             // Parse request body
             var body = await new StreamReader(req.Body).ReadToEndAsync();
-            var uploadRequest = JsonSerializer.Deserialize<ImageUploadRequest>(body, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var uploadRequest = JsonSerializer.Deserialize<ImageUploadRequest>(body, JsonSerializerOptionsDefaults.CamelCase);
 
             if (uploadRequest == null)
             {
@@ -66,12 +53,12 @@ public class UploadFunction
                 return invalidDeviceResponse;
             }
 
-            // Validate image type
+            // Validate imageType
             if (uploadRequest.ImageType != "logo" && uploadRequest.ImageType != "background")
             {
-                var invalidTypeResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-                await invalidTypeResponse.WriteStringAsync("Invalid image type. Must be 'logo' or 'background'.");
-                return invalidTypeResponse;
+                var invalidResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                await invalidResponse.WriteStringAsync("Invalid imageType. Must be either 'logo' or 'background'");
+                return invalidResponse;
             }
 
             // Validate format
@@ -104,7 +91,7 @@ public class UploadFunction
             }
 
             // Initialize blob storage if needed
-            await _blobStorage.InitializeAsync();
+            await blobStorage.InitializeAsync();
 
             // Create metadata
             var metadata = new ImageMetadata
@@ -118,7 +105,7 @@ public class UploadFunction
             };
 
             // Upload to blob storage
-            var uploaded = await _blobStorage.UploadImageAsync(metadata, imageData);
+            var uploaded = await blobStorage.UploadImageAsync(metadata, imageData);
 
             if (!uploaded)
             {
@@ -127,23 +114,26 @@ public class UploadFunction
                 return uploadFailedResponse;
             }
 
-            _logger.LogInformation("Image uploaded successfully for device {DeviceId}: {Type}",
+            logger.LogInformation("Image uploaded successfully for device {DeviceId}: {Type}",
                 uploadRequest.DeviceId, uploadRequest.ImageType);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(new
+            response.Headers.Add("Content-Type", "application/json");
+            var json = JsonSerializer.Serialize(new
             {
                 success = true,
                 message = "Image uploaded successfully",
                 deviceId = uploadRequest.DeviceId,
                 imageType = uploadRequest.ImageType
-            });
+            }, JsonSerializerOptionsDefaults.CamelCase);
+            
+            await response.WriteStringAsync(json);
 
             return response;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing upload request");
+            logger.LogError(ex, "Error processing upload request");
             var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
             await errorResponse.WriteStringAsync("An error occurred while processing your request");
             return errorResponse;
