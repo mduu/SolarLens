@@ -18,6 +18,7 @@ struct CurrentEnergyFlowWidget: View {
                         isActive: buildings.overviewData.isFlowSolarToGrid()
                     )
                     .frame(maxWidth: .infinity)
+                    .padding(20)
 
                     CurrentGridView(
                         currentGridInW:
@@ -34,16 +35,19 @@ struct CurrentEnergyFlowWidget: View {
                         isActive: buildings.overviewData.isFlowSolarToBattery()
                     )
                     .frame(maxWidth: .infinity)
+                    .padding(20)
 
                     ArrowSolarToHouse(
                         isActive: buildings.overviewData.isFlowSolarToHouse()
                     )
                     .frame(maxWidth: .infinity)
+                    .padding(20)
 
                     ArrowGridToHouse(
                         isActive: buildings.overviewData.isFlowGridToHouse()
                     )
                     .frame(maxWidth: .infinity)
+                    .padding(20)
 
                 }
 
@@ -61,6 +65,7 @@ struct CurrentEnergyFlowWidget: View {
                         isActive: buildings.overviewData.isFlowBatteryToHome()
                     )
                     .frame(maxWidth: .infinity)
+                    .padding(20)
 
                     ConsumptionView(
                         currentOverallConsumptionInW: buildings.overviewData
@@ -70,10 +75,10 @@ struct CurrentEnergyFlowWidget: View {
 
                 }
             }
-            .frame(height: 370)
+            .frame(maxHeight: 400)
             .padding(.horizontal, 50)
+            .padding(.bottom, 50)
         }
-        .frame(maxHeight: 470)
 
     }
 
