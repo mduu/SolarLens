@@ -15,19 +15,17 @@ struct LogoConfigurationView: View {
     private let storageManager = ImageStorageManager.shared
 
     var body: some View {
-        BorderBox {
-            VStack(alignment: .leading, spacing: 30) {
-                Text("Custom Logo")
-                    .font(.title3)
-                    .fontWeight(.semibold)
+        VStack(alignment: .leading, spacing: 30) {
+            Text("Custom Logo")
 
+            HStack(alignment: .top, spacing: 16) {
                 // Preview
                 if let logoImage = customLogoImage {
                     VStack(spacing: 16) {
                         Image(uiImage: logoImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 70, height: 70)
+                            .frame(width: 400, height: 100)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(16)
 
@@ -41,7 +39,7 @@ struct LogoConfigurationView: View {
                         Image(systemName: "photo")
                             .font(.system(size: 60))
                             .foregroundColor(.gray.opacity(0.5))
-                            .frame(width: 70, height: 70)
+                            .frame(width: 400, height: 100)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(16)
 
@@ -52,52 +50,25 @@ struct LogoConfigurationView: View {
                     .frame(maxWidth: .infinity)
                 }
 
-                Spacer().frame(height: 20)
+                VStack(alignment: .leading) {
 
-                // Upload button
-                Button(action: { showUploadSheet = true }) {
-                    HStack {
-                        Image(systemName: "qrcode")
-                        Text("Upload Logo")
-                        Spacer()
-                    }
-                }
-                .foregroundColor(.primary)
-                .tint(Color.blue)
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.roundedRectangle)
-
-                // Delete button
-                if customLogoImage != nil {
-                    Button(action: { showDeleteConfirmation = true }) {
-                        HStack {
-                            Image(systemName: "trash")
-                            Text("Remove Custom Logo")
-                            Spacer()
-                        }
+                    // Upload button
+                    Button(action: { showUploadSheet = true }) {
+                        Label("Upload Logo", systemImage: "qrcode")
                     }
                     .foregroundColor(.primary)
-                    .tint(Color.red)
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.roundedRectangle)
-                }
 
-                // Info
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("ℹ️ Requirements:")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                    Text("• Max size: 512x512 pixels")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text("• Max file size: 2MB")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text("• Format: PNG or JPEG")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    // Delete button
+                    if customLogoImage != nil {
+                        Button(action: { showDeleteConfirmation = true }) {
+                            Label("Remove Logo", systemImage: "trash")
+                        }
+                        .foregroundColor(.primary)
+                        .tint(Color.red)
+                    }
+
+                    Spacer()
                 }
-                .padding(.top, 8)
 
                 Spacer()
             }
@@ -139,5 +110,5 @@ struct LogoConfigurationView: View {
 
 #Preview {
     LogoConfigurationView()
-        .frame(width: 500, height: 500)
+        .frame(width: 800, height: 500)
 }

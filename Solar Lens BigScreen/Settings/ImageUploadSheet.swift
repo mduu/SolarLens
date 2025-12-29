@@ -74,18 +74,27 @@ struct ImageUploadSheet: View {
                     mainContentView
                 }
 
-                Spacer()
+
+                if imageType == .logo {
+                    // Info
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("Requirements:", systemImage: "info.circle")
+                            .fontWeight(.semibold)
+                        Text("• Max size: 512x512 pixels")
+                            .foregroundColor(.secondary)
+                        Text("• Max file size: 2MB")
+                            .foregroundColor(.secondary)
+                        Text("• Format: PNG or JPEG")
+                            .foregroundColor(.secondary)
+                    }
+                    .font(.system(size: 14))
+                    .padding(.top, 8)
+                }
 
                 // Close button
                 Button(action: { dismiss() }) {
                     Text(uploadState == .success ? "Done" : "Cancel")
-                        .font(.system(size: 28, weight: .semibold))
-                        .foregroundColor(.white)
-                        .frame(width: 300, height: 80)
-                        .background(Color.white.opacity(0.2))
-                        .cornerRadius(20)
                 }
-                .buttonStyle(.plain)
                 .padding(.bottom, 40)
             }
             .padding(60)
@@ -105,14 +114,13 @@ struct ImageUploadSheet: View {
                 Image(uiImage: qrImage)
                     .resizable()
                     .interpolation(.none)
-                    .frame(width: 500, height: 500)
+                    .frame(width: 400, height: 400)
                     .background(Color.white)
                     .cornerRadius(20)
-                    .shadow(color: .white.opacity(0.3), radius: 20)
             } else {
                 ProgressView()
                     .scaleEffect(2)
-                    .frame(width: 500, height: 500)
+                    .frame(width: 400, height: 400)
             }
 
             // Status

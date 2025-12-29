@@ -57,6 +57,8 @@ struct AppearanceConfigurationView: View {
                     Text("Please note that the effect highly depends if the tvOS system setting is 'dark' or 'light' mode. Try change the system setting as well.")
                         .font(.footnote)
                 }
+
+                LogoConfigurationView()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 4)
@@ -68,8 +70,7 @@ struct AppearanceConfigurationView: View {
     VStack {
         HStack {
             AppearanceConfigurationView()
-                .frame(width: 1000, height: 400)
-                .border(.white)
+                .frame(width: 1000)
 
             Spacer()
         }
