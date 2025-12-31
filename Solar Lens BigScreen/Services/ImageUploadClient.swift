@@ -1,10 +1,3 @@
-//
-//  ImageUploadClient.swift
-//  Solar Lens BigScreen
-//
-//  API client for checking and downloading uploaded images
-//
-
 internal import Foundation
 
 /// Client for interacting with the image upload Azure Functions

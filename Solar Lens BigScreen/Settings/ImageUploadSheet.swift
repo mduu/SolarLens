@@ -1,18 +1,6 @@
-//
-//  ImageUploadSheet.swift
-//  Solar Lens BigScreen
-//
-//  Sheet view for displaying QR code and handling image upload
-//
-
 import SwiftUI
 
 struct ImageUploadSheet: View {
-    enum ImageType: String {
-        case logo = "logo"
-        case background = "background"
-    }
-
     let imageType: ImageType
     @Environment(\.dismiss) var dismiss
 
@@ -74,22 +62,29 @@ struct ImageUploadSheet: View {
                     mainContentView
                 }
 
+                // Info
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Requirements:", systemImage: "info.circle")
+                        .fontWeight(.semibold)
 
-                if imageType == .logo {
-                    // Info
-                    VStack(alignment: .leading, spacing: 8) {
-                        Label("Requirements:", systemImage: "info.circle")
-                            .fontWeight(.semibold)
+                    if imageType == .logo {
                         Text("• Max size: 512x512 pixels")
                             .foregroundColor(.secondary)
                         Text("• Max file size: 2MB")
                             .foregroundColor(.secondary)
                         Text("• Format: PNG or JPEG")
                             .foregroundColor(.secondary)
+                    } else {
+                        Text("• Max size: 3840x2160 pixels (4K)")
+                            .foregroundColor(.secondary)
+                        Text("• Max file size: 8MB")
+                            .foregroundColor(.secondary)
+                        Text("• Format: PNG")
+                            .foregroundColor(.secondary)
                     }
-                    .font(.system(size: 14))
-                    .padding(.top, 8)
                 }
+                .font(.system(size: 14))
+                .padding(.top, 8)
 
                 // Close button
                 Button(action: { dismiss() }) {
@@ -100,7 +95,7 @@ struct ImageUploadSheet: View {
             .padding(60)
         }
         .onAppear {
-            setupQRCode()
+            setupQRCode(imageType: imageType)
             startPolling()
         }
     }
@@ -184,8 +179,12 @@ struct ImageUploadSheet: View {
 
     // MARK: - Methods
 
-    private func setupQRCode() {
-        let uploadURL = deviceManager.getUploadURL(baseURL: "https://gentle-glacier-018c0d203.2.azurestaticapps.net")
+    private func setupQRCode(imageType: ImageType) {
+        let uploadURL = deviceManager.getUploadURL(
+            baseURL: "https://gentle-glacier-018c0d203.2.azurestaticapps.net",
+            imageType: imageType
+        )
+
         qrCodeImage = QRCodeGenerator.generateWithBackground(from: uploadURL, size: 500)
     }
 

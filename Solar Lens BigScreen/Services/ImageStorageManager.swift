@@ -1,10 +1,3 @@
-//
-//  ImageStorageManager.swift
-//  Solar Lens BigScreen
-//
-//  Manages local storage of uploaded images
-//
-
 internal import Foundation
 import UIKit
 

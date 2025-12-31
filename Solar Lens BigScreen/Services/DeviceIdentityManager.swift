@@ -1,10 +1,3 @@
-//
-//  DeviceIdentityManager.swift
-//  Solar Lens BigScreen
-//
-//  Manages unique device identity for image upload
-//
-
 internal import Foundation
 
 /// Manages unique device identity for image upload functionality
@@ -44,9 +37,9 @@ class DeviceIdentityManager {
     /// Generate upload URL for QR code
     /// - Parameter baseURL: Base URL of the upload website
     /// - Returns: Full URL with device ID parameter
-    func getUploadURL(baseURL: String) -> String {
+    func getUploadURL(baseURL: String, imageType: ImageType) -> String {
         let cleanURL = baseURL.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        return "\(cleanURL)?device=\(deviceID)"
+        return "\(cleanURL)?device=\(deviceID)&imageType=\(imageType)"
     }
 
     /// Reset device ID (for testing only)

@@ -1,10 +1,3 @@
-//
-//  QRCodeGenerator.swift
-//  Solar Lens BigScreen
-//
-//  Generates QR codes using CoreImage
-//
-
 import UIKit
 import CoreImage
 

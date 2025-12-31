@@ -1,10 +1,3 @@
-//
-//  LogoConfigurationView.swift
-//  Solar Lens BigScreen
-//
-//  Logo upload configuration view
-//
-
 import SwiftUI
 
 struct LogoConfigurationView: View {
