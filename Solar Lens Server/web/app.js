@@ -11,8 +11,8 @@ const CONFIG = {
     },
 
     MAX_DIMENSIONS: {
-        logo: { width: 512, height: 512 },
-        background: { width: 3840, height: 2160 }
+        logo: {width: 512, height: 512},
+        background: {width: 3840, height: 2160}
     }
 };
 
@@ -20,6 +20,8 @@ const CONFIG = {
 const elements = {
     errorContainer: document.getElementById('errorContainer'),
     errorMessage: document.getElementById('errorMessage'),
+    headerLogo: document.getElementById('headerLogo'),
+    headerBackground: document.getElementById('headerBackground'),
     deviceInfo: document.getElementById('deviceInfo'),
     deviceIdDisplay: document.getElementById('deviceIdDisplay'),
     fileInput: document.getElementById('fileInput'),
@@ -36,7 +38,8 @@ const elements = {
     progressText: document.getElementById('progressText'),
     successContainer: document.getElementById('successContainer'),
     uploadContainer: document.getElementById('uploadContainer'),
-    imageTypeRadios: document.querySelectorAll('input[name="imageType"]')
+    imageInfoLogo: document.getElementById('imageInfoLogo'),
+    imageInfoBackground: document.getElementById('imageInfoBackground'),
 };
 
 // State
@@ -51,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get device ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     state.deviceId = urlParams.get('device');
+    state.selectedImageType = urlParams.get('imageType');
 
     if (!state.deviceId) {
         showError('Invalid URL: No device ID provided. Please scan the QR code from your Apple TV.');
@@ -65,9 +69,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    if (!state.selectedImageType) {
+        showError('Invalid URL: No image-type provided. Please scan the QR code from your Apple TV.');
+        elements.uploadContainer.classList.add('hidden');
+        return;
+    }
+
     // Show device info
     elements.deviceIdDisplay.textContent = state.deviceId;
     elements.deviceInfo.classList.remove('hidden');
+
+    if (state.selectedImageType === 'logo') {
+        elements.headerLogo.classList.remove('hidden');
+        elements.imageInfoLogo.classList.remove('hidden');
+    } else {
+        elements.headerBackground.classList.remove('hidden');
+        elements.imageInfoBackground.classList.remove('hidden');
+    }
 
     // Setup event listeners
     setupEventListeners();
@@ -76,21 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupEventListeners() {
     // File input change
     elements.fileInput.addEventListener('change', handleFileSelect);
-
-    // Image type radio buttons
-    elements.imageTypeRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            state.selectedImageType = e.target.value;
-            // Clear selected file when changing image type
-            if (state.selectedFile) {
-                elements.fileInput.value = '';
-                state.selectedFile = null;
-                elements.uploadButton.disabled = true;
-                elements.imagePreview.classList.add('hidden');
-                elements.fileInputText.textContent = 'Tap to select image';
-            }
-        });
-    });
 
     // Upload button
     elements.uploadButton.addEventListener('click', handleUpload);
