@@ -23,9 +23,10 @@ struct StandardLayout: View {
                 isLoading: buildings.isLoading,
                 lastUpdate: buildings.overviewData.lastSuccessServerFetch
             )
+            .frame(maxHeight: 50)
             .padding(.all, 0)
         }
-        
+
     }
 }
 

@@ -23,7 +23,6 @@ struct SettingsScreen: View {
                 VStack {
                     AppearanceConfigurationView()
 
-
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)

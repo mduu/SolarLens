@@ -61,3 +61,24 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 GoogleService-Info.plist
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+*.DotSettings.user
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+
+# Azure Functions
+local.settings.json
+
+# Azurite (Azure Storage Emulator)
+azurite/
+__blobstorage__/
+__queuestorage__/
+__azurite_db*.json

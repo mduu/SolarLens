@@ -1,0 +1,7 @@
+### GET /check logo
+GET {{baseUrl}}/api/check/{{deviceId}}/logo
+
+### GET /check background
+GET {{baseUrl}}/api/check/{{deviceId}}/background
+
+###
