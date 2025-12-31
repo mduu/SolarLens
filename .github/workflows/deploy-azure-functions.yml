@@ -5,11 +5,11 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
+      - 'Solar Lens Server/src/**'
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/ImageUpload.Functions'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'Solar Lens Server/src/ImageUpload.Functions'
   DOTNET_VERSION: '10.0.x'
 
 jobs:

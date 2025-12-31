@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'web/**'
+      - 'Solar Lens Server/web/**'
   workflow_dispatch:
 
 jobs:
@@ -23,5 +23,5 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
-          app_location: '/web'
+          app_location: '/Solar Lens Server/web'
           skip_app_build: true
