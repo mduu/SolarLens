@@ -181,7 +181,7 @@ struct ImageUploadSheet: View {
 
     private func setupQRCode(imageType: ImageType) {
         let uploadURL = deviceManager.getUploadURL(
-            baseURL: "https://gentle-glacier-018c0d203.2.azurestaticapps.net",
+            baseURL: ServerUrls.shared.getImageUploadWebBaseUrl(),
             imageType: imageType
         )
 

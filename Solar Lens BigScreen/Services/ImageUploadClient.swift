@@ -12,12 +12,7 @@ class ImageUploadClient {
         config.timeoutIntervalForRequest = 30
         config.timeoutIntervalForResource = 60
         self.session = URLSession(configuration: config)
-
-        #if DEBUG
-        self.baseURL = "http://localhost:7071/api"
-        #else
-        self.baseURL = "https://solarlens-upload-func.azurewebsites.net/api"
-        #endif
+        self.baseURL = ServerUrls.shared.getImageDownloadApiBaseUrl()
     }
 
     // MARK: - Public API
