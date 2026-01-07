@@ -15,13 +15,14 @@ struct CustomLogoView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .onAppear {
-            loadCustomLogo()
+        .task {
+            await loadCustomLogo()
         }
     }
 
-    func loadCustomLogo() {
-        customLogoImage = storageManager.loadCustomLogo()
+    func loadCustomLogo() async {
+        // Try to load from local storage or restore from iCloud if missing
+        customLogoImage = await storageManager.loadCustomLogo()
     }
 }
 

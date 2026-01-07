@@ -1,28 +1,49 @@
 internal import Foundation
 import UIKit
 
-/// Manages local storage of custom uploaded images
+/// Manages local storage of custom uploaded images with iCloud backup
 class ImageStorageManager {
     static let shared = ImageStorageManager()
 
     private let logoFileName = "custom_logo.png"
     private let backgroundFileName = "custom_background.png"
 
+    /// Enable/disable iCloud backup (default: true)
+    var iCloudBackupEnabled = true
+
     private init() {}
 
     // MARK: - Save
 
-    /// Save custom logo
-    func saveCustomLogo(data: Data) throws -> URL {
-        try saveImage(data: data, fileName: logoFileName, maxSize: CGSize(width: 512, height: 512))
+    /// Save custom logo (local + iCloud backup)
+    func saveCustomLogo(data: Data) async throws -> URL {
+        let url = try saveImageToLocal(data: data, fileName: logoFileName, maxSize: CGSize(width: 512, height: 512))
+
+        // Backup to iCloud asynchronously (non-blocking)
+        if iCloudBackupEnabled {
+            Task {
+                await backupLogoToiCloud(data: data)
+            }
+        }
+
+        return url
     }
 
-    /// Save custom background
-    func saveCustomBackground(data: Data) throws -> URL {
-        try saveImage(data: data, fileName: backgroundFileName, maxSize: CGSize(width: 3840, height: 2160))
+    /// Save custom background (local + iCloud backup)
+    func saveCustomBackground(data: Data) async throws -> URL {
+        let url = try saveImageToLocal(data: data, fileName: backgroundFileName, maxSize: CGSize(width: 3840, height: 2160))
+
+        // Backup to iCloud asynchronously (non-blocking)
+        if iCloudBackupEnabled {
+            Task {
+                await backupBackgroundToiCloud(data: data)
+            }
+        }
+
+        return url
     }
 
-    private func saveImage(data: Data, fileName: String, maxSize: CGSize) throws -> URL {
+    private func saveImageToLocal(data: Data, fileName: String, maxSize: CGSize) throws -> URL {
         // Validate image
         guard let image = UIImage(data: data) else {
             throw ImageStorageError.invalidImageFormat
@@ -44,9 +65,33 @@ class ImageStorageManager {
         // Write to disk
         try pngData.write(to: fileURL, options: [.atomic])
 
-        print("✅ Saved image to: \(fileURL.path)")
+        print("✅ Saved image locally to: \(fileURL.path)")
 
         return fileURL
+    }
+
+    // MARK: - iCloud Backup
+
+    private func backupLogoToiCloud(data: Data) async {
+        guard let image = UIImage(data: data) else { return }
+
+        do {
+            try await CloudKitImageStorage.shared.saveCustomLogo(image)
+        } catch {
+            print("⚠️ Failed to backup logo to iCloud: \(error.localizedDescription)")
+            // Non-fatal: local save succeeded, iCloud is just a backup
+        }
+    }
+
+    private func backupBackgroundToiCloud(data: Data) async {
+        guard let image = UIImage(data: data) else { return }
+
+        do {
+            try await CloudKitImageStorage.shared.saveCustomBackground(image)
+        } catch {
+            print("⚠️ Failed to backup background to iCloud: \(error.localizedDescription)")
+            // Non-fatal: local save succeeded, iCloud is just a backup
+        }
     }
 
     // MARK: - Load
@@ -61,14 +106,44 @@ class ImageStorageManager {
         getImageURL(for: backgroundFileName)
     }
 
-    /// Load custom logo as UIImage
-    func loadCustomLogo() -> UIImage? {
+    /// Load custom logo as UIImage (with iCloud fallback)
+    func loadCustomLogo() async -> UIImage? {
+        // Try local first
+        if let url = getCustomLogoURL() {
+            return UIImage(contentsOfFile: url.path)
+        }
+
+        // If not found locally, try iCloud restore
+        if iCloudBackupEnabled {
+            return await restoreLogoFromiCloud()
+        }
+
+        return nil
+    }
+
+    /// Load custom background as UIImage (with iCloud fallback)
+    func loadCustomBackground() async -> UIImage? {
+        // Try local first
+        if let url = getCustomBackgroundURL() {
+            return UIImage(contentsOfFile: url.path)
+        }
+
+        // If not found locally, try iCloud restore
+        if iCloudBackupEnabled {
+            return await restoreBackgroundFromiCloud()
+        }
+
+        return nil
+    }
+
+    /// Synchronous load (for backwards compatibility, no iCloud fallback)
+    func loadCustomLogoSync() -> UIImage? {
         guard let url = getCustomLogoURL() else { return nil }
         return UIImage(contentsOfFile: url.path)
     }
 
-    /// Load custom background as UIImage
-    func loadCustomBackground() -> UIImage? {
+    /// Synchronous load (for backwards compatibility, no iCloud fallback)
+    func loadCustomBackgroundSync() -> UIImage? {
         guard let url = getCustomBackgroundURL() else { return nil }
         return UIImage(contentsOfFile: url.path)
     }
@@ -82,23 +157,85 @@ class ImageStorageManager {
         }
     }
 
+    // MARK: - iCloud Restore
+
+    private func restoreLogoFromiCloud() async -> UIImage? {
+        do {
+            guard let image = try await CloudKitImageStorage.shared.loadCustomLogo() else {
+                return nil
+            }
+
+            // Save to local storage for faster future access
+            if let pngData = image.pngData() {
+                _ = try? saveImageToLocal(data: pngData, fileName: logoFileName, maxSize: CGSize(width: 512, height: 512))
+                print("✅ Restored logo from iCloud")
+            }
+
+            return image
+        } catch {
+            print("⚠️ Failed to restore logo from iCloud: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    private func restoreBackgroundFromiCloud() async -> UIImage? {
+        do {
+            guard let image = try await CloudKitImageStorage.shared.loadCustomBackground() else {
+                return nil
+            }
+
+            // Save to local storage for faster future access
+            if let pngData = image.pngData() {
+                _ = try? saveImageToLocal(data: pngData, fileName: backgroundFileName, maxSize: CGSize(width: 3840, height: 2160))
+                print("✅ Restored background from iCloud")
+            }
+
+            return image
+        } catch {
+            print("⚠️ Failed to restore background from iCloud: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
     // MARK: - Delete
 
-    /// Delete custom logo
-    func deleteCustomLogo() throws {
-        try deleteImage(fileName: logoFileName)
+    /// Delete custom logo (local + iCloud)
+    func deleteCustomLogo() async throws {
+        try deleteImageLocal(fileName: logoFileName)
+
+        // Also delete from iCloud
+        if iCloudBackupEnabled {
+            Task {
+                do {
+                    try await CloudKitImageStorage.shared.deleteCustomLogo()
+                } catch {
+                    print("⚠️ Failed to delete logo from iCloud: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 
-    /// Delete custom background
-    func deleteCustomBackground() throws {
-        try deleteImage(fileName: backgroundFileName)
+    /// Delete custom background (local + iCloud)
+    func deleteCustomBackground() async throws {
+        try deleteImageLocal(fileName: backgroundFileName)
+
+        // Also delete from iCloud
+        if iCloudBackupEnabled {
+            Task {
+                do {
+                    try await CloudKitImageStorage.shared.deleteCustomBackground()
+                } catch {
+                    print("⚠️ Failed to delete background from iCloud: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 
-    private func deleteImage(fileName: String) throws {
+    private func deleteImageLocal(fileName: String) throws {
         let url = try getFileURL(for: fileName)
         if FileManager.default.fileExists(atPath: url.path) {
             try FileManager.default.removeItem(at: url)
-            print("🗑 Deleted image: \(fileName)")
+            print("🗑 Deleted local image: \(fileName)")
         }
     }
 

@@ -77,26 +77,34 @@ struct LogoConfigurationView: View {
         } message: {
             Text("Are you sure you want to remove your custom logo?")
         }
-        .onAppear {
-            loadCustomLogo()
+        .task {
+            await loadCustomLogo()
         }
         .onReceive(NotificationCenter.default.publisher(for: .customImageUploaded)) { notification in
             if let imageType = notification.userInfo?["type"] as? String, imageType == "logo" {
-                loadCustomLogo()
+                Task {
+                    await loadCustomLogo()
+                }
             }
         }
     }
 
-    private func loadCustomLogo() {
-        customLogoImage = storageManager.loadCustomLogo()
+    private func loadCustomLogo() async {
+        // Load from local or restore from iCloud if missing
+        customLogoImage = await storageManager.loadCustomLogo()
     }
 
     private func deleteCustomLogo() {
-        do {
-            try storageManager.deleteCustomLogo()
-            customLogoImage = nil
-        } catch {
-            print("Error deleting logo: \(error)")
+        Task {
+            do {
+                // Delete from local and iCloud
+                try await storageManager.deleteCustomLogo()
+                await MainActor.run {
+                    customLogoImage = nil
+                }
+            } catch {
+                print("Error deleting logo: \(error)")
+            }
         }
     }
 }

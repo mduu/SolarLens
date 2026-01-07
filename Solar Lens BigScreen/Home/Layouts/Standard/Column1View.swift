@@ -22,8 +22,12 @@ struct Column1View: View {
                 .frame(maxHeight: .infinity)
 
         }
-        .onAppear {
-            hasCustomLogo = storageManager.loadCustomLogo() != nil
+        .task {
+            let logo = await storageManager.loadCustomLogo()
+            // Ensure UI update happens on the main actor
+            await MainActor.run {
+                hasCustomLogo = (logo != nil)
+            }
         }
         .frame(maxWidth: .infinity)
     }

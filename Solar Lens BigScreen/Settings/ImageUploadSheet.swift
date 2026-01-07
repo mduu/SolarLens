@@ -194,7 +194,7 @@ struct ImageUploadSheet: View {
 
             do {
                 // Poll for image
-                let imageInfo = try await imageClient.pollForImage(
+                _ = try await imageClient.pollForImage(
                     deviceId: deviceManager.deviceID,
                     imageType: imageType.rawValue
                 )
@@ -206,15 +206,15 @@ struct ImageUploadSheet: View {
                     imageType: imageType.rawValue
                 )
 
-                // Save image
+                // Save image (local + iCloud backup)
                 let savedURL: URL
                 if imageType == .logo {
-                    savedURL = try storageManager.saveCustomLogo(data: imageData)
+                    savedURL = try await storageManager.saveCustomLogo(data: imageData)
                 } else {
-                    savedURL = try storageManager.saveCustomBackground(data: imageData)
+                    savedURL = try await storageManager.saveCustomBackground(data: imageData)
                 }
 
-                print("✅ Image saved: \(savedURL.path)")
+                print("✅ Image saved locally and backed up to iCloud: \(savedURL.path)")
 
                 // Post notification
                 NotificationCenter.default.post(
