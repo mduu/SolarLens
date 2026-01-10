@@ -89,8 +89,8 @@ class ImageUploadClient {
     func pollForImage(
         deviceId: String,
         imageType: String,
-        interval: TimeInterval = 2,
-        timeout: TimeInterval = 300
+        interval: TimeInterval = 3,
+        timeout: TimeInterval = 180
     ) async throws -> ImageCheckResponse {
         let startTime = Date()
 
