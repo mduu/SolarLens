@@ -52,7 +52,7 @@ struct ImageUploadSheet: View {
 
             VStack(spacing: 40) {
                 // Title
-                Text("Upload custom \(imageType.rawValue)")
+                Text("Upload custom \(imageType.toString())")
                     .font(.system(size: 48, weight: .bold))
                     .foregroundColor(.white)
 
@@ -154,7 +154,7 @@ struct ImageUploadSheet: View {
 
             HStack(spacing: 20) {
                 Text(verbatim: "3").stepBubble
-                Text("Select and upload your \(imageType.rawValue.lowercased())").stepText
+                Text("Select and upload your \(imageType.toString())").stepText
                 Spacer()
             }
         }
@@ -167,11 +167,11 @@ struct ImageUploadSheet: View {
                 .font(.system(size: 120))
                 .foregroundColor(.green)
 
-            Text("\(imageType.rawValue) Uploaded Successfully!")
+            Text("\(imageType.toString()) Uploaded Successfully!")
                 .font(.system(size: 36, weight: .bold))
                 .foregroundColor(.white)
 
-            Text("Your custom \(imageType.rawValue.lowercased()) has been saved")
+            Text("Your custom \(imageType.toString()) has been saved")
                 .font(.system(size: 24))
                 .foregroundColor(.white.opacity(0.8))
         }
