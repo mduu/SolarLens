@@ -42,7 +42,7 @@ struct BackgroundConfigurationView: View {
                 }
 
                 // Action buttons
-                HStack(spacing: 16) {
+                VStack(spacing: 16) {
                     Button(action: { showUploadSheet = true }) {
                         Label("Upload", systemImage: "qrcode")
                     }
