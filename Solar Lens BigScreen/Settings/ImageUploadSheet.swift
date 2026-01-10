@@ -141,19 +141,19 @@ struct ImageUploadSheet: View {
     private var instructionsView: some View {
         VStack(spacing: 16) {
             HStack(spacing: 20) {
-                Text("1").stepBubble
+                Text(verbatim: "1").stepBubble
                 Text("Open camera on your phone").stepText
                 Spacer()
             }
 
             HStack(spacing: 20) {
-                Text("2").stepBubble
+                Text(verbatim: "2").stepBubble
                 Text("Scan the QR code above").stepText
                 Spacer()
             }
 
             HStack(spacing: 20) {
-                Text("3").stepBubble
+                Text(verbatim: "3").stepBubble
                 Text("Select and upload your \(imageType.rawValue.lowercased())").stepText
                 Spacer()
             }
