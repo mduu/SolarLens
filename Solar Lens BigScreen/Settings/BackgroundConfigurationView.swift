@@ -1,42 +1,42 @@
 import SwiftUI
 
-struct LogoConfigurationView: View {
+struct BackgroundConfigurationView: View {
     @State private var showUploadSheet = false
-    @State private var customLogoImage: UIImage?
+    @State private var customBackgroundImage: UIImage?
     @State private var showDeleteConfirmation = false
 
     private let storageManager = ImageStorageManager.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 30) {
-            Text("Custom Logo")
+            Text("Custom Background")
 
             HStack(alignment: .top, spacing: 16) {
                 // Preview
-                if let logoImage = customLogoImage {
+                if let backgroundImage = customBackgroundImage {
                     VStack(spacing: 16) {
-                        Image(uiImage: logoImage)
+                        Image(uiImage: backgroundImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 400, height: 80)
+                            .frame(width: 400, height: 120)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(16)
 
-                        Text("Current custom logo")
+                        Text("Current custom background")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: 320)
                 } else {
                     VStack(alignment: .center, spacing: 16) {
                         Image(systemName: "photo")
                             .font(.system(size: 60))
                             .foregroundColor(.gray.opacity(0.5))
-                            .frame(width: 400, height: 80)
+                            .frame(width: 400, height: 120)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(16)
 
-                        Text("No custom logo set")
+                        Text("No custom background set")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -45,8 +45,8 @@ struct LogoConfigurationView: View {
 
                 VStack(alignment: .leading) {
 
+                    // Upload button
                     HStack {
-                        // Upload button
                         Button(action: { showUploadSheet = true }) {
                             Label("Upload", systemImage: "qrcode")
                         }
@@ -56,64 +56,65 @@ struct LogoConfigurationView: View {
                     }
 
                     // Delete button
-                    if customLogoImage != nil {
+                    if customBackgroundImage != nil {
                         HStack {
                             Button(action: { showDeleteConfirmation = true }) {
                                 Label("Remove", systemImage: "trash")
                             }
                             .foregroundColor(.primary)
-
-                            Spacer(minLength: 0)
+                            .tint(Color.red)
                         }
+
+                        Spacer(minLength: 0)
                     }
                 }
                 .frame(width: 350)
             }
         }
         .sheet(isPresented: $showUploadSheet) {
-            ImageUploadSheet(imageType: .logo)
+            ImageUploadSheet(imageType: .background)
         }
-        .alert("Remove Custom Logo", isPresented: $showDeleteConfirmation) {
+        .alert("Remove Custom Background", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Remove", role: .destructive) {
-                deleteCustomLogo()
+                deleteCustomBackground()
             }
         } message: {
-            Text("Are you sure you want to remove your custom logo?")
+            Text("Are you sure you want to remove your custom background?")
         }
         .task {
-            await loadCustomLogo()
+            await loadCustomBackground()
         }
         .onReceive(NotificationCenter.default.publisher(for: .customImageUploaded)) { notification in
-            if let imageType = notification.userInfo?["type"] as? String, imageType == "logo" {
+            if let imageType = notification.userInfo?["type"] as? String, imageType == "background" {
                 Task {
-                    await loadCustomLogo()
+                    await loadCustomBackground()
                 }
             }
         }
     }
 
-    private func loadCustomLogo() async {
+    private func loadCustomBackground() async {
         // Load from local or restore from iCloud if missing
-        customLogoImage = await storageManager.loadCustomLogo()
+        customBackgroundImage = await storageManager.loadCustomBackground()
     }
 
-    private func deleteCustomLogo() {
+    private func deleteCustomBackground() {
         Task {
             do {
                 // Delete from local and iCloud
-                try await storageManager.deleteCustomLogo()
+                try await storageManager.deleteCustomBackground()
                 await MainActor.run {
-                    customLogoImage = nil
+                    customBackgroundImage = nil
                 }
             } catch {
-                print("Error deleting logo: \(error)")
+                print("Error deleting background: \(error)")
             }
         }
     }
 }
 
 #Preview {
-    LogoConfigurationView()
+    BackgroundConfigurationView()
         .frame(width: 800, height: 500)
 }
