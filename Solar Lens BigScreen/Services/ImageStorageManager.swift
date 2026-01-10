@@ -242,13 +242,13 @@ class ImageStorageManager {
     // MARK: - Helpers
 
     private func getFileURL(for fileName: String) throws -> URL {
-        let documentsDirectory = try FileManager.default.url(
-            for: .documentDirectory,
+        let cachesDirectory = try FileManager.default.url(
+            for: .cachesDirectory,
             in: .userDomainMask,
             appropriateFor: nil,
             create: true
         )
-        return documentsDirectory.appendingPathComponent(fileName)
+        return cachesDirectory.appendingPathComponent(fileName)
     }
 }
 
