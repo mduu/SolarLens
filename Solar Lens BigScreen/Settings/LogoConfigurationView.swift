@@ -50,7 +50,7 @@ struct LogoConfigurationView: View {
 
                     if customLogoImage != nil {
                         Button(action: { showDeleteConfirmation = true }) {
-                            Label("", systemImage: "trash")
+                            Image(systemName: "trash")
                         }
                         .foregroundColor(.primary)
                         .tint(Color.red)

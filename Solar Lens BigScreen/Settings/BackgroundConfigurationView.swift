@@ -50,7 +50,7 @@ struct BackgroundConfigurationView: View {
 
                     if customBackgroundImage != nil {
                         Button(action: { showDeleteConfirmation = true }) {
-                            Label("", systemImage: "trash")
+                            Image(systemName: "trash")
                         }
                         .foregroundColor(.primary)
                         .tint(Color.red)

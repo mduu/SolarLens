@@ -59,6 +59,7 @@ struct AppearanceConfigurationView: View {
                         "Please note that the effect highly depends if the tvOS system setting is 'dark' or 'light' mode. Try change the system setting as well."
                     )
                     .font(.footnote)
+                    .frame(minHeight: 40)
                 }
 
                 HStack (alignment: .top) {
@@ -68,7 +69,6 @@ struct AppearanceConfigurationView: View {
                 .padding(.top, 16)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 4)
         }
     }
 }
