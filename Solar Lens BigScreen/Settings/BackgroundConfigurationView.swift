@@ -11,10 +11,10 @@ struct BackgroundConfigurationView: View {
         VStack(alignment: .leading, spacing: 30) {
             Text("Custom Background")
 
-            HStack(alignment: .top, spacing: 16) {
+            VStack(alignment: .center, spacing: 20) {
                 // Preview
                 if let backgroundImage = customBackgroundImage {
-                    VStack(spacing: 16) {
+                    VStack(spacing: 12) {
                         Image(uiImage: backgroundImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -26,9 +26,8 @@ struct BackgroundConfigurationView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                    .frame(maxWidth: 320)
                 } else {
-                    VStack(alignment: .center, spacing: 16) {
+                    VStack(spacing: 12) {
                         Image(systemName: "photo")
                             .font(.system(size: 60))
                             .foregroundColor(.gray.opacity(0.5))
@@ -40,36 +39,25 @@ struct BackgroundConfigurationView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                    .frame(maxWidth: .infinity)
                 }
 
-                VStack(alignment: .leading) {
+                // Action buttons
+                HStack(spacing: 16) {
+                    Button(action: { showUploadSheet = true }) {
+                        Label("Upload", systemImage: "qrcode")
+                    }
+                    .foregroundColor(.primary)
 
-                    // Upload button
-                    HStack {
-                        Button(action: { showUploadSheet = true }) {
-                            Label("Upload", systemImage: "qrcode")
+                    if customBackgroundImage != nil {
+                        Button(action: { showDeleteConfirmation = true }) {
+                            Label("Remove", systemImage: "trash")
                         }
                         .foregroundColor(.primary)
-
-                        Spacer(minLength: 0)
-                    }
-
-                    // Delete button
-                    if customBackgroundImage != nil {
-                        HStack {
-                            Button(action: { showDeleteConfirmation = true }) {
-                                Label("Remove", systemImage: "trash")
-                            }
-                            .foregroundColor(.primary)
-                            .tint(Color.red)
-                        }
-
-                        Spacer(minLength: 0)
+                        .tint(Color.red)
                     }
                 }
-                .frame(width: 350)
             }
+            .frame(maxWidth: .infinity)
         }
         .sheet(isPresented: $showUploadSheet) {
             ImageUploadSheet(imageType: .background)

@@ -36,7 +36,8 @@ struct AppearanceConfigurationView: View {
                         .frame(width: 500, alignment: .leading)
 
                     Picker("Select Background", selection: $backgroundImage) {
-                        ForEach(AppearanceConfigurationView.availableBackgroundImages.keys.sorted(), id: \.self) { key in
+                        ForEach(AppearanceConfigurationView.availableBackgroundImages.keys.sorted(), id: \.self) {
+                            key in
                             Text(AppearanceConfigurationView.availableBackgroundImages[key]!)
                                 .tag(key)
                         }
@@ -54,13 +55,16 @@ struct AppearanceConfigurationView: View {
 
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     Image(systemName: "info.circle")
-                    Text("Please note that the effect highly depends if the tvOS system setting is 'dark' or 'light' mode. Try change the system setting as well.")
-                        .font(.footnote)
+                    Text(
+                        "Please note that the effect highly depends if the tvOS system setting is 'dark' or 'light' mode. Try change the system setting as well."
+                    )
+                    .font(.footnote)
                 }
 
-                LogoConfigurationView()
-
-                BackgroundConfigurationView()
+                HStack (alignment: .top) {
+                    LogoConfigurationView()
+                    BackgroundConfigurationView()
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 4)
