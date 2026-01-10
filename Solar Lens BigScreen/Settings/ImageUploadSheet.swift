@@ -19,7 +19,7 @@ struct ImageUploadSheet: View {
         case success
         case error(String)
 
-        var message: String {
+        var message: LocalizedStringResource {
             switch self {
             case .waiting:
                 return "Scan QR code to upload"
@@ -30,7 +30,7 @@ struct ImageUploadSheet: View {
             case .success:
                 return "Upload successful!"
             case .error(let msg):
-                return msg
+                return "\(msg)"
             }
         }
 

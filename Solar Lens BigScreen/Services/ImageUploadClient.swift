@@ -162,7 +162,7 @@ enum UploadClientError: LocalizedError {
     case emptyResponse
     case timeout
 
-    var errorDescription: String? {
+    var errorDescription: LocalizedStringResource? {
         switch self {
         case .invalidResponse:
             return "Invalid server response"
