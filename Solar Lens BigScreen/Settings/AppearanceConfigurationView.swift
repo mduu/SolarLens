@@ -65,6 +65,7 @@ struct AppearanceConfigurationView: View {
                     LogoConfigurationView()
                     BackgroundConfigurationView()
                 }
+                .padding(.top, 16)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 4)

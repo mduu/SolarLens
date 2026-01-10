@@ -42,7 +42,7 @@ struct LogoConfigurationView: View {
                 }
 
                 // Action buttons
-                VStack(spacing: 16) {
+                HStack(spacing: 16) {
                     Button(action: { showUploadSheet = true }) {
                         Label("Upload", systemImage: "qrcode")
                     }
@@ -50,7 +50,7 @@ struct LogoConfigurationView: View {
 
                     if customLogoImage != nil {
                         Button(action: { showDeleteConfirmation = true }) {
-                            Label("Remove", systemImage: "trash")
+                            Label("", systemImage: "trash")
                         }
                         .foregroundColor(.primary)
                         .tint(Color.red)
