@@ -289,8 +289,11 @@ header .logo {
 }
 
 .success-container {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: var(--shadow);
     text-align: center;
-    padding: 40px 20px;
     animation: fadeIn 0.4s ease-out;
 }
 
