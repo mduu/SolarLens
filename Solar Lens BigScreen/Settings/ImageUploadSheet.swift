@@ -269,6 +269,7 @@ extension Text {
 
 extension Notification.Name {
     static let customImageUploaded = Notification.Name("customImageUploaded")
+    static let customBackgroundDeleted = Notification.Name("customBackgroundDeleted")
 }
 
 // MARK: - Preview

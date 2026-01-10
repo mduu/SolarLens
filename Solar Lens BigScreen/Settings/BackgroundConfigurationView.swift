@@ -107,6 +107,12 @@ struct BackgroundConfigurationView: View {
                 await MainActor.run {
                     customBackgroundImage = nil
                 }
+
+                // Post notification to update BackgroundView
+                NotificationCenter.default.post(
+                    name: .customBackgroundDeleted,
+                    object: nil
+                )
             } catch {
                 print("Error deleting background: \(error)")
             }
