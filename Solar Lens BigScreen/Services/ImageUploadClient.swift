@@ -20,7 +20,7 @@ class ImageUploadClient {
     /// Check if an image is available for download
     /// - Parameter deviceId: Unique device identifier
     /// - Returns: ImageInfo if available, nil if not
-    func checkImageAvailable(deviceId: String, imageType: String) async throws -> ImageCheckResponse? {
+    func checkImageAvailable(deviceId: String, imageType: String, retryCount: Int = 0) async throws -> ImageCheckResponse? {
         let url = URL(string: "\(baseURL)/check/\(deviceId)/\(imageType)")!
 
         var request = URLRequest(url: url)
@@ -49,6 +49,15 @@ class ImageUploadClient {
             }
         case 404:
             return nil
+        case 429, 500:
+            // Retry on rate limiting or server errors
+            if retryCount < 3 {
+                print("⚠️ Server returned \(httpResponse.statusCode), retrying in 5 seconds... (attempt \(retryCount + 1)/3)")
+                try await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds
+                return try await checkImageAvailable(deviceId: deviceId, imageType: imageType, retryCount: retryCount + 1)
+            } else {
+                throw UploadClientError.serverError(httpResponse.statusCode)
+            }
         default:
             throw UploadClientError.serverError(httpResponse.statusCode)
         }
@@ -57,7 +66,7 @@ class ImageUploadClient {
     /// Download the image
     /// - Parameter deviceId: Unique device identifier
     /// - Returns: Image data
-    func downloadImage(deviceId: String, imageType: String) async throws -> Data {
+    func downloadImage(deviceId: String, imageType: String, retryCount: Int = 0) async throws -> Data {
         let url = URL(string: "\(baseURL)/download/\(deviceId)/\(imageType)")!
 
         var request = URLRequest(url: url)
@@ -69,15 +78,24 @@ class ImageUploadClient {
             throw UploadClientError.invalidResponse
         }
 
-        guard httpResponse.statusCode == 200 else {
+        switch httpResponse.statusCode {
+        case 200:
+            guard !data.isEmpty else {
+                throw UploadClientError.emptyResponse
+            }
+            return data
+        case 429, 500:
+            // Retry on rate limiting or server errors
+            if retryCount < 3 {
+                print("⚠️ Server returned \(httpResponse.statusCode), retrying in 5 seconds... (attempt \(retryCount + 1)/3)")
+                try await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds
+                return try await downloadImage(deviceId: deviceId, imageType: imageType, retryCount: retryCount + 1)
+            } else {
+                throw UploadClientError.serverError(httpResponse.statusCode)
+            }
+        default:
             throw UploadClientError.serverError(httpResponse.statusCode)
         }
-
-        guard !data.isEmpty else {
-            throw UploadClientError.emptyResponse
-        }
-
-        return data
     }
 
     /// Poll for image availability with timeout
