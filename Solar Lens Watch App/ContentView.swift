@@ -6,6 +6,11 @@ struct ContentView: View {
     @State var showAppRateRequest = AppStoreReviewManager.shared
         .checkAndRequestReview()
     @State private var loginCredentialsCheckTimer: Timer?
+    
+    // Survey Logic
+    @State var showSurvey: Bool = false
+    @AppStorage("surveyForeverDismissed") var surveyForeverDismissed: Bool = false
+    @AppStorage("surveyLastShownDate") var surveyLastShownDate: Double = 0.0
 
     var body: some View {
 
@@ -30,120 +35,128 @@ struct ContentView: View {
                 }
         } else if viewModel.loginCredentialsExists {
 
-            NavigationView {
-                TabView(
-                    selection: Binding(
-                        get: { navigationState.selectedTab },
-                        set: { navigationState.selectedTab = $0 }
-                    )
-                ) {
-                    OverviewScreen()
-                        .onTapGesture {
-                            print("Force refresh")
-                            Task {
-                                await viewModel.fetchServerData()
+            ZStack {
+                NavigationView {
+                    TabView(
+                        selection: Binding(
+                            get: { navigationState.selectedTab },
+                            set: { navigationState.selectedTab = $0 }
+                        )
+                    ) {
+                        OverviewScreen()
+                            .onTapGesture {
+                                print("Force refresh")
+                                Task {
+                                    await viewModel.fetchServerData()
+                                }
                             }
+                            .tag(0)
+
+                        if viewModel.overviewData.hasAnyCarChargingStation {
+                            ChargingScreen()
+                                .toolbar {
+                                    ToolbarItem(placement: .topBarLeading) {
+                                        HStack {
+                                            HomeButton()
+
+                                            Text("Charging")
+                                                .foregroundColor(.green)
+                                                .font(.headline)
+
+                                            Spacer()
+                                        }  // :HStack
+                                    }  // :ToolbarItem
+                                }  // :.toolbar
+                                .tag(1)
                         }
-                        .tag(0)
 
-                    if viewModel.overviewData.hasAnyCarChargingStation {
-                        ChargingScreen()
+                        SolarScreen()
                             .toolbar {
                                 ToolbarItem(placement: .topBarLeading) {
                                     HStack {
                                         HomeButton()
 
-                                        Text("Charging")
-                                            .foregroundColor(.green)
+                                        Text("Solar")
+                                            .foregroundColor(.orange)
                                             .font(.headline)
 
                                         Spacer()
                                     }  // :HStack
                                 }  // :ToolbarItem
                             }  // :.toolbar
-                            .tag(1)
-                    }
+                            .tag(2)
 
-                    SolarScreen()
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                HStack {
-                                    HomeButton()
-
-                                    Text("Solar")
-                                        .foregroundColor(.orange)
-                                        .font(.headline)
-
-                                    Spacer()
-                                }  // :HStack
-                            }  // :ToolbarItem
-                        }  // :.toolbar
-                        .tag(2)
-
-                    ConsumptionScreen()
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                HStack {
-                                    HomeButton()
-
-                                    Text("Consumption")
-                                        .foregroundColor(.cyan)
-                                        .font(.headline)
-
-                                    Spacer()
-                                }  // :HStack
-                            }  // :ToolbarItem
-                        }  // :.toolbar
-                        .tag(3)
-
-                    if viewModel.overviewData.hasAnyBattery {
-                        BatteryScreen()
+                        ConsumptionScreen()
                             .toolbar {
                                 ToolbarItem(placement: .topBarLeading) {
                                     HStack {
                                         HomeButton()
-                                        
-                                        Text("Battery")
-                                            .foregroundColor(.purple)
+
+                                        Text("Consumption")
+                                            .foregroundColor(.cyan)
                                             .font(.headline)
+
                                         Spacer()
                                     }  // :HStack
                                 }  // :ToolbarItem
                             }  // :.toolbar
-                            .tag(4)
+                            .tag(3)
+
+                        if viewModel.overviewData.hasAnyBattery {
+                            BatteryScreen()
+                                .toolbar {
+                                    ToolbarItem(placement: .topBarLeading) {
+                                        HStack {
+                                            HomeButton()
+                                            
+                                            Text("Battery")
+                                                .foregroundColor(.purple)
+                                                .font(.headline)
+                                            Spacer()
+                                        }  // :HStack
+                                    }  // :ToolbarItem
+                                }  // :.toolbar
+                                .tag(4)
+                        }
+
+                        GridScreen()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    HStack {
+                                        HomeButton()
+
+                                        Text("Grid")
+                                            .foregroundColor(.indigo)
+                                            .font(.headline)
+
+                                        Spacer()
+                                    }  // :HStack
+                                }  // :ToolbarItem
+                            }  // :.toolbar
+                            .tag(5)
+
+
+                    }  // :TabView
+                    .tabViewStyle(.verticalPage(transitionStyle: .blur))
+                    .sheet(isPresented: $showAppRateRequest) {
+                        AppReviewRequestView()
                     }
 
-                    GridScreen()
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                HStack {
-                                    HomeButton()
-
-                                    Text("Grid")
-                                        .foregroundColor(.indigo)
-                                        .font(.headline)
-
-                                    Spacer()
-                                }  // :HStack
-                            }  // :ToolbarItem
-                        }  // :.toolbar
-                        .tag(5)
-
-
-                }  // :TabView
-                .tabViewStyle(.verticalPage(transitionStyle: .blur))
-                .sheet(isPresented: $showAppRateRequest) {
-                    AppReviewRequestView()
+                }  // :NavigationView
+                .edgesIgnoringSafeArea(.all)
+                .onAppear {
+                    if viewModel.overviewData.isOutdatedData {
+                        print("Fetching onAppear because outdated data")
+                        Task {
+                            await viewModel.fetchServerData()
+                        }
+                    }
+                    checkSurveyDisplay()
                 }
 
-            }  // :NavigationView
-            .edgesIgnoringSafeArea(.all)
-            .onAppear {
-                if viewModel.overviewData.isOutdatedData {
-                    print("Fetching onAppear because outdated data")
-                    Task {
-                        await viewModel.fetchServerData()
-                    }
+                if showSurvey {
+                    WatchSurveyView(isPresented: $showSurvey.animation())
+                        .zIndex(1)
                 }
             }
 
@@ -153,6 +166,30 @@ struct ContentView: View {
                 .padding()
                 .foregroundStyle(.accent)
                 .background(Color.black.opacity(0.7))
+        }
+    }
+
+    private func checkSurveyDisplay() {
+        let now = Date()
+        var dateComponents = DateComponents()
+        dateComponents.year = 2026
+        dateComponents.month = 3
+        dateComponents.day = 31
+        
+        guard let endDate = Calendar.current.date(from: dateComponents) else { return }
+        
+        if now > endDate { return }
+        if surveyForeverDismissed { return }
+        
+        if surveyLastShownDate > 0 {
+            let lastShown = Date(timeIntervalSince1970: surveyLastShownDate)
+            if now.timeIntervalSince(lastShown) < 86400 {
+                return
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            showSurvey = true
         }
     }
 
