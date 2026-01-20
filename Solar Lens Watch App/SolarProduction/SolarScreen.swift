@@ -5,6 +5,7 @@ struct SolarScreen: View {
     @State var viewModel = SolarScreenViewModel()
     @State private var refreshTimer: Timer?
     @State private var showSolarChart: Bool = false
+    @State private var solarWeather = SolarWeatherService.shared
 
     var body: some View {
         ZStack {
@@ -106,6 +107,8 @@ struct SolarScreen: View {
                     }  // :HStack
                     .frame(maxWidth: .infinity)
 
+                    SunTimesView(sunrise: solarWeather.sunrise, sunset: solarWeather.sunset)
+
                 }  // :if
 
                 Spacer()
@@ -139,6 +142,7 @@ struct SolarScreen: View {
         .onAppear {
             Task {
                 await viewModel.fetchSolarDetails()
+                await solarWeather.fetchSunTimes()
             }
 
             if refreshTimer == nil {

@@ -63,7 +63,7 @@ struct HomeScreen: View {
                                                 )
                                                 .frame(
                                                     maxWidth: 180,
-                                                    maxHeight: 120
+                                                    maxHeight: 130
                                                 )
                                                 .padding(.leading, 5)
                                             } else {

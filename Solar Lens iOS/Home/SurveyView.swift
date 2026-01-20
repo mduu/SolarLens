@@ -49,7 +49,7 @@ struct SurveyView: View {
                             .background(Color.yellow)
                             .cornerRadius(12)
                     }
-                    
+
                     Button(action: {
                         // Later: Show again after 24 hours
                         surveyLastShownDate = Date().timeIntervalSince1970

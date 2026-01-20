@@ -6,15 +6,16 @@ struct SolarForecastView: View {
     var forecastToday: ForecastItem?
     var forecastTomorrow: ForecastItem?
     var forecastDayAfterTomorrow: ForecastItem?
-    
+
     @State private var refreshTimer: Timer?
+    @State private var solarWeather = SolarWeatherService.shared
 
     var body: some View {
         VStack {
             Text("Forecast")
                 .font(.headline)
                 .foregroundColor(.accent)
-            
+
             HStack {
                 ForecastItemView(
                     date: Calendar.current.startOfDay(for: Date()),
@@ -28,10 +29,13 @@ struct SolarForecastView: View {
                     small: false,
                     intense: true
                 )
-                
+
                 ForecastItemView(
                     date: Calendar.current.date(
-                            byAdding: .day, value: 1, to: Date()),
+                        byAdding: .day,
+                        value: 1,
+                        to: Date()
+                    ),
                     maxProduction: solarProductionMax,
                     forecasts: [
                         forecastToday,
@@ -42,10 +46,13 @@ struct SolarForecastView: View {
                     small: false,
                     intense: true
                 )
-                
+
                 ForecastItemView(
                     date: Calendar.current.date(
-                            byAdding: .day, value: 2, to: Date()),
+                        byAdding: .day,
+                        value: 2,
+                        to: Date()
+                    ),
                     maxProduction: solarProductionMax,
                     forecasts: [
                         forecastToday,
@@ -56,10 +63,16 @@ struct SolarForecastView: View {
                     small: false,
                     intense: true
                 )
-            } // :HStack
-        } // :VStack
+            }  // :HStack
+
+            SunTimesView(sunrise: solarWeather.sunrise, sunset: solarWeather.sunset)
+
+        }  // :VStack
         .onAppear {
             AppStoreReviewManager.shared.setSolarDetailsShownAtLeastOnce()
+            Task {
+                await solarWeather.fetchSunTimes()
+            }
         }  // :onAppear
     }
 }

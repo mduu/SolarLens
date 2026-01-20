@@ -273,6 +273,7 @@
 		494F21D02E505AFE00647150 /* Exceptions for "Shared" folder in "Solar Lens BigScreen" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Components/SunTimesView.swift,
 				Features/Battery/BatteryModeButton.swift,
 				Features/Battery/BatteryModeOptionsSheet.swift,
 				Features/Battery/BatteryModeSheet.swift,
@@ -285,6 +286,8 @@
 				Features/Consumption/Charging/ChargingOptionsPopupView.swift,
 				Features/Consumption/ConsumptionPieChart.swift,
 				Features/Consumption/ConsumptionTodayInfoView.swift,
+				Services/LocationManager.swift,
+				Services/SolarWeatherService.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
 				Widgets/BatteryWidgets/BatteryWidget.swift,
 				Widgets/BatteryWidgets/BatteryWidgetProvider.swift,
@@ -331,6 +334,7 @@
 				AppIntents/Intents/SetChargingModeIntent.swift,
 				AppIntents/Shortcuts/Shortcuts.swift,
 				AppShortcuts.xcstrings,
+				Components/SunTimesView.swift,
 				Components/UpdateTimeStampView.swift,
 				Features/Battery/BatteryForecastView.swift,
 				Features/Battery/BatteryIndicator.swift,
@@ -351,6 +355,8 @@
 				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Features/Consumption/DeviceIconView.swift,
 				Layouts/FlowLayout.swift,
+				Services/LocationManager.swift,
+				Services/SolarWeatherService.swift,
 				State/CurrentBuildingState.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
@@ -871,8 +877,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.10.0;
-				APP_VERSION_BUILDNO = 251;
+				APP_VERSION = 3.11.0;
+				APP_VERSION_BUILDNO = 252;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -948,8 +954,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_VERSION = 3.10.0;
-				APP_VERSION_BUILDNO = 251;
+				APP_VERSION = 3.11.0;
+				APP_VERSION_BUILDNO = 252;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
