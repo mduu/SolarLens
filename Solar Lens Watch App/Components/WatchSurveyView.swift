@@ -22,7 +22,7 @@ struct WatchSurveyView: View {
                         .cornerRadius(20)
                         .padding(.top, 15)
                     
-                    Text("Greeting from the developer! As I am thinking about the next features of Solar Lens I am very interested in your feedback. It would be very kind if you fill out the survey which takes less then 5 minutes. Please open the iOS app and continue there.\nGreeting, Marc")
+                    Text("SurveyGreeingWatchOs")
                         .font(.caption2)
                         .multilineTextAlignment(.center)
                     

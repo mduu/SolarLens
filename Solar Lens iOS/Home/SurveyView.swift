@@ -34,7 +34,7 @@ struct SurveyView: View {
 
                     // Text
                     Text(
-                        "Hi! I’m Marc, the developer of Solar Lens. I’m currently planning the next features and would love your input. Could you spare 3 minutes for a quick survey? Your feedback helps me build a better app for you ☀️\n\nThanks for your support! — Marc"
+                        "SurveyGreetingIOS\nThanks for your support! — Marc"
                     )
                     .font(.body)
                     .multilineTextAlignment(.leading)
