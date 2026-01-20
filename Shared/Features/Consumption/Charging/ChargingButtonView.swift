@@ -3,10 +3,9 @@ import SwiftUI
 struct ChargingButtonView: View {
     var chargingMode: ChargingMode
     var chargingStation: ChargingStation
-
-    @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
     var largeButton: Bool = false
 
+    @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
     @State private var showingPopup = false
 
     var body: some View {
@@ -101,7 +100,7 @@ struct ChargingButtonView: View {
         chargingStation: ChargingStation
     ) -> Color? {
         return (chargingStation.chargingMode == chargingMode) && largeButton
-            ? .accent.opacity(0.1)
+            ? .accent.opacity(0.3)
             : .clear
     }
 
