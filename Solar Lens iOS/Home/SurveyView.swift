@@ -2,10 +2,12 @@ import SwiftUI
 
 struct SurveyView: View {
     @Binding var isPresented: Bool
-    
+
     @AppStorage("surveyForeverDismissed") var surveyForeverDismissed: Bool = false
     @AppStorage("surveyLastShownDate") var surveyLastShownDate: Double = 0.0
-    
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.openURL) var openURL
+
     var body: some View {
         ZStack {
             // Dimmed Background
@@ -14,7 +16,7 @@ struct SurveyView: View {
                 .onTapGesture {
                     // Optional: Tap background to dismiss behavior
                 }
-            
+
             // Card Content
             VStack(spacing: 24) {
 
@@ -31,16 +33,27 @@ struct SurveyView: View {
                         .padding(.top, 20)
 
                     // Text
-                    Text("Hi! I’m Marc, the developer of Solar Lens. I’m currently planning the next features and would love your input. Could you spare 3 minutes for a quick survey? Your feedback helps me build a better app for you ☀️\n\nThanks for your support! — Marc")
-                        .font(.body)
-                        .multilineTextAlignment(.leading)
-                        .padding(.horizontal)
-                        .fixedSize(horizontal: false, vertical: true)
+                    Text(
+                        "Hi! I’m Marc, the developer of Solar Lens. I’m currently planning the next features and would love your input. Could you spare 3 minutes for a quick survey? Your feedback helps me build a better app for you ☀️\n\nThanks for your support! — Marc"
+                    )
+                    .font(.body)
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
 
                 // Buttons
                 VStack(spacing: 16) {
-                    Link(destination: URL(string: "https://forms.cloud.microsoft/r/Rej2bBYWGY")!) {
+                    Button(action: {
+                        if let url = URL(string: "https://forms.cloud.microsoft/r/Rej2bBYWGY") {
+                            openURL(url)
+                            surveyForeverDismissed = true
+                            withAnimation {
+                                isPresented = false
+                            }
+                            dismiss()
+                        }
+                    }) {
                         Text("Open Survey")
                             .font(.headline)
                             .foregroundColor(.white)
@@ -65,7 +78,7 @@ struct SurveyView: View {
                             .background(Color.yellow.opacity(0.1))
                             .cornerRadius(12)
                     }
-                    
+
                     Button(action: {
                         // No Thanks: Never show again
                         surveyForeverDismissed = true
@@ -86,9 +99,9 @@ struct SurveyView: View {
             .background(Color(UIColor.secondarySystemBackground))
             .cornerRadius(20)
             .shadow(radius: 20)
-            .padding(40) // Margin from screen edges
+            .padding(40)  // Margin from screen edges
         }
-        .transition(.opacity) // Smooth fade in/out
+        .transition(.opacity)  // Smooth fade in/out
     }
 }
 
