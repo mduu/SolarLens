@@ -24,6 +24,9 @@ class V1User: Codable {
     var firmware_version: String
     var signal: String  // "connected"
     var installer: String?
+    var plant: String?
+    var oem: String?
+    var installer: String?
 
     var registrationDate: Date {
         let isoFormatter = ISO8601DateFormatter()
