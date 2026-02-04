@@ -3,4 +3,5 @@ enum EnergyManagerClientError: Error {
     case systemInformationNotFound
     case invalidData
     case apiError(apiError: RestError)
+    case invalidDateCalculation
 }
