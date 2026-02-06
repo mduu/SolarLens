@@ -200,6 +200,35 @@ nav {
     line-height: 1.55;
 }
 
+/* ===== Requirement Banner ===== */
+.requirement-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 36px;
+    padding: 18px 32px;
+    border-radius: 16px;
+    background: var(--primary);
+    border: none;
+    box-shadow: 0 6px 24px rgba(200, 160, 0, 0.35);
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.7);
+    line-height: 1.55;
+}
+
+.requirement-banner svg {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.requirement-banner strong {
+    font-weight: 650;
+    color: rgba(0, 0, 0, 0.85);
+}
+
 .store-buttons {
     display: flex;
     gap: 24px;
@@ -509,6 +538,12 @@ footer .disclaimer {
 
     .hero h1 {
         font-size: 30px;
+    }
+
+    .requirement-banner {
+        font-size: 14px;
+        padding: 12px 18px;
+        gap: 10px;
     }
 
     .store-buttons {
