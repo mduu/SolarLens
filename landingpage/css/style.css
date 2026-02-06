@@ -165,7 +165,7 @@ nav {
 
 /* ===== Hero Section ===== */
 .hero {
-    padding: 100px 0 80px;
+    padding: 56px 0 40px;
     text-align: center;
     background: linear-gradient(180deg, #FFFEF7 0%, #FFF8E1 45%, #FFFFFF 100%);
 }
@@ -177,14 +177,14 @@ nav {
     box-shadow:
         0 16px 48px rgba(255, 214, 10, 0.35),
         0 4px 16px rgba(0, 0, 0, 0.1);
-    margin-bottom: 36px;
+    margin-bottom: 24px;
 }
 
 .hero h1 {
     font-size: 52px;
     font-weight: 700;
     line-height: 1.08;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     letter-spacing: -0.025em;
 }
 
@@ -196,7 +196,7 @@ nav {
     font-size: 20px;
     color: var(--text-secondary);
     max-width: 620px;
-    margin: 0 auto 44px;
+    margin: 0 auto 28px;
     line-height: 1.55;
 }
 
@@ -205,7 +205,7 @@ nav {
     display: inline-flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 36px;
+    margin-bottom: 28px;
     padding: 18px 32px;
     border-radius: 16px;
     background: var(--primary);
@@ -282,7 +282,7 @@ nav {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-top: 48px;
+    margin-top: 28px;
     width: 44px;
     height: 44px;
     border: none;
