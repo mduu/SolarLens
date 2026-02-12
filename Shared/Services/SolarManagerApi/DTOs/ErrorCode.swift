@@ -10,7 +10,7 @@ struct ErrorCode : Codable {
     var showInEndUserView: Bool?
     var showInMonitoring: Bool?
     var streamPushNotificationMarker: Bool?
-    var deviceActivity: String?
+    var deviceActivity: Int?
     var errorLabel: String?
     var errorDescription: String?
 }
