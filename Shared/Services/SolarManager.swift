@@ -572,7 +572,7 @@ actor SolarManager: EnergyManager {
                 sensorId: sensorId,
                 control: controlBody
             )
-
+            sensorInfosUpdatedAt = nil
             return true
         } catch {
             return false
