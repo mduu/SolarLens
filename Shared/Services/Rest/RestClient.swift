@@ -1,5 +1,8 @@
 import Combine
 internal import Foundation
+import os
+
+private let logger = Logger(subsystem: "SolarLens", category: "RestClient")
 
 class RestClient {
     let baseUrl: String
@@ -177,37 +180,23 @@ class RestClient {
                 do {
                     return try jsonDecoder.decode(TResponse.self, from: data!)
                 } catch let error as DecodingError {
-                    print("🔴📄 Decoding Error: \(error)")
-
+                    let detail: String
                     switch error {
-                        case .keyNotFound(let key, let context):
-                            print("--- Key Not Found ---")
-                            print("Missing Key: \(key.stringValue)")
-                            print("Context: \(context.debugDescription)")
-
-                        case .typeMismatch(let type, let context):
-                            print("--- Type Mismatch ---")
-                            print("Type Expected: \(type)")
-                            print("Context: \(context.debugDescription)")
-
-                        case .valueNotFound(let type, let context):
-                            print("--- Value Not Found ---")
-                            print("Value of Type \(type) not found.")
-                            print("Context: \(context.debugDescription)")
-
-                        case .dataCorrupted(let context):
-                            print("--- Data Corrupted ---")
-                            print("Context: \(context.debugDescription)")
-
-                        @unknown default:
-                            print("An unknown decoding error occurred.")
+                    case .keyNotFound(let key, let context):
+                        detail = "Key Not Found: '\(key.stringValue)' – \(context.debugDescription)"
+                    case .typeMismatch(let type, let context):
+                        detail = "Type Mismatch: expected \(type) – \(context.debugDescription)"
+                    case .valueNotFound(let type, let context):
+                        detail = "Value Not Found: \(type) – \(context.debugDescription)"
+                    case .dataCorrupted(let context):
+                        detail = "Data Corrupted: \(context.debugDescription)"
+                    @unknown default:
+                        detail = "Unknown decoding error"
                     }
 
-                    print("--- Response Content ---")
-                    debugPrint(
-                        String(data: data!, encoding: .utf8)
-                        ?? "Data could not be decoded as UTF-8"
-                    )
+                    let responseBody = String(data: data!, encoding: .utf8) ?? "<non-UTF8>"
+                    logger.error("Decoding failed for \(serviceUrl, privacy: .public): \(detail, privacy: .public)")
+                    logger.debug("Response body: \(responseBody, privacy: .private)")
 
                     return nil
                 }
@@ -266,5 +255,33 @@ class RestClient {
     private func waitFor(milliseconds: UInt64) async {
         print("Waiting \(milliseconds) seconds before retry...")
         try? await Task.sleep(nanoseconds: UInt64(milliseconds) * 1_000_000)
+    }
+}
+
+/// A wrapper that decodes a JSON array element-by-element, skipping any
+/// elements that fail to decode instead of failing the entire array.
+struct LossyArray<Element: Decodable>: Decodable {
+    let elements: [Element]
+    let skippedCount: Int
+
+    init(from decoder: Decoder) throws {
+        var container = try decoder.unkeyedContainer()
+        var elements: [Element] = []
+        var skipped = 0
+
+        while !container.isAtEnd {
+            do {
+                let element = try container.decode(Element.self)
+                elements.append(element)
+            } catch {
+                // superDecoder() advances the container index past the
+                // failed element so we can continue with the next one.
+                _ = try container.superDecoder()
+                skipped += 1
+            }
+        }
+
+        self.elements = elements
+        self.skippedCount = skipped
     }
 }

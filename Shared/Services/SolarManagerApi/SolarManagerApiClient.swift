@@ -1,5 +1,8 @@
 import Combine
 internal import Foundation
+import os
+
+private let logger = Logger(subsystem: "SolarLens", category: "SolarManagerApi")
 
 class SolarManagerApi: RestClient {
 
@@ -97,11 +100,17 @@ class SolarManagerApi: RestClient {
     func getV1InfoSensors(solarManagerId smId: String) async throws
         -> [SensorInfosV1Response]?
     {
-        let response: [SensorInfosV1Response]? = try await get(
+        // Use lossy decoding: decode each sensor individually so one
+        // malformed sensor doesn't prevent all others from loading.
+        let response: LossyArray<SensorInfosV1Response>? = try await get(
             serviceUrl: "/v1/info/sensors/\(smId)"
         )
 
-        return response
+        if let skipped = response?.skippedCount, skipped > 0 {
+            logger.warning("Skipped \(skipped) sensor(s) due to decoding errors")
+        }
+
+        return response?.elements
     }
 
     func getV1StreamGateway(solarManagerId smId: String) async throws

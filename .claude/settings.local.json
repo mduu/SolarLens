@@ -12,7 +12,8 @@
       "WebFetch(domain:cloud.solar-manager.ch)",
       "Bash(python3:*)",
       "Bash(curl:*)",
-      "Bash(xcodebuild:*)"
+      "Bash(xcodebuild:*)",
+      "Bash(xargs:*)"
     ]
   }
 }
