@@ -21,4 +21,11 @@ enum ArrowType: String, Codable {
     case fromPVToGrid
     case fromGridToConsumer
     case fromPVToConsumer
+    case unknown
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = ArrowType(rawValue: rawValue) ?? .unknown
+    }
 }

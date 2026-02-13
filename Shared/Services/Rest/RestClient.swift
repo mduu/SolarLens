@@ -3,7 +3,9 @@ internal import Foundation
 
 class RestClient {
     let baseUrl: String
-    var defaultTimeout: TimeInterval = 30 // Set timeout to 40 seconds
+    let timeoutForRequest: TimeInterval = 60 // 60 seconds
+    let timeoutForResource: TimeInterval = 300 // 5 minutes
+
     private let session: URLSession
     private let jsonEncoder: JSONEncoder = .init()
     private let jsonDecoder: JSONDecoder = .init()
@@ -16,7 +18,9 @@ class RestClient {
         self.jsonEncoder.dateEncodingStrategy = .formatted(dateFormatter)
 
         let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = defaultTimeout
+        configuration.waitsForConnectivity = true
+        configuration.timeoutIntervalForRequest = timeoutForRequest // Timeout für Request
+        configuration.timeoutIntervalForResource = timeoutForResource // Timeout für WaitForConnectivity+Request
         session = URLSession(configuration: configuration)
     }
 

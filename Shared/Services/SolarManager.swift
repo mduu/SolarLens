@@ -687,6 +687,7 @@ actor SolarManager: EnergyManager {
         sensorInfos = try await solarManagerApi.getV1InfoSensors(
             solarManagerId: smId
         )
+        sensorInfosUpdatedAt = Date()
     }
 
     @MainActor

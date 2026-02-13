@@ -12,6 +12,12 @@ enum ChargingMode: Int, Codable, CaseIterable, Identifiable, AppEnum {
 
     var id: Int { rawValue }
 
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(Int.self)
+        self = ChargingMode(rawValue: rawValue) ?? .off
+    }
+
     static var typeDisplayRepresentation: TypeDisplayRepresentation =
         "Charging Mode"
 
