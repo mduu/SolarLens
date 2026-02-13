@@ -251,7 +251,7 @@ struct ConsumptionPieChart: View {
         if otherConsumptionValue > 0 {
             allConsumptions.append(
                 .init(
-                    id: "000",
+                    id: "others_\(UUID().uuidString)",
                     name: "Others",
                     consumptionInWatt: otherConsumptionValue,
                     color: "#26C6DA"
@@ -263,8 +263,10 @@ struct ConsumptionPieChart: View {
             allConsumptions
             .enumerated()
             .map { (index, element) in
+                // Ensure unique IDs by using index as fallback
+                let uniqueId = element.id.isEmpty ? "device_\(index)_\(UUID().uuidString)" : element.id
                 return DeviceConsumption.init(
-                    id: element.id,
+                    id: uniqueId,
                     name: element.name,
                     consumptionInWatt: element.consumptionInWatt,
                     color: element.color ?? standardColor[index]

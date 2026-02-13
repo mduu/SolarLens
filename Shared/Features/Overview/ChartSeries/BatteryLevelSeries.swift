@@ -5,6 +5,7 @@ struct BatteryLevelSeries: ChartContent {
     var data: [MainDataItem]
     var maxY: Double
     var isAccent: Bool
+    var batteryLabel: String
 
     func getValue(_ percent: Int?) -> Double {
         let doubleValue = percent != nil ? Double(percent!) : 0.0
@@ -24,8 +25,8 @@ struct BatteryLevelSeries: ChartContent {
             .lineStyle(
                 StrokeStyle(lineWidth: 1, dash: isAccent ? [4, 3] : [4, 3])
             )
-            .accessibilityLabel("Battery")
-            .foregroundStyle(by: .value("Series", "Battery"))
+            .accessibilityLabel(batteryLabel)
+            .foregroundStyle(by: .value("Series", batteryLabel))
 
         }
 
@@ -39,6 +40,7 @@ struct BatteryLevelSeries: ChartContent {
                 data: MainData.fake().data,
                 maxY: 5.3,
                 isAccent: false,
+                batteryLabel: String(localized: "Battery")
             )
         }
         .chartYAxis {
@@ -49,7 +51,7 @@ struct BatteryLevelSeries: ChartContent {
         }
         .chartForegroundStyleScale(
             [
-                "Battery": SerieColors.batteryLevelColor(useAlternativeColors: false)
+                String(localized: "Battery"): SerieColors.batteryLevelColor(useAlternativeColors: false)
             ]
         )
     }
@@ -63,6 +65,7 @@ struct BatteryLevelSeries: ChartContent {
                 data: MainData.fake().data,
                 maxY: 5.3,
                 isAccent: false,
+                batteryLabel: String(localized: "Battery")
             )
         }
         .chartYAxis {
@@ -73,7 +76,7 @@ struct BatteryLevelSeries: ChartContent {
         }
         .chartForegroundStyleScale(
             [
-                "Battery": SerieColors.batteryLevelColor(useAlternativeColors: false)
+                String(localized: "Battery"): SerieColors.batteryLevelColor(useAlternativeColors: false)
             ]
         )
     }

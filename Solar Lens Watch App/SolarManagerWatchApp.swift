@@ -16,7 +16,8 @@ struct SolarManagerWatch_Watch_AppApp: App {
                 .environment(currentBuildingState)
                 .environment(navigationState)
         }
-        //.environment(\.locale, Locale(identifier: "DE"))
+        // For testing specific locale, uncomment:
+        // .environment(\.locale, Locale(identifier: "de"))
     }
 }
 

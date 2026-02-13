@@ -5,6 +5,8 @@ struct ProductionConsumptionSeries: ChartContent {
     var data: [MainDataItem]
     var isAccent: Bool
     var useAlternativeColors: Bool
+    var productionLabel: String
+    var consumptionLabel: String
 
     var body: some ChartContent {
         ForEach(data) { dataPoint in
@@ -27,7 +29,7 @@ struct ProductionConsumptionSeries: ChartContent {
                         endPoint: .bottom
                     )
                 )
-                .foregroundStyle(by: .value("Series", "Production"))
+                .foregroundStyle(by: .value("Series", productionLabel))
                 .lineStyle(
                     StrokeStyle(lineWidth: 0)
                 )
@@ -41,8 +43,8 @@ struct ProductionConsumptionSeries: ChartContent {
             .lineStyle(
                 StrokeStyle(lineWidth: 1)
             )
-            .accessibilityLabel("Production")
-            .foregroundStyle(by: .value("Series", "Production"))
+            .accessibilityLabel(productionLabel)
+            .foregroundStyle(by: .value("Series", productionLabel))
 
             // -- Consumption --
             if !isAccent {
@@ -65,7 +67,7 @@ struct ProductionConsumptionSeries: ChartContent {
                 .lineStyle(
                     StrokeStyle(lineWidth: 0)
                 )
-                .foregroundStyle(by: .value("Series", "Consumption"))
+                .foregroundStyle(by: .value("Series", consumptionLabel))
             }
 
             LineMark(
@@ -76,8 +78,8 @@ struct ProductionConsumptionSeries: ChartContent {
             .lineStyle(
                 StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
             )
-            .accessibilityLabel("Consumption")
-            .foregroundStyle(by: .value("Series", "Consumption"))
+            .accessibilityLabel(consumptionLabel)
+            .foregroundStyle(by: .value("Series", consumptionLabel))
 
         }  // :foreach
     }
@@ -89,7 +91,9 @@ struct ProductionConsumptionSeries: ChartContent {
             ProductionConsumptionSeries(
                 data: MainData.fake().data,
                 isAccent: false,
-                useAlternativeColors: false
+                useAlternativeColors: false,
+                productionLabel: String(localized: "Production"),
+                consumptionLabel: String(localized: "Consumption")
             )
         }
         .chartYAxis {
@@ -108,7 +112,9 @@ struct ProductionConsumptionSeries: ChartContent {
             ProductionConsumptionSeries(
                 data: MainData.fake().data,
                 isAccent: false,
-                useAlternativeColors: false
+                useAlternativeColors: false,
+                productionLabel: String(localized: "Production"),
+                consumptionLabel: String(localized: "Consumption")
             )
         }
         .chartYAxis {
@@ -127,7 +133,9 @@ struct ProductionConsumptionSeries: ChartContent {
             ProductionConsumptionSeries(
                 data: MainData.fake().data,
                 isAccent: false,
-                useAlternativeColors: true
+                useAlternativeColors: true,
+                productionLabel: String(localized: "Production"),
+                consumptionLabel: String(localized: "Consumption")
             )
         }
         .chartYAxis {

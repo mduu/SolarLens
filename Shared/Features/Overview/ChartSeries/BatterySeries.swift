@@ -6,6 +6,8 @@ struct BatterySeries: ChartContent {
     var isAccent: Bool
     var showCharging: Bool = true
     var showDischarging: Bool = true
+    var batteryConsumptionLabel: String
+    var batteryChargedLabel: String
 
     var body: some ChartContent {
         let historyItems = flattenallBatteryItems()
@@ -40,7 +42,7 @@ struct BatterySeries: ChartContent {
                     .lineStyle(
                         StrokeStyle(lineWidth: 0)
                     )
-                    .foregroundStyle(by: .value("Series", "Battery consumption"))
+                    .foregroundStyle(by: .value("Series", batteryConsumptionLabel))
                 }
 
                 LineMark(
@@ -57,8 +59,8 @@ struct BatterySeries: ChartContent {
                 .lineStyle(
                     StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
                 )
-                .foregroundStyle(by: .value("Series", "Battery consumption"))
-                .accessibilityLabel("Battery consumption")
+                .foregroundStyle(by: .value("Series", batteryConsumptionLabel))
+                .accessibilityLabel(batteryConsumptionLabel)
             }
 
             if showCharging {
@@ -89,7 +91,7 @@ struct BatterySeries: ChartContent {
                     .lineStyle(
                         StrokeStyle(lineWidth: 0)
                     )
-                    .foregroundStyle(by: .value("Series", "Battery charged"))
+                    .foregroundStyle(by: .value("Series", batteryChargedLabel))
                 }
 
                 LineMark(
@@ -106,8 +108,8 @@ struct BatterySeries: ChartContent {
                 .lineStyle(
                     StrokeStyle(lineWidth: 1, dash: isAccent ? [2, 2] : [])
                 )
-                .accessibilityLabel("Battery charged")
-                .foregroundStyle(by: .value("Series", "Battery charged"))
+                .accessibilityLabel(batteryChargedLabel)
+                .foregroundStyle(by: .value("Series", batteryChargedLabel))
             }
         }
     }
@@ -123,7 +125,9 @@ struct BatterySeries: ChartContent {
         Chart {
             BatterySeries(
                 batteries: BatteryHistory.fakeHistory(),
-                isAccent: false
+                isAccent: false,
+                batteryConsumptionLabel: String(localized: "Battery consumption"),
+                batteryChargedLabel: String(localized: "Battery charged")
             )
         }
         .chartYAxis {
