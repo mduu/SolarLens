@@ -13,7 +13,8 @@
       "Bash(python3:*)",
       "Bash(curl:*)",
       "Bash(xcodebuild:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(head:*)"
     ]
   }
 }
