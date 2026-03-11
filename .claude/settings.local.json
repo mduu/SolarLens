@@ -14,7 +14,9 @@
       "Bash(curl:*)",
       "Bash(xcodebuild:*)",
       "Bash(xargs:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(git add README.md CLAUDE.md)",
+      "Bash(git commit:*)"
     ]
   }
 }

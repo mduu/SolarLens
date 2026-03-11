@@ -9,6 +9,8 @@
 <img src="marketing/app_store_screens/final/English.png?raw=true" width="auto" height="450" alt="Solar Lens QR Code">
 </a>
 
+**Website:** [solarlens.ch](https://solarlens.ch)
+
 ## Support
 
 Deutsch:
@@ -41,8 +43,23 @@ Solar Lens is a powerful app that gives you a comprehensive overview of your hom
 
 - Solar Lens is not affiliated with Solar Manager AG. The app is designed to work with Solar Manager systems, but it is a separate product developed by Marc Dürst.
 
-# Technology
+## Project Structure
 
-* XCode
+| Directory | Description |
+|-----------|-------------|
+| `Solar Lens iOS/` | Primary iOS app for real-time monitoring of solar production and home energy consumption |
+| `Solar Lens Watch App/` | watchOS app with compact solar and energy data visualization for Apple Watch |
+| `Solar Lens BigScreen/` | tvOS app providing a full-featured dashboard for Apple TV |
+| `Solar Lens Widgets/` | watchOS widgets for solar production, battery, consumption, and efficiency |
+| `Solar Lens iOS Widgets/` | iOS home screen widgets for battery, solar, consumption, and timeline |
+| `Shared/` | Reusable Swift components, services, state management, and UI shared across all apps |
+| `Solar Lens Server/` | .NET Azure Functions backend for custom image uploads (logos/backgrounds) via QR code |
+| `landingpage/` | Multi-language static marketing website ([solarlens.ch](https://solarlens.ch)) |
+| `externals/` | External API specifications for Solar Manager integration |
+
+## Technology
+
+* Xcode
 * Swift
-* Swift UI
+* SwiftUI
+* .NET (Azure Functions)
