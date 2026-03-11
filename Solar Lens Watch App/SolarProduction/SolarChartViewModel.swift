@@ -10,7 +10,7 @@ class SolarChartViewModel {
     private let energyManager: EnergyManager
     private var solarChartLastFetchAt: Date?
 
-    init(energyManagerClient: EnergyManager = SolarManager.instance()) {
+    init(energyManagerClient: EnergyManager = SolarManager.shared) {
         self.energyManager = energyManagerClient
     }
 

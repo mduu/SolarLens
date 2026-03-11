@@ -38,7 +38,7 @@ struct SetChargingModeIntent: AppIntent {
         & ProvidesDialog
     {
         try validateChargingModeParmaeters()
-        let solarManager = SolarManager.instance()
+        let solarManager = SolarManager.shared
         let choosenSensorId = try await getSensorId(energyManager: solarManager)
 
         let controlCarChargingRequest: ControlCarChargingRequest =

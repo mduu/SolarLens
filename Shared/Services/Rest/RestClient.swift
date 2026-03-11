@@ -6,8 +6,13 @@ private let logger = Logger(subsystem: "SolarLens", category: "RestClient")
 
 class RestClient {
     let baseUrl: String
+    #if os(watchOS)
+    let timeoutForRequest: TimeInterval = 15
+    let timeoutForResource: TimeInterval = 30
+    #else
     let timeoutForRequest: TimeInterval = 60 // 60 seconds
     let timeoutForResource: TimeInterval = 300 // 5 minutes
+    #endif
 
     private let session: URLSession
     private let jsonEncoder: JSONEncoder = .init()
@@ -21,9 +26,13 @@ class RestClient {
         self.jsonEncoder.dateEncodingStrategy = .formatted(dateFormatter)
 
         let configuration = URLSessionConfiguration.default
+        #if os(watchOS)
+        configuration.waitsForConnectivity = false
+        #else
         configuration.waitsForConnectivity = true
-        configuration.timeoutIntervalForRequest = timeoutForRequest // Timeout für Request
-        configuration.timeoutIntervalForResource = timeoutForResource // Timeout für WaitForConnectivity+Request
+        #endif
+        configuration.timeoutIntervalForRequest = timeoutForRequest
+        configuration.timeoutIntervalForResource = timeoutForResource
         session = URLSession(configuration: configuration)
     }
 

@@ -4,7 +4,7 @@ import SwiftUI
 struct SolarManagerWatch_Watch_AppApp: App {
     @WKApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    @State var currentBuildingState = CurrentBuildingState(energyManagerClient: SolarManager.instance())
+    @State var currentBuildingState = CurrentBuildingState(energyManagerClient: SolarManager.shared)
     @State var navigationState = NavigationState()
     
     var body: some Scene {

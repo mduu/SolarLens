@@ -7,7 +7,7 @@ struct GetConsumptionIntent: AppIntent {
     func perform() async throws -> some IntentResult & ReturnsValue<Double>
         & ProvidesDialog
     {
-        let solarManager = SolarManager.instance()
+        let solarManager = SolarManager.shared
         let overview = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
 

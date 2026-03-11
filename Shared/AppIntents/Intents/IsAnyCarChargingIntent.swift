@@ -7,7 +7,7 @@ struct IsAnyCarChargingIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
-        let solarManager = SolarManager.instance()
+        let solarManager = SolarManager.shared
         let solarProduction = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
 

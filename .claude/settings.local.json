@@ -16,7 +16,11 @@
       "Bash(xargs:*)",
       "Bash(head:*)",
       "Bash(git add README.md CLAUDE.md)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(find . -name '*.swift' -exec grep -l 'SolarManager\\\\.instance\\(\\)' {} + | xargs sed -i '' 's/SolarManager\\\\.instance\\(\\)/SolarManager.shared/g')",
+      "Bash(find . -name '*.swift' -print0 | xargs -0 grep -l 'SolarManager\\\\.instance\\(\\)' | while IFS= read -r f; do sed -i '' 's/SolarManager\\\\.instance\\(\\)/SolarManager.shared/g' \"$f\"; done)",
+      "Bash(xcrun simctl:*)",
+      "Bash(git add:*)"
     ]
   }
 }

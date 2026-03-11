@@ -27,7 +27,7 @@ struct EfficiencyInfoQuery: EntityQuery {
 
     func suggestedEntities() async throws -> [EfficiencyInfo] {
         // Provide example or default entities (if needed)
-        let solarManager = SolarManager.instance()
+        let solarManager = SolarManager.shared
         let overview = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil
         )

@@ -11,7 +11,7 @@ class ChartViewModel: ObservableObject {
     private let energyManager: EnergyManager
     private var consumptionChartLastFetchAt: Date?
 
-    init(energyManagerClient: EnergyManager = SolarManager.instance()) {
+    init(energyManagerClient: EnergyManager = SolarManager.shared) {
         self.energyManager = energyManagerClient
     }
 

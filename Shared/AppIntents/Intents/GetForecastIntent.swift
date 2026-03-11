@@ -16,7 +16,7 @@ struct GetForecastIntent: AppIntent {
     func perform() async throws -> some IntentResult & ReturnsValue<Double>
         & ProvidesDialog
     {
-        let solarManager = SolarManager.instance()
+        let solarManager = SolarManager.shared
         guard let solarDetails = try? await solarManager.fetchSolarDetails()
         else {
             throw IntentError.couldNotGetSolarDetails("Could not get solar forecast")

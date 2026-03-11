@@ -52,7 +52,7 @@ struct CarInfoQuery: EntityQuery {
     }
 
     func suggestedEntities() async throws -> [CarInfo] {
-        let solarManager = SolarManager.instance()
+        let solarManager = SolarManager.shared
         let overviewData = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil
         )

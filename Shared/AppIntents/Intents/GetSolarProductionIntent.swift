@@ -4,7 +4,7 @@ struct GetSolarProductionIntent: AppIntent {
     static var title: LocalizedStringResource = "Get current solar production"
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<Double> & ProvidesDialog {
-        let solarManager = SolarManager.instance()
+        let solarManager = SolarManager.shared
         let solarProduction = try? await solarManager.fetchOverviewData(
             lastOverviewData: nil)
 

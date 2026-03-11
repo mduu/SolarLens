@@ -3,7 +3,7 @@ import SwiftUI
 @main
 struct Solar_Lens_iOSApp: App {
     @State var currentBuildingState = CurrentBuildingState(
-        energyManagerClient: SolarManager.instance())
+        energyManagerClient: SolarManager.shared)
 
     var body: some Scene {
         WindowGroup {

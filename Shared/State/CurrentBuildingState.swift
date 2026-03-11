@@ -20,6 +20,7 @@ class CurrentBuildingState {
     var chargingInfos: CharingInfoData?
 
     private let energyManager: EnergyManager
+    private var activeFetchTask: Task<Void, Never>?
 
     init(energyManagerClient: EnergyManager) {
         self.energyManager = energyManagerClient
@@ -27,7 +28,7 @@ class CurrentBuildingState {
     }
 
     init() {
-        self.energyManager = SolarManager.instance()
+        self.energyManager = SolarManager.shared
         updateCredentialsExists()
     }
 
@@ -55,38 +56,47 @@ class CurrentBuildingState {
 
     @MainActor
     func fetchServerData() async {
-        if !loginCredentialsExists || isLoading || fetchingIsPaused {
+        if !loginCredentialsExists || fetchingIsPaused { return }
+
+        // If a fetch is already running, await its completion instead of dropping
+        if let existingTask = activeFetchTask {
+            await existingTask.value
             return
         }
 
-        do {
+        let task = Task { @MainActor in
+            defer {
+                activeFetchTask = nil
+                isLoading = false
+            }
             isLoading = true
             resetError()
 
-            print("Fetching server data...")
+            do {
+                print("Fetching server data...")
 
-            var stopwatch = Stopwatch.init()
-            let newData = try await energyManager.fetchOverviewData(
-                lastOverviewData: overviewData
-            )
-            stopwatch.stop()
+                var stopwatch = Stopwatch.init()
+                let newData = try await energyManager.fetchOverviewData(
+                    lastOverviewData: overviewData
+                )
+                stopwatch.stop()
 
-            overviewData = newData
+                overviewData = newData
 
-            print(
-                "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
-            )
-
-            isLoading = false
-        } catch {
-            if error is RestError {
-                self.error = .apiError(apiError: error as! RestError)
-            } else {
-                self.error = error as? EnergyManagerClientError
+                print(
+                    "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
+                )
+            } catch {
+                if error is RestError {
+                    self.error = .apiError(apiError: error as! RestError)
+                } else {
+                    self.error = error as? EnergyManagerClientError
+                }
+                errorMessage = error.localizedDescription
             }
-            errorMessage = error.localizedDescription
-            isLoading = false
         }
+        activeFetchTask = task
+        await task.value
     }
 
     @MainActor

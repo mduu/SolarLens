@@ -3,6 +3,7 @@ import SwiftUI
 struct OverviewScreen: View {
     @Environment(CurrentBuildingState.self) private var model
     @Environment(NavigationState.self) private var navigationState
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var showSettings: Bool = false
     @State private var showChart: Bool = false
@@ -74,11 +75,19 @@ struct OverviewScreen: View {
                         await model.fetchServerData()
                     }
                 }  // :OnAppear
-                .onReceive(refreshTimer) { inputDate in
+                .onReceive(refreshTimer) { _ in
+                    guard scenePhase == .active else { return }
                     Task {
                         await model.fetchServerData()
                     }
                 }  // :onReceive
+                .onChange(of: scenePhase) { oldPhase, newPhase in
+                    if newPhase == .active {
+                        Task {
+                            await model.fetchServerData()
+                        }
+                    }
+                }  // :onChange
 
                 VStack {
 

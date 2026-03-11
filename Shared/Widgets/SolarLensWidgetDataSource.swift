@@ -1,7 +1,7 @@
 internal import Foundation
 
 class SolarLensWidgetDataSource {
-    private let solarManager = SolarManager()
+    private let solarManager = SolarManager.shared
     private var lastFetchOverviewData: Date?
     private var lastFetchSolarData: Date?
     private var lastFetchConsumptionData: Date?
