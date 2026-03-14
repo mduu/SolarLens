@@ -20,7 +20,17 @@
       "Bash(find . -name '*.swift' -exec grep -l 'SolarManager\\\\.instance\\(\\)' {} + | xargs sed -i '' 's/SolarManager\\\\.instance\\(\\)/SolarManager.shared/g')",
       "Bash(find . -name '*.swift' -print0 | xargs -0 grep -l 'SolarManager\\\\.instance\\(\\)' | while IFS= read -r f; do sed -i '' 's/SolarManager\\\\.instance\\(\\)/SolarManager.shared/g' \"$f\"; done)",
       "Bash(xcrun simctl:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(open -a Xcode && osascript -e 'tell application \"Xcode\" to activate' -e 'tell application \"System Events\" to keystroke \"r\" using command down')",
+      "Bash(plutil -p \"/tmp/SolarLensBuild/Build/Products/Debug-iphonesimulator/Solar Lens.app/Info.plist\" | grep CFBundleIdentifier)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "mcp__xcode__XcodeListWindows",
+      "mcp__xcode__BuildProject",
+      "Bash(osascript:*)",
+      "Bash(mv:*)",
+      "Bash(ARCHIVE_PATH=\"$HOME/Library/Developer/Xcode/Archives/$\\(date '+%Y-%m-%d'\\)/SolarLens_$\\(date '+%H%M%S'\\).xcarchive\" && \\\\\nxcodebuild -project SolarLens.xcodeproj \\\\\n  -scheme \"Solar Lens iOS\" \\\\\n  -configuration Release \\\\\n  -archivePath \"$ARCHIVE_PATH\" \\\\\n  -destination 'generic/platform=iOS' \\\\\n  archive \\\\\n  CODE_SIGN_STYLE=Automatic \\\\\n  DEVELOPMENT_TEAM=UYT5K989XD 2>&1 | tail -5 && \\\\\necho \"ARCHIVE_PATH=$ARCHIVE_PATH\")",
+      "Bash(git status:*)",
+      "Bash(ARCHIVE_PATH=\"$HOME/Library/Developer/Xcode/Archives/$\\(date '+%Y-%m-%d'\\)/Solar Lens $\\(date '+%d-%m-%Y, %H.%M'\\).xcarchive\" && \\\\\nxcodebuild -project SolarLens.xcodeproj \\\\\n  -scheme \"Solar Lens iOS\" \\\\\n  -configuration Release \\\\\n  -archivePath \"$ARCHIVE_PATH\" \\\\\n  -destination 'generic/platform=iOS' \\\\\n  archive \\\\\n  CODE_SIGN_STYLE=Automatic \\\\\n  DEVELOPMENT_TEAM=UYT5K989XD 2>&1 | tail -5 && \\\\\necho \"ARCHIVE_PATH=$ARCHIVE_PATH\")"
     ]
   }
 }

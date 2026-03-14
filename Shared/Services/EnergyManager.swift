@@ -8,6 +8,8 @@ protocol EnergyManager {
         -> OverviewData
     
     func fetchChargingData() async throws -> CharingInfoData
+
+    func fetchCarChargingTotal(period: Period) async throws -> Double
     
     func fetchSolarDetails() async throws -> SolarDetailsData
     

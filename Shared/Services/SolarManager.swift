@@ -168,6 +168,27 @@ class SolarManager: EnergyManager {
         return .init(totalCharedToday: total, currentCharging: current)
     }
 
+    func fetchCarChargingTotal(period: Period) async throws -> Double {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        let chargingStationSensorIds = getCharingStationSensorIds()
+        var total: Double = 0
+
+        for sensorId in chargingStationSensorIds {
+            let data = try? await solarManagerApi.getV1ConsumptionSensor(
+                sensorId: sensorId,
+                period: period
+            )
+            if let data {
+                total += data.totalConsumption
+            }
+        }
+
+        return total
+    }
+
     func fetchSolarDetails() async throws -> SolarDetailsData {
         try await ensureSmId()
 
@@ -254,7 +275,9 @@ class SolarManager: EnergyManager {
                         productionOverTimeWatthours: $0.pWh,
                         batteryLevel: Int($0.soc ?? 0),
                         importedOverTimeWhatthours: $0.iWh,
-                        exportedOverTimeWhatthours: $0.eWh
+                        exportedOverTimeWhatthours: $0.eWh,
+                        batteryChargedWh: $0.bcWh,
+                        batteryDischargedWh: $0.bdWh
                     )
                 }
                 ?? []

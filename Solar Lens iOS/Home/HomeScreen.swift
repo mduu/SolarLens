@@ -21,6 +21,9 @@ struct HomeScreen: View {
 
     var body: some View {
         ZStack {
+            BackgroundView()
+                .ignoresSafeArea()
+
             VStack {
                 GeometryReader { rootGeometry in
 
@@ -28,13 +31,14 @@ struct HomeScreen: View {
 
                         ZStack {
 
-                            BackgroundView()
-
                             if isPortrait {
                                 VStack {
                                     if isLoading() {
-                                        MainProgressView()
-                                            .padding(.top, 65)
+                                        VStack {
+                                            MainProgressView()
+                                        }
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .padding(.top, 65)
                                     } else {
 
                                         HeaderView(onRefresh: { refreshAll() })
@@ -42,7 +46,7 @@ struct HomeScreen: View {
 
                                         Spacer()
 
-                                        HStack(alignment: .bottom) {
+                                        HStack(alignment: .top) {
                                             if solarDetailsData != nil {
                                                 SolarForecastView(
                                                     solarProductionMax:
@@ -348,7 +352,7 @@ struct HomeScreen: View {
                 }  // :GeometryReader
 
             }  // :VStack
-            .ignoresSafeArea()
+            .ignoresSafeArea(.container, edges: .top)
 
             if showSurvey {
                 SurveyView(isPresented: $showSurvey.animation())

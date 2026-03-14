@@ -7,6 +7,8 @@ struct OverviewChart: View {
     var batteries: [BatteryHistory] = []
     var isSmall: Bool = false
     var isAccent: Bool = false
+    var showProduction: Bool = true
+    var showConsumption: Bool = true
     var showBatteryCharge: Bool = true
     var showBatteryDischange: Bool = true
     var showBatteryPercentage: Bool = true
@@ -48,7 +50,9 @@ struct OverviewChart: View {
                     isAccent: isAccent,
                     useAlternativeColors: useAlternativeColors,
                     productionLabel: productionLabel,
-                    consumptionLabel: consumptionLabel
+                    consumptionLabel: consumptionLabel,
+                    showProduction: showProduction,
+                    showConsumption: showConsumption
                 )
 
                 if !batteries.isEmpty {

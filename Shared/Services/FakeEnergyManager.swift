@@ -93,6 +93,10 @@ class FakeEnergyManager: EnergyManager {
         return data
     }
 
+    func fetchCarChargingTotal(period: Period) async throws -> Double {
+        return 32400
+    }
+
     func fetchChargingData() async throws -> CharingInfoData {
         return CharingInfoData(
             totalCharedToday: 32400,

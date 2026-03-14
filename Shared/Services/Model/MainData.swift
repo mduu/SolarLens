@@ -158,6 +158,8 @@ struct MainDataItem: Codable, Identifiable {
     var batteryLevel: Int?
     var importedOverTimeWhatthours: Double
     var exportedOverTimeWhatthours: Double
+    var batteryChargedWh: Double
+    var batteryDischargedWh: Double
 
     init(
         date: Date,
@@ -167,7 +169,9 @@ struct MainDataItem: Codable, Identifiable {
         productionOverTimeWatthours: Double,
         batteryLevel: Int?,
         importedOverTimeWhatthours: Double,
-        exportedOverTimeWhatthours: Double
+        exportedOverTimeWhatthours: Double,
+        batteryChargedWh: Double = 0,
+        batteryDischargedWh: Double = 0
     ) {
         self.date = date
         self.consumptionWatts = consumptionWatts
@@ -177,5 +181,7 @@ struct MainDataItem: Codable, Identifiable {
         self.batteryLevel = batteryLevel
         self.importedOverTimeWhatthours = importedOverTimeWhatthours
         self.exportedOverTimeWhatthours = exportedOverTimeWhatthours
+        self.batteryChargedWh = batteryChargedWh
+        self.batteryDischargedWh = batteryDischargedWh
     }
 }
