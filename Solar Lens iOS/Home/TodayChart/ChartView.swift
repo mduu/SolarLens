@@ -1,14 +1,10 @@
 import SwiftUI
 
 struct ChartView: View {
-    @Environment(CurrentBuildingState.self) var buildingModel:
-        CurrentBuildingState
-    @AppStorage("showBatteryCharging") private
-        var showBatteryCharging: Bool = false
-    @AppStorage("showBatteryDischarging") private
-        var showBatteryDischarging: Bool = false
-    @AppStorage("showBatteryPercentag") private
-        var showBatteryPercentage: Bool = true
+    @Environment(CurrentBuildingState.self) var buildingModel: CurrentBuildingState
+    @AppStorage("showBatteryCharging") private var showBatteryCharging: Bool = false
+    @AppStorage("showBatteryDischarging") private var showBatteryDischarging: Bool = false
+    @AppStorage("showBatteryPercentag") private var showBatteryPercentage: Bool = true
 
     @State var viewModel = ChartViewModel()
     @State private var refreshTimer: Timer?
@@ -21,7 +17,7 @@ struct ChartView: View {
 
                     if viewModel.consumptionData != nil {
 
-                        VStack {
+                        VStack(spacing: 12) {
 
                             HStack {
                                 Button(action: {
@@ -30,13 +26,13 @@ struct ChartView: View {
                                     Image(systemName: "battery.100percent.bolt")
                                         .font(.system(size: 14))
                                         .padding(4)
-
                                 }
                                 .buttonBorderShape(.circle)
                                 .buttonStyle(.bordered)
                                 .tint(
-                                    showBatteryPercentage ? SerieColors
-                                        .batteryLevelColor(useAlternativeColors: false) : .gray
+                                    showBatteryPercentage
+                                        ? SerieColors.batteryLevelColor(useAlternativeColors: false)
+                                        : .gray
                                 )
 
                                 Button(action: {
@@ -45,7 +41,6 @@ struct ChartView: View {
                                     Image(systemName: "battery.100percent.circle")
                                         .font(.system(size: 14))
                                         .padding(4)
-
                                 }
                                 .buttonBorderShape(.circle)
                                 .buttonStyle(.bordered)
@@ -57,7 +52,6 @@ struct ChartView: View {
                                     Image(systemName: "battery.75percent")
                                         .font(.system(size: 14))
                                         .padding(4)
-
                                 }
                                 .buttonBorderShape(.circle)
                                 .buttonStyle(.bordered)
@@ -74,7 +68,7 @@ struct ChartView: View {
                                 showBatteryPercentage: showBatteryPercentage
                             )
 
-                            HStack {
+                            HStack(spacing: 12) {
                                 let solarPeak = getMaxProductionkW()
                                 TodaySolarView(
                                     peakProductionInW: solarPeak,
@@ -83,7 +77,6 @@ struct ChartView: View {
                                     todaySolarProductionInWh: buildingModel
                                         .overviewData.todayProduction ?? 0
                                 )
-                                .frame(maxHeight: 115)
 
                                 let consumptionPeak = getMaxConsumptionkW()
                                 TodayConsumptionView(
@@ -93,23 +86,18 @@ struct ChartView: View {
                                     todayConsumptionInWh: buildingModel
                                         .overviewData.todayConsumption ?? 0
                                 )
-                                .frame(maxHeight: 115)
                             }
-                            .padding(.top)
-
                         }
 
                     } else {
-
                         Spacer()
                         Text("No data")
                             .font(.footnote)
                         Spacer()
-
                     }
 
-                }  // :if
-            }  // :VStack
+                }
+            }
             .padding(8)
             .ignoresSafeArea(edges: .horizontal.union(.bottom))
 
@@ -119,7 +107,7 @@ struct ChartView: View {
                     .frame(width: 50, height: 50)
                     .padding()
             }
-        }  // :ZStack
+        }
         .onAppear {
             Task {
                 await viewModel.fetch()
@@ -128,21 +116,20 @@ struct ChartView: View {
                     refreshTimer = Timer.scheduledTimer(
                         withTimeInterval: 300,
                         repeats: true
-                    ) {
-                        _ in
+                    ) { _ in
                         Task {
                             await viewModel.fetch()
                         }
-                    }  // :refreshTimer
-                }  // :if
-            }  // :Task
-        }  // :onAppear
+                    }
+                }
+            }
+        }
         .onDisappear {
             if refreshTimer != nil {
                 refreshTimer?.invalidate()
                 refreshTimer = nil
             }
-        }  // :onDisappear
+        }
     }
 
     private func getMaxProductionkW() -> Double {
@@ -154,7 +141,6 @@ struct ChartView: View {
             .max()
 
         guard let maxProduction else { return 0 }
-
         return maxProduction
     }
 
@@ -167,7 +153,6 @@ struct ChartView: View {
             .max()
 
         guard let maxConsumption else { return 0 }
-
         return maxConsumption
     }
 }
@@ -182,5 +167,4 @@ struct ChartView: View {
             overviewData: OverviewData.fake()
         )
     )
-
 }

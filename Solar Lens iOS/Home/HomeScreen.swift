@@ -11,7 +11,6 @@ struct HomeScreen: View {
     @State var solarDetailsData: SolarDetailsData?
     @State var presentOnboarding: Bool = AppSettings().showOnboarding
     @State var showError: Bool = false
-
     // Survey Logic
     @State var showSurvey: Bool = false
     @AppStorage("surveyForeverDismissed") var surveyForeverDismissed: Bool = false
@@ -32,305 +31,29 @@ struct HomeScreen: View {
                         ZStack {
 
                             if isPortrait {
-                                VStack {
-                                    if isLoading() {
-                                        VStack {
-                                            MainProgressView()
-                                        }
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                        .padding(.top, 65)
-                                    } else {
-
-                                        HeaderView(onRefresh: { refreshAll() })
-                                            .padding(.top, 65)
-
-                                        Spacer()
-
-                                        HStack(alignment: .top) {
-                                            if solarDetailsData != nil {
-                                                SolarForecastView(
-                                                    solarProductionMax:
-                                                        buildingState
-                                                        .overviewData
-                                                        .solarProductionMax,
-                                                    todaySolarProduction:
-                                                        solarDetailsData!
-                                                        .todaySolarProduction,
-                                                    forecastToday: solarDetailsData!
-                                                        .forecastToday,
-                                                    forecastTomorrow:
-                                                        solarDetailsData!
-                                                        .forecastTomorrow,
-                                                    forecastDayAfterTomorrow:
-                                                        solarDetailsData!
-                                                        .forecastDayAfterTomorrow
-                                                )
-                                                .frame(
-                                                    maxWidth: 180,
-                                                    maxHeight: 130
-                                                )
-                                                .padding(.leading, 5)
-                                            } else {
-                                                ProgressView()
-                                                    .frame(
-                                                        maxWidth: 180,
-                                                        maxHeight: 120
-                                                    )
-                                                    .padding(.leading, 5)
-                                            }
-
-                                            EfficiencyInfoView(
-                                                todaySelfConsumptionRate:
-                                                    buildingState
-                                                    .overviewData
-                                                    .todaySelfConsumptionRate,
-                                                todayAutarchyDegree: buildingState
-                                                    .overviewData
-                                                    .todayAutarchyDegree
-                                            )
-                                            .frame(maxWidth: 180, maxHeight: 120)
-                                            .padding(.leading, 5)
-
-                                        }  // :HStack
-                                        .padding()
-
-                                        EnergyFlow()
-                                            .padding(.horizontal, 50)
-
-                                        HStack(alignment: .bottom) {
-                                            Spacer()
-
-                                            ChargingView(
-                                                isVertical: true
-                                            )
-
-                                        }  // :HStack
-                                        .padding()
-
-                                        Spacer()
-
-                                        FooterView()
-
-                                    }
-
-                                }  // :VStack
-                                .frame(height: rootGeometry.size.height)
-
+                                portraitLayout
+                                    .frame(minHeight: rootGeometry.size.height)
+                                    .animation(nil, value: buildingState.overviewData.currentSolarProduction)
+                                    .animation(nil, value: buildingState.overviewData.currentOverallConsumption)
+                                    .animation(nil, value: buildingState.overviewData.currentBatteryLevel)
+                                    .animation(nil, value: buildingState.overviewData.currentGridToHouse)
+                                    .animation(nil, value: buildingState.overviewData.lastSuccessServerFetch)
                             } else {
-                                HStack {
-
-                                    if isLoading() {
-                                        MainProgressView(isLandscape: true)
-                                    } else {
-
-                                        VStack {
-
-                                            if solarDetailsData != nil {
-                                                SolarForecastView(
-                                                    solarProductionMax:
-                                                        buildingState
-                                                        .overviewData
-                                                        .solarProductionMax,
-                                                    todaySolarProduction:
-                                                        solarDetailsData!
-                                                        .todaySolarProduction,
-                                                    forecastToday: solarDetailsData!
-                                                        .forecastToday,
-                                                    forecastTomorrow:
-                                                        solarDetailsData!
-                                                        .forecastTomorrow,
-                                                    forecastDayAfterTomorrow:
-                                                        solarDetailsData!
-                                                        .forecastDayAfterTomorrow
-                                                )
-                                                .frame(
-                                                    maxWidth: 180,
-                                                    maxHeight: 120
-                                                )
-                                                .padding(.leading, 5)
-                                            } else {
-                                                ProgressView()
-                                                    .frame(
-                                                        maxWidth: 180,
-                                                        maxHeight: 120
-                                                    )
-                                                    .padding(.leading, 5)
-                                            }
-
-                                            Spacer()
-
-                                            EfficiencyInfoView(
-                                                todaySelfConsumptionRate:
-                                                    buildingState
-                                                    .overviewData
-                                                    .todaySelfConsumptionRate,
-                                                todayAutarchyDegree: buildingState
-                                                    .overviewData
-                                                    .todayAutarchyDegree
-                                            )
-                                            .frame(maxWidth: 180, maxHeight: 120)
-                                            .padding(.leading, 5)
-
-                                            UpdateTimeStampView(
-                                                isStale: buildingState.overviewData
-                                                    .isStaleData,
-                                                updateTimeStamp: buildingState
-                                                    .overviewData
-                                                    .lastSuccessServerFetch,
-                                                isLoading: buildingState.isLoading,
-                                                onRefresh: nil
-                                            )
-                                            .padding(.leading, 5)
-
-                                        }  // :VStack
-                                        .padding(.trailing)
-
-                                        EnergyFlow()
-
-                                        VStack(alignment: .trailing) {
-                                            AppLogo()
-
-                                            HStack {
-                                                RefreshButton(
-                                                    onRefresh: { refreshAll() })
-                                                    .padding(.trailing)
-                                                SettingsButton()
-                                            }
-
-                                            Spacer()
-
-                                            ChargingView(
-                                                isVertical: false
-                                            )
-                                        }  // :VStack
-
-                                    }
-
-                                }  // :HStack
-                                .padding()
-                                .padding(.horizontal, 30)
-                            }  // :else
-
-                            if buildingState.error != nil
-                                || buildingState.errorMessage ?? "" != ""
-                            {
-                                VStack {
-                                    Spacer()
-
-                                    HStack {
-                                        Button(action: {
-                                            showError = true
-                                        }) {
-                                            Image(
-                                                systemName:
-                                                    "exclamationmark.bubble.fill"
-                                            )
-                                            .font(.system(size: 32))
-                                        }
-                                        .buttonStyle(.plain)
-                                        .foregroundColor(.red)
-
-                                        Spacer()
-                                    }
-                                    .padding(.leading, 20)
-                                    .padding(.bottom, 50)
-                                    .sheet(
-                                        isPresented: $showError
-                                    ) {
-                                        NavigationView {
-
-                                            ScrollView(showsIndicators: true) {
-
-                                                VStack(alignment: .leading) {
-
-                                                    Text("Error message:")
-                                                        .frame(
-                                                            maxWidth: .infinity,
-                                                            alignment: .leading
-                                                        )
-                                                        .font(.title2)
-                                                        .fontWeight(.bold)
-                                                        .foregroundColor(.red)
-
-                                                    Text(
-                                                        buildingState.errorMessage
-                                                            ?? "-"
-                                                    )
-                                                    .multilineTextAlignment(
-                                                        .leading
-                                                    )
-                                                    .frame(
-                                                        maxWidth: .infinity,
-                                                        alignment: .leading
-                                                    )
-
-                                                    Text("Error:")
-                                                        .font(.title2)
-                                                        .fontWeight(.bold)
-                                                        .frame(
-                                                            maxWidth: .infinity,
-                                                            alignment: .leading
-                                                        )
-                                                        .foregroundColor(.red)
-
-                                                    Text(
-                                                        String(
-                                                            describing:
-                                                                buildingState
-                                                                .error
-                                                        )
-                                                    )
-                                                    .multilineTextAlignment(
-                                                        .leading
-                                                    )
-                                                    .frame(
-                                                        maxWidth: .infinity,
-                                                        alignment: .leading
-                                                    )
-
-                                                }
-                                                .frame(maxWidth: .infinity)
-                                            }
-                                            .padding()
-                                            .frame(maxWidth: .infinity)
-                                            .navigationBarTitleDisplayMode(.inline)
-                                            .toolbar {
-                                                ToolbarItem(
-                                                    placement: .navigationBarLeading
-                                                ) {
-                                                    Button(action: {
-                                                        showError = false
-                                                    }) {
-                                                        Image(systemName: "xmark")  // Use a system icon
-                                                            .resizable()  // Make the image resizable
-                                                            .scaledToFit()  // Fit the image within the available space
-                                                            .frame(
-                                                                width: 18,
-                                                                height: 18
-                                                            )  // Set the size of the image
-                                                            .foregroundColor(.red)  // Set the color of the image
-                                                    }
-
-                                                }
-                                                ToolbarItem(
-                                                    placement:
-                                                        .navigationBarTrailing
-                                                ) {
-                                                    Text("Error")
-                                                        .foregroundColor(.red)
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                }
+                                landscapeLayout
+                                    .frame(minHeight: rootGeometry.size.height)
+                                    .animation(nil, value: buildingState.overviewData.currentSolarProduction)
+                                    .animation(nil, value: buildingState.overviewData.currentOverallConsumption)
+                                    .animation(nil, value: buildingState.overviewData.currentBatteryLevel)
+                                    .animation(nil, value: buildingState.overviewData.currentGridToHouse)
+                                    .animation(nil, value: buildingState.overviewData.lastSuccessServerFetch)
+                                    .padding()
+                                    .padding(.horizontal, 30)
                             }
 
+
                         }  // :ZStack
-                        .frame(maxHeight: rootGeometry.size.height)
 
                     }
-                    .frame(maxHeight: rootGeometry.size.height)
                     .onAppear {
                         fetchAndStartRefreshTimerForOverviewData()
                         fetchAndStartRefreshTimerForSolarDetailData()
@@ -359,8 +82,137 @@ struct HomeScreen: View {
                     .zIndex(100)
             }
         }
-
     }
+
+    // MARK: - Portrait Layout
+
+    @ViewBuilder
+    private var portraitLayout: some View {
+        if isLoading() {
+            VStack {
+                MainProgressView()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.top, 65)
+        } else {
+            VStack(spacing: 10) {
+                HeaderView(onRefresh: { refreshAll() }, showError: $showError)
+                    .padding(.top, 65)
+
+                Spacer()
+
+                // 2x2 Energy Flow Grid + Charging (vertically centered)
+                VStack(spacing: 10) {
+                    EnergyFlowGrid()
+
+                    // Charging stations (right column, under Consumption)
+                    if !buildingState.overviewData.chargingStations.isEmpty {
+                        HStack(spacing: 40) {
+                            Color.clear.frame(maxWidth: .infinity, maxHeight: 0)
+                            ChargingView(isVertical: true)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+
+                Spacer()
+
+                // Forecast & Efficiency cards (above footer)
+                HStack(alignment: .bottom, spacing: 16) {
+                    if solarDetailsData != nil {
+                        SolarForecastView(
+                            solarProductionMax: buildingState.overviewData.solarProductionMax,
+                            todaySolarProduction: solarDetailsData!.todaySolarProduction,
+                            forecastToday: solarDetailsData!.forecastToday,
+                            forecastTomorrow: solarDetailsData!.forecastTomorrow,
+                            forecastDayAfterTomorrow: solarDetailsData!.forecastDayAfterTomorrow
+                        )
+
+                    } else {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 160)
+                    }
+
+                    EfficiencyGaugeView(
+                        todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
+                        todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
+                    )
+                    .cardStyle()
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+
+                FooterView()
+            }
+            .transaction { transaction in
+                transaction.animation = nil
+            }
+        }
+    }
+
+    // MARK: - Landscape Layout
+
+    @ViewBuilder
+    private var landscapeLayout: some View {
+        if isLoading() {
+            MainProgressView(isLandscape: true)
+        } else {
+            HStack(alignment: .center, spacing: 16) {
+                // Left: Energy Flow Grid
+                EnergyFlowGrid()
+
+                // Right column: Forecast + Efficiency + Charging + Controls
+                VStack(spacing: 8) {
+                    if solarDetailsData != nil {
+                        SolarForecastView(
+                            solarProductionMax: buildingState.overviewData.solarProductionMax,
+                            todaySolarProduction: solarDetailsData!.todaySolarProduction,
+                            forecastToday: solarDetailsData!.forecastToday,
+                            forecastTomorrow: solarDetailsData!.forecastTomorrow,
+                            forecastDayAfterTomorrow: solarDetailsData!.forecastDayAfterTomorrow
+                        )
+                        .frame(maxWidth: 180, maxHeight: 120)
+                    } else {
+                        ProgressView()
+                            .frame(maxWidth: 180, maxHeight: 120)
+                    }
+
+                    EfficiencyGaugeView(
+                        todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
+                        todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
+                    )
+                    .frame(maxWidth: 180, maxHeight: 120)
+
+                    if !buildingState.overviewData.chargingStations.isEmpty {
+                        ChargingView(isVertical: true)
+                            .frame(maxWidth: 180)
+                    }
+
+                    Spacer()
+
+                    HStack {
+                        AppLogo()
+                        Spacer()
+                        RefreshButton(onRefresh: { refreshAll() })
+                        SettingsButton()
+                    }
+                    .frame(maxWidth: 180)
+
+                    UpdateTimeStampView(
+                        isStale: buildingState.overviewData.isStaleData,
+                        updateTimeStamp: buildingState.overviewData.lastSuccessServerFetch,
+                        isLoading: buildingState.isLoading,
+                        onRefresh: nil
+                    )
+                }
+            }
+        }
+    }
+
+
+    // MARK: - Data Management
 
     private func checkSurveyDisplay() {
         let now = Date()
@@ -381,7 +233,6 @@ struct HomeScreen: View {
             }
         }
 
-        // Delay slightly to allow UI to settle and ensure onboarding isn't presenting
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             if !presentOnboarding {
                 showSurvey = true
@@ -404,8 +255,7 @@ struct HomeScreen: View {
             refreshTimer = Timer.scheduledTimer(
                 withTimeInterval: 15,
                 repeats: true
-            ) {
-                _ in
+            ) { _ in
                 print("fetch on timer: overview data")
                 fetchOverviewData()
             }
@@ -428,8 +278,7 @@ struct HomeScreen: View {
             solarForecastTimer = Timer.scheduledTimer(
                 withTimeInterval: 300,
                 repeats: true
-            ) {
-                _ in
+            ) { _ in
                 print("fetch solarDetailsData on timer")
                 fetchSolarForecastData()
             }
@@ -439,8 +288,7 @@ struct HomeScreen: View {
     private func fetchSolarForecastData() {
         Task { @MainActor in
             print("fetch solarDetailsData")
-            solarDetailsData =
-                try await energyManager.fetchSolarDetails()
+            solarDetailsData = try await energyManager.fetchSolarDetails()
         }
     }
 
@@ -454,7 +302,6 @@ struct HomeScreen: View {
         guard let lastUpdate else {
             return TimeInterval.infinity
         }
-
         return Date().timeIntervalSince(lastUpdate)
     }
 }

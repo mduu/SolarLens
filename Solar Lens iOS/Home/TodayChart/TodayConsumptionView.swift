@@ -6,92 +6,70 @@ struct TodayConsumptionView: View {
     var todayConsumptionInWh: Double
 
     var body: some View {
-        GeometryReader { container in
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Consumption")
+                .font(.subheadline)
+                .fontWeight(.bold)
 
-            RoundedRectangle(cornerRadius: 10)
-                .fill(LinearGradient(
-                    colors: [
-                        .teal.opacity(0.7),
-                        .teal,
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                ))
-                .stroke(.teal)
-                .frame(
-                    width: container.size.width,
-                    height: container.size.height
-                )
-                .overlay(
-                    VStack {
-                        Grid(alignment: .leadingFirstTextBaseline) {
+            Grid(alignment: .leadingFirstTextBaseline, verticalSpacing: 4) {
+                GridRow {
+                    Text("Current:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                            GridRow {
-                                Text("Consumption")
-                                    .fontWeight(.bold)
-                                    .padding(.top, 8)
-                                    .padding(.bottom, 2)
-                            }
-                            .gridCellColumns(2)
+                    Text(
+                        currentConsumptionInW
+                            .formatWattsAsKiloWatts(widthUnit: true)
+                    )
+                    .font(.caption)
+                    .fontWeight(.bold)
+                }
 
-                            GridRow {
-                                Text("Current:")
-                                
-                                Text(
-                                    currentConsumptionInW
-                                        .formatWattsAsKiloWatts(
-                                            widthUnit: true
-                                        )
-                                )
-                                .fontWeight(.bold)
-                            }
+                GridRow {
+                    Text("Peak:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                            GridRow {
-                                Text("Peak:")
+                    Text(
+                        peakConsumptionInW.formatAsKiloWatts(widthUnit: true)
+                    )
+                    .font(.caption)
+                    .fontWeight(.bold)
+                }
 
-                                Text(
-                                    peakConsumptionInW.formatAsKiloWatts(
-                                        widthUnit: true
-                                    )
-                                )
-                                .fontWeight(.bold)
-                            }
+                GridRow {
+                    Text("Total:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                            GridRow {
-                                Text("Total:")
-
-                                Text(
-                                    todayConsumptionInWh
-                                        .formatWattHoursAsKiloWattsHours(
-                                            widthUnit: true
-                                        )
-                                )
-                                .fontWeight(.bold)
-                            }
-
-                        }  // :Grid
-                        .frame(maxWidth: .infinity)
-                        .padding(.trailing)
-
-                        Spacer()
-
-                    }  // :VStack
-                        .foregroundColor(.white)
-                )  // :Overlay
+                    Text(
+                        todayConsumptionInWh
+                            .formatWattHoursAsKiloWattsHours(widthUnit: true)
+                    )
+                    .font(.caption)
+                    .fontWeight(.bold)
+                }
+            }
         }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+        )
     }
 }
 
 #Preview {
     VStack {
-        
         TodayConsumptionView(
             peakConsumptionInW: 7539,
             currentConsumptionInW: 6540,
             todayConsumptionInWh: 23423
         )
-        .frame(width: 180, height: 180)
-        
+        .frame(width: 180)
+        .padding()
+
         Spacer()
     }
 }

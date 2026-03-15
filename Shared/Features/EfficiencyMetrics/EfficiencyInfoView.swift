@@ -31,9 +31,9 @@ struct EfficiencyInfoView: View {
                         .frame(maxWidth: 60)
 
                         #if os(watchOS)
-                            let ringSize = 30
+                            let ringSize: CGFloat = 30
                         #else
-                            let ringSize = 42
+                            let ringSize: CGFloat = 42
                         #endif
                         MiniDonut(
                             percentage: autarky,
@@ -41,7 +41,7 @@ struct EfficiencyInfoView: View {
                             showPerentage: false,
                             lineWidth: 7
                         )
-                        .frame(maxWidth: CGFloat(ringSize))
+                        .frame(maxWidth: ringSize)
                     }
 
                     if showLegend && !legendAtBottom {
@@ -51,9 +51,7 @@ struct EfficiencyInfoView: View {
                                     "Self consumption"
                                 )
                                 .font(.system(size: 9))
-                                #if os(watchOS)
-                                    .padding(.bottom, 0)
-                                #endif
+                                .padding(.bottom, 0)
 
                                 Text(
                                     "\(selfConsumption.formatIntoPercentage())"
@@ -61,9 +59,7 @@ struct EfficiencyInfoView: View {
                                 .foregroundColor(.indigo)
                                 .font(.subheadline)
                                 .fontWeight(.bold)
-                                #if os(watchOS)
-                                    .padding(.top, 0)
-                                #endif
+                                .padding(.top, 0)
 
                             }
 
@@ -81,9 +77,6 @@ struct EfficiencyInfoView: View {
                                 .fontWeight(.bold)
 
                             }
-                            #if !os(watchOS)
-                                .padding(.top, 2)
-                            #endif
 
                         }
                     }  // :if

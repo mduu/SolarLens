@@ -57,10 +57,10 @@ struct SettingsScreen: View {
             Section(header: Text("Appearance")) {
 
                 SettingsToggleItem(
-                    imageName: "circle.dotted.circle",
-                    text: "Use glow effect",
-                    color: .indigo,
-                    isOn: settings.appearanceUseGlowEffectWithDefault
+                    imageName: "sun.max.trianglebadge.exclamationmark",
+                    text: "Warm background",
+                    color: .orange,
+                    isOn: settings.appearanceUseWarmBackgroundWithDefault
                 )
             }
             

@@ -2,73 +2,84 @@ import SwiftUI
 
 struct ChargingView: View {
     var isVertical: Bool = true
-    
-    @Environment(CurrentBuildingState.self) var buildingState:
-        CurrentBuildingState
-    
+
+    @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
+
     var body: some View {
         Group {
             if isVertical {
-                VStack {
-                    if buildingState.overviewData
-                        .isAnyCarCharing
-                    {
-                        Image(systemName: "arrow.down")
-                            .foregroundColor(.blue)
-                            .font(
-                                .system(
-                                    size: 25, weight: .light
-                                )
-                            )
-                            .symbolEffect(
-                                .wiggle.byLayer,
-                                options: .repeat(
-                                    .periodic(delay: 0.7)))
-                    } else {
-                        Text("")
-                            .frame(minHeight: 25)
-                    }
-                    
-                    ChargingStationsView(
-                        chargingStation: buildingState
-                            .overviewData.chargingStations
-                    )
-                    .frame(maxWidth: 180)
-                }  // :VStack
+                VStack(spacing: 8) {
+                    chargingContent(isVertical: true)
+                }
             } else {
-                HStack {
-                    if buildingState.overviewData
-                        .isAnyCarCharing
-                    {
-                        Image(systemName: "arrow.right")
-                            .foregroundColor(.blue)
-                            .font(
-                                .system(
-                                    size: 25, weight: .light
-                                )
-                            )
-                            .symbolEffect(
-                                .wiggle.byLayer,
-                                options: .repeat(
-                                    .periodic(delay: 0.7)))
-                    } else {
-                        Text("")
-                            .frame(minWidth: 25)
-                    }
-                    
-                    ChargingStationsView(
-                        chargingStation: buildingState
-                            .overviewData.chargingStations,
-                        isVertical: isVertical
-                    )
-                } // :HStack
+                HStack(spacing: 8) {
+                    chargingContent(isVertical: false)
+                }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func chargingContent(isVertical: Bool) -> some View {
+        ForEach(buildingState.overviewData.chargingStations.sorted(by: { $0.priority < $1.priority })) { station in
+            ChargingStationCard(station: station)
+        }
+    }
+}
+
+struct ChargingStationCard: View {
+    var station: ChargingStation
+    @State private var showChargingModeSelection = false
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: station.currentPower > 0 ? "car.side" : "ev.charger")
+                .font(.title3)
+                .foregroundStyle(.blue)
+                .symbolEffect(
+                    .pulse.wholeSymbol,
+                    options: .repeat(.continuous),
+                    isActive: station.currentPower > 0
+                )
+                .frame(width: 28)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(station.name)
+                    .font(.caption)
+                    .foregroundStyle(.primary)
+
+                if station.currentPower > 0 {
+                    Text(String(format: "%.1f kW", Double(station.currentPower) / 1000))
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.primary)
+                } else {
+                    Text("Idle")
+                        .font(.subheadline)
+                        .foregroundStyle(.primary.opacity(0.6))
+                }
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+        }
+        .cardStyle()
+        .onTapGesture {
+            showChargingModeSelection = true
+        }
+        .sheet(isPresented: $showChargingModeSelection) {
+            ChargingModePickerView(station: station)
+                .presentationDetents([.height(450)])
         }
     }
 }
 
 #Preview("Vertical") {
     ChargingView()
+        .padding()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: OverviewData.fake()))
@@ -76,6 +87,7 @@ struct ChargingView: View {
 
 #Preview("Horizontal") {
     ChargingView(isVertical: false)
+        .padding()
         .environment(
             CurrentBuildingState.fake(
                 overviewData: OverviewData.fake()))

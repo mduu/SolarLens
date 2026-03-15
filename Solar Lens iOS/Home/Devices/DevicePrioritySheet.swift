@@ -2,106 +2,110 @@ import SwiftUI
 
 struct DevicePrioritySheet: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(CurrentBuildingState.self) var buildingState:
-        CurrentBuildingState
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
 
     @State var isLoading: Bool = false
 
     var body: some View {
         ZStack {
+            LinearGradient(
+                colors: colorScheme == .dark
+                    ? [Color(red: 0.05, green: 0.08, blue: 0.1), Color(red: 0.05, green: 0.05, blue: 0.05)]
+                    : [Color(red: 0.94, green: 0.97, blue: 0.99), .white],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-
-                HStack {
-                    Text("Current consumption")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                        .padding(.leading, 20)
-
-                    Spacer()
+            VStack(spacing: 16) {
+                // Pie chart card
+                VStack(spacing: 8) {
+                    ConsumptionPieChart(
+                        totalCurrentConsumptionInWatt: buildingState.overviewData
+                            .currentOverallConsumption,
+                        deviceConsumptions: getDeviceConsumptions(),
+                        legendPosition: .right,
+                        annotationTextSize: .large
+                    )
                 }
-
-                ConsumptionPieChart(
-                    totalCurrentConsumptionInWatt: buildingState.overviewData
-                        .currentOverallConsumption,
-                    deviceConsumptions: getDeviceConsumptions(),
-                    legendPosition: .right,
-                    annotationTextSize: .large
+                .padding(16)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(.ultraThinMaterial)
                 )
 
-                HStack {
-                    Text("Device")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                        .padding(.leading, 20)
+                // Device list card
+                VStack(spacing: 0) {
+                    HStack {
+                        Text("Devices")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
 
-                    Spacer()
+                        Spacer()
 
-                    Image(systemName: "arrow.up.arrow.down")
-                        .font(.footnote)
-                        .padding(.trailing, 20)
-                        .foregroundColor(.gray)
-                }
-
-                List {
-
-                    ForEach(buildingState.overviewData.devices.sorted(by: { $0.priority < $1.priority })) { device in
-                        DevicePriorityRow(device: device)
-                            .contentShape(Rectangle())  // Make the whole row tappable
+                        Image(systemName: "arrow.up.arrow.down")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
                     }
-                    .onMove { indices, newOffset in
-                        if let index = indices.first {
-                            let device = buildingState.overviewData.devices[
-                                index
-                            ]
+                    .padding(.bottom, 8)
 
-                            Task {
-                                isLoading = true
+                    List {
+                        ForEach(buildingState.overviewData.devices.sorted(by: { $0.priority < $1.priority })) { device in
+                            DevicePriorityRow(device: device)
+                                .contentShape(Rectangle())
+                        }
+                        .onMove { indices, newOffset in
+                            if let index = indices.first {
+                                let device = buildingState.overviewData.devices[index]
 
-                                let newPriority =
-                                    newOffset > index
-                                    ? newOffset
-                                    : newOffset + 1
+                                Task {
+                                    isLoading = true
 
-                                print(
-                                    "Old prio: \(device.priority), new prio: \(newPriority)"
-                                )
+                                    let newPriority =
+                                        newOffset > index
+                                        ? newOffset
+                                        : newOffset + 1
 
-                                await buildingState.setSensorPriority(
-                                    sensorId: device.id,
-                                    newPriority: newPriority
-                                )
+                                    print("Old prio: \(device.priority), new prio: \(newPriority)")
 
-                                isLoading = false
+                                    await buildingState.setSensorPriority(
+                                        sensorId: device.id,
+                                        newPriority: newPriority
+                                    )
+
+                                    isLoading = false
+                                }
                             }
                         }
                     }
+                    .listStyle(.inset)
                 }
-                .listStyle(.inset)
-                
+                .padding(16)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(.ultraThinMaterial)
+                )
+
                 Spacer()
-
-            }
-            .navigationTitle("Devices priorities")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "xmark")  // Use a system icon
-                            .resizable()  // Make the image resizable
-                            .scaledToFit()  // Fit the image within the available space
-                            .frame(width: 18, height: 18)  // Set the size of the image
-                            .foregroundColor(.teal)  // Set the color of the image
-                    }
-
-                }
             }
             .padding()
 
             if isLoading {
                 ProgressView()
+            }
+        }
+        .navigationTitle("Devices")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 18, height: 18)
+                        .foregroundColor(.teal)
+                }
             }
         }
     }

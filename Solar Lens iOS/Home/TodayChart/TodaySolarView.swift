@@ -6,94 +6,70 @@ struct TodaySolarView: View {
     var todaySolarProductionInWh: Double
 
     var body: some View {
-        GeometryReader { container in
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Solar Production")
+                .font(.subheadline)
+                .fontWeight(.bold)
 
-            RoundedRectangle(cornerRadius: 10)
-                .fill(LinearGradient(
-                    colors: [
-                        .yellow.opacity(0.7),
-                        .yellow,
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                ))
-                .stroke(.yellow)
-                .frame(
-                    width: container.size.width,
-                    height: container.size.height
-                )
-                .overlay(
-                    VStack {
-                        Grid(alignment: .leadingFirstTextBaseline) {
+            Grid(alignment: .leadingFirstTextBaseline, verticalSpacing: 4) {
+                GridRow {
+                    Text("Current:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                            GridRow {
-                                Text("Solar Production")
-                                    .fontWeight(.bold)
-                                    .padding(.top, 8)
-                                    .padding(.bottom, 2)
-                            }
-                            .gridCellColumns(2)
+                    Text(
+                        currentSolarProductionInW
+                            .formatWattsAsKiloWatts(widthUnit: true)
+                    )
+                    .font(.caption)
+                    .fontWeight(.bold)
+                }
 
-                            GridRow {
-                                Text("Current:")
+                GridRow {
+                    Text("Peak:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                                Text(
-                                    currentSolarProductionInW
-                                        .formatWattsAsKiloWatts(
-                                            widthUnit: true
-                                        )
-                                )
-                                .fontWeight(.bold)
-                            }
+                    Text(
+                        peakProductionInW.formatAsKiloWatts(widthUnit: true)
+                    )
+                    .font(.caption)
+                    .fontWeight(.bold)
+                }
 
-                            GridRow {
-                                Text("Peak:")
+                GridRow {
+                    Text("Total:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                                let text = peakProductionInW.formatAsKiloWatts(
-                                    widthUnit: true
-                                )
-                                
-                                Text(
-                                    text
-                                )
-                                .fontWeight(.bold)
-                            }
-
-                            GridRow {
-                                Text("Total:")
-
-                                Text(
-                                    todaySolarProductionInWh
-                                        .formatWattHoursAsKiloWattsHours(
-                                            widthUnit: true
-                                        )
-                                )
-                                .fontWeight(.bold)
-                            }
-
-                        }  // :Grid
-                        .frame(maxWidth: .infinity)
-                        .padding(.trailing)
-
-                        Spacer()
-
-                    }  // :VStack
-                        .foregroundColor(.white)
-                )  // :Overlay
+                    Text(
+                        todaySolarProductionInWh
+                            .formatWattHoursAsKiloWattsHours(widthUnit: true)
+                    )
+                    .font(.caption)
+                    .fontWeight(.bold)
+                }
+            }
         }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+        )
     }
 }
 
 #Preview {
     VStack {
-        
         TodaySolarView(
             peakProductionInW: 7539,
             currentSolarProductionInW: 6540,
             todaySolarProductionInWh: 23423
         )
-        .frame(width: 180, height: 180)
-        
+        .frame(width: 180)
+        .padding()
+
         Spacer()
     }
 }

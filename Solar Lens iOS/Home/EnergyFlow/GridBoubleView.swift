@@ -2,27 +2,23 @@ import SwiftUI
 
 struct GridBoubleView: View {
     var gridInKwh: Double
-    var useGlow: Bool
-    
+    var todayGridImportInWh: Int?
+
     var body: some View {
-        CircularInstrument(
-            borderColor: gridInKwh != 0 ? .orange : .gray,
+        let todayKwh = Double(todayGridImportInWh ?? 0) / 1000
+
+        EnergyCard(
+            icon: "network",
+            iconColor: .purple,
             label: "Grid",
             value: String(format: "%.1f kW", gridInKwh),
-            useGlowEffect: useGlow
-        ) {
-            Image(systemName: "network")
-                .foregroundColor(.black)
-        }
+            detail: todayGridImportInWh != nil ? String(format: "%.1f kWh today", todayKwh) : nil
+        )
     }
 }
 
-#Preview("No glow") {
-    GridBoubleView(gridInKwh: 5.4, useGlow: false)
-        .frame(width: 150, height: 150)
-}
-
-#Preview("With glow") {
-    GridBoubleView(gridInKwh: 5.4, useGlow: true)
-        .frame(width: 150, height: 150)
+#Preview {
+    GridBoubleView(gridInKwh: 1.7, todayGridImportInWh: 12500)
+        .frame(width: 170)
+        .padding()
 }
