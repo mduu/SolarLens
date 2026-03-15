@@ -15,8 +15,6 @@ extension Color {
 // MARK: - Card Style Modifier
 
 struct CardStyleModifier: ViewModifier {
-    @Environment(\.colorScheme) private var colorScheme
-
     func body(content: Content) -> some View {
         content
             .padding(.horizontal, 14)
@@ -24,15 +22,7 @@ struct CardStyleModifier: ViewModifier {
             .frame(maxWidth: .infinity)
             .background {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(colorScheme == .dark ? Color(hex6: 0x2A2D32) : Color(hex6: 0xEAEEF3))
-                    .shadow(
-                        color: colorScheme == .dark ? .white.opacity(0.05) : .white.opacity(0.7),
-                        radius: 8, x: -6, y: -6
-                    )
-                    .shadow(
-                        color: colorScheme == .dark ? .black.opacity(0.5) : .black.opacity(0.15),
-                        radius: 8, x: 6, y: 6
-                    )
+                    .fill(.ultraThickMaterial)
             }
     }
 }
