@@ -18,84 +18,99 @@ struct DevicePrioritySheet: View {
             )
             .ignoresSafeArea()
 
-            VStack(spacing: 16) {
-                // Pie chart card
-                VStack(spacing: 8) {
-                    ConsumptionPieChart(
-                        totalCurrentConsumptionInWatt: buildingState.overviewData
-                            .currentOverallConsumption,
-                        deviceConsumptions: getDeviceConsumptions(),
-                        legendPosition: .right,
-                        annotationTextSize: .large
-                    )
-                }
-                .padding(16)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(.ultraThinMaterial)
-                )
-
-                // Device list card
-                VStack(spacing: 0) {
-                    HStack {
-                        Text("Devices")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-
-                        Spacer()
-
-                        Image(systemName: "arrow.up.arrow.down")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                    }
-                    .padding(.bottom, 8)
-
-                    List {
-                        ForEach(buildingState.overviewData.devices.sorted(by: { $0.priority < $1.priority })) { device in
-                            DevicePriorityRow(device: device)
-                                .contentShape(Rectangle())
+            ScrollView {
+                VStack(spacing: 16) {
+                    // Consumption chart card
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "chart.pie")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Text("Consumption")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
-                        .onMove { indices, newOffset in
-                            if let index = indices.first {
-                                let device = buildingState.overviewData.devices[index]
 
-                                Task {
-                                    isLoading = true
+                        ConsumptionPieChart(
+                            totalCurrentConsumptionInWatt: buildingState.overviewData
+                                .currentOverallConsumption,
+                            deviceConsumptions: getDeviceConsumptions(),
+                            legendPosition: .right,
+                            annotationTextSize: .large
+                        )
+                    }
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(.ultraThinMaterial)
+                    )
 
-                                    let newPriority =
-                                        newOffset > index
-                                        ? newOffset
-                                        : newOffset + 1
+                    // Device list card
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "bolt.fill")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Text("Devices")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
 
-                                    print("Old prio: \(device.priority), new prio: \(newPriority)")
+                            Spacer()
 
-                                    await buildingState.setSensorPriority(
-                                        sensorId: device.id,
-                                        newPriority: newPriority
-                                    )
+                            Image(systemName: "arrow.up.arrow.down")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
 
-                                    isLoading = false
+                        List {
+                            ForEach(buildingState.overviewData.devices.sorted(by: { $0.priority < $1.priority })) { device in
+                                DevicePriorityRow(device: device)
+                                    .listRowBackground(Color.clear)
+                                    .listRowSeparator(.visible)
+                                    .contentShape(Rectangle())
+                            }
+                            .onMove { indices, newOffset in
+                                if let index = indices.first {
+                                    let device = buildingState.overviewData.devices[index]
+
+                                    Task {
+                                        isLoading = true
+
+                                        let newPriority =
+                                            newOffset > index
+                                            ? newOffset
+                                            : newOffset + 1
+
+                                        await buildingState.setSensorPriority(
+                                            sensorId: device.id,
+                                            newPriority: newPriority
+                                        )
+
+                                        isLoading = false
+                                    }
                                 }
                             }
                         }
+                        .listStyle(.plain)
+                        .scrollDisabled(true)
+                        .frame(minHeight: CGFloat(buildingState.overviewData.devices.count) * 56)
                     }
-                    .listStyle(.inset)
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(.ultraThinMaterial)
+                    )
                 }
-                .padding(16)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(.ultraThinMaterial)
-                )
-
-                Spacer()
+                .padding()
             }
-            .padding()
 
             if isLoading {
                 ProgressView()
             }
         }
-        .navigationTitle("Devices")
+        .navigationTitle("Consumption")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
