@@ -30,8 +30,9 @@ struct DevicePriorityRow: View {
             DeviceConnectionIndicator(device: device)
                 .padding(.trailing, 4)
 
-            Image(systemName: "line.3.horizontal")  // Drag handle icon
-                .foregroundColor(.teal)
+            Image(systemName: "line.3.horizontal")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
         }
     }
 }
