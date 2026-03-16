@@ -5,7 +5,7 @@ struct BatteryModeSheet: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 10) {
 
                 if battery.batteryInfo?.modeInfo.batteryMode == .Standard {
                     BatteryModeButton(
@@ -34,13 +34,6 @@ struct BatteryModeSheet: View {
                         battery: battery,
                         mode: BatteryMode.Manual
                     )
-
-                    /*
-                     BatteryModeButton(
-                     battery: battery,
-                     mode: BatteryMode.TariffOptimized
-                     )
-                     */
 
                 }
             }  // :VStack

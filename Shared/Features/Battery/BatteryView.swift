@@ -55,6 +55,10 @@ struct BatteryView: View {
                 }
 
                 Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
             }
         }
         #if os(iOS)
