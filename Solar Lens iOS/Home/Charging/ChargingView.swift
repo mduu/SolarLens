@@ -72,7 +72,7 @@ struct ChargingStationCard: View {
         }
         .sheet(isPresented: $showChargingModeSelection) {
             ChargingModePickerView(station: station)
-                .presentationDetents([.height(450)])
+                .presentationDetents([.large])
         }
     }
 }
