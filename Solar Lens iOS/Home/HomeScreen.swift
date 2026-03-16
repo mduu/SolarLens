@@ -102,19 +102,8 @@ struct HomeScreen: View {
                 Spacer()
 
                 // 2x2 Energy Flow Grid + Charging (vertically centered)
-                VStack(spacing: 10) {
-                    EnergyFlowGrid()
-
-                    // Charging stations (right column, under Consumption)
-                    if !buildingState.overviewData.chargingStations.isEmpty {
-                        HStack(spacing: 40) {
-                            Color.clear.frame(maxWidth: .infinity, maxHeight: 0)
-                            ChargingView(isVertical: true)
-                                .frame(maxWidth: .infinity)
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
+                EnergyFlowGrid(showCharging: true)
+                    .padding(.horizontal, 16)
 
                 Spacer()
 

@@ -2,8 +2,10 @@ import SwiftUI
 
 struct EnergyFlowGrid: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
+    var showCharging: Bool = false
     private let hGap: CGFloat = 40
     private let vGap: CGFloat = 60
+    private let chargingGap: CGFloat = 30
 
     var body: some View {
         let data = buildingState.overviewData
@@ -14,42 +16,54 @@ struct EnergyFlowGrid: View {
                 ? data.currentGridToHouse
                 : data.currentSolarToGrid
         ) / 1000
-        VStack(spacing: vGap) {
-            // Top row
-            HStack(spacing: hGap) {
-                SolarBoubleView(
-                    currentSolarProductionInKwh: solar,
-                    todaySolarProductionInWh: data.todayProduction
-                )
-                .frame(maxHeight: .infinity)
-                GridBoubleView(
-                    gridInKwh: gridValue,
-                    todayGridImportInWh: data.todayGridImported
-                )
-                .frame(maxHeight: .infinity)
-            }
-            .fixedSize(horizontal: false, vertical: true)
+        VStack(spacing: 0) {
+            VStack(spacing: vGap) {
+                // Top row
+                HStack(spacing: hGap) {
+                    SolarBoubleView(
+                        currentSolarProductionInKwh: solar,
+                        todaySolarProductionInWh: data.todayProduction
+                    )
+                    .frame(maxHeight: .infinity)
+                    GridBoubleView(
+                        gridInKwh: gridValue,
+                        todayGridImportInWh: data.todayGridImported
+                    )
+                    .frame(maxHeight: .infinity)
+                }
+                .fixedSize(horizontal: false, vertical: true)
 
-            // Bottom row
-            HStack(spacing: hGap) {
-                BatteryBoubleView(
-                    currentBatteryLevel: data.currentBatteryLevel,
-                    currentChargeRate: data.currentBatteryChargeRate
-                )
-                .frame(maxHeight: .infinity)
-                ConsumptionBoubleView(
-                    currentConsumptionInKwh: consumption,
-                    todayConsumptionInWh: data.todayConsumption
-                )
-                .frame(maxHeight: .infinity)
+                // Bottom row
+                HStack(spacing: hGap) {
+                    BatteryBoubleView(
+                        currentBatteryLevel: data.currentBatteryLevel,
+                        currentChargeRate: data.currentBatteryChargeRate
+                    )
+                    .frame(maxHeight: .infinity)
+                    ConsumptionBoubleView(
+                        currentConsumptionInKwh: consumption,
+                        todayConsumptionInWh: data.todayConsumption
+                    )
+                    .frame(maxHeight: .infinity)
+                }
+                .fixedSize(horizontal: false, vertical: true)
             }
-            .fixedSize(horizontal: false, vertical: true)
-        }
-        .overlay {
-            GeometryReader { geo in
-                flowLines(data: data, in: geo.size)
+            .overlay {
+                GeometryReader { geo in
+                    flowLines(data: data, in: geo.size)
+                }
+                .allowsHitTesting(false)
             }
-            .allowsHitTesting(false)
+
+            // Charging stations below consumption
+            if showCharging && !data.chargingStations.isEmpty {
+                HStack(spacing: hGap) {
+                    Color.clear.frame(maxWidth: .infinity, maxHeight: 0)
+                    ChargingView(isVertical: true)
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(.top, chargingGap)
+            }
         }
     }
 
@@ -120,6 +134,20 @@ struct EnergyFlowGrid: View {
                 from: CGPoint(x: leftCardRight, y: topRowBottom),
                 to: CGPoint(x: rightCardLeft, y: bottomRowTop)
             )
+        }
+
+        // Consumption → Charging (vertical, right column) — blue
+        // Draws below the grid bounds into the chargingGap area
+        if showCharging && !data.chargingStations.isEmpty {
+            let totalChargingPower = data.chargingStations.reduce(0) { $0 + $1.currentPower }
+            if totalChargingPower > 0 {
+                FlowArrow(
+                    color: .blue,
+                    power: Double(totalChargingPower) / 1000,
+                    from: CGPoint(x: gridCenterX, y: h),
+                    to: CGPoint(x: gridCenterX, y: h + chargingGap)
+                )
+            }
         }
     }
 }
