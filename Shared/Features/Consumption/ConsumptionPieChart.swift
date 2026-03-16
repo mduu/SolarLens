@@ -48,73 +48,40 @@ struct ConsumptionPieChart: View {
         let allConsumptions: [DeviceConsumption] = getAllConsumptions()
 
         HVStack(isVertical: legendPosition == .bottom) {
-            ZStack {
-
-                Chart(allConsumptions, id: \.id) { device in
-
-                    // Draw filled, semi-transparent sectors
-                    SectorMark(
-                        angle: .value("Watts", device.consumptionInWatt),
-                        innerRadius: .ratio(0.6),
-                        outerRadius: .ratio(1),
-                        angularInset: 2.0  // Increased inset creates a border effect
-                    )
-                    .cornerRadius(0)
-                    .opacity(0.3)
-                    .foregroundStyle(device.color2)
-                    .annotation(position: .overlay) {
-                        Group {
-                            if device.consumptionInWatt > 20 {
-                                Text(
-                                    device.consumptionInWatt
-                                        .formatWattsAsKiloWatts()
-                                )
-                                .font(
-                                    .system(
-                                        size: annotationTextSize == .small
-                                            ? 10 : 14
-                                    )
-                                )
-                                .foregroundColor(device.color2)
-                            }
-                        }
+            Chart(allConsumptions, id: \.id) { device in
+                SectorMark(
+                    angle: .value("Watts", device.consumptionInWatt),
+                    innerRadius: .ratio(0.75),
+                    outerRadius: .ratio(0.92),
+                    angularInset: 2
+                )
+                .cornerRadius(5)
+                .foregroundStyle(device.color2)
+            }
+            .chartLegend(.hidden)
+            .chartBackground(alignment: .center) { _ in
+                VStack(spacing: 1) {
+                    if let overrideLabelText, let overrideValue {
+                        Text(overrideLabelText)
+                            .font(.system(size: annotationTextSize == .small ? 11 : 14, weight: .semibold))
+                            .foregroundColor(overrideLabelColor)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                        Text(overrideValue)
+                            .font(.system(size: annotationTextSize == .small ? 11 : 14))
+                    } else {
+                        Text("Total")
+                            .font(.system(size: annotationTextSize == .small ? 11 : 14, weight: .semibold))
+                            .foregroundStyle(.secondary)
+                        Text(
+                            totalCurrentConsumptionInWatt
+                                .formatWattsAsKiloWatts()
+                        )
+                        .font(.system(size: annotationTextSize == .small ? 11 : 14))
                     }
                 }
-
-                Chart(allConsumptions, id: \.id) { device in
-
-                    // Draw the outer ring of the donuts
-                    SectorMark(
-                        angle: .value("Watts", device.consumptionInWatt),
-                        innerRadius: .ratio(0.95),
-                        outerRadius: .ratio(0.61),
-                        angularInset: 2.0  // Increased inset creates a border effect
-                    )
-                    .cornerRadius(0)
-                    .opacity(1)
-                    .foregroundStyle(device.color2)
-
-                }
-                .chartLegend(.visible)
-                .chartBackground(alignment: .center) { chart in
-                    VStack {
-                        if overrideLabelText != nil && overrideValue != nil {
-                            Text(overrideLabelText!)
-                                .foregroundColor(overrideLabelColor)
-                                .bold()
-                            Text(overrideValue!)
-                        } else {
-
-                            Text("Total").foregroundColor(.cyan).bold()
-                            Text(
-                                totalCurrentConsumptionInWatt
-                                    .formatWattsAsKiloWatts()
-                            )
-
-                        }
-                    }
-                }
-            }  // :ZStack
+            }
+            .aspectRatio(1, contentMode: .fit)
 
             if legendPosition == .bottom {
                 ScrollView {
