@@ -246,6 +246,17 @@ class RestClient {
 
             if canRetry && maxRetry > retryAttempt {
                 retryAttempt += 1
+
+                // Re-read the access token after a token refresh so
+                // the retry doesn't reuse the stale token from the
+                // original request.
+                if useAccessToken, let freshToken = KeychainHelper.accessToken {
+                    request.setValue(
+                        "Bearer " + freshToken,
+                        forHTTPHeaderField: "Authorization"
+                    )
+                }
+
                 let millisecondsToWait = UInt64(500 * pow(2, Double(retryAttempt - 1)))
                 await waitFor(milliseconds: millisecondsToWait)
             } else {

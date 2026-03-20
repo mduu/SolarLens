@@ -8,6 +8,7 @@ class SolarManager: EnergyManager {
 
     private var expireAt: Date?
     private var accessClaims: [String]?
+    private var activeRefreshTask: Task<Bool, Never>?
     private lazy var solarManagerApi = SolarManagerApi(onTokenExpired: { [weak self] in
         await self?.handleOnTokenExpired() ?? false
     })
@@ -916,20 +917,32 @@ class SolarManager: EnergyManager {
     }
 
     private func handleOnTokenExpired() async -> Bool {
-        print("🔑 Token expired. Attempting to refresh or re-login...")
-
-        // Clear the expired token info
-        self.expireAt = nil
-
-        do {
-            // Try to ensure we're logged in (this will attempt refresh or re-login)
-            try await ensureLoggedIn()
-            print("🟢🔑 Successfully recovered from token expiration.")
-            return true
-        } catch {
-            print("🔴🔑 Failed to recover from token expiration: \(error)")
-            return false
+        // If another request is already refreshing, wait for that result
+        // instead of starting a competing refresh that would invalidate
+        // the first one's new token.
+        if let existingTask = activeRefreshTask {
+            print("🔑 Token refresh already in progress, waiting for result...")
+            return await existingTask.value
         }
+
+        let task = Task<Bool, Never> { @MainActor in
+            print("🔑 Token expired. Attempting to refresh or re-login...")
+            self.expireAt = nil
+
+            do {
+                try await ensureLoggedIn()
+                print("🟢🔑 Successfully recovered from token expiration.")
+                return true
+            } catch {
+                print("🔴🔑 Failed to recover from token expiration: \(error)")
+                return false
+            }
+        }
+
+        activeRefreshTask = task
+        let result = await task.value
+        activeRefreshTask = nil
+        return result
     }
 
 }
