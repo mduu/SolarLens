@@ -4,6 +4,11 @@ import SwiftUI
 
 struct DevicePriorityRow: View {
     var device: Device
+    @ObservedObject var pinnedConfig: PinnedDevicesConfiguration
+
+    private var canPin: Bool {
+        device.deviceType != .battery && device.deviceType != .carCharging
+    }
 
     var body: some View {
         HStack {
@@ -14,7 +19,7 @@ struct DevicePriorityRow: View {
                 .fontWeight(.semibold)
 
             Spacer()
-            
+
             let text =
                 device.hasPower()
                 ? String(
@@ -22,11 +27,25 @@ struct DevicePriorityRow: View {
                     Double(device.currentPowerInWatts) / 1000
                 )
                 : ""
-            
+
             Text(text)
                 .font(.caption)
                 .padding(.trailing, 4)
-            
+
+            if canPin {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        pinnedConfig.togglePin(deviceId: device.id)
+                    }
+                } label: {
+                    Image(systemName: pinnedConfig.isPinned(deviceId: device.id) ? "pin.fill" : "pin")
+                        .font(.caption)
+                        .foregroundColor(pinnedConfig.isPinned(deviceId: device.id) ? .teal : .gray.opacity(0.4))
+                }
+                .buttonStyle(.plain)
+                .padding(.trailing, 4)
+            }
+
             DeviceConnectionIndicator(device: device)
                 .padding(.trailing, 4)
 
@@ -50,22 +69,24 @@ struct DevicePriorityRow: View {
                 color: "#FF00FF",
                 signal: .connected,
                 hasError: false
-            )
+            ),
+            pinnedConfig: PinnedDevicesConfiguration()
         )
         .padding(.horizontal, 30)
         .padding(.vertical, 10)
 
         DevicePriorityRow(
             device: .init(
-                id: "1",
-                deviceType: .carCharging,
-                name: "Charging Station",
-                priority: 1,
+                id: "2",
+                deviceType: .other,
+                name: "Water Heater",
+                priority: 2,
                 currentPowerInWatts: 1234,
                 color: "#FF00FF",
-                signal: .notConnected,
-                hasError: true
-            )
+                signal: .connected,
+                hasError: false
+            ),
+            pinnedConfig: PinnedDevicesConfiguration()
         )
         .padding(.horizontal, 30)
 

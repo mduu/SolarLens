@@ -16,6 +16,7 @@ private extension View {
 
 struct EnergyFlowGrid: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
+    @StateObject private var pinnedConfig = PinnedDevicesConfiguration()
     var showCharging: Bool = false
     private let hGap: CGFloat = 40
     private let vGap: CGFloat = 60
@@ -57,26 +58,40 @@ struct EnergyFlowGrid: View {
                 )
                 .cardAnchor("battery")
 
-                // Consumption + Charging combined card
-                if showCharging && !data.chargingStations.isEmpty {
+                // Consumption card — combined with charging and/or pinned devices when present
+                let hasCharging = showCharging && !data.chargingStations.isEmpty
+                let hasPinned = !pinnedDevices(from: data).isEmpty
+
+                if hasCharging || hasPinned {
                     VStack(spacing: 0) {
                         ConsumptionBoubleView(
                             currentConsumptionInKwh: consumption,
                             todayConsumptionInWh: data.todayConsumption,
-                            applyCardStyle: false
+                            applyCardStyle: false,
+                            pinnedConfig: pinnedConfig
                         )
 
-                        Divider()
-                            .padding(.vertical, 8)
+                        if hasCharging {
+                            Divider()
+                                .padding(.vertical, 8)
 
-                        ChargingView(isVertical: true, applyCardStyle: false)
+                            ChargingView(isVertical: true, applyCardStyle: false)
+                        }
+
+                        if hasPinned {
+                            Divider()
+                                .padding(.vertical, 8)
+
+                            PinnedDevicesView(pinnedConfig: pinnedConfig)
+                        }
                     }
                     .cardStyle()
                     .cardAnchor("consumption")
                 } else {
                     ConsumptionBoubleView(
                         currentConsumptionInKwh: consumption,
-                        todayConsumptionInWh: data.todayConsumption
+                        todayConsumptionInWh: data.todayConsumption,
+                        pinnedConfig: pinnedConfig
                     )
                     .cardAnchor("consumption")
                 }
@@ -87,6 +102,14 @@ struct EnergyFlowGrid: View {
                 flowLines(data: data, anchors: anchors, proxy: proxy)
             }
             .allowsHitTesting(false)
+        }
+    }
+
+    private func pinnedDevices(from data: OverviewData) -> [Device] {
+        data.devices.filter { device in
+            device.deviceType != .battery
+                && device.deviceType != .carCharging
+                && pinnedConfig.isPinned(deviceId: device.id)
         }
     }
 

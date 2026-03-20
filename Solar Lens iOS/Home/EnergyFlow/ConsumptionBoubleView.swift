@@ -4,6 +4,7 @@ struct ConsumptionBoubleView: View {
     var currentConsumptionInKwh: Double
     var todayConsumptionInWh: Double?
     var applyCardStyle: Bool = true
+    @ObservedObject var pinnedConfig: PinnedDevicesConfiguration
 
     @State var isDeviceSheetShown: Bool = false
 
@@ -22,7 +23,7 @@ struct ConsumptionBoubleView: View {
         .onTapGesture { isDeviceSheetShown = true }
         .sheet(isPresented: $isDeviceSheetShown) {
             NavigationView {
-                DevicePrioritySheet()
+                DevicePrioritySheet(pinnedConfig: pinnedConfig)
             }
             .presentationDetents([.large])
         }
@@ -32,7 +33,8 @@ struct ConsumptionBoubleView: View {
 #Preview {
     ConsumptionBoubleView(
         currentConsumptionInKwh: 4.5,
-        todayConsumptionInWh: 34595
+        todayConsumptionInWh: 34595,
+        pinnedConfig: PinnedDevicesConfiguration()
     )
     .padding()
 }

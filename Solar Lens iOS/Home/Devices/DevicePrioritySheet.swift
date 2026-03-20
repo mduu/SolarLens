@@ -5,6 +5,7 @@ struct DevicePrioritySheet: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
 
+    @ObservedObject var pinnedConfig: PinnedDevicesConfiguration
     @State var isLoading: Bool = false
 
     var body: some View {
@@ -65,7 +66,7 @@ struct DevicePrioritySheet: View {
 
                         List {
                             ForEach(buildingState.overviewData.devices.sorted(by: { $0.priority < $1.priority })) { device in
-                                DevicePriorityRow(device: device)
+                                DevicePriorityRow(device: device, pinnedConfig: pinnedConfig)
                                     .listRowBackground(Color.clear)
                                     .listRowSeparator(.visible)
                                     .contentShape(Rectangle())
@@ -142,7 +143,7 @@ struct DevicePrioritySheet: View {
 
 #Preview {
     NavigationView {
-        DevicePrioritySheet()
+        DevicePrioritySheet(pinnedConfig: PinnedDevicesConfiguration())
             .environment(CurrentBuildingState.fake())
     }
 }
