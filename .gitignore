@@ -83,3 +83,5 @@ __blobstorage__/
 __queuestorage__/
 __azurite_db*.json
 build
+.obsidian
+specs/.claude/settings.local.json
