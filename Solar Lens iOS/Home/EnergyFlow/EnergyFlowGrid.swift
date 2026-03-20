@@ -1,11 +1,24 @@
 import SwiftUI
 
+/// Preference key that collects named card anchors for flow line positioning.
+private struct CardAnchorsKey: PreferenceKey {
+    static let defaultValue: [String: Anchor<CGRect>] = [:]
+    static func reduce(value: inout [String: Anchor<CGRect>], nextValue: () -> [String: Anchor<CGRect>]) {
+        value.merge(nextValue()) { $1 }
+    }
+}
+
+private extension View {
+    func cardAnchor(_ name: String) -> some View {
+        anchorPreference(key: CardAnchorsKey.self, value: .bounds) { [name: $0] }
+    }
+}
+
 struct EnergyFlowGrid: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     var showCharging: Bool = false
     private let hGap: CGFloat = 40
     private let vGap: CGFloat = 60
-    private let chargingGap: CGFloat = 30
 
     var body: some View {
         let data = buildingState.overviewData
@@ -16,136 +29,139 @@ struct EnergyFlowGrid: View {
                 ? data.currentGridToHouse
                 : data.currentSolarToGrid
         ) / 1000
-        VStack(spacing: 0) {
-            VStack(spacing: vGap) {
-                // Top row
-                HStack(spacing: hGap) {
-                    SolarBoubleView(
-                        currentSolarProductionInKwh: solar,
-                        todaySolarProductionInWh: data.todayProduction
-                    )
-                    .frame(maxHeight: .infinity)
-                    GridBoubleView(
-                        gridInKwh: gridValue,
-                        todayGridImportInWh: data.todayGridImported
-                    )
-                    .frame(maxHeight: .infinity)
-                }
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(spacing: vGap) {
+            // Top row
+            HStack(spacing: hGap) {
+                SolarBoubleView(
+                    currentSolarProductionInKwh: solar,
+                    todaySolarProductionInWh: data.todayProduction
+                )
+                .frame(maxHeight: .infinity)
+                .cardAnchor("solar")
+                GridBoubleView(
+                    gridInKwh: gridValue,
+                    todayGridImportInWh: data.todayGridImported
+                )
+                .frame(maxHeight: .infinity)
+                .cardAnchor("grid")
+            }
+            .fixedSize(horizontal: false, vertical: true)
 
-                // Bottom row
-                HStack(spacing: hGap) {
-                    BatteryBoubleView(
-                        currentBatteryLevel: data.currentBatteryLevel,
-                        currentChargeRate: data.currentBatteryChargeRate
-                    )
-                    .frame(maxHeight: .infinity)
+            // Bottom row — top-aligned so battery card stays
+            // at the same height as consumption, even when charging
+            // stations make the right column taller.
+            HStack(alignment: .top, spacing: hGap) {
+                BatteryBoubleView(
+                    currentBatteryLevel: data.currentBatteryLevel,
+                    currentChargeRate: data.currentBatteryChargeRate
+                )
+                .cardAnchor("battery")
+
+                // Consumption + Charging combined card
+                if showCharging && !data.chargingStations.isEmpty {
+                    VStack(spacing: 0) {
+                        ConsumptionBoubleView(
+                            currentConsumptionInKwh: consumption,
+                            todayConsumptionInWh: data.todayConsumption,
+                            applyCardStyle: false
+                        )
+
+                        Divider()
+                            .padding(.vertical, 8)
+
+                        ChargingView(isVertical: true, applyCardStyle: false)
+                    }
+                    .cardStyle()
+                    .cardAnchor("consumption")
+                } else {
                     ConsumptionBoubleView(
                         currentConsumptionInKwh: consumption,
                         todayConsumptionInWh: data.todayConsumption
                     )
-                    .frame(maxHeight: .infinity)
+                    .cardAnchor("consumption")
                 }
-                .fixedSize(horizontal: false, vertical: true)
             }
-            .overlay {
-                GeometryReader { geo in
-                    flowLines(data: data, in: geo.size)
-                }
-                .allowsHitTesting(false)
+        }
+        .overlayPreferenceValue(CardAnchorsKey.self) { anchors in
+            GeometryReader { proxy in
+                flowLines(data: data, anchors: anchors, proxy: proxy)
             }
-
-            // Charging stations below consumption
-            if showCharging && !data.chargingStations.isEmpty {
-                HStack(spacing: hGap) {
-                    Color.clear.frame(maxWidth: .infinity, maxHeight: 0)
-                    ChargingView(isVertical: true)
-                        .frame(maxWidth: .infinity)
-                }
-                .padding(.top, chargingGap)
-            }
+            .allowsHitTesting(false)
         }
     }
 
     // MARK: - Flow Lines
 
     @ViewBuilder
-    private func flowLines(data: OverviewData, in size: CGSize) -> some View {
-        let w = size.width
-        let h = size.height
-        let cardW = (w - hGap) / 2
-        let cardH = (h - vGap) / 2
+    private func flowLines(
+        data: OverviewData,
+        anchors: [String: Anchor<CGRect>],
+        proxy: GeometryProxy
+    ) -> some View {
+        // Resolve actual card positions within the overlay coordinate space
+        if let solarRect = anchors["solar"].map({ proxy[$0] }),
+           let gridRect = anchors["grid"].map({ proxy[$0] }),
+           let batteryRect = anchors["battery"].map({ proxy[$0] }),
+           let consumptionRect = anchors["consumption"].map({ proxy[$0] })
+        {
+            let solarCenter = CGPoint(x: solarRect.midX, y: solarRect.midY)
+            let gridCenter = CGPoint(x: gridRect.midX, y: gridRect.midY)
+            let batteryCenter = CGPoint(x: batteryRect.midX, y: batteryRect.midY)
+            let consumptionCenter = CGPoint(x: consumptionRect.midX, y: consumptionRect.midY)
 
-        let solarCenterX = cardW / 2
-        let gridCenterX = cardW + hGap + cardW / 2
-        let topCenterY = cardH / 2
-        let bottomCenterY = cardH + vGap + cardH / 2
+            // Edge points for arrows between cards
+            let solarBottom = CGPoint(x: solarRect.midX, y: solarRect.maxY)
+            let gridBottom = CGPoint(x: gridRect.midX, y: gridRect.maxY)
+            let batteryTop = CGPoint(x: batteryRect.midX, y: batteryRect.minY)
+            let consumptionTop = CGPoint(x: consumptionRect.midX, y: consumptionRect.minY)
 
-        let topRowBottom = cardH
-        let bottomRowTop = cardH + vGap
-        let leftCardRight = cardW
-        let rightCardLeft = cardW + hGap
-
-        // Solar → Grid (horizontal) — orange-red
-        if data.isFlowSolarToGrid() {
-            FlowArrow(
-                color: Color(red: 1.0, green: 0.4, blue: 0.1),
-                power: Double(data.currentSolarToGrid) / 1000,
-                from: CGPoint(x: leftCardRight, y: topCenterY),
-                to: CGPoint(x: rightCardLeft, y: topCenterY)
-            )
-        }
-
-        // Solar → Battery (vertical, left) — green
-        if data.isFlowSolarToBattery() {
-            FlowArrow(
-                color: .green,
-                power: Double(data.currentBatteryChargeRate ?? 0) / 1000,
-                from: CGPoint(x: solarCenterX, y: topRowBottom),
-                to: CGPoint(x: solarCenterX, y: bottomRowTop)
-            )
-        }
-
-        // Grid → House (vertical, right) — orange
-        if data.isFlowGridToHouse() {
-            FlowArrow(
-                color: .orange,
-                power: Double(data.currentGridToHouse) / 1000,
-                from: CGPoint(x: gridCenterX, y: topRowBottom),
-                to: CGPoint(x: gridCenterX, y: bottomRowTop)
-            )
-        }
-
-        // Battery → House (horizontal, bottom) — green
-        if data.isFlowBatteryToHome() {
-            FlowArrow(
-                color: .green,
-                power: abs(Double(data.currentBatteryChargeRate ?? 0)) / 1000,
-                from: CGPoint(x: leftCardRight, y: bottomCenterY),
-                to: CGPoint(x: rightCardLeft, y: bottomCenterY)
-            )
-        }
-
-        // Solar → House (diagonal) — green
-        if data.isFlowSolarToHouse() {
-            FlowArrow(
-                color: .green,
-                power: Double(data.currentSolarToHouse) / 1000,
-                from: CGPoint(x: leftCardRight, y: topRowBottom),
-                to: CGPoint(x: rightCardLeft, y: bottomRowTop)
-            )
-        }
-
-        // Consumption → Charging (vertical, right column) — blue
-        // Draws below the grid bounds into the chargingGap area
-        if showCharging && !data.chargingStations.isEmpty {
-            let totalChargingPower = data.chargingStations.reduce(0) { $0 + $1.currentPower }
-            if totalChargingPower > 0 {
+            // Solar → Grid (horizontal) — orange-red
+            if data.isFlowSolarToGrid() {
                 FlowArrow(
-                    color: .blue,
-                    power: Double(totalChargingPower) / 1000,
-                    from: CGPoint(x: gridCenterX, y: h),
-                    to: CGPoint(x: gridCenterX, y: h + chargingGap)
+                    color: Color(red: 1.0, green: 0.4, blue: 0.1),
+                    power: Double(data.currentSolarToGrid) / 1000,
+                    from: CGPoint(x: solarRect.maxX, y: solarCenter.y),
+                    to: CGPoint(x: gridRect.minX, y: gridCenter.y)
+                )
+            }
+
+            // Solar → Battery (vertical, left) — green
+            if data.isFlowSolarToBattery() {
+                FlowArrow(
+                    color: .green,
+                    power: Double(data.currentBatteryChargeRate ?? 0) / 1000,
+                    from: solarBottom,
+                    to: batteryTop
+                )
+            }
+
+            // Grid → House (vertical, right) — orange
+            if data.isFlowGridToHouse() {
+                FlowArrow(
+                    color: .orange,
+                    power: Double(data.currentGridToHouse) / 1000,
+                    from: gridBottom,
+                    to: consumptionTop
+                )
+            }
+
+            // Battery → House (horizontal, bottom) — green
+            if data.isFlowBatteryToHome() {
+                FlowArrow(
+                    color: .green,
+                    power: abs(Double(data.currentBatteryChargeRate ?? 0)) / 1000,
+                    from: CGPoint(x: batteryRect.maxX, y: batteryCenter.y),
+                    to: CGPoint(x: consumptionRect.minX, y: batteryCenter.y)
+                )
+            }
+
+            // Solar → House (diagonal) — green
+            if data.isFlowSolarToHouse() {
+                FlowArrow(
+                    color: .green,
+                    power: Double(data.currentSolarToHouse) / 1000,
+                    from: CGPoint(x: solarRect.maxX, y: solarRect.maxY),
+                    to: CGPoint(x: consumptionRect.minX, y: consumptionTop.y)
                 )
             }
         }

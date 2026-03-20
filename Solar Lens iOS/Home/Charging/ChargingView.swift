@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChargingView: View {
     var isVertical: Bool = true
+    var applyCardStyle: Bool = true
 
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
 
@@ -22,18 +23,19 @@ struct ChargingView: View {
     @ViewBuilder
     private func chargingContent(isVertical: Bool) -> some View {
         ForEach(buildingState.overviewData.chargingStations.sorted(by: { $0.priority < $1.priority })) { station in
-            ChargingStationCard(station: station)
+            ChargingStationCard(station: station, applyCardStyle: applyCardStyle)
         }
     }
 }
 
 struct ChargingStationCard: View {
     var station: ChargingStation
+    var applyCardStyle: Bool = true
     @State private var showChargingModeSelection = false
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: station.currentPower > 0 ? "car.side" : "ev.charger")
+            Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
                 .font(.title3)
                 .foregroundStyle(.blue)
                 .symbolEffect(
@@ -66,7 +68,7 @@ struct ChargingStationCard: View {
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
-        .cardStyle()
+        .if(applyCardStyle) { $0.cardStyle() }
         .onTapGesture {
             showChargingModeSelection = true
         }

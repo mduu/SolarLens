@@ -11,23 +11,16 @@ struct ChargingStationView: View {
             small: true,
             isTouchable: true
         ) {
-            if station.currentPower > 0 {
-                Image(systemName: "car.side")
-                    .resizable()
-                    .scaledToFit()
-                    .symbolEffect(
-                        .pulse.wholeSymbol,
-                        options: .repeat(.continuous)
-                    )
-                    .frame(maxHeight: 20)
-                    .foregroundColor(.black)
-            } else {
-                Image(systemName: "ev.charger")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxHeight: 20)
-                    .foregroundColor(.black)
-            }
+            Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
+                .resizable()
+                .scaledToFit()
+                .symbolEffect(
+                    .pulse.wholeSymbol,
+                    options: .repeat(.continuous),
+                    isActive: station.currentPower > 0
+                )
+                .frame(maxHeight: 20)
+                .foregroundColor(.black)
         }
         .frame(maxWidth: 60)
         .onTapGesture {

@@ -36,14 +36,14 @@ struct DeviceIconView: View {
     func ChargingStationIcon(for device: Device) -> some View {
         VStack {
             if device.hasPower() {
-                Image(systemName: "fuelpump.arrowtriangle.right")
+                Image(systemName: "ev.charger.fill")
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.green, .primary)
                     .symbolEffect(
                         .breathe.pulse.wholeSymbol,
                         options: .repeat(.continuous))
             } else {
-                Image(systemName: "fuelpump")
+                Image(systemName: "ev.charger")
             }
         }
     }

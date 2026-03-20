@@ -3,6 +3,7 @@ import SwiftUI
 struct ConsumptionBoubleView: View {
     var currentConsumptionInKwh: Double
     var todayConsumptionInWh: Double?
+    var applyCardStyle: Bool = true
 
     @State var isDeviceSheetShown: Bool = false
 
@@ -15,7 +16,8 @@ struct ConsumptionBoubleView: View {
             label: "Consumption",
             value: String(format: "%.1f kW", currentConsumptionInKwh),
             detail: todayConsumptionInWh != nil ? String(format: "%.1f kWh today", todayKwh) : nil,
-            showChevron: true
+            showChevron: true,
+            applyCardStyle: applyCardStyle
         )
         .onTapGesture { isDeviceSheetShown = true }
         .sheet(isPresented: $isDeviceSheetShown) {

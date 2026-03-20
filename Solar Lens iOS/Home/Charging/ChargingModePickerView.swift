@@ -75,7 +75,7 @@ struct ChargingModePickerView: View {
                                     Circle()
                                         .fill(.blue.opacity(0.12))
                                         .frame(width: 48, height: 48)
-                                    Image(systemName: station.currentPower > 0 ? "fuelpump.fill" : "fuelpump")
+                                    Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
                                         .font(.title3)
                                         .foregroundStyle(.blue)
                                         .symbolEffect(

@@ -7,6 +7,7 @@ struct EnergyCard<DetailContent: View>: View {
     let value: String
     var detail: String?
     var showChevron: Bool = false
+    var applyCardStyle: Bool = true
     var customDetail: (() -> DetailContent)?
 
     var body: some View {
@@ -52,20 +53,22 @@ struct EnergyCard<DetailContent: View>: View {
                 }
             }
         }
-        .cardStyle()
+        .if(applyCardStyle) { $0.cardStyle() }
     }
 }
 
 // Convenience init without custom detail
 extension EnergyCard where DetailContent == EmptyView {
     init(icon: String, iconColor: Color, label: String, value: String,
-         detail: String? = nil, showChevron: Bool = false) {
+         detail: String? = nil, showChevron: Bool = false,
+         applyCardStyle: Bool = true) {
         self.icon = icon
         self.iconColor = iconColor
         self.label = label
         self.value = value
         self.detail = detail
         self.showChevron = showChevron
+        self.applyCardStyle = applyCardStyle
         self.customDetail = nil
     }
 }
