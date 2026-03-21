@@ -35,15 +35,22 @@ struct ChargingStationCard: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
-                .font(.title3)
-                .foregroundStyle(.blue)
-                .symbolEffect(
-                    .pulse.wholeSymbol,
-                    options: .repeat(.continuous),
-                    isActive: station.currentPower > 0
-                )
-                .frame(width: 28)
+            ZStack(alignment: .bottomTrailing) {
+                Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
+                    .font(.title3)
+                    .foregroundStyle(.blue)
+                    .symbolEffect(
+                        .pulse.wholeSymbol,
+                        options: .repeat(.continuous),
+                        isActive: station.currentPower > 0
+                    )
+
+                chargingModeIcon(for: station.chargingMode)
+                    .font(.system(size: 10))
+                    .foregroundStyle(chargingModeColor(for: station.chargingMode))
+                    .offset(x: 4, y: 4)
+            }
+            .frame(width: 28)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(station.name)
@@ -75,6 +82,32 @@ struct ChargingStationCard: View {
         .sheet(isPresented: $showChargingModeSelection) {
             ChargingModePickerView(station: station)
                 .presentationDetents([.large])
+        }
+    }
+
+    private func chargingModeIcon(for mode: ChargingMode) -> Image {
+        switch mode {
+        case .withSolarPower: Image(systemName: "sun.max.fill")
+        case .withSolarOrLowTariff: Image(systemName: "sunset.fill")
+        case .alwaysCharge: Image(systemName: "24.circle.fill")
+        case .off: Image(systemName: "poweroff")
+        case .constantCurrent: Image(systemName: "glowplug")
+        case .minimalAndSolar: Image(systemName: "fluid.batteryblock.fill")
+        case .minimumQuantity: Image(systemName: "minus.plus.and.fluid.batteryblock")
+        case .chargingTargetSoc: Image(systemName: "bolt.car.fill")
+        }
+    }
+
+    private func chargingModeColor(for mode: ChargingMode) -> Color {
+        switch mode {
+        case .withSolarPower: Color(red: 0.95, green: 0.75, blue: 0.0)
+        case .withSolarOrLowTariff: Color(red: 0.93, green: 0.5, blue: 0.0)
+        case .alwaysCharge: Color(red: 0.0, green: 0.65, blue: 0.7)
+        case .off: Color(red: 0.9, green: 0.2, blue: 0.15)
+        case .constantCurrent: Color(red: 0.15, green: 0.7, blue: 0.25)
+        case .minimalAndSolar: Color(red: 0.95, green: 0.75, blue: 0.0)
+        case .minimumQuantity: Color(red: 0.2, green: 0.45, blue: 0.9)
+        case .chargingTargetSoc: Color(red: 0.6, green: 0.3, blue: 0.85)
         }
     }
 }
