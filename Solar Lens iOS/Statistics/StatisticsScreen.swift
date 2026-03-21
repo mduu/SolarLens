@@ -299,7 +299,7 @@ struct StatisticsScreen: View {
         let todayStats = Statistics(
             consumption: overview.todayConsumption,
             production: overview.todayProduction,
-            selfConsumption: (overview.todayConsumption ?? 0) - Double(overview.todayGridImported ?? 0),
+            selfConsumption: overview.todaySelfConsumption,
             selfConsumptionRate: overview.todaySelfConsumptionRate,
             autarchyDegree: overview.todayAutarchyDegree
         )
