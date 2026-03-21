@@ -99,7 +99,6 @@ struct ChartView: View {
                 }
             }
             .padding(8)
-            .ignoresSafeArea(edges: .horizontal.union(.bottom))
 
             if viewModel.isLoading {
                 ProgressView()
