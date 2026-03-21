@@ -46,11 +46,11 @@ struct ChargingStationCard: View {
                     )
 
                 chargingModeIcon(for: station.chargingMode)
-                    .font(.system(size: 10))
+                    .font(.system(size: 16))
                     .foregroundStyle(chargingModeColor(for: station.chargingMode))
-                    .offset(x: 4, y: 4)
+                    .offset(x: 8, y: 6)
             }
-            .frame(width: 28)
+            .frame(width: 34)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(station.name)
