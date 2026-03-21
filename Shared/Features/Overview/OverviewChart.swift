@@ -13,6 +13,7 @@ struct OverviewChart: View {
     var showBatteryDischange: Bool = true
     var showBatteryPercentage: Bool = true
     var useAlternativeColors: Bool = false
+    var showLegend: Bool? = nil  // nil = use default (isSmall-based)
 
     var anyBatteryLevel: Bool {
         consumption.data.isEmpty == false && consumption.data.contains(where: { $0.batteryLevel != nil })
@@ -114,7 +115,7 @@ struct OverviewChart: View {
             // Custom compact legend for watchOS
             .chartLegend(.hidden)
             #else
-            .chartLegend(isSmall ? .hidden : .visible)
+            .chartLegend((showLegend ?? !isSmall) ? .visible : .hidden)
             .chartLegend(spacing: 4) // Reduce spacing between legend items
             #endif
             .chartForegroundStyleScale(

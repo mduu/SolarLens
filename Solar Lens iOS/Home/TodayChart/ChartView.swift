@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ChartView: View {
     @Environment(CurrentBuildingState.self) var buildingModel: CurrentBuildingState
+    @AppStorage("todayShowProduction") private var showProduction: Bool = true
+    @AppStorage("todayShowConsumption") private var showConsumption: Bool = true
     @AppStorage("showBatteryCharging") private var showBatteryCharging: Bool = false
     @AppStorage("showBatteryDischarging") private var showBatteryDischarging: Bool = false
     @AppStorage("showBatteryPercentag") private var showBatteryPercentage: Bool = true
@@ -18,55 +20,29 @@ struct ChartView: View {
                     if viewModel.consumptionData != nil {
 
                         VStack(spacing: 12) {
-
-                            HStack {
-                                Button(action: {
-                                    showBatteryPercentage.toggle()
-                                }) {
-                                    Image(systemName: "battery.100percent.bolt")
-                                        .font(.system(size: 14))
-                                        .padding(4)
-                                }
-                                .buttonBorderShape(.circle)
-                                .buttonStyle(.bordered)
-                                .tint(
-                                    showBatteryPercentage
-                                        ? SerieColors.batteryLevelColor(useAlternativeColors: false)
-                                        : .gray
-                                )
-
-                                Button(action: {
-                                    showBatteryCharging.toggle()
-                                }) {
-                                    Image(systemName: "battery.100percent.circle")
-                                        .font(.system(size: 14))
-                                        .padding(4)
-                                }
-                                .buttonBorderShape(.circle)
-                                .buttonStyle(.bordered)
-                                .tint(showBatteryCharging ? .purple : .gray)
-
-                                Button(action: {
-                                    showBatteryDischarging.toggle()
-                                }) {
-                                    Image(systemName: "battery.75percent")
-                                        .font(.system(size: 14))
-                                        .padding(4)
-                                }
-                                .buttonBorderShape(.circle)
-                                .buttonStyle(.bordered)
-                                .tint(showBatteryDischarging ? .indigo : .gray)
-
-                                Spacer()
-                            }
-
                             OverviewChart(
                                 consumption: viewModel.consumptionData!,
                                 batteries: viewModel.batteryHistory ?? [],
+                                showProduction: showProduction,
+                                showConsumption: showConsumption,
                                 showBatteryCharge: showBatteryCharging,
                                 showBatteryDischange: showBatteryDischarging,
-                                showBatteryPercentage: showBatteryPercentage
+                                showBatteryPercentage: showBatteryPercentage,
+                                showLegend: false
                             )
+
+                            // Series toggles (same style as analytics)
+                            VStack(spacing: 4) {
+                                HStack(spacing: 6) {
+                                    SeriesToggle(label: "Production", color: .yellow, isOn: $showProduction)
+                                    SeriesToggle(label: "Consumption", color: .teal, isOn: $showConsumption)
+                                }
+                                HStack(spacing: 6) {
+                                    SeriesToggle(label: "Battery %", color: SerieColors.batteryLevelColor(useAlternativeColors: false), isOn: $showBatteryPercentage)
+                                    SeriesToggle(label: "Charged", color: .purple, isOn: $showBatteryCharging)
+                                    SeriesToggle(label: "Discharged", color: .indigo, isOn: $showBatteryDischarging)
+                                }
+                            }
 
                             HStack(spacing: 12) {
                                 let solarPeak = getMaxProductionkW()
