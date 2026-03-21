@@ -77,7 +77,7 @@ struct ChargingModePickerView: View {
                                         .frame(width: 48, height: 48)
                                     Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
                                         .font(.title3)
-                                        .foregroundStyle(.blue)
+                                        .foregroundStyle(.secondary)
                                         .symbolEffect(
                                             .pulse.wholeSymbol,
                                             options: .repeat(.continuous),
@@ -134,8 +134,13 @@ struct ChargingModePickerView: View {
                                 chargingModeConfiguration.chargingModeVisibillity[$0] ?? true
                             }
 
-                            ForEach(visibleModes, id: \.self) { mode in
-                                chargingModeRow(mode: mode)
+                            LazyVGrid(columns: [
+                                GridItem(.flexible(), spacing: 10),
+                                GridItem(.flexible(), spacing: 10)
+                            ], spacing: 10) {
+                                ForEach(visibleModes, id: \.self) { mode in
+                                    chargingModeCell(mode: mode)
+                                }
                             }
                         }
                         .padding(16)
@@ -176,10 +181,10 @@ struct ChargingModePickerView: View {
         }
     }
 
-    // MARK: - Mode Row
+    // MARK: - Mode Cell (2-column grid)
 
     @ViewBuilder
-    private func chargingModeRow(mode: ChargingMode) -> some View {
+    private func chargingModeCell(mode: ChargingMode) -> some View {
         let isSelected = station.chargingMode == mode
         let accentColor = modeColor(for: mode)
 
@@ -196,7 +201,7 @@ struct ChargingModePickerView: View {
                 showingOptionsPopup = true
             }
         } label: {
-            HStack(spacing: 12) {
+            VStack(spacing: 6) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(accentColor.opacity(isSelected ? 0.2 : 0.08))
@@ -204,25 +209,27 @@ struct ChargingModePickerView: View {
                     modeIcon(for: mode)
                         .font(.system(size: 16))
                         .foregroundStyle(accentColor)
+
+                    if isSelected {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(accentColor)
+                            .background(Circle().fill(.white).frame(width: 10, height: 10))
+                            .offset(x: 14, y: -14)
+                    }
                 }
 
-                VStack(alignment: .leading, spacing: 1) {
-                    ChargingModelLabelView(chargingMode: mode)
-                        .font(.subheadline)
-                        .fontWeight(isSelected ? .semibold : .regular)
-                        .foregroundStyle(.primary)
-                }
-
-                Spacer()
-
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.title3)
-                        .foregroundStyle(accentColor)
-                }
+                ChargingModelLabelView(chargingMode: mode)
+                    .font(.caption)
+                    .fontWeight(isSelected ? .semibold : .regular)
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 12)
             .contentShape(Rectangle())
             .background(
                 RoundedRectangle(cornerRadius: 12)
@@ -237,6 +244,10 @@ struct ChargingModePickerView: View {
                         lineWidth: isSelected ? 1.5 : 0.5
                     )
             )
+            .overlay(alignment: .topTrailing) {
+                ChargingModeInfoButton(description: modeDescription(for: mode))
+                    .padding(6)
+            }
         }
         .buttonStyle(.plain)
         .animation(.easeInOut(duration: 0.2), value: isSelected)
@@ -265,7 +276,7 @@ struct ChargingModePickerView: View {
             HStack(spacing: 8) {
                 Image(systemName: "car.side")
                     .font(.title3)
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(.secondary)
 
                 Text(car.name)
                     .font(.subheadline)
@@ -282,7 +293,7 @@ struct ChargingModePickerView: View {
                             .font(.caption)
                             .fontWeight(.medium)
                     }
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(.secondary)
                 }
 
                 if let distance = car.remainingDistance {
@@ -319,14 +330,68 @@ struct ChargingModePickerView: View {
 
     private func modeColor(for mode: ChargingMode) -> Color {
         switch mode {
-        case .withSolarPower: .yellow
-        case .withSolarOrLowTariff: .orange
-        case .alwaysCharge: .teal
-        case .off: .red
-        case .constantCurrent: .green
-        case .minimalAndSolar: .yellow
-        case .minimumQuantity: .blue
-        case .chargingTargetSoc: .purple
+        case .withSolarPower: Color(red: 0.95, green: 0.75, blue: 0.0)
+        case .withSolarOrLowTariff: Color(red: 0.93, green: 0.5, blue: 0.0)
+        case .alwaysCharge: Color(red: 0.0, green: 0.65, blue: 0.7)
+        case .off: Color(red: 0.9, green: 0.2, blue: 0.15)
+        case .constantCurrent: Color(red: 0.15, green: 0.7, blue: 0.25)
+        case .minimalAndSolar: Color(red: 0.95, green: 0.75, blue: 0.0)
+        case .minimumQuantity: Color(red: 0.2, green: 0.45, blue: 0.9)
+        case .chargingTargetSoc: Color(red: 0.6, green: 0.3, blue: 0.85)
+        }
+    }
+
+    private func modeDescription(for mode: ChargingMode) -> String {
+        switch mode {
+        case .withSolarPower:
+            String(localized: "Charges your car only when enough solar power is available. Charging speed adjusts automatically based on current solar production.")
+        case .withSolarOrLowTariff:
+            String(localized: "Uses solar power during the day. If the car isn't fully charged by the low-tariff period, it charges at full speed during cheap electricity hours.")
+        case .alwaysCharge:
+            String(localized: "Charges at maximum power immediately, regardless of solar production or electricity tariff.")
+        case .off:
+            String(localized: "Charging is completely disabled. The car will not charge.")
+        case .constantCurrent:
+            String(localized: "Charges at a fixed power level that you choose, regardless of solar production.")
+        case .minimalAndSolar:
+            String(localized: "Always charges at a minimum rate to ensure some progress. Any extra solar power on top is used to charge faster.")
+        case .minimumQuantity:
+            String(localized: "Charges a specific amount of energy (kWh) by a deadline you set. Solar power is preferred when available.")
+        case .chargingTargetSoc:
+            String(localized: "Reaches a target battery percentage by a time you set. Prefers solar power when available and tops up from the grid if needed.")
+        }
+    }
+}
+
+private struct ChargingModeInfoButton: View {
+    let description: String
+    @State private var isPresented = false
+
+    var body: some View {
+        Button {
+            isPresented = true
+        } label: {
+            Text("i")
+                .font(.system(size: 13, weight: .bold, design: .serif))
+                .foregroundStyle(.blue.opacity(0.5))
+        }
+        .buttonStyle(.plain)
+        .popover(isPresented: $isPresented, arrowEdge: .bottom) {
+            VStack(alignment: .leading) {
+                HStack(alignment: .firstTextBaseline) {
+                    Image(systemName: "info.square.fill")
+                    Text("Explanation")
+                        .font(.headline)
+                        .padding(.top, 4)
+                }
+                .foregroundColor(.blue)
+
+                Text(description)
+                    .padding(.top, 4)
+                    .frame(width: 250)
+            }
+            .padding()
+            .presentationCompactAdaptation(.popover)
         }
     }
 }
