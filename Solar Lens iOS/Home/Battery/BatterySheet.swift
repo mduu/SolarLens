@@ -54,26 +54,29 @@ struct BatterySheet: View {
                             )
 
                             // Forecast card
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "chart.line.uptrend.xyaxis")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                    Text("Forecast")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
+                            let forecast = model.overviewData.getBatteryForecast()
+                            if forecast?.hasVisibleForecast == true {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "chart.line.uptrend.xyaxis")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Text("Forecast")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
 
-                                BatteryForecastView(
-                                    batteryForecast: model.overviewData.getBatteryForecast()
+                                    BatteryForecastView(
+                                        batteryForecast: forecast
+                                    )
+                                }
+                                .padding(16)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(.ultraThinMaterial)
                                 )
                             }
-                            .padding(16)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(.ultraThinMaterial)
-                            )
 
                             // Device list card
                             let batteries = model.overviewData.devices.filter { $0.deviceType == .battery }

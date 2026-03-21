@@ -12,21 +12,23 @@ struct BatteryForecastView: View {
         return formatter
     }()
 
+    private let maxDuration: TimeInterval = 24 * 3600  // 24 hours
+
     var body: some View {
-        if batteryForecast != nil
-            && (batteryForecast?.timeWhenDischarged != nil
-                || batteryForecast?.timeWhenFullyCharged != nil)
+        if let forecast = batteryForecast,
+           (forecast.isDischarging && (forecast.durationUntilDischarged ?? 0) <= maxDuration)
+            || (forecast.isCharging && (forecast.durationUntilFullyCharged ?? 0) <= maxDuration)
         {
             HStack {
 
-                if batteryForecast!.isDischarging {
+                if forecast.isDischarging, (forecast.durationUntilDischarged ?? 0) <= maxDuration {
                     Image(systemName: "battery.0percent")
                         .foregroundColor(.red)
                         .rotationEffect(.degrees(-90))
                         .offset(x: -4)
 
                     Text(
-                        "Empty in \(positionalFormatter.string(from: batteryForecast!.durationUntilDischarged!) ?? "") at \(batteryForecast!.timeWhenDischarged!.formatted(date: .omitted, time: .shortened))"
+                        "Empty in \(positionalFormatter.string(from: forecast.durationUntilDischarged!) ?? "") at \(forecast.timeWhenDischarged!.formatted(date: .omitted, time: .shortened))"
                     )
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
@@ -34,7 +36,7 @@ struct BatteryForecastView: View {
                     .padding(.leading, -6)
                 }  // :if
 
-                if batteryForecast!.isCharging {
+                if forecast.isCharging, (forecast.durationUntilFullyCharged ?? 0) <= maxDuration {
 
                     Image(systemName: "battery.100percent")
                         .foregroundColor(.green)
@@ -42,7 +44,7 @@ struct BatteryForecastView: View {
                         .offset(x: -6)
 
                     Text(
-                        "Full in \(positionalFormatter.string(from: batteryForecast!.durationUntilFullyCharged!) ?? "") at \(batteryForecast!.timeWhenFullyCharged!.formatted(date: .omitted, time: .shortened))"
+                        "Full in \(positionalFormatter.string(from: forecast.durationUntilFullyCharged!) ?? "") at \(forecast.timeWhenFullyCharged!.formatted(date: .omitted, time: .shortened))"
                     )
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)

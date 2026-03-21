@@ -3,8 +3,20 @@ import SwiftUI
 struct BatteryBoubleView: View {
     var currentBatteryLevel: Int?
     var currentChargeRate: Int?
+    var batteryForecast: BatteryForecast?
 
     @State var showBatterySheet: Bool = false
+
+    private static let maxForecastDuration: TimeInterval = 24 * 3600
+
+    private let forecastFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.zeroFormattingBehavior = .pad
+        formatter.collapsesLargestUnit = true
+        return formatter
+    }()
 
     var body: some View {
         if currentBatteryLevel != nil {
@@ -17,7 +29,15 @@ struct BatteryBoubleView: View {
                 value: "\(level)%",
                 showChevron: true,
                 customDetail: {
-                    BatteryBar(level: level, color: batteryColor(level: level))
+                    VStack(alignment: .leading, spacing: 4) {
+                        BatteryBar(level: level, color: batteryColor(level: level))
+
+                        if let forecastText = compactForecastText {
+                            Text(forecastText)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
             )
             .onTapGesture { showBatterySheet = true }
@@ -28,6 +48,30 @@ struct BatteryBoubleView: View {
                 .presentationDetents([.medium])
             }
         }
+    }
+
+    private var compactForecastText: String? {
+        guard let forecast = batteryForecast else { return nil }
+
+        if forecast.isCharging,
+           let duration = forecast.durationUntilFullyCharged,
+           duration <= Self.maxForecastDuration,
+           let time = forecast.timeWhenFullyCharged
+        {
+            let durationStr = forecastFormatter.string(from: duration) ?? ""
+            return "Full in \(durationStr) at \(time.formatted(date: .omitted, time: .shortened))"
+        }
+
+        if forecast.isDischarging,
+           let duration = forecast.durationUntilDischarged,
+           duration <= Self.maxForecastDuration,
+           let time = forecast.timeWhenDischarged
+        {
+            let durationStr = forecastFormatter.string(from: duration) ?? ""
+            return "Empty in \(durationStr) at \(time.formatted(date: .omitted, time: .shortened))"
+        }
+
+        return nil
     }
 
     private func batteryColor(level: Int) -> Color {

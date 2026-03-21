@@ -54,7 +54,8 @@ struct EnergyFlowGrid: View {
             HStack(alignment: .top, spacing: hGap) {
                 BatteryBoubleView(
                     currentBatteryLevel: data.currentBatteryLevel,
-                    currentChargeRate: data.currentBatteryChargeRate
+                    currentChargeRate: data.currentBatteryChargeRate,
+                    batteryForecast: data.getBatteryForecast()
                 )
                 .cardAnchor("battery")
 
