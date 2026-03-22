@@ -114,10 +114,10 @@ struct BatterySheet: View {
             HStack(spacing: 4) {
                 Image(systemName: "battery.100percent")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.primary.opacity(0.7))
                 Text("Battery")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.primary.opacity(0.7))
             }
 
             HStack(alignment: .top, spacing: 16) {
@@ -148,7 +148,7 @@ struct BatterySheet: View {
                                     .foregroundStyle(charging > 0 ? .green : .orange)
                                 Text(abs(charging).formatWattsAsWattsKiloWatts(widthUnit: true))
                                     .font(.subheadline)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.primary.opacity(0.7))
                             }
                         }
                     }
@@ -159,10 +159,10 @@ struct BatterySheet: View {
                         HStack(spacing: 4) {
                             Image(systemName: "clock")
                                 .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.primary.opacity(0.7))
                             Text(forecastText)
                                 .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.primary.opacity(0.7))
                         }
                     }
                 }
@@ -184,10 +184,10 @@ struct BatterySheet: View {
             HStack(spacing: 4) {
                 Image(systemName: "bolt.fill")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.primary.opacity(0.7))
                 Text("Devices")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.primary.opacity(0.7))
             }
 
             LazyVGrid(columns: [
@@ -218,10 +218,10 @@ struct BatterySheet: View {
             HStack(spacing: 4) {
                 Image(systemName: "chart.xyaxis.line")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.primary.opacity(0.7))
                 Text("Today")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.primary.opacity(0.7))
             }
 
             // Totals
@@ -232,7 +232,7 @@ struct BatterySheet: View {
                         .foregroundStyle(.purple)
                     Text("Charged:")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary.opacity(0.7))
                     Text(totalCharged.formatWattHoursAsKiloWattsHours(widthUnit: true))
                         .font(.caption)
                         .fontWeight(.semibold)
@@ -244,7 +244,7 @@ struct BatterySheet: View {
                         .foregroundStyle(.indigo)
                     Text("Discharged:")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary.opacity(0.7))
                     Text(totalDischarged.formatWattHoursAsKiloWattsHours(widthUnit: true))
                         .font(.caption)
                         .fontWeight(.semibold)
@@ -346,10 +346,10 @@ struct BatterySheet: View {
                 HStack(spacing: 4) {
                     Image(systemName: "bolt.shield")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary.opacity(0.7))
                     Text("Battery Advantage")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary.opacity(0.7))
                 }
 
                 // Grid import avoided + savings
@@ -366,7 +366,7 @@ struct BatterySheet: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Grid import avoided")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.primary.opacity(0.7))
                         HStack(alignment: .firstTextBaseline, spacing: 8) {
                             Text(totalDischarged.formatWattHoursAsKiloWattsHours(widthUnit: true))
                                 .font(.subheadline)
@@ -398,7 +398,7 @@ struct BatterySheet: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Autarky")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.primary.opacity(0.7))
 
                         HStack(alignment: .firstTextBaseline, spacing: 4) {
                             if autarkyImprovement > 0.1 {
@@ -411,7 +411,7 @@ struct BatterySheet: View {
                             Text(String(format: "%.1f%%", autarkyWithBattery))
                                 .font(.caption)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.primary.opacity(0.7))
                                 .padding(.horizontal, 4)
                                 .padding(.vertical, 2)
                                 .background(
@@ -422,7 +422,7 @@ struct BatterySheet: View {
                         if autarkyImprovement > 0.1 {
                             Text(String(format: "Without battery: %.1f%%", autarkyWithout))
                                 .font(.caption2)
-                                .foregroundStyle(.tertiary)
+                                .foregroundStyle(.primary.opacity(0.5))
                         }
                     }
 
@@ -431,7 +431,7 @@ struct BatterySheet: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Self-consumption")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.primary.opacity(0.7))
 
                         HStack(alignment: .firstTextBaseline, spacing: 4) {
                             if selfConsumptionImprovement > 0.1 {
@@ -444,7 +444,7 @@ struct BatterySheet: View {
                             Text(String(format: "%.1f%%", selfConsumptionWithBattery))
                                 .font(.caption)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.primary.opacity(0.7))
                                 .padding(.horizontal, 4)
                                 .padding(.vertical, 2)
                                 .background(
@@ -455,7 +455,7 @@ struct BatterySheet: View {
                         if selfConsumptionImprovement > 0.1 {
                             Text(String(format: "Without battery: %.1f%%", selfConsumptionWithout))
                                 .font(.caption2)
-                                .foregroundStyle(.tertiary)
+                                .foregroundStyle(.primary.opacity(0.5))
                         }
                     }
                 }
