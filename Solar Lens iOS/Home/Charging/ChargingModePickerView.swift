@@ -3,11 +3,14 @@ import SwiftUI
 struct ChargingModePickerView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     var station: ChargingStation
     @State var chargingModeConfiguration = ChargingModeConfiguration()
     @State private var showingOptionsPopup = false
     @State private var popupMode: ChargingMode?
+
+    private var isLandscape: Bool { verticalSizeClass == .compact }
 
     var body: some View {
         NavigationView {
@@ -22,135 +25,11 @@ struct ChargingModePickerView: View {
                 .ignoresSafeArea()
 
                 ScrollView {
-                    VStack(spacing: 16) {
-                        // Car info cards
-                        let cars = buildingState.overviewData.cars
-                        if !cars.isEmpty {
-                            VStack(alignment: .leading, spacing: 10) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "car.side")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                    Text("Cars")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-
-                                let rows = stride(from: 0, to: cars.count, by: 2).map {
-                                    Array(cars[$0..<min($0 + 2, cars.count)])
-                                }
-                                ForEach(rows, id: \.first!.id) { row in
-                                    HStack(spacing: 10) {
-                                        ForEach(row) { car in
-                                            carCard(car: car)
-                                        }
-                                        if row.count == 1 && cars.count > 1 {
-                                            Spacer().frame(maxWidth: .infinity)
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(16)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(.ultraThinMaterial)
-                            )
-                        }
-
-                        // Charging station status + mode card
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack(spacing: 4) {
-                                Image(systemName: "ev.charger")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text("Charging Station")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-
-                            // Today amounts
-                            HStack(spacing: 16) {
-                                ZStack {
-                                    Circle()
-                                        .fill(.blue.opacity(0.12))
-                                        .frame(width: 48, height: 48)
-                                    Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
-                                        .font(.title3)
-                                        .foregroundStyle(.secondary)
-                                        .symbolEffect(
-                                            .pulse.wholeSymbol,
-                                            options: .repeat(.continuous),
-                                            isActive: (buildingState.chargingInfos?.currentCharging ?? 0) > 0
-                                        )
-                                }
-
-                                VStack(alignment: .leading, spacing: 4) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "bolt")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                        if let currentPower = buildingState.chargingInfos?.currentCharging {
-                                            Text(String(format: "%.1f kW", Double(currentPower) / 1000))
-                                                .font(.headline)
-                                                .fontWeight(.bold)
-                                        } else {
-                                            Text("–")
-                                                .foregroundStyle(.secondary)
-                                        }
-                                    }
-
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "calendar")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                        if let totalToday = buildingState.chargingInfos?.totalCharedToday {
-                                            Text(String(format: "%.1f kWh today", totalToday / 1000))
-                                                .font(.subheadline)
-                                                .foregroundStyle(.secondary)
-                                        } else {
-                                            Text("–")
-                                                .foregroundStyle(.secondary)
-                                        }
-                                    }
-                                }
-
-                                Spacer()
-                            }
-
-                            Divider()
-
-                            // Mode picker
-                            HStack(spacing: 4) {
-                                Image(systemName: "sparkles")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text("Charging mode")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-
-                            let visibleModes = ChargingMode.allCases.filter {
-                                chargingModeConfiguration.chargingModeVisibillity[$0] ?? true
-                            }
-
-                            LazyVGrid(columns: [
-                                GridItem(.flexible(), spacing: 10),
-                                GridItem(.flexible(), spacing: 10)
-                            ], spacing: 10) {
-                                ForEach(visibleModes, id: \.self) { mode in
-                                    chargingModeCell(mode: mode)
-                                }
-                            }
-                        }
-                        .padding(16)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(.ultraThinMaterial)
-                        )
+                    if isLandscape {
+                        landscapeContent
+                    } else {
+                        portraitContent
                     }
-                    .padding()
                 }
             }
             .navigationTitle("Charging")
@@ -179,6 +58,205 @@ struct ChargingModePickerView: View {
         .task {
             await buildingState.fetchChargingInfos()
         }
+    }
+
+    // MARK: - Portrait Layout
+
+    private var portraitContent: some View {
+        VStack(spacing: 16) {
+            carsCard
+            chargingStationCard
+        }
+        .padding()
+    }
+
+    // MARK: - Landscape Layout
+
+    private var landscapeContent: some View {
+        HStack(alignment: .top, spacing: 16) {
+            // Left column: Cars + Charging station status
+            VStack(spacing: 16) {
+                carsCard
+                stationStatusCard
+            }
+            .frame(maxWidth: .infinity)
+
+            // Right column: Charging mode picker
+            modePickerCard
+                .frame(maxWidth: .infinity)
+        }
+        .padding()
+    }
+
+    // MARK: - Shared Components
+
+    @ViewBuilder
+    private var carsCard: some View {
+        let cars = buildingState.overviewData.cars
+        if !cars.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 4) {
+                    Image(systemName: "car.side")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("Cars")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                if isLandscape {
+                    // Landscape: cars stacked vertically
+                    ForEach(cars) { car in
+                        carCard(car: car)
+                    }
+                } else {
+                    // Portrait: cars in 2-column rows
+                    let rows = stride(from: 0, to: cars.count, by: 2).map {
+                        Array(cars[$0..<min($0 + 2, cars.count)])
+                    }
+                    ForEach(rows, id: \.first!.id) { row in
+                        HStack(spacing: 10) {
+                            ForEach(row) { car in
+                                carCard(car: car)
+                            }
+                            if row.count == 1 && cars.count > 1 {
+                                Spacer().frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.ultraThinMaterial)
+            )
+        }
+    }
+
+    private var stationStatusView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 4) {
+                Image(systemName: "ev.charger")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("Charging Station")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(.blue.opacity(0.12))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                        .symbolEffect(
+                            .pulse.wholeSymbol,
+                            options: .repeat(.continuous),
+                            isActive: (buildingState.chargingInfos?.currentCharging ?? 0) > 0
+                        )
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "bolt")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        if let currentPower = buildingState.chargingInfos?.currentCharging {
+                            Text(String(format: "%.1f kW", Double(currentPower) / 1000))
+                                .font(.headline)
+                                .fontWeight(.bold)
+                        } else {
+                            Text("–")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    HStack(spacing: 4) {
+                        Image(systemName: "calendar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        if let totalToday = buildingState.chargingInfos?.totalCharedToday {
+                            Text(String(format: "%.1f kWh today", totalToday / 1000))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Text("–")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                Spacer()
+            }
+        }
+    }
+
+    private var modePickerView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 4) {
+                Image(systemName: "sparkles")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("Charging mode")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            let visibleModes = ChargingMode.allCases.filter {
+                chargingModeConfiguration.chargingModeVisibillity[$0] ?? true
+            }
+
+            LazyVGrid(columns: [
+                GridItem(.flexible(), spacing: 10),
+                GridItem(.flexible(), spacing: 10)
+            ], spacing: 10) {
+                ForEach(visibleModes, id: \.self) { mode in
+                    chargingModeCell(mode: mode)
+                }
+            }
+        }
+    }
+
+    /// Combined station status + mode picker (portrait)
+    private var chargingStationCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            stationStatusView
+            Divider()
+            modePickerView
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+        )
+    }
+
+    /// Station status only (landscape left column)
+    private var stationStatusCard: some View {
+        stationStatusView
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.ultraThinMaterial)
+            )
+    }
+
+    /// Mode picker only (landscape right column)
+    private var modePickerCard: some View {
+        modePickerView
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.ultraThinMaterial)
+            )
     }
 
     // MARK: - Mode Cell (2-column grid)
