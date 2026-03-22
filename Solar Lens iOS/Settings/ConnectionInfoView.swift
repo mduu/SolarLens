@@ -5,89 +5,110 @@ struct ConnectionInfoView: View {
     var serverInfo: ServerInfo?
 
     @State private var showConfirmation = false
+    @State private var showServerInfo = false
+
+    private var isConnected: Bool { serverInfo?.signal ?? false }
+
+    private var stateColor: Color {
+        if serverInfo == nil { return .gray }
+        return isConnected ? .green : .red
+    }
 
     var body: some View {
-        ZStack {
-            let borderColor: Color =
-                serverInfo == nil
-                ? Color.gray
-                : (serverInfo?.signal ?? false) == true
-                    ? Color.green
-                    : Color.red
-
-            RoundedRectangle(cornerRadius: 8)
-                .strokeBorder(borderColor, lineWidth: 1)
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color.clear, borderColor.opacity(0.1),
-                        ]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-
-            VStack {
-                HStack {
-                    Text("Solar Manager").font(.headline)
-
-                    Spacer()
-
-                    if (serverInfo != nil) {
-                        ConnectionStateView(connected: serverInfo?.signal ?? false)
-                    }
-                }
-
-                HStack {
-                    
-                    if serverInfo != nil {
-                        Grid(alignment: .leading, horizontalSpacing: 20) {
-                            
-                            GridRow {
-                                Text("SM ID:")
-                                Text(serverInfo?.smId ?? "-")
-                                Button(action: {
-                                    copyToClipboard(text: serverInfo?.smId ?? "")
-                                    showConfirmation = true
-                                }) {
-                                    Image(systemName: "document.on.document")
-                                        .foregroundColor(.blue)
-                                }
-                            }
-                            
-                            GridRow {
-                                Text("User:")
-                                Text(serverInfo?.email ?? "-")
-                            }
-                        }
-                    } else {
-                        ProgressView()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    }
-
-                    Spacer()
-                }
-                .padding(.top, 4)
-                .alert("Copied!", isPresented: $showConfirmation) {
-                    Button("OK", role: .cancel) {}
-                } message: {
-                    Text("The SM-ID has been copied to your clipboard.")
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Solar Manager").font(.headline)
 
                 Spacer()
 
-                HStack {
-                    Spacer()
+                if serverInfo != nil {
+                    ConnectionStateView(connected: isConnected)
+                }
+            }
 
-                    if serverInfo != nil {
-                        LogoutButtonView()
-                            .disabled(!serverInfo!.signal)
+            if serverInfo != nil {
+                Grid(alignment: .leading, horizontalSpacing: 20) {
+                    GridRow {
+                        Text("SM ID:")
+                            .foregroundStyle(.secondary)
+                        HStack(spacing: 8) {
+                            Text(serverInfo?.smId ?? "-")
+                            Button {
+                                copyToClipboard(text: serverInfo?.smId ?? "")
+                                showConfirmation = true
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "document.on.document")
+                                        .font(.caption2)
+                                    Text("Copy")
+                                        .font(.caption2)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(
+                                    Capsule()
+                                        .fill(.blue.opacity(0.12))
+                                )
+                                .foregroundStyle(.blue)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+
+                    GridRow {
+                        Text("User:")
+                            .foregroundStyle(.secondary)
+                        Text(serverInfo?.email ?? "-")
                     }
                 }
+            } else {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+            }
 
-            }.padding()
+            if serverInfo != nil {
+                HStack {
+                    NavigationLink {
+                        ServerInfoView(serverInfo: serverInfo)
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "info.circle")
+                                .font(.caption)
+                            Text("More Info")
+                                .font(.caption)
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(
+                            Capsule()
+                                .fill(.blue.opacity(0.12))
+                        )
+                        .foregroundStyle(.blue)
+                    }
+                    .disabled(serverInfo == nil)
+
+                    Spacer()
+
+                    LogoutButtonView()
+                        .disabled(!serverInfo!.signal)
+                }
+            }
         }
-        .frame(maxHeight: 170)
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(stateColor.opacity(0.08))
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(.ultraThinMaterial)
+                )
+        )
+        .alert("Copied!", isPresented: $showConfirmation) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("The SM-ID has been copied to your clipboard.")
+        }
     }
 }
 

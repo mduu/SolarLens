@@ -65,9 +65,7 @@ struct SettingsScreen: View {
         List {
             appInfoSection
 
-            Section(header: Text("Server")) {
-                serverSectionContent
-            }
+            serverSectionContent
 
             Section(header: Text("Appearance")) {
                 appearanceSectionContent
@@ -86,10 +84,7 @@ struct SettingsScreen: View {
         HStack(alignment: .top, spacing: 0) {
             List {
                 appInfoSection
-
-                Section(header: Text("Server")) {
-                    serverSectionContent
-                }
+                serverSectionContent
             }
             .listStyle(.grouped)
 
@@ -132,20 +127,6 @@ struct SettingsScreen: View {
         ConnectionInfoView(
             serverInfo: serverInfo
         )
-        .padding(.bottom)
-        .listRowSeparator(
-            .hidden,
-            edges: [.all]
-        )
-
-        SettingNavigationItem(
-            imageName: "server.rack",
-            text: "Server Info",
-            color: .blue,
-            disabled: serverInfo == nil
-        ) {
-            ServerInfoView(serverInfo: serverInfo)
-        }
         .listRowSeparator(
             .hidden,
             edges: [.all]
@@ -156,7 +137,7 @@ struct SettingsScreen: View {
     private var appearanceSectionContent: some View {
         SettingsToggleItem(
             imageName: "sun.max.trianglebadge.exclamationmark",
-            text: "Warm background",
+            text: "Background effects",
             color: .orange,
             isOn: settings.appearanceUseWarmBackgroundWithDefault
         )
