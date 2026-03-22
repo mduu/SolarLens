@@ -28,6 +28,11 @@ struct StatisticsScreen: View {
     @AppStorage("stats.overall.showImport") private var overallShowImport = true
     @AppStorage("stats.overall.showExport") private var overallShowExport = true
 
+    @AppStorage("stats.custom.showProduction") private var customShowProduction = true
+    @AppStorage("stats.custom.showConsumption") private var customShowConsumption = true
+    @AppStorage("stats.custom.showImport") private var customShowImport = true
+    @AppStorage("stats.custom.showExport") private var customShowExport = true
+
     @AppStorage("stats.today.showProduction") private var todayShowProduction = true
     @AppStorage("stats.today.showConsumption") private var todayShowConsumption = true
     @AppStorage("stats.today.showBatteryLevel") private var todayShowBatteryLevel = true
@@ -48,41 +53,47 @@ struct StatisticsScreen: View {
                     .controlSize(.large)
                     .padding(.horizontal)
 
-                    // Custom date range
+                    // Custom date range + resolution
                     if viewModel.selectedPeriod == .custom {
-                        HStack {
-                            DatePicker(
-                                "From",
-                                selection: $viewModel.customStartDate,
-                                displayedComponents: .date
-                            )
-                            .labelsHidden()
+                        VStack(spacing: 6) {
+                            // Row 1: date range + export
+                            HStack {
+                                DatePicker(
+                                    "From",
+                                    selection: $viewModel.customStartDate,
+                                    displayedComponents: .date
+                                )
+                                .labelsHidden()
 
-                            Image(systemName: "arrow.right")
-                                .foregroundStyle(.secondary)
+                                Image(systemName: "arrow.right")
+                                    .foregroundStyle(.secondary)
 
-                            DatePicker(
-                                "To",
-                                selection: $viewModel.customEndDate,
-                                displayedComponents: .date
-                            )
-                            .labelsHidden()
+                                DatePicker(
+                                    "To",
+                                    selection: $viewModel.customEndDate,
+                                    displayedComponents: .date
+                                )
+                                .labelsHidden()
 
-                            Button {
-                                Task { await viewModel.fetch() }
-                            } label: {
-                                Image(systemName: "arrow.clockwise")
-                            }
-                            .buttonStyle(.bordered)
+                                Spacer()
 
-                            if exportableData != nil {
-                                Button {
-                                    exportStatistics()
-                                } label: {
-                                    Image(systemName: "square.and.arrow.up")
+                                if exportableData != nil {
+                                    Button {
+                                        exportStatistics()
+                                    } label: {
+                                        Image(systemName: "square.and.arrow.up")
+                                    }
+                                    .tint(.primary)
                                 }
-                                .buttonStyle(.bordered)
                             }
+
+                            // Row 2: resolution picker
+                            Picker("Resolution", selection: $viewModel.customResolution) {
+                                ForEach(CustomResolution.allCases) { res in
+                                    Text(res.localizedName).tag(res)
+                                }
+                            }
+                            .pickerStyle(.segmented)
                         }
                         .padding(.horizontal)
                     }
@@ -96,7 +107,7 @@ struct StatisticsScreen: View {
                             } label: {
                                 Image(systemName: "square.and.arrow.up")
                             }
-                            .buttonStyle(.bordered)
+                            .tint(.primary)
                         }
                         .padding(.horizontal)
                     }
@@ -141,6 +152,18 @@ struct StatisticsScreen: View {
         .onChange(of: viewModel.selectedPeriod) {
             Task { await viewModel.fetch() }
         }
+        .onChange(of: viewModel.customStartDate) {
+            guard viewModel.selectedPeriod == .custom else { return }
+            Task { await viewModel.fetch() }
+        }
+        .onChange(of: viewModel.customEndDate) {
+            guard viewModel.selectedPeriod == .custom else { return }
+            Task { await viewModel.fetch() }
+        }
+        .onChange(of: viewModel.customResolution) {
+            guard viewModel.selectedPeriod == .custom else { return }
+            Task { await viewModel.fetch() }
+        }
         .task {
             await viewModel.fetch()
         }
@@ -154,6 +177,7 @@ struct StatisticsScreen: View {
         case .month: return $monthShowProduction
         case .year: return $yearShowProduction
         case .overall: return $overallShowProduction
+        case .custom: return $customShowProduction
         default: return .constant(true)
         }
     }
@@ -163,6 +187,7 @@ struct StatisticsScreen: View {
         case .month: return $monthShowConsumption
         case .year: return $yearShowConsumption
         case .overall: return $overallShowConsumption
+        case .custom: return $customShowConsumption
         default: return .constant(true)
         }
     }
@@ -172,6 +197,7 @@ struct StatisticsScreen: View {
         case .month: return $monthShowImport
         case .year: return $yearShowImport
         case .overall: return $overallShowImport
+        case .custom: return $customShowImport
         default: return .constant(true)
         }
     }
@@ -181,6 +207,7 @@ struct StatisticsScreen: View {
         case .month: return $monthShowExport
         case .year: return $yearShowExport
         case .overall: return $overallShowExport
+        case .custom: return $customShowExport
         default: return .constant(true)
         }
     }
@@ -190,8 +217,10 @@ struct StatisticsScreen: View {
     /// Returns the exportable data for the current period, if any.
     private var exportableData: [DayStatistic]? {
         switch viewModel.selectedPeriod {
-        case .week, .month, .custom:
+        case .week, .month:
             return viewModel.dailyStats
+        case .custom:
+            return viewModel.customStats
         case .year:
             return viewModel.monthlyStats
         case .overall:
@@ -223,15 +252,34 @@ struct StatisticsScreen: View {
             todayContent
         }
 
-        // Week / Month / Custom: daily bar chart with toggles
+        // Week / Month: daily bar chart with toggles
         if let dailyStats = viewModel.dailyStats,
-           [.week, .month, .custom].contains(viewModel.selectedPeriod)
+           [.week, .month].contains(viewModel.selectedPeriod)
         {
             VStack(spacing: 8) {
                 FilterableBarChart(
                     data: dailyStats,
                     xUnit: .day,
                     xLabelFormat: viewModel.selectedPeriod == .week ? .weekday : .dayOfMonth,
+                    showProduction: showProduction,
+                    showConsumption: showConsumption,
+                    showImport: showImport,
+                    showExport: showExport,
+                    chartHeight: 200
+                )
+            }
+            .padding(.horizontal)
+        }
+
+        // Custom: bar chart with user-selected resolution
+        if let customStats = viewModel.customStats,
+           viewModel.selectedPeriod == .custom
+        {
+            VStack(spacing: 8) {
+                FilterableBarChart(
+                    data: customStats,
+                    xUnit: viewModel.customResolution.chartXUnit,
+                    xLabelFormat: viewModel.customResolution.chartXLabelFormat,
                     showProduction: showProduction,
                     showConsumption: showConsumption,
                     showImport: showImport,
@@ -286,7 +334,6 @@ struct StatisticsScreen: View {
                 batteryCharged: viewModel.batteryCharged,
                 batteryDischarged: viewModel.batteryDischarged,
                 isCurrentlyCharging: viewModel.isCurrentlyCharging,
-                useMWh: [.year, .overall].contains(viewModel.selectedPeriod),
                 hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation,
                 hasBattery: buildingState.overviewData.hasAnyBattery
             )
@@ -306,10 +353,7 @@ struct StatisticsScreen: View {
             ? viewModel.overallStatistics
             : viewModel.statistics
         {
-            statisticsDonutCharts(
-                for: stats,
-                useMWh: [.year, .overall].contains(viewModel.selectedPeriod)
-            )
+            statisticsDonutCharts(for: stats)
         }
     }
 
@@ -367,7 +411,7 @@ struct StatisticsScreen: View {
     }
 
     @ViewBuilder
-    private func statisticsDonutCharts(for stats: Statistics, useMWh: Bool = false) -> some View {
+    private func statisticsDonutCharts(for stats: Statistics) -> some View {
         let consumption = stats.consumption ?? 0
         let production = stats.production ?? 0
         let selfConsumption = stats.selfConsumption ?? 0
@@ -392,8 +436,7 @@ struct StatisticsScreen: View {
                 rightValue: gridImport,
                 rightColor: Color(red: 1.0, green: 0.3, blue: 0.15),
                 rightSubtitle: "\(100 - autarky, specifier: "%.0f")%",
-                total: consumption,
-                useMWh: useMWh
+                total: consumption
             )
         }
         .padding(.horizontal, 32)
@@ -414,8 +457,7 @@ struct StatisticsScreen: View {
                 rightValue: gridExport,
                 rightColor: .purple,
                 rightSubtitle: "\(100 - selfConsumptionRate, specifier: "%.0f")%",
-                total: production,
-                useMWh: useMWh
+                total: production
             )
         }
         .padding(.horizontal, 32)

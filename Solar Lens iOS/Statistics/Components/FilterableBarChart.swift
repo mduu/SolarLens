@@ -4,6 +4,7 @@ import SwiftUI
 enum XLabelFormat {
     case weekday
     case dayOfMonth
+    case isoWeekNumber
     case month
     case monthNarrow
     case year
@@ -24,6 +25,36 @@ struct FilterableBarChart: View {
     private let importColor: Color = Color(red: 1.0, green: 0.3, blue: 0.15)
     private let exportColor: Color = .purple.opacity(0.9)
 
+    /// Max Wh value across all data — drives kWh vs MWh decision
+    private var maxWh: Double {
+        data.map { max($0.production, $0.consumption, $0.imported, $0.exported) }.max() ?? 0
+    }
+
+    private var useMWh: Bool { maxWh >= 1_000_000 }
+    private var yDivisor: Double { useMWh ? 1_000_000 : 1000 }
+
+    /// How many data points to skip between x-axis labels so they stay readable
+    private var xAxisStride: Int {
+        let count = data.count
+        switch xLabelFormat {
+        case .weekday:
+            return 1
+        case .dayOfMonth:
+            if count <= 14 { return 2 }
+            if count <= 60 { return 7 }
+            // > ~120 days: switch to month-based stride
+            return 30
+        case .isoWeekNumber:
+            if count <= 5 { return 1 }
+            // > 5 weeks: stride by ~4 weeks (month-ish)
+            return 4
+        case .month, .monthNarrow:
+            return count > 9 ? 2 : 1
+        case .year:
+            return 1
+        }
+    }
+
     var body: some View {
         VStack(spacing: 8) {
             if data.isEmpty {
@@ -39,7 +70,7 @@ struct FilterableBarChart: View {
                         if showProduction {
                             BarMark(
                                 x: .value("Period", item.day, unit: xUnit),
-                                y: .value("Energy", item.production / 1000)
+                                y: .value("Energy", item.production / yDivisor)
                             )
                             .foregroundStyle(by: .value("Type", "Solar"))
                             .position(by: .value("Type", "Solar"))
@@ -47,7 +78,7 @@ struct FilterableBarChart: View {
                         if showConsumption {
                             BarMark(
                                 x: .value("Period", item.day, unit: xUnit),
-                                y: .value("Energy", item.consumption / 1000)
+                                y: .value("Energy", item.consumption / yDivisor)
                             )
                             .foregroundStyle(by: .value("Type", "Consumption"))
                             .position(by: .value("Type", "Consumption"))
@@ -55,7 +86,7 @@ struct FilterableBarChart: View {
                         if showImport {
                             BarMark(
                                 x: .value("Period", item.day, unit: xUnit),
-                                y: .value("Energy", item.imported / 1000)
+                                y: .value("Energy", item.imported / yDivisor)
                             )
                             .foregroundStyle(by: .value("Type", "Grid Import"))
                             .position(by: .value("Type", "Grid Import"))
@@ -63,7 +94,7 @@ struct FilterableBarChart: View {
                         if showExport {
                             BarMark(
                                 x: .value("Period", item.day, unit: xUnit),
-                                y: .value("Energy", item.exported / 1000)
+                                y: .value("Energy", item.exported / yDivisor)
                             )
                             .foregroundStyle(by: .value("Type", "Grid Export"))
                             .position(by: .value("Type", "Grid Export"))
@@ -71,18 +102,31 @@ struct FilterableBarChart: View {
                     }
                 }
                 .chartXAxis {
-                    AxisMarks(values: .stride(by: xUnit, count: xLabelFormat == .dayOfMonth ? 5 : 1)) { value in
+                    AxisMarks(values: .stride(by: xUnit, count: xAxisStride)) { value in
                         if let date = value.as(Date.self) {
                             AxisValueLabel {
                                 switch xLabelFormat {
                                 case .weekday:
                                     Text(date, format: .dateTime.weekday(.abbreviated))
                                 case .dayOfMonth:
-                                    Text(date, format: .dateTime.day())
-                                case .month:
-                                    Text(date, format: .dateTime.month(.abbreviated))
-                                case .monthNarrow:
-                                    Text(date, format: .dateTime.month(.narrow))
+                                    if data.count > 120 {
+                                        Text(date, format: .dateTime.month(.abbreviated))
+                                    } else if data.count > 14 {
+                                        Text(date, format: .dateTime.day(.twoDigits).month(.abbreviated))
+                                    } else {
+                                        Text(date, format: .dateTime.day())
+                                    }
+                                case .isoWeekNumber:
+                                    if data.count > 5 {
+                                        Text(date, format: .dateTime.month(.abbreviated))
+                                    } else {
+                                        Text("W\(Calendar(identifier: .iso8601).component(.weekOfYear, from: date))")
+                                    }
+                                case .month, .monthNarrow:
+                                    let cal = Calendar.current
+                                    let y = cal.component(.year, from: date) % 100
+                                    let m = cal.component(.month, from: date)
+                                    Text("\(y)/\(m)")
                                 case .year:
                                     Text(date, format: .dateTime.year())
                                 }
@@ -97,7 +141,8 @@ struct FilterableBarChart: View {
                         AxisGridLine()
                         AxisValueLabel {
                             if let energy = value.as(Double.self) {
-                                Text("\(energy, specifier: "%.0f") kWh")
+                                // Convert back to Wh for the adaptive formatter
+                                Text((energy * yDivisor).formatWattHoursAdaptive(withUnit: true))
                             }
                         }
                     }

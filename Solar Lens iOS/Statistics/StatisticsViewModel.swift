@@ -20,6 +20,8 @@ class StatisticsViewModel {
     var selectedPeriod: StatisticsPeriod = .today
     var customStartDate: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
     var customEndDate: Date = Date()
+    var customResolution: CustomResolution = .day
+    var customStats: [DayStatistic]?
 
     private let energyManager: EnergyManager
 
@@ -68,6 +70,7 @@ class StatisticsViewModel {
         await fetchCarCharging(period: .day)
         dailyStats = nil
         monthlyStats = nil
+        customStats = nil
     }
 
     @MainActor
@@ -92,6 +95,7 @@ class StatisticsViewModel {
         )
         todayData = nil
         monthlyStats = nil
+        customStats = nil
     }
 
     @MainActor
@@ -116,6 +120,7 @@ class StatisticsViewModel {
         )
         todayData = nil
         monthlyStats = nil
+        customStats = nil
     }
 
     @MainActor
@@ -169,6 +174,7 @@ class StatisticsViewModel {
 
         todayData = nil
         dailyStats = nil
+        customStats = nil
     }
 
     @MainActor
@@ -227,6 +233,7 @@ class StatisticsViewModel {
         todayData = nil
         dailyStats = nil
         monthlyStats = nil
+        customStats = nil
         statistics = nil
     }
 
@@ -241,21 +248,34 @@ class StatisticsViewModel {
 
         let daysBetween = calendar.dateComponents([.day], from: start, to: end).day ?? 0
 
-        if daysBetween <= 31 {
+        switch customResolution {
+        case .day, .week:
+            // Fetch raw data points and aggregate by day or week
+            let interval = daysBetween <= 7 ? 300 : (daysBetween <= 90 ? 3600 : 86400)
             let mainData = try? await energyManager.fetchMainData(
                 from: start,
                 to: end,
-                interval: 300
+                interval: interval
             )
             if let mainData {
-                dailyStats = calculateDailyStatistics(dataPoints: mainData.data)
+                customStats = aggregateDataPoints(
+                    mainData.data,
+                    by: customResolution.calendarComponent
+                )
                 computeBatteryTotals(from: mainData.data)
             }
-        } else {
-            dailyStats = nil
+
+        case .month, .year:
+            // Fetch per-period statistics via the statistics endpoint
+            customStats = await fetchAggregatedStatistics(
+                from: start,
+                to: end,
+                by: customResolution.calendarComponent
+            )
             batteryCharged = 0
             batteryDischarged = 0
         }
+
         carCharged = 0
 
         let accuracy: Accuracy = daysBetween <= 7 ? .high : (daysBetween <= 90 ? .medium : .low)
@@ -265,7 +285,77 @@ class StatisticsViewModel {
             accuracy: accuracy
         )
         todayData = nil
+        dailyStats = nil
         monthlyStats = nil
+    }
+
+    private func aggregateDataPoints(
+        _ dataPoints: [MainDataItem],
+        by component: Calendar.Component
+    ) -> [DayStatistic] {
+        let calendar = Calendar.current
+        var buckets: [Date: [MainDataItem]] = [:]
+
+        for point in dataPoints {
+            let bucketStart: Date
+            if component == .weekOfYear {
+                // Align to start of ISO week
+                let comps = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: point.date)
+                bucketStart = calendar.date(from: comps) ?? calendar.startOfDay(for: point.date)
+            } else {
+                let comps = calendar.dateComponents(
+                    component == .day ? [.year, .month, .day] : [.year, .month],
+                    from: point.date
+                )
+                bucketStart = calendar.date(from: comps) ?? calendar.startOfDay(for: point.date)
+            }
+            buckets[bucketStart, default: []].append(point)
+        }
+
+        return buckets.map { (bucketDate, items) in
+            DayStatistic(
+                day: bucketDate,
+                consumption: items.reduce(0.0) { $0 + $1.consumptionOverTimeWatthours },
+                production: items.reduce(0.0) { $0 + $1.productionOverTimeWatthours },
+                imported: items.reduce(0.0) { $0 + $1.importedOverTimeWhatthours },
+                exported: items.reduce(0.0) { $0 + $1.exportedOverTimeWhatthours }
+            )
+        }.sorted { $0.day < $1.day }
+    }
+
+    private func fetchAggregatedStatistics(
+        from start: Date,
+        to end: Date,
+        by component: Calendar.Component
+    ) async -> [DayStatistic] {
+        let calendar = Calendar.current
+        var results: [DayStatistic] = []
+        var periodStart = start
+
+        while periodStart < end {
+            let periodEnd = calendar.date(byAdding: component, value: 1, to: periodStart)!
+            let clampedEnd = min(periodEnd, end)
+            let stats = try? await energyManager.fetchStatistics(
+                from: periodStart,
+                to: clampedEnd,
+                accuracy: .low
+            )
+            if let stats {
+                let selfConsumption = stats.selfConsumption ?? 0
+                let production = stats.production ?? 0
+                let consumption = stats.consumption ?? 0
+                results.append(DayStatistic(
+                    day: periodStart,
+                    consumption: consumption,
+                    production: production,
+                    imported: max(0, consumption - selfConsumption),
+                    exported: max(0, production - selfConsumption)
+                ))
+            }
+            periodStart = periodEnd
+        }
+
+        return results
     }
 
     /// Derives grid import/export from overall Statistics (which only has selfConsumption)
@@ -330,6 +420,51 @@ enum StatisticsPeriod: String, CaseIterable, Identifiable {
         case .year: "Year"
         case .overall: "Overall"
         case .custom: "Custom"
+        }
+    }
+}
+
+enum CustomResolution: String, CaseIterable, Identifiable {
+    case day = "Day"
+    case week = "Week"
+    case month = "Month"
+    case year = "Year"
+
+    var id: String { rawValue }
+
+    var localizedName: LocalizedStringKey {
+        switch self {
+        case .day: "Day"
+        case .week: "Week"
+        case .month: "Month"
+        case .year: "Year"
+        }
+    }
+
+    var calendarComponent: Calendar.Component {
+        switch self {
+        case .day: .day
+        case .week: .weekOfYear
+        case .month: .month
+        case .year: .year
+        }
+    }
+
+    var chartXUnit: Calendar.Component {
+        switch self {
+        case .day: .day
+        case .week: .weekOfYear
+        case .month: .month
+        case .year: .year
+        }
+    }
+
+    var chartXLabelFormat: XLabelFormat {
+        switch self {
+        case .day: .dayOfMonth
+        case .week: .isoWeekNumber
+        case .month: .monthNarrow
+        case .year: .year
         }
     }
 }

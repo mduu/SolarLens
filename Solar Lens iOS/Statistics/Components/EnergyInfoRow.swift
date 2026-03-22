@@ -5,17 +5,13 @@ struct EnergyInfoRow: View {
     var batteryCharged: Double
     var batteryDischarged: Double
     var isCurrentlyCharging: Bool
-    var useMWh: Bool = false
     var hasCarChargingStation: Bool = true
     var hasBattery: Bool = true
 
     @Environment(\.colorScheme) private var colorScheme
 
     private func format(_ value: Double) -> String {
-        if useMWh {
-            return String(format: "%.1f MWh", value / 1_000_000)
-        }
-        return String(format: "%.1f kWh", value / 1000)
+        value.formatWattHoursAdaptive(withUnit: true)
     }
 
     var body: some View {
