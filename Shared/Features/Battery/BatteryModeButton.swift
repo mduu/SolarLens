@@ -17,7 +17,7 @@ struct BatteryModeButton: View {
         Button(action: {
             showBatteryModeOptions = true
         }) {
-            HStack(spacing: 12) {
+            VStack(spacing: 6) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(accentColor.opacity(isSelected ? 0.2 : 0.08))
@@ -25,23 +25,27 @@ struct BatteryModeButton: View {
                     modeIcon(for: mode)
                         .font(.system(size: 16))
                         .foregroundStyle(accentColor)
+
+                    if isSelected {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(accentColor)
+                            .background(Circle().fill(.white).frame(width: 10, height: 10))
+                            .offset(x: 14, y: -14)
+                    }
                 }
 
                 Text(mode.GetBatteryModeName())
-                    .font(.subheadline)
+                    .font(.caption)
                     .fontWeight(isSelected ? .semibold : .regular)
                     .foregroundStyle(.primary)
-
-                Spacer()
-
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.title3)
-                        .foregroundStyle(accentColor)
-                }
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 12)
             .contentShape(Rectangle())
             .background(
                 RoundedRectangle(cornerRadius: 12)

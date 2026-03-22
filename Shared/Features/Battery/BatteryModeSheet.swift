@@ -5,16 +5,22 @@ struct BatteryModeSheet: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
-
-                if battery.batteryInfo?.modeInfo.batteryMode == .Standard {
+            if battery.batteryInfo?.modeInfo.batteryMode == .Standard {
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 10),
+                    GridItem(.flexible(), spacing: 10)
+                ], spacing: 10) {
                     BatteryModeButton(
                         battery: battery,
                         mode: BatteryMode.Standard
                     )
                     .disabled(true)
-                } else {
-
+                }
+            } else {
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 10),
+                    GridItem(.flexible(), spacing: 10)
+                ], spacing: 10) {
                     BatteryModeButton(
                         battery: battery,
                         mode: BatteryMode.StandardControlled
@@ -34,10 +40,8 @@ struct BatteryModeSheet: View {
                         battery: battery,
                         mode: BatteryMode.Manual
                     )
-
                 }
-            }  // :VStack
-
+            }
         }  // :ScrollView
     }
 
