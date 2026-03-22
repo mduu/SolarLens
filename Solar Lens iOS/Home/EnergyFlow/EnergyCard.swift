@@ -11,46 +11,52 @@ struct EnergyCard<DetailContent: View>: View {
     var customDetail: (() -> DetailContent)?
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(label)
-                    .font(.subheadline)
-                    .foregroundStyle(.primary)
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(label)
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
 
-                Text(value)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
+                    Text(value)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
 
-                if let customDetail {
-                    customDetail()
-                } else if let detail {
-                    HStack(spacing: 3) {
-                        Image(systemName: "bolt.fill")
-                            .font(.system(size: 9))
-                        Text(detail)
-                            .font(.caption2)
+                    if customDetail == nil {
+                        if let detail {
+                            HStack(spacing: 3) {
+                                Image(systemName: "bolt.fill")
+                                    .font(.system(size: 9))
+                                Text(detail)
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(.primary.opacity(0.6))
+                        } else {
+                            Text(" ")
+                                .font(.caption2)
+                                .hidden()
+                        }
                     }
-                    .foregroundStyle(.primary.opacity(0.6))
-                } else {
-                    Text(" ")
-                        .font(.caption2)
-                        .hidden()
+                }
+
+                Spacer(minLength: 4)
+
+                VStack(spacing: 4) {
+                    Image(systemName: icon)
+                        .font(.title2)
+                        .foregroundStyle(iconColor)
+
+                    if showChevron {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(.quaternary)
+                    }
                 }
             }
 
-            Spacer(minLength: 4)
-
-            VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundStyle(iconColor)
-
-                if showChevron {
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(.quaternary)
-                }
+            if let customDetail {
+                customDetail()
             }
         }
         .if(applyCardStyle) { $0.cardStyle() }
