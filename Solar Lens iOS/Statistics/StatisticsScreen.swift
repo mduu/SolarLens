@@ -4,6 +4,8 @@ import SwiftUI
 struct StatisticsScreen: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @State private var viewModel = StatisticsViewModel()
+    @State private var shareURLs: [URL] = []
+    @State private var showShareSheet = false
 
     // Persisted series visibility per period
     @AppStorage("stats.week.showProduction") private var weekShowProduction = true
@@ -72,6 +74,29 @@ struct StatisticsScreen: View {
                                 Image(systemName: "arrow.clockwise")
                             }
                             .buttonStyle(.bordered)
+
+                            if exportableData != nil {
+                                Button {
+                                    exportStatistics()
+                                } label: {
+                                    Image(systemName: "square.and.arrow.up")
+                                }
+                                .buttonStyle(.bordered)
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+
+                    // Export button for non-custom periods
+                    if viewModel.selectedPeriod != .custom, exportableData != nil {
+                        HStack {
+                            Spacer()
+                            Button {
+                                exportStatistics()
+                            } label: {
+                                Image(systemName: "square.and.arrow.up")
+                            }
+                            .buttonStyle(.bordered)
                         }
                         .padding(.horizontal)
                     }
@@ -109,6 +134,9 @@ struct StatisticsScreen: View {
                 )
             }
             .navigationBarHidden(true)
+            .sheet(isPresented: $showShareSheet) {
+                ShareSheet(activityItems: shareURLs)
+            }
         }
         .onChange(of: viewModel.selectedPeriod) {
             Task { await viewModel.fetch() }
@@ -154,6 +182,35 @@ struct StatisticsScreen: View {
         case .year: return $yearShowExport
         case .overall: return $overallShowExport
         default: return .constant(true)
+        }
+    }
+
+    // MARK: - Export
+
+    /// Returns the exportable data for the current period, if any.
+    private var exportableData: [DayStatistic]? {
+        switch viewModel.selectedPeriod {
+        case .week, .month, .custom:
+            return viewModel.dailyStats
+        case .year:
+            return viewModel.monthlyStats
+        case .overall:
+            return viewModel.yearlyStats
+        case .today:
+            return nil
+        }
+    }
+
+    private func exportStatistics() {
+        guard let data = exportableData, !data.isEmpty else { return }
+        do {
+            shareURLs = try StatisticsExporter.export(
+                data: data,
+                periodLabel: viewModel.selectedPeriod.rawValue
+            )
+            showShareSheet = true
+        } catch {
+            // Silently fail — file write errors are unlikely for temp directory
         }
     }
 
@@ -207,16 +264,18 @@ struct StatisticsScreen: View {
         if let yearlyStats = viewModel.yearlyStats,
            viewModel.selectedPeriod == .overall
         {
-            FilterableBarChart(
-                data: yearlyStats,
-                xUnit: .year,
-                xLabelFormat: .year,
-                showProduction: showProduction,
-                showConsumption: showConsumption,
-                showImport: showImport,
-                showExport: showExport,
-                chartHeight: 200
-            )
+            VStack(spacing: 8) {
+                FilterableBarChart(
+                    data: yearlyStats,
+                    xUnit: .year,
+                    xLabelFormat: .year,
+                    showProduction: showProduction,
+                    showConsumption: showConsumption,
+                    showImport: showImport,
+                    showExport: showExport,
+                    chartHeight: 200
+                )
+            }
             .padding(.horizontal)
         }
 
