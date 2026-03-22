@@ -245,6 +245,10 @@ class SolarManagerApi: RestClient {
         return await onTokenExpired()
     }
 
+    override func handleForbidden(failedResponse: HTTPURLResponse) async -> Bool {
+        return await onTokenExpired()
+    }
+
     private func storeLogin(accessToken: String, refreshToken: String) {
         KeychainHelper.accessToken = accessToken
         KeychainHelper.refreshToken = refreshToken

@@ -229,7 +229,7 @@ class RestClient {
                     response: response,
                     details: "\(request.httpMethod ?? "-") \(url)\n \(bodyText)")
             case 401:  // Unauthorized / Token expired
-                print("🔴🔑 ERROR: FORBIDDEN (403)")
+                print("🔴🔑 ERROR: UNAUTHORIZED (401)")
                 canRetry = await handleTokenExpired(
                     failedResponse: response!
                 )
@@ -273,7 +273,7 @@ class RestClient {
     }
 
     private func waitFor(milliseconds: UInt64) async {
-        print("Waiting \(milliseconds) seconds before retry...")
+        print("Waiting \(milliseconds) milliseconds before retry...")
         try? await Task.sleep(nanoseconds: UInt64(milliseconds) * 1_000_000)
     }
 }

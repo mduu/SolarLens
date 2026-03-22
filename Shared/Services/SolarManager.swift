@@ -9,6 +9,7 @@ class SolarManager: EnergyManager {
     private var expireAt: Date?
     private var accessClaims: [String]?
     private var activeRefreshTask: Task<Bool, Never>?
+    private var activeLoginTask: Task<Void, Error>?
     private lazy var solarManagerApi = SolarManagerApi(onTokenExpired: { [weak self] in
         await self?.handleOnTokenExpired() ?? false
     })
@@ -591,12 +592,39 @@ class SolarManager: EnergyManager {
     }
 
     private func ensureLoggedIn() async throws {
-        let accessToken = KeychainHelper.accessToken
-        let refreshToken = KeychainHelper.refreshToken
-
-        if let accessToken = accessToken, let expireAt = expireAt, expireAt > Date() {
+        // Fast path: token is still valid, no serialization needed.
+        if KeychainHelper.accessToken != nil, let expireAt = expireAt, expireAt > Date() {
             return
         }
+
+        // Serialize all refresh/login attempts so only one runs at a time.
+        // Concurrent callers wait for the in-flight attempt instead of
+        // firing competing refresh requests (which would invalidate each
+        // other's tokens on the server).
+        if let existingTask = activeLoginTask {
+            try await existingTask.value
+            return
+        }
+
+        let task = Task<Void, Error> { @MainActor in
+            try await performLogin()
+        }
+
+        activeLoginTask = task
+        defer { activeLoginTask = nil }
+        try await task.value
+    }
+
+    /// Performs the actual refresh-or-login sequence. Must only be called
+    /// from within a serialized `activeLoginTask`.
+    private func performLogin() async throws {
+        // Re-check after acquiring the serialization lock – a previous
+        // caller may have already refreshed the token.
+        if KeychainHelper.accessToken != nil, let expireAt = expireAt, expireAt > Date() {
+            return
+        }
+
+        let refreshToken = KeychainHelper.refreshToken
 
         if let refreshToken = refreshToken {
             print("Refresh token exists. Refreshing access-token...")
@@ -621,15 +649,16 @@ class SolarManager: EnergyManager {
                 }
 
                 print("🟢🔑 Refresh access-token succeeded.")
+                return
             } catch {
                 print(
-                    "🟡🔑 Refresh access-token failed. Will performan a regular login."
+                    "🟡🔑 Refresh access-token failed. Will perform a regular login."
                 )
             }
         }
 
         let credentials = KeychainHelper.loadCredentials()
-        
+
         guard let username = credentials.username, !username.isEmpty,
             let password = credentials.password, !password.isEmpty
         else {
