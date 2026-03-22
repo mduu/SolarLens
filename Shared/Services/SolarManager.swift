@@ -286,6 +286,16 @@ class SolarManager: EnergyManager {
         )
     }
 
+    func fetchTariff() async throws -> TariffV1Response? {
+        try await ensureSmId()
+
+        guard let smId = systemInformation?.sm_id else {
+            return nil
+        }
+
+        return try await solarManagerApi.getV1TariffGateway(solarManagerId: smId)
+    }
+
     func fetchTodaysBatteryHistory() async throws -> [BatteryHistory] {
         try await ensureSensorInfosAreCurrent()
 

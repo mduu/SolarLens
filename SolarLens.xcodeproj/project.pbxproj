@@ -243,6 +243,7 @@
 				Services/SolarManagerApi/DTOs/SensorType.swift,
 				Services/SolarManagerApi/DTOs/StatisticsV1Response.swift,
 				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
+				Services/SolarManagerApi/DTOs/TariffV1Response.swift,
 				Services/SolarManagerApi/SolarManagerApiClient.swift,
 				Services/SolarManagerApi/SolarManagerApiClientError.swift,
 				Services/Stopwatch.swift,

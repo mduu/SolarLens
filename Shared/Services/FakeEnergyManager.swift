@@ -121,6 +121,13 @@ class FakeEnergyManager: EnergyManager {
         return BatteryHistory.fakeHistory()
     }
 
+    func fetchTariff() async throws -> TariffV1Response? {
+        return TariffV1Response(
+            highTariff: 28,
+            tariffType: "double"
+        )
+    }
+
     func fetchMainData(from: Date, to: Date) async throws -> MainData
     {
         return MainData.fake()
