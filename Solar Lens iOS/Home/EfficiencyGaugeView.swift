@@ -2,9 +2,16 @@ import SwiftUI
 
 struct EfficiencyGaugeView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.energyManager) private var energyManager
 
     var todaySelfConsumptionRate: Double?
     var todayAutarchyDegree: Double?
+
+    @AppStorage("cachedOverallProduction") private var cachedOverallProduction: Double = 0
+    @AppStorage("cachedOverallProductionFetchDate") private var cachedFetchDate: Double = 0
+
+    private let co2PerWhInKg: Double = 0.00013
+    private let boundCo2PerTreePerYearInKg: Double = 20
 
     var body: some View {
         let selfConsumption = todaySelfConsumptionRate ?? 0
@@ -55,6 +62,38 @@ struct EfficiencyGaugeView: View {
                     Text("Autarky")
                         .font(.system(size: 9))
                         .foregroundStyle(.primary)
+                }
+            }
+
+            if cachedOverallProduction > 0 {
+                let co2Avoided = cachedOverallProduction / 10 * co2PerWhInKg
+                let treesEquivalent = max(1, co2Avoided / boundCo2PerTreePerYearInKg)
+
+                HStack(spacing: 5) {
+                    Image(systemName: "leaf.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                    Text("\(treesEquivalent, specifier: "%.0f") trees")
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.primary)
+                    Text("(\(co2Avoided, specifier: "%.1f") kg CO₂)")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .task {
+            let age = Date().timeIntervalSince1970 - cachedFetchDate
+            if cachedOverallProduction == 0 || age > 86400 {
+                let stats = try? await energyManager.fetchStatistics(
+                    from: nil,
+                    to: Date(),
+                    accuracy: .low
+                )
+                if let production = stats?.production {
+                    cachedOverallProduction = production
+                    cachedFetchDate = Date().timeIntervalSince1970
                 }
             }
         }
