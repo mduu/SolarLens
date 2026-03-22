@@ -1,11 +1,25 @@
+import Charts
 import SwiftUI
 
 struct BatterySheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.energyManager) var energyManager
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
     @State var isLoading: Bool = false
+    @State private var mainData: MainData?
+    @State private var batteryHistory: [BatteryHistory]?
+
+    private static let maxForecastDuration: TimeInterval = 24 * 3600
+    private let forecastFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.zeroFormattingBehavior = .pad
+        formatter.collapsesLargestUnit = true
+        return formatter
+    }()
 
     var body: some View {
         ZStack {
@@ -27,11 +41,8 @@ struct BatterySheet: View {
                             // Battery status card
                             batteryStatusCard
 
-                            // Forecast card
-                            let forecast = model.overviewData.getBatteryForecast()
-                            if forecast?.hasVisibleForecast == true {
-                                forecastCard(forecast: forecast!)
-                            }
+                            // Today chart + totals card
+                            batteryTodayCard
 
                             // Device list card
                             let batteries = model.overviewData.devices.filter { $0.deviceType == .battery }
@@ -68,6 +79,21 @@ struct BatterySheet: View {
                 }
             }
         }
+        .task {
+            await fetchTodayData()
+        }
+    }
+
+    private func fetchTodayData() async {
+        async let mainDataTask = try? energyManager.fetchMainData(
+            from: Date.todayStartOfDay(),
+            to: Date.todayEndOfDay()
+        )
+        async let batteryHistoryTask = try? energyManager.fetchTodaysBatteryHistory()
+
+        let (fetchedMainData, fetchedBatteryHistory) = await (mainDataTask, batteryHistoryTask)
+        self.mainData = fetchedMainData
+        self.batteryHistory = fetchedBatteryHistory
     }
 
     // MARK: - Battery Status Card
@@ -122,34 +148,19 @@ struct BatterySheet: View {
                     }
 
                     BatterySheetBar(level: level, color: batteryColor)
+
+                    if let forecastText = compactForecastText {
+                        HStack(spacing: 4) {
+                            Image(systemName: "clock")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            Text(forecastText)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
             }
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.ultraThinMaterial)
-        )
-    }
-
-    // MARK: - Forecast Card
-
-    @ViewBuilder
-    private func forecastCard(forecast: BatteryForecast) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 4) {
-                Image(systemName: "chart.line.uptrend.xyaxis")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Text("Forecast")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            BatteryForecastView(
-                batteryForecast: forecast
-            )
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -173,10 +184,12 @@ struct BatterySheet: View {
                     .foregroundStyle(.secondary)
             }
 
-            ForEach(batteries) { battery in
-                BatteryView(battery: battery)
-                if battery.id != batteries.last?.id {
-                    Divider()
+            LazyVGrid(columns: [
+                GridItem(.flexible(), spacing: 10),
+                GridItem(.flexible(), spacing: 10)
+            ], spacing: 10) {
+                ForEach(batteries) { battery in
+                    BatteryView(battery: battery)
                 }
             }
         }
@@ -186,6 +199,140 @@ struct BatterySheet: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(.ultraThinMaterial)
         )
+    }
+
+    // MARK: - Today Card
+
+    @ViewBuilder
+    private var batteryTodayCard: some View {
+        let totalCharged = mainData?.data.reduce(0.0) { $0 + $1.batteryChargedWh } ?? 0
+        let totalDischarged = mainData?.data.reduce(0.0) { $0 + $1.batteryDischargedWh } ?? 0
+
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 4) {
+                Image(systemName: "chart.xyaxis.line")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("Today")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Totals
+            HStack(spacing: 16) {
+                HStack(spacing: 4) {
+                    Image(systemName: "arrow.up")
+                        .font(.caption)
+                        .foregroundStyle(.purple)
+                    Text("Charged:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(totalCharged.formatWattHoursAsKiloWattsHours(widthUnit: true))
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                }
+
+                HStack(spacing: 4) {
+                    Image(systemName: "arrow.down")
+                        .font(.caption)
+                        .foregroundStyle(.indigo)
+                    Text("Discharged:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(totalDischarged.formatWattHoursAsKiloWattsHours(widthUnit: true))
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                }
+
+                Spacer()
+            }
+
+            // Chart
+            if let mainData, let batteryHistory, !batteryHistory.isEmpty {
+                let maxkW = batteryHistory
+                    .flatMap { $0.items }
+                    .map { max($0.averagePowerChargedW, $0.averagePowerDischargedW) / 1000 }
+                    .max() ?? 2.0
+
+                Chart {
+                    BatterySeries(
+                        batteries: batteryHistory,
+                        isAccent: false,
+                        batteryConsumptionLabel: String(localized: "Discharged"),
+                        batteryChargedLabel: String(localized: "Charged")
+                    )
+
+                    if mainData.data.contains(where: { $0.batteryLevel != nil }) {
+                        BatteryLevelSeries(
+                            data: mainData.data,
+                            maxY: max(maxkW * 1.1, 0.5),
+                            isAccent: false,
+                            batteryLabel: String(localized: "Level")
+                        )
+                    }
+                }
+                .chartYScale(domain: 0...max(maxkW * 1.1, 0.5))
+                .chartYAxis {
+                    AxisMarks(preset: .automatic) { _ in
+                        AxisGridLine()
+                        AxisValueLabel()
+                    }
+                }
+                .chartYAxisLabel("kW")
+                .chartXAxis {
+                    AxisMarks { _ in
+                        AxisGridLine()
+                        AxisValueLabel(
+                            format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits)
+                        )
+                    }
+                }
+                .chartLegend(.visible)
+                .chartLegend(spacing: 4)
+                .chartForegroundStyleScale([
+                    String(localized: "Discharged"): Color.indigo,
+                    String(localized: "Charged"): Color.purple,
+                    String(localized: "Level"): SerieColors.batteryLevelColor(useAlternativeColors: false),
+                ])
+                .frame(height: 180)
+            } else if mainData == nil {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 180)
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+        )
+    }
+
+    // MARK: - Forecast
+
+    private var compactForecastText: String? {
+        guard let forecast = model.overviewData.getBatteryForecast() else { return nil }
+
+        if forecast.isCharging,
+           let duration = forecast.durationUntilFullyCharged,
+           duration <= Self.maxForecastDuration,
+           let time = forecast.timeWhenFullyCharged
+        {
+            let durationStr = forecastFormatter.string(from: duration) ?? ""
+            return String(localized: "Full in \(durationStr) at \(time.formatted(date: .omitted, time: .shortened))")
+        }
+
+        if forecast.isDischarging,
+           let duration = forecast.durationUntilDischarged,
+           duration <= Self.maxForecastDuration,
+           let time = forecast.timeWhenDischarged
+        {
+            let durationStr = forecastFormatter.string(from: duration) ?? ""
+            return String(localized: "Empty in \(durationStr) at \(time.formatted(date: .omitted, time: .shortened))")
+        }
+
+        return nil
     }
 
     // MARK: - Helpers

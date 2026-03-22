@@ -45,7 +45,10 @@ struct BatteryBoubleView: View {
                 NavigationView {
                     BatterySheet()
                 }
-                .presentationDetents([.medium])
+                .presentationDetents(
+                    [.medium, .large],
+                    selection: .constant(.large)
+                )
             }
         }
     }
