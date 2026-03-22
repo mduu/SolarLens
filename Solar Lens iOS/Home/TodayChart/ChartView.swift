@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChartView: View {
     @Environment(CurrentBuildingState.self) var buildingModel: CurrentBuildingState
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @AppStorage("todayShowProduction") private var showProduction: Bool = true
     @AppStorage("todayShowConsumption") private var showConsumption: Bool = true
     @AppStorage("showBatteryCharging") private var showBatteryCharging: Bool = false
@@ -11,6 +12,8 @@ struct ChartView: View {
     @State var viewModel = ChartViewModel()
     @State private var refreshTimer: Timer?
 
+    private var isLandscape: Bool { verticalSizeClass == .compact }
+
     var body: some View {
         ZStack {
 
@@ -19,50 +22,10 @@ struct ChartView: View {
 
                     if viewModel.consumptionData != nil {
 
-                        VStack(spacing: 12) {
-                            OverviewChart(
-                                consumption: viewModel.consumptionData!,
-                                batteries: viewModel.batteryHistory ?? [],
-                                showProduction: showProduction,
-                                showConsumption: showConsumption,
-                                showBatteryCharge: showBatteryCharging,
-                                showBatteryDischange: showBatteryDischarging,
-                                showBatteryPercentage: showBatteryPercentage,
-                                showLegend: false
-                            )
-
-                            // Series toggles (same style as analytics)
-                            VStack(spacing: 4) {
-                                HStack(spacing: 6) {
-                                    SeriesToggle(label: "Production", color: .yellow, isOn: $showProduction)
-                                    SeriesToggle(label: "Consumption", color: .teal, isOn: $showConsumption)
-                                }
-                                HStack(spacing: 6) {
-                                    SeriesToggle(label: "Battery %", color: SerieColors.batteryLevelColor(useAlternativeColors: false), isOn: $showBatteryPercentage)
-                                    SeriesToggle(label: "Charged", color: .purple, isOn: $showBatteryCharging)
-                                    SeriesToggle(label: "Discharged", color: .indigo, isOn: $showBatteryDischarging)
-                                }
-                            }
-
-                            HStack(spacing: 12) {
-                                let solarPeak = getMaxProductionkW()
-                                TodaySolarView(
-                                    peakProductionInW: solarPeak,
-                                    currentSolarProductionInW: buildingModel
-                                        .overviewData.currentSolarProduction,
-                                    todaySolarProductionInWh: buildingModel
-                                        .overviewData.todayProduction ?? 0
-                                )
-
-                                let consumptionPeak = getMaxConsumptionkW()
-                                TodayConsumptionView(
-                                    peakConsumptionInW: consumptionPeak,
-                                    currentConsumptionInW: buildingModel
-                                        .overviewData.currentOverallConsumption,
-                                    todayConsumptionInWh: buildingModel
-                                        .overviewData.todayConsumption ?? 0
-                                )
-                            }
+                        if isLandscape {
+                            landscapeContent
+                        } else {
+                            portraitContent
                         }
 
                     } else {
@@ -106,6 +69,86 @@ struct ChartView: View {
             }
         }
     }
+
+    // MARK: - Portrait
+
+    private var portraitContent: some View {
+        VStack(spacing: 12) {
+            chartWithToggles
+
+            HStack(spacing: 12) {
+                infoCards
+            }
+        }
+    }
+
+    // MARK: - Landscape
+
+    private var landscapeContent: some View {
+        HStack(alignment: .top, spacing: 16) {
+            VStack(spacing: 8) {
+                chartWithToggles
+            }
+            .frame(maxWidth: .infinity)
+
+            VStack(spacing: 12) {
+                infoCards
+            }
+            .frame(width: 200)
+        }
+    }
+
+    // MARK: - Shared Components
+
+    private var chartWithToggles: some View {
+        VStack(spacing: 12) {
+            OverviewChart(
+                consumption: viewModel.consumptionData!,
+                batteries: viewModel.batteryHistory ?? [],
+                showProduction: showProduction,
+                showConsumption: showConsumption,
+                showBatteryCharge: showBatteryCharging,
+                showBatteryDischange: showBatteryDischarging,
+                showBatteryPercentage: showBatteryPercentage,
+                showLegend: false
+            )
+
+            VStack(spacing: 4) {
+                HStack(spacing: 6) {
+                    SeriesToggle(label: "Production", color: .yellow, isOn: $showProduction)
+                    SeriesToggle(label: "Consumption", color: .teal, isOn: $showConsumption)
+                }
+                HStack(spacing: 6) {
+                    SeriesToggle(label: "Battery %", color: SerieColors.batteryLevelColor(useAlternativeColors: false), isOn: $showBatteryPercentage)
+                    SeriesToggle(label: "Charged", color: .purple, isOn: $showBatteryCharging)
+                    SeriesToggle(label: "Discharged", color: .indigo, isOn: $showBatteryDischarging)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var infoCards: some View {
+        let solarPeak = getMaxProductionkW()
+        TodaySolarView(
+            peakProductionInW: solarPeak,
+            currentSolarProductionInW: buildingModel
+                .overviewData.currentSolarProduction,
+            todaySolarProductionInWh: buildingModel
+                .overviewData.todayProduction ?? 0
+        )
+
+        let consumptionPeak = getMaxConsumptionkW()
+        TodayConsumptionView(
+            peakConsumptionInW: consumptionPeak,
+            currentConsumptionInW: buildingModel
+                .overviewData.currentOverallConsumption,
+            todayConsumptionInWh: buildingModel
+                .overviewData.todayConsumption ?? 0
+        )
+    }
+
+    // MARK: - Helpers
 
     private func getMaxProductionkW() -> Double {
         guard let consumptionData = viewModel.consumptionData else { return 0 }

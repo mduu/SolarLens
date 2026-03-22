@@ -15,8 +15,12 @@ struct TodayChartSheet: View {
             )
             .ignoresSafeArea()
 
-            ChartView()
-                .padding()
+            VStack(spacing: 0) {
+                ChartView()
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                Spacer(minLength: 0)
+            }
         }
         .navigationTitle("Today")
         .navigationBarTitleDisplayMode(.inline)
