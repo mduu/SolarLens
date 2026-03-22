@@ -974,12 +974,12 @@ class SolarManager: EnergyManager {
     }
 
     private func handleOnTokenExpired() async -> Bool {
-        // If another request is already refreshing, wait for that result
-        // instead of starting a competing refresh that would invalidate
-        // the first one's new token.
-        if let existingTask = activeRefreshTask {
-            print("🔑 Token refresh already in progress, waiting for result...")
-            return await existingTask.value
+        // If a refresh is already in progress, we are being called
+        // recursively (e.g. the refresh endpoint itself returned 403).
+        // Return false to break the cycle instead of deadlocking.
+        if activeRefreshTask != nil {
+            print("🔑 Token refresh already in progress, skipping recursive attempt.")
+            return false
         }
 
         let task = Task<Bool, Never> { @MainActor in
