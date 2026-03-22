@@ -406,10 +406,15 @@ struct BatterySheet: View {
                             if let gridPrice = tariff?.highTariff ?? tariff?.singleTariff,
                                gridPrice > 0
                             {
+                                let currencyCode = Locale.current.currency?.identifier ?? "EUR"
                                 // Tariff prices are in Rappen/cents, convert to main currency unit
-                                let savedAmount = (totalDischarged / 1000) * (gridPrice / 100)
-                                let formatted = savedAmount.formatted(
-                                    .currency(code: Locale.current.currency?.identifier ?? "EUR")
+                                let importSaved = (totalDischarged / 1000) * (gridPrice / 100)
+                                let feedInPrice = tariff?.directMarketing ?? 0
+                                let exportLost = (totalCharged / 1000) * (feedInPrice / 100)
+                                let netSavings = importSaved - exportLost
+
+                                let formatted = netSavings.formatted(
+                                    .currency(code: currencyCode)
                                 )
                                 Text(verbatim: "≈ \(formatted)")
                                     .font(.caption)
