@@ -1,12 +1,18 @@
 internal import Foundation
 
+enum ExportFormat {
+    case csv
+    case xlsx
+}
+
 enum StatisticsExporter {
 
-    /// Generates CSV and XLSX files from statistics data and returns their temporary URLs.
+    /// Generates a CSV or XLSX file from statistics data and returns its temporary URL.
     static func export(
         data: [DayStatistic],
-        periodLabel: String
-    ) throws -> [URL] {
+        periodLabel: String,
+        format: ExportFormat
+    ) throws -> URL {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
 
@@ -17,16 +23,17 @@ enum StatisticsExporter {
         let baseName = "SolarLens_\(startDate)_\(endDate)"
 
         let tempDir = FileManager.default.temporaryDirectory
-        let csvURL = tempDir.appendingPathComponent("\(baseName).csv")
-        let xlsxURL = tempDir.appendingPathComponent("\(baseName).xlsx")
 
-        // Generate CSV
-        try generateCSV(data: sortedData, dateFormatter: dateFormatter, to: csvURL)
-
-        // Generate XLSX
-        try generateXLSX(data: sortedData, dateFormatter: dateFormatter, to: xlsxURL)
-
-        return [csvURL, xlsxURL]
+        switch format {
+        case .csv:
+            let csvURL = tempDir.appendingPathComponent("\(baseName).csv")
+            try generateCSV(data: sortedData, dateFormatter: dateFormatter, to: csvURL)
+            return csvURL
+        case .xlsx:
+            let xlsxURL = tempDir.appendingPathComponent("\(baseName).xlsx")
+            try generateXLSX(data: sortedData, dateFormatter: dateFormatter, to: xlsxURL)
+            return xlsxURL
+        }
     }
 
     // MARK: - CSV

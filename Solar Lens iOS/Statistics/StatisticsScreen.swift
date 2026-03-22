@@ -6,6 +6,7 @@ struct StatisticsScreen: View {
     @State private var viewModel = StatisticsViewModel()
     @State private var shareURLs: [URL] = []
     @State private var showShareSheet = false
+    @State private var showExportFormatPicker = false
 
     // Persisted series visibility per period
     @AppStorage("stats.week.showProduction") private var weekShowProduction = true
@@ -79,7 +80,7 @@ struct StatisticsScreen: View {
 
                                 if exportableData != nil {
                                     Button {
-                                        exportStatistics()
+                                        showExportFormatPicker = true
                                     } label: {
                                         Image(systemName: "square.and.arrow.up")
                                     }
@@ -103,7 +104,7 @@ struct StatisticsScreen: View {
                         HStack {
                             Spacer()
                             Button {
-                                exportStatistics()
+                                showExportFormatPicker = true
                             } label: {
                                 Image(systemName: "square.and.arrow.up")
                             }
@@ -147,6 +148,11 @@ struct StatisticsScreen: View {
             .navigationBarHidden(true)
             .sheet(isPresented: $showShareSheet) {
                 ShareSheet(activityItems: shareURLs)
+            }
+            .confirmationDialog("Export Format", isPresented: $showExportFormatPicker) {
+                Button("CSV") { exportStatistics(format: .csv) }
+                Button("Excel (.xlsx)") { exportStatistics(format: .xlsx) }
+                Button("Cancel", role: .cancel) {}
             }
         }
         .onChange(of: viewModel.selectedPeriod) {
@@ -230,13 +236,15 @@ struct StatisticsScreen: View {
         }
     }
 
-    private func exportStatistics() {
+    private func exportStatistics(format: ExportFormat) {
         guard let data = exportableData, !data.isEmpty else { return }
         do {
-            shareURLs = try StatisticsExporter.export(
+            let url = try StatisticsExporter.export(
                 data: data,
-                periodLabel: viewModel.selectedPeriod.rawValue
+                periodLabel: viewModel.selectedPeriod.rawValue,
+                format: format
             )
+            shareURLs = [url]
             showShareSheet = true
         } catch {
             // Silently fail — file write errors are unlikely for temp directory
