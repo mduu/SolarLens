@@ -380,7 +380,7 @@ struct BatterySheet: View {
                                 let formatted = savedAmount.formatted(
                                     .currency(code: Locale.current.currency?.identifier ?? "EUR")
                                 )
-                                Text("≈ \(formatted)")
+                                Text(verbatim: "≈ \(formatted)")
                                     .font(.caption)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.green)
