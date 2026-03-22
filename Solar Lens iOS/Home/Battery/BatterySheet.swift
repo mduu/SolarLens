@@ -88,7 +88,7 @@ struct BatterySheet: View {
                     .foregroundStyle(.secondary)
             }
 
-            HStack(spacing: 16) {
+            HStack(alignment: .top, spacing: 16) {
                 ZStack {
                     Circle()
                         .fill(batteryColor.opacity(0.12))
@@ -103,33 +103,27 @@ struct BatterySheet: View {
                         )
                 }
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 4) {
                         Text("\(level)%")
                             .font(.headline)
                             .fontWeight(.bold)
-                    }
 
-                    if charging != 0 {
-                        HStack(spacing: 4) {
-                            Image(systemName: charging > 0 ? "arrow.up" : "arrow.down")
-                                .font(.caption)
-                                .foregroundStyle(charging > 0 ? .green : .orange)
-                            Text(abs(charging).formatWattsAsWattsKiloWatts(widthUnit: true))
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                        if charging != 0 {
+                            HStack(spacing: 4) {
+                                Image(systemName: charging > 0 ? "arrow.up" : "arrow.down")
+                                    .font(.caption)
+                                    .foregroundStyle(charging > 0 ? .green : .orange)
+                                Text(abs(charging).formatWattsAsWattsKiloWatts(widthUnit: true))
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
+
+                    BatterySheetBar(level: level, color: batteryColor)
                 }
-
-                Spacer()
             }
-
-            BatteryIndicator(
-                percentage: Double(level),
-                showPercentage: false,
-                height: 20
-            )
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -209,6 +203,35 @@ struct BatterySheet: View {
         if level >= 50 { return "battery.50percent" }
         if level >= 10 { return "battery.25percent" }
         return "battery.0percent"
+    }
+}
+
+// MARK: - Battery Bar (full-width, matches home screen style)
+
+private struct BatterySheetBar: View {
+    let level: Int
+    let color: Color
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                // Track
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(color.opacity(0.15))
+
+                // Fill
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(
+                        LinearGradient(
+                            colors: [color.opacity(0.6), color],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: geo.size.width * CGFloat(min(level, 100)) / 100)
+            }
+        }
+        .frame(height: 10)
     }
 }
 
