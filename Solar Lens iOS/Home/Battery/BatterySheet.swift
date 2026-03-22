@@ -5,6 +5,7 @@ struct BatterySheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.energyManager) var energyManager
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
     @State var isLoading: Bool = false
@@ -34,36 +35,25 @@ struct BatterySheet: View {
             .ignoresSafeArea()
 
             ScrollView {
-                VStack(spacing: 16) {
-                    if model.overviewData.currentBatteryLevel != nil
-                        || model.overviewData.currentBatteryChargeRate != nil
-                    {
-                        if !model.overviewData.isStaleData {
-                            // Battery status card
-                            batteryStatusCard
-
-                            // Today chart + totals card
-                            batteryTodayCard
-
-                            // Battery advantage card
-                            batteryAdvantageCard
-
-                            // Device list card
-                            let batteries = model.overviewData.devices.filter { $0.deviceType == .battery }
-                            if !batteries.isEmpty {
-                                batteryDevicesCard(batteries: batteries)
-                            }
-
+                if model.overviewData.currentBatteryLevel != nil
+                    || model.overviewData.currentBatteryChargeRate != nil
+                {
+                    if !model.overviewData.isStaleData {
+                        if verticalSizeClass == .compact {
+                            landscapeContent
                         } else {
-                            Text("Stale data!")
-                                .foregroundColor(.red)
+                            portraitContent
                         }
                     } else {
-                        Text("No battery data present!")
-                            .font(.footnote)
+                        Text("Stale data!")
+                            .foregroundColor(.red)
+                            .padding()
                     }
+                } else {
+                    Text("No battery data present!")
+                        .font(.footnote)
+                        .padding()
                 }
-                .padding()
             }
 
             if isLoading {
@@ -86,6 +76,47 @@ struct BatterySheet: View {
         .task {
             await fetchTodayData()
         }
+    }
+
+    // MARK: - Portrait Layout
+
+    private var portraitContent: some View {
+        VStack(spacing: 16) {
+            batteryStatusCard
+            batteryTodayCard
+            batteryAdvantageCard
+
+            let batteries = model.overviewData.devices.filter { $0.deviceType == .battery }
+            if !batteries.isEmpty {
+                batteryDevicesCard(batteries: batteries)
+            }
+        }
+        .padding()
+    }
+
+    // MARK: - Landscape Layout
+
+    private var landscapeContent: some View {
+        HStack(alignment: .top, spacing: 16) {
+            // Left column: Today chart
+            VStack(spacing: 16) {
+                batteryTodayCard
+            }
+            .frame(maxWidth: .infinity)
+
+            // Right column: Status + Advantage + Devices
+            VStack(spacing: 16) {
+                batteryStatusCard
+                batteryAdvantageCard
+
+                let batteries = model.overviewData.devices.filter { $0.deviceType == .battery }
+                if !batteries.isEmpty {
+                    batteryDevicesCard(batteries: batteries)
+                }
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .padding()
     }
 
     private func fetchTodayData() async {
