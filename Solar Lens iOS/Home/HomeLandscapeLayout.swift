@@ -10,18 +10,11 @@ struct HomeLandscapeLayout: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: columnSpacing) {
-            // Columns 1 & 2: Energy Flow Grid with Efficiency below battery
-            EnergyFlowGrid {
-                EfficiencyGaugeView(
-                    todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
-                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree,
-                    compact: true
-                )
-                .cardStyle()
-            }
-            .frame(maxWidth: .infinity)
+            // Columns 1 & 2: Energy Flow Grid (charging inside consumption card)
+            EnergyFlowGrid(showCharging: true)
+                .frame(maxWidth: .infinity)
 
-            // Column 3: App controls + Charging + Forecast
+            // Column 3: App controls + Forecast + Efficiency
             VStack(spacing: 8) {
                 // Compact header: app icon, timestamp, refresh, settings
                 HStack(spacing: 6) {
@@ -51,12 +44,16 @@ struct HomeLandscapeLayout: View {
 
                     SettingsButton(buttonSize: compactButtonSize)
                 }
-
-                if !buildingState.overviewData.chargingStations.isEmpty {
-                    ChargingView(isVertical: true)
-                }
+                .padding(.bottom, 8)
 
                 forecastCard
+
+                EfficiencyGaugeView(
+                    todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
+                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree,
+                    compact: true
+                )
+                .cardStyle()
             }
             .frame(width: 190)
         }
