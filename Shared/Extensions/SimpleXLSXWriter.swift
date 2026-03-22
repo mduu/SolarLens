@@ -1,7 +1,7 @@
 internal import Foundation
 
 /// Minimal XLSX file generator. XLSX is a ZIP archive containing XML files.
-/// Uses Foundation's built-in ZIP support for reliable archive creation.
+/// Uses Store (no compression) for simplicity since the files are small.
 enum SimpleXLSXWriter {
 
     struct Cell {
@@ -37,37 +37,8 @@ enum SimpleXLSXWriter {
             ("xl/worksheets/sheet1.xml", sheetXML.data(using: .utf8)!),
         ]
 
-        // Create temp directory with XLSX structure, then ZIP it
-        let fm = FileManager.default
-        let stagingDir = fm.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        defer { try? fm.removeItem(at: stagingDir) }
-
-        for (name, content) in files {
-            let fileURL = stagingDir.appendingPathComponent(name)
-            try fm.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try content.write(to: fileURL)
-        }
-
-        // Remove existing file if present
-        try? fm.removeItem(at: url)
-
-        // Use NSFileCoordinator to create ZIP
-        var coordinatorError: NSError?
-        var writeError: Error?
-        NSFileCoordinator().coordinate(
-            readingItemAt: stagingDir,
-            options: .forUploading,
-            error: &coordinatorError
-        ) { zipURL in
-            do {
-                try fm.copyItem(at: zipURL, to: url)
-            } catch {
-                writeError = error
-            }
-        }
-
-        if let error = coordinatorError { throw error }
-        if let error = writeError { throw error }
+        let zipData = createZIP(files: files)
+        try zipData.write(to: url)
     }
 
     // MARK: - XML Templates
@@ -185,5 +156,93 @@ enum SimpleXLSXWriter {
         }
         xml += "</sst>"
         return xml
+    }
+
+    // MARK: - Minimal ZIP writer (Store method, no compression)
+
+    private static func createZIP(files: [(String, Data)]) -> Data {
+        var zipData = Data()
+        var centralDirectory = Data()
+
+        for (name, content) in files {
+            let nameData = name.data(using: .utf8)!
+            let crc = crc32(content)
+            let offset = UInt32(zipData.count)
+
+            // Local file header
+            zipData.appendUInt32(0x04034b50)       // signature
+            zipData.appendUInt16(20)                // version needed
+            zipData.appendUInt16(0)                 // flags
+            zipData.appendUInt16(0)                 // compression: store
+            zipData.appendUInt16(0)                 // mod time
+            zipData.appendUInt16(0)                 // mod date
+            zipData.appendUInt32(crc)               // crc32
+            zipData.appendUInt32(UInt32(content.count)) // compressed size
+            zipData.appendUInt32(UInt32(content.count)) // uncompressed size
+            zipData.appendUInt16(UInt16(nameData.count)) // name length
+            zipData.appendUInt16(0)                 // extra length
+            zipData.append(nameData)
+            zipData.append(content)
+
+            // Central directory entry
+            centralDirectory.appendUInt32(0x02014b50) // signature
+            centralDirectory.appendUInt16(20)       // version made by
+            centralDirectory.appendUInt16(20)       // version needed
+            centralDirectory.appendUInt16(0)        // flags
+            centralDirectory.appendUInt16(0)        // compression
+            centralDirectory.appendUInt16(0)        // mod time
+            centralDirectory.appendUInt16(0)        // mod date
+            centralDirectory.appendUInt32(crc)
+            centralDirectory.appendUInt32(UInt32(content.count))
+            centralDirectory.appendUInt32(UInt32(content.count))
+            centralDirectory.appendUInt16(UInt16(nameData.count))
+            centralDirectory.appendUInt16(0)        // extra length
+            centralDirectory.appendUInt16(0)        // comment length
+            centralDirectory.appendUInt16(0)        // disk number
+            centralDirectory.appendUInt16(0)        // internal attrs
+            centralDirectory.appendUInt32(0)        // external attrs
+            centralDirectory.appendUInt32(offset)   // offset to local header
+            centralDirectory.append(nameData)       // file name
+        }
+
+        let centralDirOffset = UInt32(zipData.count)
+        zipData.append(centralDirectory)
+
+        // End of central directory
+        zipData.appendUInt32(0x06054b50)
+        zipData.appendUInt16(0)                     // disk number
+        zipData.appendUInt16(0)                     // disk of central dir
+        zipData.appendUInt16(UInt16(files.count))   // entries on disk
+        zipData.appendUInt16(UInt16(files.count))   // total entries
+        zipData.appendUInt32(UInt32(centralDirectory.count))
+        zipData.appendUInt32(centralDirOffset)
+        zipData.appendUInt16(0)                     // comment length
+
+        return zipData
+    }
+
+    private static func crc32(_ data: Data) -> UInt32 {
+        var crc: UInt32 = 0xFFFFFFFF
+        for byte in data {
+            crc ^= UInt32(byte)
+            for _ in 0..<8 {
+                crc = (crc >> 1) ^ (crc & 1 == 1 ? 0xEDB88320 : 0)
+            }
+        }
+        return crc ^ 0xFFFFFFFF
+    }
+}
+
+// MARK: - Data helpers for little-endian writes
+
+private extension Data {
+    mutating func appendUInt16(_ value: UInt16) {
+        var v = value.littleEndian
+        append(Data(bytes: &v, count: 2))
+    }
+
+    mutating func appendUInt32(_ value: UInt32) {
+        var v = value.littleEndian
+        append(Data(bytes: &v, count: 4))
     }
 }
