@@ -31,25 +31,13 @@ struct HomeScreen: View {
                         ZStack {
 
                             if isPortrait {
-                                portraitLayout
+                                portraitContent
                                     .frame(minHeight: rootGeometry.size.height)
-                                    .animation(nil, value: buildingState.overviewData.currentSolarProduction)
-                                    .animation(nil, value: buildingState.overviewData.currentOverallConsumption)
-                                    .animation(nil, value: buildingState.overviewData.currentBatteryLevel)
-                                    .animation(nil, value: buildingState.overviewData.currentGridToHouse)
-                                    .animation(nil, value: buildingState.overviewData.lastSuccessServerFetch)
                             } else {
-                                landscapeLayout
-                                    .frame(minHeight: rootGeometry.size.height)
-                                    .animation(nil, value: buildingState.overviewData.currentSolarProduction)
-                                    .animation(nil, value: buildingState.overviewData.currentOverallConsumption)
-                                    .animation(nil, value: buildingState.overviewData.currentBatteryLevel)
-                                    .animation(nil, value: buildingState.overviewData.currentGridToHouse)
-                                    .animation(nil, value: buildingState.overviewData.lastSuccessServerFetch)
+                                landscapeContent
                                     .padding()
                                     .padding(.horizontal, 30)
                             }
-
 
                         }  // :ZStack
 
@@ -84,10 +72,10 @@ struct HomeScreen: View {
         }
     }
 
-    // MARK: - Portrait Layout
+    // MARK: - Layout Selection
 
     @ViewBuilder
-    private var portraitLayout: some View {
+    private var portraitContent: some View {
         if isLoading() {
             VStack {
                 MainProgressView()
@@ -95,111 +83,35 @@ struct HomeScreen: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.top, 65)
         } else {
-            VStack(spacing: 10) {
-                HeaderView(onRefresh: { refreshAll() }, showError: $showError)
-                    .padding(.top, 65)
-
-                Spacer()
-
-                // 2x2 Energy Flow Grid + Charging (vertically centered)
-                EnergyFlowGrid(showCharging: true)
-                    .padding(.horizontal, 16)
-
-                Spacer()
-
-                // Forecast & Efficiency cards (above footer)
-                HStack(alignment: .bottom, spacing: 16) {
-                    if solarDetailsData != nil {
-                        SolarForecastView(
-                            solarProductionMax: buildingState.overviewData.solarProductionMax,
-                            todaySolarProduction: solarDetailsData!.todaySolarProduction,
-                            forecastToday: solarDetailsData!.forecastToday,
-                            forecastTomorrow: solarDetailsData!.forecastTomorrow,
-                            forecastDayAfterTomorrow: solarDetailsData!.forecastDayAfterTomorrow
-                        )
-
-                    } else {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 160)
-                    }
-
-                    EfficiencyGaugeView(
-                        todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
-                        todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
-                    )
-                    .cardStyle()
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 8)
-
-                FooterView()
-            }
-            .transaction { transaction in
-                transaction.animation = nil
-            }
+            HomePortraitLayout(
+                showError: $showError,
+                solarDetailsData: solarDetailsData,
+                onRefresh: { refreshAll() }
+            )
+            .animation(nil, value: buildingState.overviewData.currentSolarProduction)
+            .animation(nil, value: buildingState.overviewData.currentOverallConsumption)
+            .animation(nil, value: buildingState.overviewData.currentBatteryLevel)
+            .animation(nil, value: buildingState.overviewData.currentGridToHouse)
+            .animation(nil, value: buildingState.overviewData.lastSuccessServerFetch)
         }
     }
 
-    // MARK: - Landscape Layout
-
     @ViewBuilder
-    private var landscapeLayout: some View {
+    private var landscapeContent: some View {
         if isLoading() {
             MainProgressView(isLandscape: true)
         } else {
-            HStack(alignment: .center, spacing: 16) {
-                // Left: Energy Flow Grid
-                EnergyFlowGrid()
-
-                // Right column: Forecast + Efficiency + Charging + Controls
-                VStack(spacing: 8) {
-                    if solarDetailsData != nil {
-                        SolarForecastView(
-                            solarProductionMax: buildingState.overviewData.solarProductionMax,
-                            todaySolarProduction: solarDetailsData!.todaySolarProduction,
-                            forecastToday: solarDetailsData!.forecastToday,
-                            forecastTomorrow: solarDetailsData!.forecastTomorrow,
-                            forecastDayAfterTomorrow: solarDetailsData!.forecastDayAfterTomorrow
-                        )
-                        .frame(maxWidth: 180, maxHeight: 120)
-                    } else {
-                        ProgressView()
-                            .frame(maxWidth: 180, maxHeight: 120)
-                    }
-
-                    EfficiencyGaugeView(
-                        todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
-                        todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
-                    )
-                    .frame(maxWidth: 180, maxHeight: 120)
-
-                    if !buildingState.overviewData.chargingStations.isEmpty {
-                        ChargingView(isVertical: true)
-                            .frame(maxWidth: 180)
-                    }
-
-                    Spacer()
-
-                    HStack {
-                        AppLogo()
-                        Spacer()
-                        RefreshButton(onRefresh: { refreshAll() })
-                        SettingsButton()
-                    }
-                    .frame(maxWidth: 180)
-
-                    UpdateTimeStampView(
-                        isStale: buildingState.overviewData.isStaleData,
-                        updateTimeStamp: buildingState.overviewData.lastSuccessServerFetch,
-                        isLoading: buildingState.isLoading,
-                        onRefresh: nil
-                    )
-                }
-            }
+            HomeLandscapeLayout(
+                solarDetailsData: solarDetailsData,
+                onRefresh: { refreshAll() }
+            )
+            .animation(nil, value: buildingState.overviewData.currentSolarProduction)
+            .animation(nil, value: buildingState.overviewData.currentOverallConsumption)
+            .animation(nil, value: buildingState.overviewData.currentBatteryLevel)
+            .animation(nil, value: buildingState.overviewData.currentGridToHouse)
+            .animation(nil, value: buildingState.overviewData.lastSuccessServerFetch)
         }
     }
-
 
     // MARK: - Data Management
 

@@ -6,6 +6,7 @@ struct EfficiencyGaugeView: View {
 
     var todaySelfConsumptionRate: Double?
     var todayAutarchyDegree: Double?
+    var compact: Bool = false
 
     @AppStorage("cachedOverallProduction") private var cachedOverallProduction: Double = 0
     @AppStorage("cachedOverallProductionFetchDate") private var cachedFetchDate: Double = 0
@@ -17,50 +18,50 @@ struct EfficiencyGaugeView: View {
         let selfConsumption = todaySelfConsumptionRate ?? 0
         let autarky = todayAutarchyDegree ?? 0
 
-        VStack(spacing: 8) {
+        VStack(spacing: compact ? 4 : 8) {
             HStack(spacing: 4) {
                 Image(systemName: "gauge.medium")
                     .font(.caption2)
                     .foregroundStyle(.indigo)
                 Text("Efficiency")
-                    .font(.caption)
+                    .font(compact ? .caption2 : .caption)
                     .foregroundStyle(.primary)
             }
 
-            HStack(spacing: 20) {
+            HStack(spacing: compact ? 12 : 20) {
                 // Self-consumption gauge
-                VStack(spacing: 6) {
+                VStack(spacing: compact ? 3 : 6) {
                     GaugeArc(
                         percentage: selfConsumption,
                         color: .indigo
                     )
-                    .frame(width: 52, height: 30)
+                    .frame(width: compact ? 36 : 52, height: compact ? 20 : 30)
 
                     Text(selfConsumption.formatIntoPercentage())
-                        .font(.headline)
+                        .font(compact ? .subheadline : .headline)
                         .fontWeight(.bold)
                         .foregroundColor(.indigo)
 
                     Text("Self cons.")
-                        .font(.system(size: 9))
+                        .font(.system(size: compact ? 8 : 9))
                         .foregroundStyle(.primary)
                 }
 
                 // Autarky gauge
-                VStack(spacing: 6) {
+                VStack(spacing: compact ? 3 : 6) {
                     GaugeArc(
                         percentage: autarky,
                         color: .purple
                     )
-                    .frame(width: 52, height: 30)
+                    .frame(width: compact ? 36 : 52, height: compact ? 20 : 30)
 
                     Text(autarky.formatIntoPercentage())
-                        .font(.headline)
+                        .font(compact ? .subheadline : .headline)
                         .fontWeight(.bold)
                         .foregroundColor(.purple)
 
                     Text("Autarky")
-                        .font(.system(size: 9))
+                        .font(.system(size: compact ? 8 : 9))
                         .foregroundStyle(.primary)
                 }
             }

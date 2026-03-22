@@ -2,10 +2,11 @@ import Contacts
 import SwiftUI
 
 struct SettingsButton: View {
+    var buttonSize: CGFloat = 48
     @State private var showSettingsSheet = false
 
     var body: some View {
-        RoundIconButton(imageName: "gear") {
+        RoundIconButton(imageName: "gear", buttonSize: buttonSize) {
             showSettingsSheet = true
         }
         .sheet(isPresented: $showSettingsSheet)

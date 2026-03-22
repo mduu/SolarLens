@@ -14,12 +14,18 @@ private extension View {
     }
 }
 
-struct EnergyFlowGrid: View {
+struct EnergyFlowGrid<BelowBattery: View>: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @StateObject private var pinnedConfig = PinnedDevicesConfiguration()
     var showCharging: Bool = false
+    private let belowBattery: BelowBattery
     private let hGap: CGFloat = 40
     private let vGap: CGFloat = 60
+
+    init(showCharging: Bool = false, @ViewBuilder belowBattery: () -> BelowBattery = { EmptyView() }) {
+        self.showCharging = showCharging
+        self.belowBattery = belowBattery()
+    }
 
     var body: some View {
         let data = buildingState.overviewData
@@ -52,12 +58,16 @@ struct EnergyFlowGrid: View {
             // at the same height as consumption, even when charging
             // stations make the right column taller.
             HStack(alignment: .top, spacing: hGap) {
-                BatteryBoubleView(
-                    currentBatteryLevel: data.currentBatteryLevel,
-                    currentChargeRate: data.currentBatteryChargeRate,
-                    batteryForecast: data.getBatteryForecast()
-                )
-                .cardAnchor("battery")
+                VStack(spacing: 20) {
+                    BatteryBoubleView(
+                        currentBatteryLevel: data.currentBatteryLevel,
+                        currentChargeRate: data.currentBatteryChargeRate,
+                        batteryForecast: data.getBatteryForecast()
+                    )
+                    .cardAnchor("battery")
+
+                    belowBattery
+                }
 
                 // Consumption card — combined with charging and/or pinned devices when present
                 let hasCharging = showCharging && !data.chargingStations.isEmpty
