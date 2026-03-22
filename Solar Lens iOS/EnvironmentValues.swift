@@ -9,6 +9,6 @@ extension EnvironmentValues {
 
 private struct EnergyManagerKey: EnvironmentKey {
     static var defaultValue: EnergyManager {
-        return SolarManager()
+        return SolarManager.shared
     }
 }

@@ -10,6 +10,7 @@ class SolarManager: EnergyManager {
     private var accessClaims: [String]?
     private var activeRefreshTask: Task<Bool, Never>?
     private var activeLoginTask: Task<Void, Error>?
+    private var activeSystemInfoTask: Task<Void, Error>?
     private lazy var solarManagerApi = SolarManagerApi(onTokenExpired: { [weak self] in
         await self?.handleOnTokenExpired() ?? false
     })
@@ -698,20 +699,37 @@ class SolarManager: EnergyManager {
             return
         }
 
-        print("Requesting System Information ...")
-
-        try await ensureLoggedIn()
-
-        let users = try await solarManagerApi.getV1Users()
-        let firstUser = users?.first
-        if firstUser == nil {
-            throw EnergyManagerClientError.systemInformationNotFound
+        // Serialize concurrent callers so only one fetches system info.
+        if let existingTask = activeSystemInfoTask {
+            try await existingTask.value
+            return
         }
 
-        self.systemInformation = firstUser
-        print(
-            "System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")"
-        )
+        let task = Task<Void, Error> { @MainActor in
+            // Re-check after acquiring serialization
+            if self.systemInformation != nil {
+                return
+            }
+
+            print("Requesting System Information ...")
+
+            try await ensureLoggedIn()
+
+            let users = try await solarManagerApi.getV1Users()
+            let firstUser = users?.first
+            if firstUser == nil {
+                throw EnergyManagerClientError.systemInformationNotFound
+            }
+
+            self.systemInformation = firstUser
+            print(
+                "System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")"
+            )
+        }
+
+        activeSystemInfoTask = task
+        defer { activeSystemInfoTask = nil }
+        try await task.value
     }
 
     private func ensureSensorInfosAreCurrent() async throws {
