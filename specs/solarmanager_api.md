@@ -33,18 +33,18 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 
 ### Data – Read
 
-| Method | Endpoint | Features | Deprecated? |
-|--------|----------|----------|-------------|
-| GET | `/v1/users` | System info, gateway discovery, account setup | — |
-| GET | `/v1/info/sensors/{smId}` | Sensor/device discovery, battery & charger detection | — |
-| GET | `/v1/chart/gateway/{smId}` | Dashboard real-time energy flow | — |
-| GET | `/v1/overview` | Energy overview statistics | — |
-| GET | `/v1/statistics/gateways/{smId}` | Today's stats, daily/weekly/monthly statistics, solar details | — |
-| GET | `/v1/consumption/sensor/{sensorId}` | Car charging history, charging data | — |
-| GET | `/v1/data/sensor/{sensorId}/range` | Battery charge/discharge history | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/devices/{deviceId}/data/range` |
-| GET | `/v3/users/{smId}/data/forecast` | Solar forecast (today, tomorrow, day after) | — |
-| GET | `/v3/users/{smId}/data/stream` | Dashboard device power status | — |
-| GET | `/v3/users/{smId}/data/range` | Detailed energy data, production/consumption graphs | — |
+| Method | Endpoint                            | Features                                                      | Deprecated?                                                                            |
+| ------ | ----------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| GET    | `/v1/users`                         | System info, gateway discovery, account setup                 | —                                                                                      |
+| GET    | `/v1/info/sensors/{smId}`           | Sensor/device discovery, battery & charger detection          | —                                                                                      |
+| GET    | `/v1/chart/gateway/{smId}`          | Dashboard real-time energy flow                               | —                                                                                      |
+| GET    | `/v1/overview`                      | Energy overview statistics                                    | —                                                                                      |
+| GET    | `/v1/statistics/gateways/{smId}`    | Today's stats, daily/weekly/monthly statistics, solar details | —                                                                                      |
+| GET    | `/v1/consumption/sensor/{sensorId}` | Car charging history, charging data                           | —                                                                                      |
+| GET    | `/v3/devices/{deviceId}/data/range` | Battery charge/discharge history                              | —                                                                                      |
+| GET    | `/v3/users/{smId}/data/forecast`    | Solar forecast (today, tomorrow, day after)                   | —                                                                                      |
+| GET    | `/v3/users/{smId}/data/stream`      | Dashboard device power status                                 | —                                                                                      |
+| GET    | `/v3/users/{smId}/data/range`       | Detailed energy data, production/consumption graphs           | —                                                                                      |
 
 ### Control – Write
 
@@ -53,45 +53,6 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 | PUT | `/v2/control/battery/{sensorId}` | Battery mode control (eco, peak shaving, tariff-optimized, etc.) | — |
 | PUT | `/v1/control/car-charger/{sensorId}` | EV charger mode control (off, solar, grid) | — |
 | PUT | `/v1/configure/sensor-priority/{sensorId}` | Device priority reordering | — |
-
-### Endpoints NOT Used
-
-The following endpoints exist in the API but are not currently used by Solar Lens:
-
-| Method | Endpoint | Potential use | Deprecated? |
-|--------|----------|---------------|-------------|
-| GET | `/v1/info/user/{uId}` | User profile details | — |
-| GET | `/v1/info/gateway/{smId}` | Gateway hardware info | — |
-| GET | `/v1/customers/{smId}` | Customer info (v1) | — |
-| GET | `/v2/customers` | Customer list (v2) | — |
-| GET | `/v2/customers/{smId}` | Customer info (v2) | — |
-| GET | `/v1/subscription` | Subscription tier | — |
-| GET | `/v1/subscriptions/{userId}` | Subscription details | — |
-| GET | `/v1/tariff/gateways/{smId}` | Tariff info | — |
-| GET | `/v1/tariff/gateways/{smId}/dynamic` | Dynamic tariff | **Yes** — deprecated 2025-09, removal 2026-09. Use `/v3/users/{smId}/tariff/dynamic` |
-| GET | `/v3/users/{smId}/tariffs` | Tariffs (v3) | — |
-| GET | `/v3/users/{smId}/tariff/dynamic` | Dynamic tariff (v3) | — |
-| GET | `/v1/consumption/gateway/{smId}` | Gateway consumption | — |
-| GET | `/v1/consumption/gateway/{smId}/range` | Gateway consumption range | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/range` |
-| GET | `/v1/data/gateway/{gatewayId}` | Gateway data | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
-| GET | `/v1/data/string/{stringId}/range` | String inverter data | **Yes** — no removal date given |
-| GET | `/v1/data/zev/{smId}` | ZEV multi-tenant data | — |
-| GET | `/v1/stream/gateway/{smId}` | Gateway sensor stream | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
-| GET | `/v1/stream/sensor/{smId}/{sensorId}` | Individual sensor stream | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
-| GET | `/v1/forecast/gateways/{smId}` | Forecast (v1) | **Yes** — deprecated 2025-07, removal 2026-07. Use `/v3/users/{smId}/data/forecast` |
-| GET | `/v1/control/tariff` | Tariff control info | — |
-| PUT | `/v1/control/battery/{sensorId}` | Battery control (v1) | **Yes** — superseded by `/v2/control/battery/{sensorId}` |
-| PUT | `/v1/control/car-charging-system/{sensorId}` | Car charging system control (Max Performance, Optimized, No Charging) | — |
-| PUT | `/v1/control/heat-pump/{sensorId}` | Heat pump control | — |
-| PUT | `/v1/control/inverter/{sensorId}` | Inverter control | — |
-| PUT | `/v1/control/smart-plug/{sensorId}` | Smart plug control | — |
-| PUT | `/v1/control/switch/{sensorId}` | Switch control | — |
-| PUT | `/v1/control/v2x/{sensorId}` | V2X device control (v1) | **Yes** — superseded by `/v2/control/v2x/{sensorId}` |
-| PUT | `/v2/control/v2x/{sensorId}` | V2X device control (v2, expanded modes) | — |
-| PUT | `/v1/control/water-heater/{sensorId}` | Water heater control | — |
-| GET | `/v1/supported/devices` | Supported device types | **Yes** — deprecated 2025-10, removal 2026-10. Use `/v3/devices/supported` |
-| GET | `/v3/devices/supported` | Supported device types (v3) | — |
-| GET | `/v3/devices/{deviceId}/data/range` | Device range data (v3) | — |
 
 ---
 
@@ -151,28 +112,28 @@ The following endpoints exist in the API but are not currently used by Solar Len
 
 #### Devices (20 endpoints)
 
-| Method | Endpoint | Notes |
-|--------|----------|-------|
-| GET | `/v1/info/sensor/{sensorId}` | Sensor/device info |
-| GET | `/v1/consumption/sensor/{sensorId}` | Sensor consumption data |
-| GET | `/v1/data/sensor/{sensorId}/range` | Sensor range data (v1) |
-| GET | `/v3/devices/{deviceId}/data/range` | Device range data (v3) |
-| GET | `/v1/stream/sensor/{smId}/{sensorId}` | Sensor stream |
-| GET | `/v1/supported/devices` | **DEPRECATED** — Deprecated 2025-10, removal 2026-10. Use `/v3/devices/supported` |
-| GET | `/v3/devices/supported` | **NEW** — Supported device types (v3), replaces `/v1/supported/devices` |
-| GET | `/v1/control/tariff` | Tariff control info |
-| PUT | `/v1/configure/sensor-priority/{sensorId}` | Set sensor priority |
-| PUT | `/v1/control/battery/{sensorId}` | Control battery (v1) |
-| PUT | `/v2/control/battery/{sensorId}` | Control battery (v2) |
-| PUT | `/v1/control/car-charger/{sensorId}` | Control EV charger |
-| PUT | `/v1/control/car-charging-system/{sensorId}` | **NEW** — Control car charging system (modes: Max Performance, Optimized, No Charging) |
-| PUT | `/v1/control/heat-pump/{sensorId}` | Control heat pump |
-| PUT | `/v1/control/inverter/{sensorId}` | Control inverter |
-| PUT | `/v1/control/smart-plug/{sensorId}` | Control smart plug |
-| PUT | `/v1/control/switch/{sensorId}` | Control switch |
-| PUT | `/v1/control/v2x/{sensorId}` | **DEPRECATED** — Control V2X device (v1). Use `/v2/control/v2x/{sensorId}` |
-| PUT | `/v2/control/v2x/{sensorId}` | **NEW** — Control V2X device (v2, expanded modes) |
-| PUT | `/v1/control/water-heater/{sensorId}` | Control water heater |
+| Method | Endpoint                                     | Notes                                                                                  |
+| ------ | -------------------------------------------- | -------------------------------------------------------------------------------------- |
+| GET    | `/v1/info/sensor/{sensorId}`                 | Sensor/device info                                                                     |
+| GET    | `/v1/consumption/sensor/{sensorId}`          | Sensor consumption data                                                                |
+| GET    | `/v1/data/sensor/{sensorId}/range`           | Sensor range data (v1)                                                                 |
+| GET    | `/v3/devices/{deviceId}/data/range`          | Device range data (v3)                                                                 |
+| GET    | `/v1/stream/sensor/{smId}/{sensorId}`        | Sensor stream                                                                          |
+| GET    | `/v1/supported/devices`                      | **DEPRECATED** — Deprecated 2025-10, removal 2026-10. Use `/v3/devices/supported`      |
+| GET    | `/v3/devices/supported`                      | **NEW** — Supported device types (v3), replaces `/v1/supported/devices`                |
+| GET    | `/v1/control/tariff`                         | Tariff control info                                                                    |
+| PUT    | `/v1/configure/sensor-priority/{sensorId}`   | Set sensor priority                                                                    |
+| PUT    | `/v1/control/battery/{sensorId}`             | Control battery (v1)                                                                   |
+| PUT    | `/v2/control/battery/{sensorId}`             | Control battery (v2)                                                                   |
+| PUT    | `/v1/control/car-charger/{sensorId}`         | Control EV charger                                                                     |
+| PUT    | `/v1/control/car-charging-system/{sensorId}` | **NEW** — Control car charging system (modes: Max Performance, Optimized, No Charging) |
+| PUT    | `/v1/control/heat-pump/{sensorId}`           | Control heat pump                                                                      |
+| PUT    | `/v1/control/inverter/{sensorId}`            | Control inverter                                                                       |
+| PUT    | `/v1/control/smart-plug/{sensorId}`          | Control smart plug                                                                     |
+| PUT    | `/v1/control/switch/{sensorId}`              | Control switch                                                                         |
+| PUT    | `/v1/control/v2x/{sensorId}`                 | **DEPRECATED** — Control V2X device (v1). Use `/v2/control/v2x/{sensorId}`             |
+| PUT    | `/v2/control/v2x/{sensorId}`                 | **NEW** — Control V2X device (v2, expanded modes)                                      |
+| PUT    | `/v1/control/water-heater/{sensorId}`        | Control water heater                                                                   |
 
 ### Known API Notes
 
@@ -204,6 +165,7 @@ The following endpoints exist in the API but are not currently used by Solar Len
 
 **Impact on Solar Lens:**
 - Migrated from deprecated `/v1/stream/gateway/{smId}` to `/v3/users/{smId}/data/stream`
+- Migrated from deprecated `/v1/data/sensor/{sensorId}/range` to `/v3/devices/{deviceId}/data/range`
 - New `car-charging-system` endpoint may be relevant if Solar Lens adds support for car charging systems (distinct from car chargers)
 
 <!-- Template for future entries:

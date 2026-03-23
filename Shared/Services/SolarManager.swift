@@ -318,21 +318,25 @@ class SolarManager: EnergyManager {
 
         var result: [BatteryHistory] = []  // Array to hold the results
         for batterySensorId in batterySensorIds {
-            let data = try await solarManagerApi.getV1SensorData(
-                sensor: batterySensorId,
+            let response = try await solarManagerApi.getV3DeviceDataRange(
+                device: batterySensorId,
                 from: todayStart,
                 to: todayEnd
             )
 
-            let items =
-                data?.map { sensorData in
-                    BatteryHistoryItem(
-                        date: RestDateHelper.date(from: sensorData.date)
+            let items: [BatteryHistoryItem] =
+                response?.data.map { dataPoint in
+                    let power = dataPoint.power
+                    let chargedW = max(power, 0)
+                    let dischargedW = abs(min(power, 0))
+
+                    return BatteryHistoryItem(
+                        date: RestDateHelper.date(from: dataPoint.t)
                             ?? Date(),
-                        energyDischargedWh: sensorData.bdWh ?? 0,
-                        energyChargedWh: sensorData.bcWh ?? 0,
-                        averagePowerDischargedW: sensorData.bdW ?? 0,
-                        averagePowerChargedW: sensorData.bcW ?? 0
+                        energyDischargedWh: dataPoint.eWh,
+                        energyChargedWh: dataPoint.iWh,
+                        averagePowerDischargedW: dischargedW,
+                        averagePowerChargedW: chargedW
                     )
                 } ?? []
 

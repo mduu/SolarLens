@@ -189,18 +189,18 @@ class SolarManagerApi: RestClient {
         return response
     }
 
-    func getV1SensorData(
-        sensor id: String,
+    func getV3DeviceDataRange(
+        device id: String,
         from: Date,
         to: Date,
         interval: Int = 300
-    ) async throws -> [SensorDataV1Response]? {
+    ) async throws -> DataDeviceV3Schema? {
         let fromIso = RestDateHelper.string(from: from)
         let toIso = RestDateHelper.string(from: to)
 
-        let response: [SensorDataV1Response]? = try await get(
+        let response: DataDeviceV3Schema? = try await get(
             serviceUrl:
-                "/v1/data/sensor/\(id)/range?from=\(fromIso)&to=\(toIso)&interval=\(interval)"
+                "/v3/devices/\(id)/data/range?from=\(fromIso)&to=\(toIso)&interval=\(interval)"
         )
 
         return response
