@@ -90,6 +90,10 @@ struct SensorInfosV1Tag: Codable {
 }
 
 struct SensorInfosV1Data: Codable {
+    // Charging station
+    var chargingMode: ChargingMode?
+
+    // Battery
     var batteryCapacity: Double?
     var batteryChargingMode: Int?
     var batteryMode: Int?

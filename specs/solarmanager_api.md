@@ -38,7 +38,6 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 | GET | `/v1/users` | System info, gateway discovery, account setup | — |
 | GET | `/v1/info/sensors/{smId}` | Sensor/device discovery, battery & charger detection | — |
 | GET | `/v1/chart/gateway/{smId}` | Dashboard real-time energy flow | — |
-| GET | `/v1/stream/gateway/{smId}` | Dashboard device power, car charging status | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
 | GET | `/v1/overview` | Energy overview statistics | — |
 | GET | `/v1/statistics/gateways/{smId}` | Today's stats, daily/weekly/monthly statistics, solar details | — |
 | GET | `/v1/consumption/sensor/{sensorId}` | Car charging history, charging data | — |
@@ -77,6 +76,7 @@ The following endpoints exist in the API but are not currently used by Solar Len
 | GET | `/v1/data/gateway/{gatewayId}` | Gateway data | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
 | GET | `/v1/data/string/{stringId}/range` | String inverter data | **Yes** — no removal date given |
 | GET | `/v1/data/zev/{smId}` | ZEV multi-tenant data | — |
+| GET | `/v1/stream/gateway/{smId}` | Gateway sensor stream | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
 | GET | `/v1/stream/sensor/{smId}/{sensorId}` | Individual sensor stream | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
 | GET | `/v1/forecast/gateways/{smId}` | Forecast (v1) | **Yes** — deprecated 2025-07, removal 2026-07. Use `/v3/users/{smId}/data/forecast` |
 | GET | `/v1/control/tariff` | Tariff control info | — |
@@ -203,7 +203,7 @@ The following endpoints exist in the API but are not currently used by Solar Len
 - `PUT /v1/control/v2x/{sensorId}` — deprecated, superseded by `/v2/control/v2x/{sensorId}`
 
 **Impact on Solar Lens:**
-- No endpoints currently used by Solar Lens are affected by the new deprecations
+- Migrated from deprecated `/v1/stream/gateway/{smId}` to `/v3/users/{smId}/data/stream`
 - New `car-charging-system` endpoint may be relevant if Solar Lens adds support for car charging systems (distinct from car chargers)
 
 <!-- Template for future entries:

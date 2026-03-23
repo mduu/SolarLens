@@ -113,21 +113,11 @@ class SolarManagerApi: RestClient {
         return response?.elements
     }
 
-    func getV1StreamGateway(solarManagerId smId: String) async throws
-        -> StreamSensorsV1Response?
-    {
-        let response: StreamSensorsV1Response? = try await get(
-            serviceUrl: "/v1/stream/gateway/\(smId)"
-        )
-
-        return response
-    }
-
     func getV3StreamGateway(solarManagerId smId: String) async throws
         -> DataStreamV3Response?
     {
         let response: DataStreamV3Response? = try await get(
-            serviceUrl: "v3/users/\(smId)/data/stream"
+            serviceUrl: "/v3/users/\(smId)/data/stream"
         )
 
         return response
