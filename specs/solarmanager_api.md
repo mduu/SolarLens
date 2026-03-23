@@ -69,24 +69,28 @@ The following endpoints exist in the API but are not currently used by Solar Len
 | GET | `/v1/subscription` | Subscription tier | — |
 | GET | `/v1/subscriptions/{userId}` | Subscription details | — |
 | GET | `/v1/tariff/gateways/{smId}` | Tariff info | — |
-| GET | `/v1/tariff/gateways/{smId}/dynamic` | Dynamic tariff | — |
+| GET | `/v1/tariff/gateways/{smId}/dynamic` | Dynamic tariff | **Yes** — deprecated 2025-09, removal 2026-09. Use `/v3/users/{smId}/tariff/dynamic` |
 | GET | `/v3/users/{smId}/tariffs` | Tariffs (v3) | — |
+| GET | `/v3/users/{smId}/tariff/dynamic` | Dynamic tariff (v3) | — |
 | GET | `/v1/consumption/gateway/{smId}` | Gateway consumption | — |
 | GET | `/v1/consumption/gateway/{smId}/range` | Gateway consumption range | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/range` |
 | GET | `/v1/data/gateway/{gatewayId}` | Gateway data | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
 | GET | `/v1/data/string/{stringId}/range` | String inverter data | **Yes** — no removal date given |
 | GET | `/v1/data/zev/{smId}` | ZEV multi-tenant data | — |
 | GET | `/v1/stream/sensor/{smId}/{sensorId}` | Individual sensor stream | **Yes** — deprecated 2025-06, removal 2026-06. Use `/v3/users/{smId}/data/stream` |
-| GET | `/v1/supported/devices` | Supported device types | — |
 | GET | `/v1/forecast/gateways/{smId}` | Forecast (v1) | **Yes** — deprecated 2025-07, removal 2026-07. Use `/v3/users/{smId}/data/forecast` |
 | GET | `/v1/control/tariff` | Tariff control info | — |
 | PUT | `/v1/control/battery/{sensorId}` | Battery control (v1) | **Yes** — superseded by `/v2/control/battery/{sensorId}` |
+| PUT | `/v1/control/car-charging-system/{sensorId}` | Car charging system control (Max Performance, Optimized, No Charging) | — |
 | PUT | `/v1/control/heat-pump/{sensorId}` | Heat pump control | — |
 | PUT | `/v1/control/inverter/{sensorId}` | Inverter control | — |
 | PUT | `/v1/control/smart-plug/{sensorId}` | Smart plug control | — |
 | PUT | `/v1/control/switch/{sensorId}` | Switch control | — |
-| PUT | `/v1/control/v2x/{sensorId}` | V2X device control | — |
+| PUT | `/v1/control/v2x/{sensorId}` | V2X device control (v1) | **Yes** — superseded by `/v2/control/v2x/{sensorId}` |
+| PUT | `/v2/control/v2x/{sensorId}` | V2X device control (v2, expanded modes) | — |
 | PUT | `/v1/control/water-heater/{sensorId}` | Water heater control | — |
+| GET | `/v1/supported/devices` | Supported device types | **Yes** — deprecated 2025-10, removal 2026-10. Use `/v3/devices/supported` |
+| GET | `/v3/devices/supported` | Supported device types (v3) | — |
 | GET | `/v3/devices/{deviceId}/data/range` | Device range data (v3) | — |
 
 ---
@@ -96,20 +100,20 @@ The following endpoints exist in the API but are not currently used by Solar Len
 | Field | Value |
 |-------|-------|
 | **API Title** | Solar Manager external API |
-| **Version** | 1.57.2 |
-| **Local file** | `externals/sm_api_swaggers/swagger_ 1.57.2.json` |
-| **Date recorded** | 2026-03-20 |
+| **Version** | 1.79.13 |
+| **Local file** | `externals/sm_api_swaggers/swagger_1.79.13.json` |
+| **Date recorded** | 2026-03-23 |
 
-### Endpoint Summary (v1.57.2)
+### Endpoint Summary (v1.79.13)
 
-#### Auth (2 endpoints)
+#### Auth (2 endpoints, unchanged)
 
 | Method | Endpoint | Notes |
 |--------|----------|-------|
 | POST | `/v1/oauth/login` | Email/password login, returns access + refresh token |
 | POST | `/v1/oauth/refresh` | Refresh access token |
 
-#### Users (12 endpoints)
+#### Users (13 endpoints)
 
 | Method | Endpoint | Notes |
 |--------|----------|-------|
@@ -123,10 +127,11 @@ The following endpoints exist in the API but are not currently used by Solar Len
 | GET | `/v1/subscription` | Current user subscription |
 | GET | `/v1/subscriptions/{userId}` | Subscriptions by user ID |
 | GET | `/v1/tariff/gateways/{smId}` | Tariff info |
-| GET | `/v1/tariff/gateways/{smId}/dynamic` | Dynamic tariff info |
+| GET | `/v1/tariff/gateways/{smId}/dynamic` | **DEPRECATED** — Dynamic tariff info. Deprecated 2025-09, removal 2026-09. Use `/v3/users/{smId}/tariff/dynamic` |
 | GET | `/v3/users/{smId}/tariffs` | Tariffs (v3) |
+| GET | `/v3/users/{smId}/tariff/dynamic` | **NEW** — Dynamic tariff (v3), replaces `/v1/tariff/gateways/{smId}/dynamic` |
 
-#### Users / Data (13 endpoints)
+#### Users / Data (13 endpoints, unchanged)
 
 | Method | Endpoint | Notes |
 |--------|----------|-------|
@@ -144,7 +149,7 @@ The following endpoints exist in the API but are not currently used by Solar Len
 | GET | `/v3/users/{smId}/data/range` | Range data (v3) |
 | GET | `/v3/users/{smId}/data/stream` | Stream data (v3) |
 
-#### Devices (17 endpoints)
+#### Devices (20 endpoints)
 
 | Method | Endpoint | Notes |
 |--------|----------|-------|
@@ -153,29 +158,53 @@ The following endpoints exist in the API but are not currently used by Solar Len
 | GET | `/v1/data/sensor/{sensorId}/range` | Sensor range data (v1) |
 | GET | `/v3/devices/{deviceId}/data/range` | Device range data (v3) |
 | GET | `/v1/stream/sensor/{smId}/{sensorId}` | Sensor stream |
-| GET | `/v1/supported/devices` | List of supported device types |
+| GET | `/v1/supported/devices` | **DEPRECATED** — Deprecated 2025-10, removal 2026-10. Use `/v3/devices/supported` |
+| GET | `/v3/devices/supported` | **NEW** — Supported device types (v3), replaces `/v1/supported/devices` |
 | GET | `/v1/control/tariff` | Tariff control info |
 | PUT | `/v1/configure/sensor-priority/{sensorId}` | Set sensor priority |
 | PUT | `/v1/control/battery/{sensorId}` | Control battery (v1) |
 | PUT | `/v2/control/battery/{sensorId}` | Control battery (v2) |
 | PUT | `/v1/control/car-charger/{sensorId}` | Control EV charger |
+| PUT | `/v1/control/car-charging-system/{sensorId}` | **NEW** — Control car charging system (modes: Max Performance, Optimized, No Charging) |
 | PUT | `/v1/control/heat-pump/{sensorId}` | Control heat pump |
 | PUT | `/v1/control/inverter/{sensorId}` | Control inverter |
 | PUT | `/v1/control/smart-plug/{sensorId}` | Control smart plug |
 | PUT | `/v1/control/switch/{sensorId}` | Control switch |
-| PUT | `/v1/control/v2x/{sensorId}` | Control V2X device |
+| PUT | `/v1/control/v2x/{sensorId}` | **DEPRECATED** — Control V2X device (v1). Use `/v2/control/v2x/{sensorId}` |
+| PUT | `/v2/control/v2x/{sensorId}` | **NEW** — Control V2X device (v2, expanded modes) |
 | PUT | `/v1/control/water-heater/{sensorId}` | Control water heater |
 
 ### Known API Notes
 
 - `sensorId` and `deviceId` are identical. All v1 endpoints using `sensorId` will eventually be replaced with v3 endpoints using `deviceId`.
-- v3 endpoints are starting to appear alongside v1/v2 — monitor for deprecation announcements.
+- v3 endpoints continue to expand alongside v1/v2 — several v1 endpoints now have v3 replacements and deprecation timelines.
+- Car charging system control (`/v1/control/car-charging-system/{sensorId}`) is a new endpoint distinct from the existing car charger control (`/v1/control/car-charger/{sensorId}`).
 
 ---
 
 ## Changelog
 
-### (no changes yet — v1.57.2 is the baseline)
+### v1.79.13 (2026-03-23)
+
+**File:** `externals/sm_api_swaggers/swagger_1.79.13.json`
+
+**New endpoints:**
+- `GET /v3/devices/supported` — Supported device types (v3), replaces `/v1/supported/devices`
+- `GET /v3/users/{smId}/tariff/dynamic` — Dynamic tariff (v3), replaces `/v1/tariff/gateways/{smId}/dynamic`
+- `PUT /v1/control/car-charging-system/{sensorId}` — Car charging system control (modes: Max Performance, Optimized, No Charging)
+- `PUT /v2/control/v2x/{sensorId}` — V2X control (v2, expanded modes incl. Solar&Tariff optimized, Manual, Target SoC)
+
+**Changed endpoints:**
+- (none)
+
+**Removed / deprecated endpoints:**
+- `GET /v1/supported/devices` — deprecated 2025-10, removal 2026-10. Replaced by `/v3/devices/supported`
+- `GET /v1/tariff/gateways/{smId}/dynamic` — deprecated 2025-09, removal 2026-09. Replaced by `/v3/users/{smId}/tariff/dynamic`
+- `PUT /v1/control/v2x/{sensorId}` — deprecated, superseded by `/v2/control/v2x/{sensorId}`
+
+**Impact on Solar Lens:**
+- No endpoints currently used by Solar Lens are affected by the new deprecations
+- New `car-charging-system` endpoint may be relevant if Solar Lens adds support for car charging systems (distinct from car chargers)
 
 <!-- Template for future entries:
 
