@@ -38,7 +38,15 @@
       "mcp__xcode__XcodeListNavigatorIssues",
       "mcp__xcode__GetBuildLog",
       "Bash(sips:*)",
-      "Bash(nm:*)"
+      "Bash(nm:*)",
+      "Bash(find /Users/marc/Dev/Git/SolarLens -type f \\\\\\(-name *openapi* -o -name *swagger* -o -name *spec* -o -name *api* \\\\\\))",
+      "Bash(git restore:*)",
+      "Bash(ARCHIVE_PATH=\"/Users/marc/Library/Developer/Xcode/Archives/2026-03-23/Solar Lens 23-03-2026, 08.39.xcarchive\")",
+      "Bash(git push:*)",
+      "Bash(ARCHIVE_PATH=\"/Users/marc/Library/Developer/Xcode/Archives/2026-03-24/Solar Lens 24-03-2026, 18.30.xcarchive\")",
+      "Bash(find /Users/marc/Dev/Git/SolarLens -type f \\\\\\(-name *Widget* -o -name *widget* \\\\\\))",
+      "Bash(grep -E \"\\\\.\\(swift|pbxproj\\)$\")",
+      "Bash(2)"
     ]
   }
 }
