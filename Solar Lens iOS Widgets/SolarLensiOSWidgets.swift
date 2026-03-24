@@ -9,6 +9,7 @@ struct Solar_Lens_iOS_WidgetsBundle: WidgetBundle {
         ConsumptionWidget()
         TodayTimelineidget()
         EfficiencyWidget()
+        ForecastWidget()
         /*
         Solar_Lens_iOS_Widgets()
         Solar_Lens_iOS_WidgetsControl()

@@ -11,5 +11,6 @@ struct SolarLensWidgets: WidgetBundle {
        SolarTimelineidget()
        TodayTimelineidget()
        EfficiencyWidget()
+       ForecastWidget()
    }
 }
