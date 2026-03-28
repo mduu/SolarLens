@@ -7,6 +7,7 @@ struct BatteryScreen: View {
     @State var isLoading = false
     @State private var mainData: MainData?
     @State private var tariff: TariffV1Response?
+    @State private var showBatteryChart = false
 
     var body: some View {
         if model.overviewData.currentBatteryLevel != nil
@@ -29,10 +30,19 @@ struct BatteryScreen: View {
                     VStack(alignment: .leading, spacing: 8) {
 
                         if !model.overviewData.isStaleData {
-                            WatchBatteryStatusView(
-                                level: model.overviewData.currentBatteryLevel ?? 0,
-                                charging: model.overviewData.currentBatteryChargeRate ?? 0
-                            )
+                            HStack {
+                                WatchBatteryStatusView(
+                                    level: model.overviewData.currentBatteryLevel ?? 0,
+                                    charging: model.overviewData.currentBatteryChargeRate ?? 0
+                                )
+
+                                RoundChartButton {
+                                    model.pauseFetching()
+                                    withAnimation {
+                                        showBatteryChart = true
+                                    }
+                                }
+                            }
                         } else {
                             Text("No current data")
                                 .foregroundStyle(.red)
@@ -69,6 +79,13 @@ struct BatteryScreen: View {
             }  // :ZStack
             .task {
                 await fetchData()
+            }
+            .sheet(isPresented: $showBatteryChart) {
+                BatteryChartSheet()
+                    .navigationTitle("Battery")
+                    .onDisappear {
+                        model.resumeFetching()
+                    }
             }
         }  // :if
     }
