@@ -372,7 +372,7 @@ struct BatterySheet: View {
             : 0
         let selfConsumptionImprovement = selfConsumptionWithBattery - selfConsumptionWithout
 
-        if totalDischarged > 0 || totalCharged > 0 {
+        if model.overviewData.hasAnyBattery {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 4) {
                     Image(systemName: "bolt.shield")
