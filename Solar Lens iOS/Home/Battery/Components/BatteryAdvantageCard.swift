@@ -106,7 +106,7 @@ struct BatteryAdvantageCard: View {
                         }
 
                         if autarkyImprovement > 0.1 {
-                            Text(String(format: "Without battery: %.1f%%", autarkyWithout))
+                            Text("Without battery: \(String(format: "%.1f%%", autarkyWithout))")
                                 .font(.caption2)
                                 .foregroundStyle(.primary.opacity(0.5))
                         }
@@ -139,7 +139,7 @@ struct BatteryAdvantageCard: View {
                         }
 
                         if selfConsumptionImprovement > 0.1 {
-                            Text(String(format: "Without battery: %.1f%%", selfConsumptionWithout))
+                            Text("Without battery: \(String(format: "%.1f%%", selfConsumptionWithout))")
                                 .font(.caption2)
                                 .foregroundStyle(.primary.opacity(0.5))
                         }
