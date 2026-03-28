@@ -46,7 +46,9 @@
       "Bash(ARCHIVE_PATH=\"/Users/marc/Library/Developer/Xcode/Archives/2026-03-24/Solar Lens 24-03-2026, 18.30.xcarchive\")",
       "Bash(find /Users/marc/Dev/Git/SolarLens -type f \\\\\\(-name *Widget* -o -name *widget* \\\\\\))",
       "Bash(grep -E \"\\\\.\\(swift|pbxproj\\)$\")",
-      "Bash(2)"
+      "Bash(2)",
+      "mcp__xcode__DocumentationSearch",
+      "Bash(ARCHIVE_PATH=\"/Users/marc/Library/Developer/Xcode/Archives/2026-03-28/Solar Lens 28-03-2026, 08.32.xcarchive\")"
     ]
   }
 }
