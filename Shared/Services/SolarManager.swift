@@ -15,6 +15,7 @@ class SolarManager: EnergyManager {
         await self?.handleOnTokenExpired() ?? false
     })
     private var systemInformation: V1User?
+    nonisolated(unsafe) private(set) var installationCountry: String?
     private var sensorInfos: [SensorInfosV1Response]?
     private var sensorInfosUpdatedAt: Date?
 
@@ -295,6 +296,16 @@ class SolarManager: EnergyManager {
         }
 
         return try await solarManagerApi.getV1TariffGateway(solarManagerId: smId)
+    }
+
+    func fetchDetailedTariffs() async throws -> TariffSettingsV3Response? {
+        try await ensureSmId()
+
+        guard let smId = systemInformation?.sm_id else {
+            return nil
+        }
+
+        return try await solarManagerApi.getV3Tariffs(solarManagerId: smId)
     }
 
     func fetchTodaysBatteryHistory() async throws -> [BatteryHistory] {
@@ -726,6 +737,7 @@ class SolarManager: EnergyManager {
             }
 
             self.systemInformation = firstUser
+            self.installationCountry = firstUser?.country
             print(
                 "System Informaton loaded. SMID: \(self.systemInformation?.sm_id ?? "<NONE>")"
             )

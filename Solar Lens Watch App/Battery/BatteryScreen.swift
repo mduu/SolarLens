@@ -7,6 +7,7 @@ struct BatteryScreen: View {
     @State var isLoading = false
     @State private var mainData: MainData?
     @State private var tariff: TariffV1Response?
+    @State private var tariffSettings: TariffSettingsV3Response?
     @State private var showBatteryChart = false
 
     var body: some View {
@@ -57,6 +58,7 @@ struct BatteryScreen: View {
                             WatchBatteryAdvantageView(
                                 mainData: mainData,
                                 tariff: tariff,
+                                tariffSettings: tariffSettings,
                                 todayConsumption: model.overviewData.todayConsumption ?? 0,
                                 todayProduction: model.overviewData.todayProduction ?? 0,
                                 autarkyWithBattery: model.overviewData.todayAutarchyDegree ?? 0,
@@ -100,10 +102,13 @@ struct BatteryScreen: View {
             to: Date.todayEndOfDay()
         )
         async let tariffTask = try? manager.fetchTariff()
+        async let tariffSettingsTask = try? manager.fetchDetailedTariffs()
 
-        let (fetchedMainData, fetchedTariff) = await (mainDataTask, tariffTask)
+        let (fetchedMainData, fetchedTariff, fetchedSettings) =
+            await (mainDataTask, tariffTask, tariffSettingsTask)
         self.mainData = fetchedMainData
         self.tariff = fetchedTariff
+        self.tariffSettings = fetchedSettings
     }
 }
 

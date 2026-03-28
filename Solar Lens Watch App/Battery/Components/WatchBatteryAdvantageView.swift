@@ -3,6 +3,7 @@ import SwiftUI
 struct WatchBatteryAdvantageView: View {
     let mainData: MainData?
     let tariff: TariffV1Response?
+    let tariffSettings: TariffSettingsV3Response?
     let todayConsumption: Double
     let todayProduction: Double
     let autarkyWithBattery: Double
@@ -22,17 +23,16 @@ struct WatchBatteryAdvantageView: View {
             : 0
         let selfConsumptionImprovement = selfConsumptionWithBattery - selfConsumptionWithout
 
+        let netSavings = TariffCalculator.batterySavings(
+            data: mainData?.data ?? [],
+            tariffSettings: tariffSettings,
+            fallbackTariff: tariff
+        )
+        let currencyCode = CurrencyHelper.currencyCode
+
         HStack(spacing: 0) {
             // Savings
-            if let gridPrice = tariff?.highTariff ?? tariff?.singleTariff,
-               gridPrice > 0
-            {
-                let currencyCode = Locale.current.currency?.identifier ?? "CHF"
-                let importSaved = (totalDischarged / 1000) * (gridPrice / 100)
-                let feedInPrice = tariff?.directMarketing ?? 0
-                let exportLost = (totalCharged / 1000) * (feedInPrice / 100)
-                let netSavings = importSaved - exportLost
-
+            if netSavings != 0 {
                 VStack(spacing: 2) {
                     HStack(alignment: .firstTextBaseline, spacing: 1) {
                         Text(netSavings, format: .number.precision(.fractionLength(2)))

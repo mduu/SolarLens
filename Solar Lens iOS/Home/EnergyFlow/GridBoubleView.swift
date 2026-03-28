@@ -4,6 +4,8 @@ struct GridBoubleView: View {
     var gridInKwh: Double
     var todayGridImportInWh: Int?
 
+    @State private var showGridSheet = false
+
     var body: some View {
         let todayKwh = Double(todayGridImportInWh ?? 0) / 1000
 
@@ -12,8 +14,16 @@ struct GridBoubleView: View {
             iconColor: .purple,
             label: "Grid",
             value: String(format: "%.1f kW", gridInKwh),
-            detail: todayGridImportInWh != nil ? String(format: "%.1f kWh today", todayKwh) : nil
+            detail: todayGridImportInWh != nil ? String(format: "%.1f kWh today", todayKwh) : nil,
+            showChevron: true
         )
+        .onTapGesture { showGridSheet = true }
+        .sheet(isPresented: $showGridSheet) {
+            NavigationView {
+                GridSheet()
+            }
+            .presentationDetents([.large])
+        }
     }
 }
 

@@ -19,6 +19,8 @@ protocol EnergyManager {
 
     func fetchTariff() async throws -> TariffV1Response?
 
+    func fetchDetailedTariffs() async throws -> TariffSettingsV3Response?
+
     func fetchServerInfo() async throws -> ServerInfo
 
     func fetchEnergyOverview() async throws -> EnergyOverview

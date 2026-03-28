@@ -160,6 +160,16 @@ class SolarManagerApi: RestClient {
         return response
     }
 
+    func getV3Tariffs(solarManagerId smId: String) async throws
+        -> TariffSettingsV3Response?
+    {
+        let response: TariffSettingsV3Response? = try await get(
+            serviceUrl: "/v3/users/\(smId)/tariffs"
+        )
+
+        return response
+    }
+
     func getV3ForecastGateway(solarManagerId smId: String) async throws
         -> ForecastV3Response?
     {

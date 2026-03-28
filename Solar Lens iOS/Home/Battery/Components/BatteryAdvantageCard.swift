@@ -3,6 +3,7 @@ import SwiftUI
 struct BatteryAdvantageCard: View {
     let mainData: MainData?
     let tariff: TariffV1Response?
+    let tariffSettings: TariffSettingsV3Response?
     let todayConsumption: Double
     let todayProduction: Double
     let autarkyWithBattery: Double
@@ -22,6 +23,12 @@ struct BatteryAdvantageCard: View {
             ? max(selfConsumptionWithBattery - (totalCharged / todayProduction * 100), 0)
             : 0
         let selfConsumptionImprovement = selfConsumptionWithBattery - selfConsumptionWithout
+
+        let netSavings = TariffCalculator.batterySavings(
+            data: mainData?.data ?? [],
+            tariffSettings: tariffSettings,
+            fallbackTariff: tariff
+        )
 
         if hasAnyBattery {
             VStack(alignment: .leading, spacing: 12) {
@@ -54,19 +61,9 @@ struct BatteryAdvantageCard: View {
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
 
-                            if let gridPrice = tariff?.highTariff ?? tariff?.singleTariff,
-                               gridPrice > 0
-                            {
-                                let currencyCode = Locale.current.currency?.identifier ?? "EUR"
-                                let importSaved = (totalDischarged / 1000) * (gridPrice / 100)
-                                let feedInPrice = tariff?.directMarketing ?? 0
-                                let exportLost = (totalCharged / 1000) * (feedInPrice / 100)
-                                let netSavings = importSaved - exportLost
-
-                                let formatted = netSavings.formatted(
-                                    .currency(code: currencyCode)
-                                )
-                                Text(verbatim: "≈ \(formatted)")
+                            if netSavings != 0 {
+                                let currencyCode = CurrencyHelper.currencyCode
+                                Text(verbatim: "≈ \(netSavings.formatted(.currency(code: currencyCode)))")
                                     .font(.caption)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.green)

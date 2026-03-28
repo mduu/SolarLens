@@ -11,6 +11,7 @@ struct BatterySheet: View {
     @State private var mainData: MainData?
     @State private var batteryHistory: [BatteryHistory]?
     @State private var tariff: TariffV1Response?
+    @State private var tariffSettings: TariffSettingsV3Response?
 
     private static let maxForecastDuration: TimeInterval = 24 * 3600
     private let forecastFormatter: DateComponentsFormatter = {
@@ -95,6 +96,7 @@ struct BatterySheet: View {
             BatteryAdvantageCard(
                 mainData: mainData,
                 tariff: tariff,
+                tariffSettings: tariffSettings,
                 todayConsumption: model.overviewData.todayConsumption ?? 0,
                 todayProduction: model.overviewData.todayProduction ?? 0,
                 autarkyWithBattery: model.overviewData.todayAutarchyDegree ?? 0,
@@ -132,6 +134,7 @@ struct BatterySheet: View {
                 BatteryAdvantageCard(
                     mainData: mainData,
                     tariff: tariff,
+                    tariffSettings: tariffSettings,
                     todayConsumption: model.overviewData.todayConsumption ?? 0,
                     todayProduction: model.overviewData.todayProduction ?? 0,
                     autarkyWithBattery: model.overviewData.todayAutarchyDegree ?? 0,
@@ -156,11 +159,14 @@ struct BatterySheet: View {
         )
         async let batteryHistoryTask = try? energyManager.fetchTodaysBatteryHistory()
         async let tariffTask = try? energyManager.fetchTariff()
+        async let tariffSettingsTask = try? energyManager.fetchDetailedTariffs()
 
-        let (fetchedMainData, fetchedBatteryHistory, fetchedTariff) = await (mainDataTask, batteryHistoryTask, tariffTask)
+        let (fetchedMainData, fetchedBatteryHistory, fetchedTariff, fetchedSettings) =
+            await (mainDataTask, batteryHistoryTask, tariffTask, tariffSettingsTask)
         self.mainData = fetchedMainData
         self.batteryHistory = fetchedBatteryHistory
         self.tariff = fetchedTariff
+        self.tariffSettings = fetchedSettings
     }
 
     // MARK: - Forecast

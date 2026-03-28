@@ -128,6 +128,34 @@ class FakeEnergyManager: EnergyManager {
         )
     }
 
+    func fetchDetailedTariffs() async throws -> TariffSettingsV3Response? {
+        return TariffSettingsV3Response(
+            purchase: TariffConfig(
+                tariffType: "variable",
+                variableTariff: VariableTariffConfig(
+                    prices: TariffPrices(lowTariff: 18, highTariff: 28),
+                    commonSeason: TariffSeason(
+                        mondayFriday: [
+                            TariffTimeSlot(fromTime: "00:00", tariffOption: "lowTariff"),
+                            TariffTimeSlot(fromTime: "06:00", tariffOption: "highTariff"),
+                            TariffTimeSlot(fromTime: "21:00", tariffOption: "lowTariff"),
+                        ],
+                        saturday: [
+                            TariffTimeSlot(fromTime: "00:00", tariffOption: "lowTariff"),
+                        ],
+                        sunday: [
+                            TariffTimeSlot(fromTime: "00:00", tariffOption: "lowTariff"),
+                        ]
+                    )
+                )
+            ),
+            feedIn: TariffConfig(
+                tariffType: "single",
+                singleTariff: SingleTariffConfig(price: 8.5)
+            )
+        )
+    }
+
     func fetchMainData(from: Date, to: Date) async throws -> MainData
     {
         return MainData.fake()

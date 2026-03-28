@@ -28,4 +28,12 @@ struct SerieColors {
         return .green
     }
 
+    static func gridImportColor() -> Color {
+        return .red
+    }
+
+    static func gridExportColor() -> Color {
+        return .green
+    }
+
 }
