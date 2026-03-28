@@ -5,6 +5,8 @@ struct BatteryScreen: View {
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
 
     @State var isLoading = false
+    @State private var mainData: MainData?
+    @State private var tariff: TariffV1Response?
 
     var body: some View {
         if model.overviewData.currentBatteryLevel != nil
@@ -22,95 +24,69 @@ struct BatteryScreen: View {
                 )
                 .edgesIgnoringSafeArea(.all)
 
-                GeometryReader { geometry in
+                ScrollView {
 
-                    ScrollView {
+                    VStack(alignment: .leading, spacing: 8) {
 
-                        VStack(alignment: .leading) {
-
-                            if !model.overviewData.isStaleData {
-
-                                BatteryIndicator(
-                                    percentage: Double(
-                                        model.overviewData
-                                            .currentBatteryLevel
-                                            ?? 0
-                                    ),
-                                    showPercentage: true,
-                                    height: 30,
-                                    width: geometry.size.width
-                                )
-
-                                HStack {
-                                    let charging =
-                                        model.overviewData
-                                        .currentBatteryChargeRate
-                                        ?? 0
-
-                                    if charging > 0 {
-                                        HStack {
-                                            Image(
-                                                systemName:
-                                                    "arrow.right.circle.fill"
-                                            )
-                                            .foregroundColor(.green)
-
-                                            Text(
-                                                "In:"
-                                            )
-                                            .foregroundColor(.green)
-
-                                            Text(
-                                                "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
-                                            )
-                                        }.padding(.top)
-                                    } else if charging < 0 {
-                                        HStack {
-
-                                            Image(
-                                                systemName:
-                                                    "arrow.left.circle.fill"
-                                            )
-                                            .foregroundColor(.orange)
-
-                                            Text(
-                                                "Out:"
-                                            )
-                                            .foregroundColor(.orange)
-
-                                            Text(
-                                                "\(model.overviewData.currentBatteryChargeRate ?? 0) W"
-                                            )
-                                        }.padding(.top)
-                                    }
-                                }
-
-                            } else {
-                                Text("No current data")
-                                    .foregroundStyle(.red)
-                            }
-
-                            BatteryForecastView(
-                                batteryForecast: model.overviewData
-                                    .getBatteryForecast()
+                        if !model.overviewData.isStaleData {
+                            WatchBatteryStatusView(
+                                level: model.overviewData.currentBatteryLevel ?? 0,
+                                charging: model.overviewData.currentBatteryChargeRate ?? 0
                             )
+                        } else {
+                            Text("No current data")
+                                .foregroundStyle(.red)
+                        }
 
-                            BatteryDevicesList(
-                                batteryDevices: model.overviewData.devices
-                                    .filter { $0.deviceType == .battery }
+                        BatteryForecastView(
+                            batteryForecast: model.overviewData
+                                .getBatteryForecast()
+                        )
+
+                        if model.overviewData.hasAnyBattery {
+                            WatchBatteryAdvantageView(
+                                mainData: mainData,
+                                tariff: tariff,
+                                todayConsumption: model.overviewData.todayConsumption ?? 0,
+                                todayProduction: model.overviewData.todayProduction ?? 0,
+                                autarkyWithBattery: model.overviewData.todayAutarchyDegree ?? 0,
+                                selfConsumptionWithBattery: model.overviewData.todaySelfConsumptionRate ?? 0
                             )
-                            .padding(.top, 8)
-                            .frame(maxWidth: .infinity)
+                        }
 
-                        }  // :VStack
+                        BatteryDevicesList(
+                            batteryDevices: model.overviewData.devices
+                                .filter { $0.deviceType == .battery }
+                        )
+                        .padding(.top, 4)
+                        .frame(maxWidth: .infinity)
 
-                    }  // :ScrollView
+                    }  // :VStack
 
-                }  // :GeometryReader
+                }  // :ScrollView
                 .padding(.horizontal)
 
             }  // :ZStack
+            .task {
+                await fetchData()
+            }
         }  // :if
+    }
+
+    // MARK: - Data Fetching
+
+    private func fetchData() async {
+        let manager = SolarManager.shared
+
+        async let mainDataTask = try? manager.fetchMainData(
+            from: Date.todayStartOfDay(),
+            to: Date.todayEndOfDay()
+        )
+        async let tariffTask = try? manager.fetchTariff()
+
+        let (fetchedMainData, fetchedTariff) = await (mainDataTask, tariffTask)
+        self.mainData = fetchedMainData
+        self.tariff = fetchedTariff
     }
 }
 
