@@ -378,14 +378,6 @@
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
 		};
-		49F2437C2CF04513009D0E2A /* Exceptions for "Solar Lens Widgets" folder in "Solar Lens Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Generic/GenericAppIntent.swift,
-				Generic/GenericWidgetView.swift,
-			);
-			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
-		};
 		49F243A42CF1CE5E009D0E2A /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -442,7 +434,6 @@
 		495539B92CECF51A00D2FE19 /* Solar Lens Widgets */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				49F2437C2CF04513009D0E2A /* Exceptions for "Solar Lens Widgets" folder in "Solar Lens Watch App" target */,
 				495539C42CECF51C00D2FE19 /* Exceptions for "Solar Lens Widgets" folder in "Solar Lens WidgetsExtension" target */,
 			);
 			path = "Solar Lens Widgets";

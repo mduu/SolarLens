@@ -1,4 +1,5 @@
 internal import Foundation
+import SwiftUI
 import WidgetKit
 
 struct ForecastWidgetProvider: AppIntentTimelineProvider {
@@ -15,7 +16,7 @@ struct ForecastWidgetProvider: AppIntentTimelineProvider {
             return .previewData()
         }
 
-        return await fetchEntry()
+        return await fetchEntry(day: configuration.day)
     }
 
     func timeline(
@@ -28,7 +29,7 @@ struct ForecastWidgetProvider: AppIntentTimelineProvider {
             )
         }
 
-        let entry = await fetchEntry()
+        let entry = await fetchEntry(day: configuration.day)
 
         let currentDate = Date()
         let fifteenMinutesLater = Calendar.current.date(
@@ -40,21 +41,33 @@ struct ForecastWidgetProvider: AppIntentTimelineProvider {
     }
 
     func recommendations() -> [AppIntentRecommendation<ForecastAppIntent>] {
-        [
-            AppIntentRecommendation(
-                intent: ForecastAppIntent(),
-                description: "Solar Forecast"
-            )
+        let auto = ForecastAppIntent()
+        auto.day = .auto
+
+        let today = ForecastAppIntent()
+        today.day = .today
+
+        let tomorrow = ForecastAppIntent()
+        tomorrow.day = .tomorrow
+
+        let dayAfter = ForecastAppIntent()
+        dayAfter.day = .dayAfterTomorrow
+
+        return [
+            AppIntentRecommendation(intent: auto, description: Text("Auto")),
+            AppIntentRecommendation(intent: today, description: Text("Today")),
+            AppIntentRecommendation(intent: tomorrow, description: Text("Tomorrow")),
+            AppIntentRecommendation(intent: dayAfter, description: Text("Day after tomorrow")),
         ]
     }
 
-    private func fetchEntry() async -> ForecastEntry {
+    private func fetchEntry(day: ForecastDay) async -> ForecastEntry {
         let solarData = try? await widgetDataSource.getSolarProductionData()
         let overviewData = try? await widgetDataSource.getOverviewData()
 
         let hour = Calendar.current.component(.hour, from: Date())
         let currentProduction = overviewData?.currentSolarProduction ?? 0
-        let isShowingTomorrow =
+        let autoResolvedToTomorrow =
             hour >= 20
             || hour < 6
             || (hour >= 18 && currentProduction == 0)
@@ -64,7 +77,8 @@ struct ForecastWidgetProvider: AppIntentTimelineProvider {
             forecastToday: solarData?.forecastToday,
             forecastTomorrow: solarData?.forecastTomorrow,
             forecastDayAfterTomorrow: solarData?.forecastDayAfterTomorrow,
-            isShowingTomorrow: isShowingTomorrow
+            selectedDay: day,
+            autoResolvedToTomorrow: autoResolvedToTomorrow
         )
     }
 }

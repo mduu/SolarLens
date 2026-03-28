@@ -12,6 +12,7 @@ struct ForecastWidgetView: View {
         let forecast = entry.displayedForecast
         let expected = forecast?.expected ?? 0
         let gaugeMax = entry.gaugeMax
+        let label = entry.dayLabel
 
         switch family {
         case .accessoryCircular:
@@ -28,11 +29,11 @@ struct ForecastWidgetView: View {
                         }
                     }
                     .widgetLabel {
-                        Text(
-                            entry.isShowingTomorrow
-                                ? "⛅ \(String(format: "%.0f", expected)) kWh tmr"
-                                : "⛅ \(String(format: "%.0f", expected)) kWh"
-                        )
+                        if let label {
+                            Text("⛅ \(String(format: "%.0f", expected)) kWh \(label)")
+                        } else {
+                            Text("⛅ \(String(format: "%.0f", expected)) kWh")
+                        }
                     }
                 } else {
                     Gauge(
@@ -55,11 +56,12 @@ struct ForecastWidgetView: View {
 
         #if os(watchOS)
             case .accessoryCorner:
-                Text(
-                    entry.isShowingTomorrow
-                        ? "\(String(format: "%.0f", expected)) kWh tmr"
-                        : "\(String(format: "%.0f", expected)) kWh"
-                )
+                HStack(spacing: 2) {
+                    Text("\(String(format: "%.0f", expected)) kWh")
+                    if let label {
+                        Text(label)
+                    }
+                }
                 .foregroundColor(
                     renderingMode == .fullColor
                         ? expected > 0 ? .accent : .gray
@@ -86,12 +88,11 @@ struct ForecastWidgetView: View {
         #endif
 
         case .accessoryInline:
-            Text(
-                entry.isShowingTomorrow
-                    ? "⛅ \(String(format: "%.0f", expected)) kWh tmr"
-                    : "⛅ \(String(format: "%.0f", expected)) kWh"
-            )
-            .containerBackground(for: .widget) { Color.accentColor }
+            if let label {
+                Text("⛅ \(String(format: "%.0f", expected)) kWh \(label)")
+            } else {
+                Text("⛅ \(String(format: "%.0f", expected)) kWh")
+            }
 
         default:
             Image("AppIcon")

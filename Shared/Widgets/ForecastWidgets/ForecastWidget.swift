@@ -11,10 +11,9 @@ struct ForecastWidget: Widget {
             provider: ForecastWidgetProvider()
         ) { entry in
             ForecastWidgetView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Solar Forecast")
-        .description("Shows today's solar production forecast.")
+        .description("Shows the solar production forecast.")
         .supportedFamilies(getSupportedFamilies())
     }
 
