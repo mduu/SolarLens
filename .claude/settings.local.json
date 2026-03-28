@@ -48,7 +48,10 @@
       "Bash(grep -E \"\\\\.\\(swift|pbxproj\\)$\")",
       "Bash(2)",
       "mcp__xcode__DocumentationSearch",
-      "Bash(ARCHIVE_PATH=\"/Users/marc/Library/Developer/Xcode/Archives/2026-03-28/Solar Lens 28-03-2026, 08.32.xcarchive\")"
+      "Bash(ARCHIVE_PATH=\"/Users/marc/Library/Developer/Xcode/Archives/2026-03-28/Solar Lens 28-03-2026, 08.32.xcarchive\")",
+      "mcp__xcode__XcodeWrite",
+      "mcp__xcode__XcodeLS",
+      "Bash(grep:*)"
     ]
   }
 }
