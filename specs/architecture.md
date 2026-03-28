@@ -18,6 +18,16 @@ Solar Lens is a set of native Apple apps serving as an alternative client for [S
 * Optimistic UI updates for responsive user experience
 * Async/await for all networking
 * Clarity over complexity — favor simple, glanceable UI over technical dashboards
+* Keep views short — avoid hundreds of lines per file; extract sub-views early
+
+### View Naming & Structure
+
+* **Top-level views** use suffixes `Screen`, `Sheet`, or `Dialog` (e.g. `BatteryScreen`, `BatterySheet`). They own loading logic, access global state (`@Environment`, `@Observable`), and call APIs.
+* **Sub-views / components** use suffixes like `View`, `Card`, `Chart` (e.g. `WatchBatteryStatusView`, `BatteryTodayCard`). They are **pure** — they receive data via parameters and do not access global state or APIs directly.
+* **Component placement:**
+  * Place sub-views in a local `Components/` folder next to the parent view.
+  * If a component is reused across multiple views, move it to an upper-level `Components/` folder (e.g. `Shared/Components/` for cross-platform reuse).
+* **Formatting helpers** live in `Shared/Extensions/` as global extensions (e.g. `Double.formatWattHoursAsKiloWattsHours`). Always reuse existing helpers or create new ones there — don't scatter formatting logic across views.
 
 ## Application Model
 
