@@ -103,7 +103,7 @@ Generate the "What's New" text for App Store Connect.
 - Write for end-users of Solar Lens, not developers.
 - Use a friendly, concise tone.
 - Focus on benefits and what users will notice, not technical implementation details.
-- Use bullet points, each starting with an emoji that matches the change type.
+- Use plain text bullet points, no emojis.
 - Keep each bullet to one sentence.
 - Do NOT mention internal refactoring, code cleanup, or developer tooling changes.
 - Group related changes into a single bullet where it makes sense.

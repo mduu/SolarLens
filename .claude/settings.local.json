@@ -51,7 +51,10 @@
       "Bash(ARCHIVE_PATH=\"/Users/marc/Library/Developer/Xcode/Archives/2026-03-28/Solar Lens 28-03-2026, 08.32.xcarchive\")",
       "mcp__xcode__XcodeWrite",
       "mcp__xcode__XcodeLS",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(ARCHIVE_PATH=\"/Users/marc/Library/Developer/Xcode/Archives/2026-03-28/Solar Lens 28-03-2026, 18.01.xcarchive\")",
+      "Bash(git tag:*)",
+      "Bash(gh release:*)"
     ]
   }
 }
