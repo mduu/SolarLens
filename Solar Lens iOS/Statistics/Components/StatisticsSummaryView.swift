@@ -51,9 +51,13 @@ struct StatisticsSummaryView: View {
         }
     }
 
+    private var useMWh: Bool {
+        max(abs(statistics.consumption ?? 0), abs(statistics.production ?? 0)) >= 1_000_000
+    }
+
     private func formatWh(_ value: Double?) -> String {
         guard let value else { return "-" }
-        if value >= 1_000_000 {
+        if useMWh {
             return String(format: "%.1f MWh", value / 1_000_000)
         }
         return String(format: "%.1f kWh", value / 1000)

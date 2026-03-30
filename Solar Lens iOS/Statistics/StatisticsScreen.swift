@@ -427,6 +427,7 @@ struct StatisticsScreen: View {
         let gridExport = max(0, production - selfConsumption)
         let autarky = stats.autarchyDegree ?? 0
         let selfConsumptionRate = stats.selfConsumptionRate ?? 0
+        let useMWh = max(abs(consumption), abs(production)) >= 1_000_000
 
         // Consumption donut
         VStack(spacing: 10) {
@@ -444,7 +445,8 @@ struct StatisticsScreen: View {
                 rightValue: gridImport,
                 rightColor: Color(red: 1.0, green: 0.3, blue: 0.15),
                 rightSubtitle: "\(100 - autarky, specifier: "%.0f")%",
-                total: consumption
+                total: consumption,
+                useMWh: useMWh
             )
         }
         .padding(.horizontal, 32)
@@ -465,7 +467,8 @@ struct StatisticsScreen: View {
                 rightValue: gridExport,
                 rightColor: .purple,
                 rightSubtitle: "\(100 - selfConsumptionRate, specifier: "%.0f")%",
-                total: production
+                total: production,
+                useMWh: useMWh
             )
         }
         .padding(.horizontal, 32)

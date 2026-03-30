@@ -11,6 +11,7 @@ struct StatisticsDonutChart: View {
     var rightColor: Color
     var rightSubtitle: LocalizedStringKey?
     var total: Double
+    var useMWh: Bool
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -22,10 +23,6 @@ struct StatisticsDonutChart: View {
 
     private var isEmpty: Bool {
         total <= 0 && leftValue <= 0 && rightValue <= 0
-    }
-
-    private var useMWh: Bool {
-        abs(total) >= 1_000_000
     }
 
     private func formatValue(_ value: Double) -> String {
