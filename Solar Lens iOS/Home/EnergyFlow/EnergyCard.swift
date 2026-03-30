@@ -12,7 +12,7 @@ struct EnergyCard<DetailContent: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack {
+            HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(label)
                         .font(.subheadline)
@@ -30,6 +30,8 @@ struct EnergyCard<DetailContent: View>: View {
                                     .font(.system(size: 9))
                                 Text(detail)
                                     .font(.caption2)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.7)
                             }
                             .foregroundStyle(.primary.opacity(0.6))
                         } else {

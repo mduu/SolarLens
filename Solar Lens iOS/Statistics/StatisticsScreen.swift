@@ -335,18 +335,6 @@ struct StatisticsScreen: View {
             .padding(.horizontal)
         }
 
-        // Energy info row (car charging + battery) — not on today, handled in todayContent
-        if ![.today, .overall].contains(viewModel.selectedPeriod) {
-            EnergyInfoRow(
-                carCharged: viewModel.carCharged,
-                batteryCharged: viewModel.batteryCharged,
-                batteryDischarged: viewModel.batteryDischarged,
-                isCurrentlyCharging: viewModel.isCurrentlyCharging,
-                hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation,
-                hasBattery: buildingState.overviewData.hasAnyBattery
-            )
-        }
-
         // Overall: lifetime stats with eco meter
         if viewModel.selectedPeriod == .overall,
            let stats = viewModel.overallStatistics
@@ -355,13 +343,21 @@ struct StatisticsScreen: View {
                 .padding(.horizontal)
         }
 
-        // Donut charts (not on today — today uses live overview data)
+        // Energy cards (not on today — today uses live overview data)
         if viewModel.selectedPeriod != .today,
            let stats = viewModel.selectedPeriod == .overall
             ? viewModel.overallStatistics
             : viewModel.statistics
         {
-            statisticsDonutCharts(for: stats)
+            StatisticsEnergyCards(
+                statistics: stats,
+                batteryCharged: viewModel.batteryCharged,
+                batteryDischarged: viewModel.batteryDischarged,
+                carCharged: viewModel.carCharged,
+                isCurrentlyCharging: viewModel.isCurrentlyCharging,
+                hasBattery: buildingState.overviewData.hasAnyBattery,
+                hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation
+            )
         }
     }
 
@@ -397,15 +393,6 @@ struct StatisticsScreen: View {
             .padding(.bottom, 8)
         }
 
-        EnergyInfoRow(
-            carCharged: viewModel.carCharged,
-            batteryCharged: viewModel.batteryCharged,
-            batteryDischarged: viewModel.batteryDischarged,
-            isCurrentlyCharging: viewModel.isCurrentlyCharging,
-            hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation,
-            hasBattery: buildingState.overviewData.hasAnyBattery
-        )
-
         let overview = buildingState.overviewData
         let todayStats = Statistics(
             consumption: overview.todayConsumption,
@@ -415,64 +402,18 @@ struct StatisticsScreen: View {
             autarchyDegree: overview.todayAutarchyDegree
         )
 
-        statisticsDonutCharts(for: todayStats)
+        StatisticsEnergyCards(
+            statistics: todayStats,
+            batteryCharged: viewModel.batteryCharged,
+            batteryDischarged: viewModel.batteryDischarged,
+            carCharged: viewModel.carCharged,
+            isCurrentlyCharging: viewModel.isCurrentlyCharging,
+            hasBattery: buildingState.overviewData.hasAnyBattery,
+            hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation
+        )
     }
 
-    @ViewBuilder
-    private func statisticsDonutCharts(for stats: Statistics) -> some View {
-        let consumption = stats.consumption ?? 0
-        let production = stats.production ?? 0
-        let selfConsumption = stats.selfConsumption ?? 0
-        let gridImport = max(0, consumption - selfConsumption)
-        let gridExport = max(0, production - selfConsumption)
-        let autarky = stats.autarchyDegree ?? 0
-        let selfConsumptionRate = stats.selfConsumptionRate ?? 0
-        let useMWh = max(abs(consumption), abs(production)) >= 1_000_000
 
-        // Production donut
-        VStack(spacing: 10) {
-            Text("Production")
-                .font(.headline)
-                .foregroundStyle(.indigo)
-                .padding(.top, 8)
-
-            StatisticsDonutChart(
-                leftLabel: "Self consumption",
-                leftValue: selfConsumption,
-                leftColor: .indigo,
-                leftSubtitle: "\(selfConsumptionRate, specifier: "%.0f")%",
-                rightLabel: "Exported",
-                rightValue: gridExport,
-                rightColor: .purple,
-                rightSubtitle: "\(100 - selfConsumptionRate, specifier: "%.0f")%",
-                total: production,
-                useMWh: useMWh
-            )
-        }
-        .padding(.horizontal, 32)
-
-        // Consumption donut
-        VStack(spacing: 10) {
-            Text("Consumption")
-                .font(.headline)
-                .foregroundStyle(.orange)
-                .padding(.top, 8)
-
-            StatisticsDonutChart(
-                leftLabel: "Solar",
-                leftValue: selfConsumption,
-                leftColor: .orange,
-                leftSubtitle: "\(autarky, specifier: "%.0f")% Autarky",
-                rightLabel: "Grid",
-                rightValue: gridImport,
-                rightColor: Color(red: 1.0, green: 0.3, blue: 0.15),
-                rightSubtitle: "\(100 - autarky, specifier: "%.0f")%",
-                total: consumption,
-                useMWh: useMWh
-            )
-        }
-        .padding(.horizontal, 32)
-    }
 }
 
 #Preview {
