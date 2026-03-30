@@ -7,8 +7,8 @@ class OverviewData {
 
     var currentSolarProduction: Int = 0
     var currentOverallConsumption: Int = 0
-    var currentBatteryLevel: Int? = 0
-    var currentBatteryChargeRate: Int? = 0
+    var currentBatteryLevel: Int? = nil
+    var currentBatteryChargeRate: Int? = nil
     var currentSolarToGrid: Int = 0
     var currentGridToHouse: Int = 0
     var currentSolarToHouse: Int = 0
@@ -21,7 +21,7 @@ class OverviewData {
     var devices: [Device] = []
     var isStaleData: Bool = false
     var hasAnyCarChargingStation: Bool = true
-    var hasAnyBattery: Bool = true
+    var hasAnyBattery: Bool = false
     var todaySelfConsumption: Double? = nil
     var todaySelfConsumptionRate: Double? = nil
     var todayAutarchyDegree: Double? = nil

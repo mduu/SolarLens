@@ -61,8 +61,8 @@ class SolarManager: EnergyManager {
             return OverviewData.init(
                 currentSolarProduction: Int(chart.production),
                 currentOverallConsumption: Int(chart.consumption),
-                currentBatteryLevel: Int(chart.battery?.capacity ?? 0),
-                currentBatteryChargeRate: Int(batteryChargingRate ?? 0),
+                currentBatteryLevel: chart.battery != nil ? Int(chart.battery!.capacity) : nil,
+                currentBatteryChargeRate: chart.battery != nil ? Int(batteryChargingRate ?? 0) : nil,
                 currentSolarToGrid: Int(
                     chart
                         .arrows?.first(
