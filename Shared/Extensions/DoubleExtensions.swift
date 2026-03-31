@@ -34,13 +34,19 @@ extension Double {
 
     /// Formats Wh as kWh or MWh depending on magnitude (>= 1000 kWh → MWh).
     func formatWattHoursAdaptive(withUnit: Bool = false) -> String {
-        let kWh = self / 1000
-        if abs(kWh) >= 1000 {
-            let mWh = kWh / 1000
+        let useMWh = abs(self / 1000) >= 1000
+        return formatWattHours(asMWh: useMWh, withUnit: withUnit)
+    }
+
+    /// Formats Wh as kWh or MWh based on an explicit flag (for consistent units across a group of values).
+    func formatWattHours(asMWh: Bool, withUnit: Bool = false) -> String {
+        if asMWh {
+            let mWh = self / 1_000_000
             return withUnit
                 ? "\(String(format: "%.1f", mWh)) MWh"
                 : String(format: "%.1f", mWh)
         }
+        let kWh = self / 1000
         return withUnit
             ? "\(String(format: "%.1f", kWh)) kWh"
             : String(format: "%.1f", kWh)

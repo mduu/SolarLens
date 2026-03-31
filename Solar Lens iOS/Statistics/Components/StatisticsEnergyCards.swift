@@ -15,6 +15,15 @@ struct StatisticsEnergyCards: View {
     private var gridImport: Double { max(0, consumption - selfConsumption) }
     private var gridExport: Double { max(0, production - selfConsumption) }
 
+    private var useMWh: Bool {
+        let maxValue = [production, consumption, gridImport, gridExport, batteryCharged, batteryDischarged, carCharged].map { abs($0) }.max() ?? 0
+        return maxValue / 1000 >= 1000
+    }
+
+    private func format(_ value: Double) -> String {
+        value.formatWattHours(asMWh: useMWh, withUnit: true)
+    }
+
     private let columns = [
         GridItem(.flexible()),
         GridItem(.flexible()),
@@ -26,7 +35,7 @@ struct StatisticsEnergyCards: View {
                 icon: "sun.max.fill",
                 iconColor: .orange,
                 label: "Production",
-                value: production.formatWattHoursAdaptive(withUnit: true),
+                value: format(production),
                 detail: selfConsumptionDetail
             )
 
@@ -34,7 +43,7 @@ struct StatisticsEnergyCards: View {
                 icon: "network",
                 iconColor: .purple,
                 label: "Grid",
-                value: gridImport.formatWattHoursAdaptive(withUnit: true),
+                value: format(gridImport),
                 detail: gridExportDetail
             )
 
@@ -43,7 +52,7 @@ struct StatisticsEnergyCards: View {
                     icon: "battery.100",
                     iconColor: .green,
                     label: "Battery",
-                    value: batteryCharged.formatWattHoursAdaptive(withUnit: true),
+                    value: format(batteryCharged),
                     detail: batteryDischargedDetail
                 )
             }
@@ -54,7 +63,7 @@ struct StatisticsEnergyCards: View {
                     icon: "ev.charger",
                     iconColor: .green,
                     label: "Car Charging",
-                    value: carCharged.formatWattHoursAdaptive(withUnit: true)
+                    value: format(carCharged)
                 )
             }
 
@@ -62,7 +71,7 @@ struct StatisticsEnergyCards: View {
                 icon: "house.fill",
                 iconColor: .teal,
                 label: "Consumption",
-                value: consumption.formatWattHoursAdaptive(withUnit: true),
+                value: format(consumption),
                 detail: autarkyDetail
             )
 
@@ -76,7 +85,7 @@ struct StatisticsEnergyCards: View {
                     icon: "ev.charger",
                     iconColor: .green,
                     label: "Car Charging",
-                    value: carCharged.formatWattHoursAdaptive(withUnit: true)
+                    value: format(carCharged)
                 )
             }
         }
@@ -89,11 +98,11 @@ struct StatisticsEnergyCards: View {
     }
 
     private var gridExportDetail: String {
-        "\(gridExport.formatWattHoursAdaptive(withUnit: true)) exported"
+        "\(format(gridExport)) exported"
     }
 
     private var batteryDischargedDetail: String {
-        "\(batteryDischarged.formatWattHoursAdaptive(withUnit: true)) discharged"
+        "\(format(batteryDischarged)) discharged"
     }
 
     private var autarkyDetail: String? {
