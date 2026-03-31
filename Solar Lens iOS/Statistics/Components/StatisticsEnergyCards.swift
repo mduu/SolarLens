@@ -4,7 +4,7 @@ struct StatisticsEnergyCards: View {
     let statistics: Statistics
     var batteryCharged: Double = 0
     var batteryDischarged: Double = 0
-    var carCharged: Double = 0
+    var carCharged: Double? = nil
     var isCurrentlyCharging: Bool = false
     var hasBattery: Bool = false
     var hasCarChargingStation: Bool = false
@@ -14,9 +14,10 @@ struct StatisticsEnergyCards: View {
     private var selfConsumption: Double { statistics.selfConsumption ?? 0 }
     private var gridImport: Double { max(0, consumption - selfConsumption) }
     private var gridExport: Double { max(0, production - selfConsumption) }
+    private var showCarCharging: Bool { hasCarChargingStation && carCharged != nil }
 
     private var useMWh: Bool {
-        let maxValue = [production, consumption, gridImport, gridExport, batteryCharged, batteryDischarged, carCharged].map { abs($0) }.max() ?? 0
+        let maxValue = [production, consumption, gridImport, gridExport, batteryCharged, batteryDischarged, carCharged ?? 0].map { abs($0) }.max() ?? 0
         return maxValue / 1000 >= 1000
     }
 
@@ -58,12 +59,12 @@ struct StatisticsEnergyCards: View {
             }
 
             // Car charging moves to battery slot when no battery present
-            if !hasBattery && hasCarChargingStation {
+            if !hasBattery && showCarCharging {
                 EnergyCard(
                     icon: "ev.charger",
                     iconColor: .green,
                     label: "Car Charging",
-                    value: format(carCharged)
+                    value: format(carCharged ?? 0)
                 )
             }
 
@@ -76,7 +77,7 @@ struct StatisticsEnergyCards: View {
             )
 
             // Car charging in its own row when battery is present
-            if hasBattery && hasCarChargingStation {
+            if hasBattery && showCarCharging {
                 Color.clear
                     .cardStyle()
                     .hidden()
@@ -85,7 +86,7 @@ struct StatisticsEnergyCards: View {
                     icon: "ev.charger",
                     iconColor: .green,
                     label: "Car Charging",
-                    value: format(carCharged)
+                    value: format(carCharged ?? 0)
                 )
             }
         }

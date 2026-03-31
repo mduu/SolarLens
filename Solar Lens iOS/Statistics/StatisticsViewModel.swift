@@ -14,7 +14,7 @@ class StatisticsViewModel {
     var errorMessage: String?
     var batteryCharged: Double = 0
     var batteryDischarged: Double = 0
-    var carCharged: Double = 0
+    var carCharged: Double? = nil
     var isCurrentlyCharging: Bool = false
 
     var selectedPeriod: StatisticsPeriod = .today
@@ -169,8 +169,8 @@ class StatisticsViewModel {
         )
         computeBatteryTotals(from: mainData?.data ?? [])
 
-        // Fetch car charging data
-        await fetchCarCharging(period: .month)
+        // Car charging API only supports day/week/month — no yearly data available
+        carCharged = nil
 
         todayData = nil
         dailyStats = nil
@@ -228,7 +228,7 @@ class StatisticsViewModel {
 
         batteryCharged = 0
         batteryDischarged = 0
-        carCharged = 0
+        carCharged = nil
 
         todayData = nil
         dailyStats = nil
@@ -276,7 +276,7 @@ class StatisticsViewModel {
             batteryDischarged = 0
         }
 
-        carCharged = 0
+        carCharged = nil
 
         let accuracy: Accuracy = daysBetween <= 7 ? .high : (daysBetween <= 90 ? .medium : .low)
         statistics = try? await energyManager.fetchStatistics(
