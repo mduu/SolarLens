@@ -48,6 +48,16 @@ struct StatisticsEnergyCards: View {
                 )
             }
 
+            // Car charging moves to battery slot when no battery present
+            if !hasBattery && hasCarChargingStation {
+                EnergyCard(
+                    icon: "ev.charger",
+                    iconColor: .green,
+                    label: "Car Charging",
+                    value: carCharged.formatWattHoursAdaptive(withUnit: true)
+                )
+            }
+
             EnergyCard(
                 icon: "house.fill",
                 iconColor: .teal,
@@ -56,7 +66,8 @@ struct StatisticsEnergyCards: View {
                 detail: autarkyDetail
             )
 
-            if hasCarChargingStation {
+            // Car charging in its own row when battery is present
+            if hasBattery && hasCarChargingStation {
                 Color.clear
                     .cardStyle()
                     .hidden()
