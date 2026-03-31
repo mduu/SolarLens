@@ -59,15 +59,18 @@ struct EnergyFlowGrid<BelowBattery: View>: View {
             // stations make the right column taller.
             HStack(alignment: .top, spacing: hGap) {
                 VStack(spacing: 20) {
-                    BatteryBoubleView(
-                        currentBatteryLevel: data.currentBatteryLevel,
-                        currentChargeRate: data.currentBatteryChargeRate,
-                        batteryForecast: data.getBatteryForecast()
-                    )
-                    .cardAnchor("battery")
+                    if data.currentBatteryLevel != nil {
+                        BatteryBoubleView(
+                            currentBatteryLevel: data.currentBatteryLevel,
+                            currentChargeRate: data.currentBatteryChargeRate,
+                            batteryForecast: data.getBatteryForecast()
+                        )
+                        .cardAnchor("battery")
+                    }
 
                     belowBattery
                 }
+                .frame(maxWidth: .infinity)
 
                 // Consumption card — combined with charging and/or pinned devices when present
                 let hasCharging = showCharging && !data.chargingStations.isEmpty
