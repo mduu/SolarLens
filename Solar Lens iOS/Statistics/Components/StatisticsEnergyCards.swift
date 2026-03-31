@@ -64,7 +64,8 @@ struct StatisticsEnergyCards: View {
                     icon: "ev.charger",
                     iconColor: .green,
                     label: "Car Charging",
-                    value: format(carCharged ?? 0)
+                    value: format(carCharged ?? 0),
+                    detail: carChargingDetail
                 )
             }
 
@@ -86,7 +87,8 @@ struct StatisticsEnergyCards: View {
                     icon: "ev.charger",
                     iconColor: .green,
                     label: "Car Charging",
-                    value: format(carCharged ?? 0)
+                    value: format(carCharged ?? 0),
+                    detail: carChargingDetail
                 )
             }
         }
@@ -104,6 +106,12 @@ struct StatisticsEnergyCards: View {
 
     private var batteryDischargedDetail: String {
         "\(format(batteryDischarged)) discharged"
+    }
+
+    private var carChargingDetail: String? {
+        guard let carCharged, consumption > 0 else { return nil }
+        let percentage = carCharged / consumption * 100
+        return "\(String(format: "%.0f", percentage))% of consumption"
     }
 
     private var autarkyDetail: String? {
