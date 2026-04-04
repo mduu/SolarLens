@@ -5,10 +5,13 @@ struct SettingsScreen: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
+    @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
+
     @State var settings = AppSettings()
 
     @State private var isLoading = false
     @State private var serverInfo: ServerInfo?
+    @State private var showLogoutConfirmation = false
 
     private var isLandscape: Bool { verticalSizeClass == .compact }
 
@@ -131,6 +134,41 @@ struct SettingsScreen: View {
             .hidden,
             edges: [.all]
         )
+
+        SettingNavigationItem(
+            imageName: "info.circle",
+            text: "Server Info",
+            color: .blue,
+            disabled: serverInfo == nil
+        ) {
+            ServerInfoView(serverInfo: serverInfo)
+        }
+
+        Button {
+            showLogoutConfirmation = true
+        } label: {
+            HStack {
+                SettingsItemCaption(
+                    imageName: "rectangle.portrait.and.arrow.right",
+                    text: "Logout",
+                    color: .red
+                )
+            }
+        }
+        .buttonStyle(.plain)
+        .disabled(serverInfo == nil || !(serverInfo?.signal ?? false))
+        .listRowBackground(Color.clear)
+        .alert(
+            "Are you sure to logout?",
+            isPresented: $showLogoutConfirmation
+        ) {
+            Button("Logout", role: .destructive) {
+                buildingState.logout()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("You will need to sign in again to use Solar Lens.")
+        }
     }
 
     @ViewBuilder

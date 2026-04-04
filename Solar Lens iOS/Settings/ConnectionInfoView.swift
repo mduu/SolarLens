@@ -5,7 +5,6 @@ struct ConnectionInfoView: View {
     var serverInfo: ServerInfo?
 
     @State private var showConfirmation = false
-    @State private var showServerInfo = false
 
     private var isConnected: Bool { serverInfo?.signal ?? false }
 
@@ -37,19 +36,9 @@ struct ConnectionInfoView: View {
                                 copyToClipboard(text: serverInfo?.smId ?? "")
                                 showConfirmation = true
                             } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "document.on.document")
-                                        .font(.caption2)
-                                    Text("Copy")
-                                        .font(.caption2)
-                                }
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(
-                                    Capsule()
-                                        .fill(.blue.opacity(0.12))
-                                )
-                                .foregroundStyle(.blue)
+                                Image(systemName: "document.on.document")
+                                    .font(.caption)
+                                    .foregroundStyle(.blue)
                             }
                             .buttonStyle(.plain)
                         }
@@ -67,33 +56,6 @@ struct ConnectionInfoView: View {
                     .padding(.vertical, 8)
             }
 
-            if serverInfo != nil {
-                HStack {
-                    NavigationLink {
-                        ServerInfoView(serverInfo: serverInfo)
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "info.circle")
-                                .font(.caption)
-                            Text("More Info")
-                                .font(.caption)
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(
-                            Capsule()
-                                .fill(.blue.opacity(0.12))
-                        )
-                        .foregroundStyle(.blue)
-                    }
-                    .disabled(serverInfo == nil)
-
-                    Spacer()
-
-                    LogoutButtonView()
-                        .disabled(!serverInfo!.signal)
-                }
-            }
         }
         .padding(16)
         .background(
