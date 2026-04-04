@@ -138,18 +138,10 @@ struct EnergyFlowGrid<BelowBattery: View>: View {
         // Resolve actual card positions within the overlay coordinate space
         if let solarRect = anchors["solar"].map({ proxy[$0] }),
            let gridRect = anchors["grid"].map({ proxy[$0] }),
-           let batteryRect = anchors["battery"].map({ proxy[$0] }),
            let consumptionRect = anchors["consumption"].map({ proxy[$0] })
         {
             let solarCenter = CGPoint(x: solarRect.midX, y: solarRect.midY)
             let gridCenter = CGPoint(x: gridRect.midX, y: gridRect.midY)
-            let batteryCenter = CGPoint(x: batteryRect.midX, y: batteryRect.midY)
-            let consumptionCenter = CGPoint(x: consumptionRect.midX, y: consumptionRect.midY)
-
-            // Edge points for arrows between cards
-            let solarBottom = CGPoint(x: solarRect.midX, y: solarRect.maxY)
-            let gridBottom = CGPoint(x: gridRect.midX, y: gridRect.maxY)
-            let batteryTop = CGPoint(x: batteryRect.midX, y: batteryRect.minY)
             let consumptionTop = CGPoint(x: consumptionRect.midX, y: consumptionRect.minY)
 
             // Solar → Grid (horizontal) — orange-red
@@ -162,33 +154,13 @@ struct EnergyFlowGrid<BelowBattery: View>: View {
                 )
             }
 
-            // Solar → Battery (vertical, left) — green
-            if data.isFlowSolarToBattery() {
-                FlowArrow(
-                    color: .green,
-                    power: Double(data.currentBatteryChargeRate ?? 0) / 1000,
-                    from: solarBottom,
-                    to: batteryTop
-                )
-            }
-
             // Grid → House (vertical, right) — orange
             if data.isFlowGridToHouse() {
                 FlowArrow(
                     color: .orange,
                     power: Double(data.currentGridToHouse) / 1000,
-                    from: gridBottom,
+                    from: CGPoint(x: gridRect.midX, y: gridRect.maxY),
                     to: consumptionTop
-                )
-            }
-
-            // Battery → House (horizontal, bottom) — green
-            if data.isFlowBatteryToHome() {
-                FlowArrow(
-                    color: .green,
-                    power: abs(Double(data.currentBatteryChargeRate ?? 0)) / 1000,
-                    from: CGPoint(x: batteryRect.maxX, y: batteryCenter.y),
-                    to: CGPoint(x: consumptionRect.minX, y: batteryCenter.y)
                 )
             }
 
@@ -200,6 +172,33 @@ struct EnergyFlowGrid<BelowBattery: View>: View {
                     from: CGPoint(x: solarRect.maxX, y: solarRect.maxY),
                     to: CGPoint(x: consumptionRect.minX, y: consumptionTop.y)
                 )
+            }
+
+            // Battery flows — only when battery card is present
+            if let batteryRect = anchors["battery"].map({ proxy[$0] }) {
+                let batteryCenter = CGPoint(x: batteryRect.midX, y: batteryRect.midY)
+                let solarBottom = CGPoint(x: solarRect.midX, y: solarRect.maxY)
+                let batteryTop = CGPoint(x: batteryRect.midX, y: batteryRect.minY)
+
+                // Solar → Battery (vertical, left) — green
+                if data.isFlowSolarToBattery() {
+                    FlowArrow(
+                        color: .green,
+                        power: Double(data.currentBatteryChargeRate ?? 0) / 1000,
+                        from: solarBottom,
+                        to: batteryTop
+                    )
+                }
+
+                // Battery → House (horizontal, bottom) — green
+                if data.isFlowBatteryToHome() {
+                    FlowArrow(
+                        color: .green,
+                        power: abs(Double(data.currentBatteryChargeRate ?? 0)) / 1000,
+                        from: CGPoint(x: batteryRect.maxX, y: batteryCenter.y),
+                        to: CGPoint(x: consumptionRect.minX, y: batteryCenter.y)
+                    )
+                }
             }
         }
     }
