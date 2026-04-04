@@ -15,13 +15,13 @@ struct DataStreamV3Response : Codable {
     var devices: [DataStreamV3Device]
 
     /// Battery state of charge in [%]
-    var soc: Double = 0
+    var soc: Double?
 
     /// Battery charge power in [watt]
-    var bcW: Double = 0
+    var bcW: Double?
 
     /// Battery discharge power in [watt]
-    var bdW: Double = 0
+    var bdW: Double?
 
     // NOTE: Some more fields exists but we don't know that they mean so far
 }
