@@ -27,12 +27,12 @@ struct GridWeekCard: View {
                         data: day.data, tariffSettings: tariffSettings, fallbackTariff: fallbackTariff)
                     let netBalance = exportRevenue - importCost
 
-                    HStack(alignment: .top, spacing: 6) {
+                    HStack(alignment: .top, spacing: 4) {
                         // Column 1: Day
                         Text(day.date, format: .dateTime.weekday(.short))
                             .font(.caption)
                             .fontWeight(.medium)
-                            .frame(width: 26, alignment: .leading)
+                            .frame(width: 22, alignment: .leading)
                             .padding(.top, 2)
 
                         // Column 2: kWh values
@@ -43,6 +43,7 @@ struct GridWeekCard: View {
                                     .foregroundStyle(SerieColors.gridImportColor())
                                 Text(day.totalImportWh.formatWattHoursAsKiloWattsHours(widthUnit: true))
                                     .font(.caption2)
+                                    .lineLimit(1)
                             }
                             HStack(spacing: 3) {
                                 Image(systemName: "arrow.up")
@@ -50,8 +51,10 @@ struct GridWeekCard: View {
                                     .foregroundStyle(SerieColors.gridExportColor())
                                 Text(day.totalExportWh.formatWattHoursAsKiloWattsHours(widthUnit: true))
                                     .font(.caption2)
+                                    .lineLimit(1)
                             }
                         }
+                        .frame(width: 72, alignment: .trailing)
 
                         // Column 3: Prices
                         VStack(alignment: .trailing, spacing: 2) {
@@ -62,6 +65,7 @@ struct GridWeekCard: View {
                                 .font(.caption2)
                                 .foregroundStyle(.green)
                         }
+                        .frame(width: 72, alignment: .trailing)
 
                         Spacer(minLength: 0)
 
