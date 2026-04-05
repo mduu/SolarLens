@@ -1,0 +1,17 @@
+English texts:
+- screen_1: See how the energy flows!
+- screen_2: Today's history
+- screen_3: Prioritise devices and choose charging mode
+- screen_4: Advanced details for deeper understanding
+- screen_5: Advanced statistics incl. exports
+- screen_6: Build custom automations
+- screen_7: Full support for Apple Watch
+
+German texts:
+- screen_1: Beobachte den Energiefluss! 
+- screen_2: Dein heutiger Verlauf
+- screen_3: Priorisiere Geräte und ändere den Lademodus
+- screen_4: Details zeigen die Zusammenhänge
+- screen_5: Erweiterte Statistiken inkl. Exports
+- screen_6: Baue eigene Automatisationen
+- screen_7: Volle Unterstützung für Apple Watch
