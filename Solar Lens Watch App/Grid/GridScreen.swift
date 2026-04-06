@@ -6,6 +6,8 @@ struct GridScreen: View {
     @State var energyManager: EnergyManager = SolarManager()
     @State var statisticsOverview: StatisticsOverview? = nil
     @State var lastStatisticsUpdate: Date? = nil
+    @State private var importCost: Double?
+    @State private var exportRevenue: Double?
 
     var body: some View {
         ZStack {
@@ -28,7 +30,9 @@ struct GridScreen: View {
 
                         GridToday(
                             importToday: model.overviewData.todayGridImported ?? 0,
-                            exportToday: model.overviewData.todayGridExported
+                            exportToday: model.overviewData.todayGridExported,
+                            importCost: importCost,
+                            exportRevenue: exportRevenue
                         )
 
                         HStack {
@@ -104,8 +108,24 @@ struct GridScreen: View {
         let fifteenMinutesAgo = Date().addingTimeInterval(-15 * 60)
 
         if lastStatisticsUpdate == nil || lastStatisticsUpdate! < fifteenMinutesAgo {
-            statisticsOverview = try? await energyManager.fetchStatisticsOverview()
+            async let statsTask = try? energyManager.fetchStatisticsOverview()
+            async let mainDataTask = try? energyManager.fetchMainData(
+                from: Date.todayStartOfDay(), to: Date.todayEndOfDay())
+            async let tariffTask = try? energyManager.fetchTariff()
+            async let tariffSettingsTask = try? energyManager.fetchDetailedTariffs()
+
+            let (stats, mainData, tariff, tariffSettings) = await (
+                statsTask, mainDataTask, tariffTask, tariffSettingsTask)
+
+            statisticsOverview = stats
             lastStatisticsUpdate = Date()
+
+            if let data = mainData?.data {
+                importCost = TariffCalculator.gridImportCost(
+                    data: data, tariffSettings: tariffSettings, fallbackTariff: tariff)
+                exportRevenue = TariffCalculator.gridExportRevenue(
+                    data: data, tariffSettings: tariffSettings, fallbackTariff: tariff)
+            }
         }
     }
 }
