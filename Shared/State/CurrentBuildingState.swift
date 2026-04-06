@@ -22,6 +22,22 @@ class CurrentBuildingState {
     private let energyManager: EnergyManager
     private var activeFetchTask: Task<Void, Never>?
 
+    private struct ChargingModeOverride {
+        let sensorId: String
+        let mode: ChargingMode
+        let timestamp: Date
+    }
+
+    private struct BatteryModeOverride {
+        let sensorId: String
+        let modeInfo: BatteryModeInfo
+        let timestamp: Date
+    }
+
+    private var chargingModeOverride: ChargingModeOverride?
+    private var batteryModeOverride: BatteryModeOverride?
+    private let optimisticOverrideTimeout: TimeInterval = 60
+
     init(energyManagerClient: EnergyManager) {
         self.energyManager = energyManagerClient
         updateCredentialsExists()
@@ -82,6 +98,7 @@ class CurrentBuildingState {
                 stopwatch.stop()
 
                 overviewData = newData
+                applyOptimisticOverrides()
 
                 print(
                     "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
@@ -235,6 +252,11 @@ class CurrentBuildingState {
             let chargingStation = overviewData.chargingStations
                 .first(where: { $0.id == sensorId })
             chargingStation?.chargingMode = newCarCharging.chargingMode
+            chargingModeOverride = ChargingModeOverride(
+                sensorId: sensorId,
+                mode: newCarCharging.chargingMode,
+                timestamp: Date()
+            )
 
             carChargerSetSuccessfully = result
             AppStoreReviewManager.shared.setChargingModeSetAtLeastOnce()
@@ -312,7 +334,7 @@ class CurrentBuildingState {
 
             print("Battery-Mode set at \(Date())")
 
-            // Optimistic UI: Update charging mode in-memory to speed up UI
+            // Optimistic UI: Update battery mode in-memory to speed up UI
             let batteryDevice = overviewData.devices
                 .first(where: { $0.id == sensorId })
             batteryDevice?.batteryInfo = BatteryInfo(
@@ -321,6 +343,11 @@ class CurrentBuildingState {
                 maxChargePower: batteryDevice?.batteryInfo?.maxChargePower ?? 0,
                 batteryCapacityKwh: batteryDevice?.batteryInfo?.batteryCapacityKwh ?? 0,
                 modeInfo: batteryModeInfo
+            )
+            batteryModeOverride = BatteryModeOverride(
+                sensorId: sensorId,
+                modeInfo: batteryModeInfo,
+                timestamp: Date()
             )
 
             batteryModeSetSuccessfully = result
@@ -348,6 +375,40 @@ class CurrentBuildingState {
         loginCredentialsExists =
             credentials.username?.isEmpty == false
             && credentials.password?.isEmpty == false
+    }
+
+    private func applyOptimisticOverrides() {
+        let now = Date()
+
+        if let override = chargingModeOverride {
+            let station = overviewData.chargingStations
+                .first(where: { $0.id == override.sensorId })
+            if now.timeIntervalSince(override.timestamp) < optimisticOverrideTimeout,
+               station?.chargingMode != override.mode {
+                station?.chargingMode = override.mode
+            } else {
+                chargingModeOverride = nil
+            }
+        }
+
+        if let override = batteryModeOverride {
+            let device = overviewData.devices
+                .first(where: { $0.id == override.sensorId })
+            if now.timeIntervalSince(override.timestamp) < optimisticOverrideTimeout,
+               device?.batteryInfo?.modeInfo.batteryMode != override.modeInfo.batteryMode {
+                if let existing = device?.batteryInfo {
+                    device?.batteryInfo = BatteryInfo(
+                        favorite: existing.favorite,
+                        maxDischargePower: existing.maxDischargePower,
+                        maxChargePower: existing.maxChargePower,
+                        batteryCapacityKwh: existing.batteryCapacityKwh,
+                        modeInfo: override.modeInfo
+                    )
+                }
+            } else {
+                batteryModeOverride = nil
+            }
+        }
     }
 
     private func resetError() {
