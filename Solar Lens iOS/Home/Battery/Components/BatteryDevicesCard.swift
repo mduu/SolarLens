@@ -14,10 +14,11 @@ struct BatteryDevicesCard: View {
                     .foregroundStyle(.primary.opacity(0.7))
             }
 
-            LazyVGrid(columns: [
-                GridItem(.flexible(), spacing: 10),
-                GridItem(.flexible(), spacing: 10)
-            ], spacing: 10) {
+            LazyVGrid(columns: batteries.count == 1
+                ? [GridItem(.flexible())]
+                : [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)],
+                spacing: 10
+            ) {
                 ForEach(batteries) { battery in
                     BatteryView(battery: battery)
                 }
