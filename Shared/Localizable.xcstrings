@@ -5411,6 +5411,7 @@
       }
     },
     "Export:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -6471,6 +6472,7 @@
       }
     },
     "Import:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {

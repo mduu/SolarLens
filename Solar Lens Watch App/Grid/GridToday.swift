@@ -14,11 +14,13 @@ struct GridToday: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top, spacing: 20) {
+            HStack(alignment: .top, spacing: 12) {
 
-                VStack(alignment: .leading) {
-                    Text("Export:")
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Export")
                         .font(.footnote)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
 
                     Text(exportToday.formatWatthoursAsKiloWattsHours(widthUnit: true))
                         .foregroundColor(.indigo)
@@ -28,13 +30,17 @@ struct GridToday: View {
                         Text(verbatim: "+\(exportRevenue.formatted(.currency(code: currencyCode)))")
                             .font(.system(size: 11))
                             .foregroundStyle(.green)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                VStack(alignment: .leading) {
-                    Text("Import:")
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Import")
                         .font(.footnote)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
 
                     Text(importToday.formatWatthoursAsKiloWattsHours(widthUnit: true))
                         .foregroundColor(.purple)
@@ -43,7 +49,9 @@ struct GridToday: View {
                         let currencyCode = CurrencyHelper.currencyCode
                         Text(verbatim: "−\(importCost.formatted(.currency(code: currencyCode)))")
                             .font(.system(size: 11))
-                            .foregroundStyle(.red)
+                            .foregroundStyle(.orange)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -60,7 +68,7 @@ struct GridToday: View {
                     Text(netBalance.formatted(.currency(code: currencyCode)))
                         .font(.footnote)
                         .fontWeight(.semibold)
-                        .foregroundStyle(netBalance >= 0 ? .green : .red)
+                        .foregroundStyle(netBalance >= 0 ? .green : .orange)
                 }
                 .padding(.top, 2)
             }
