@@ -6,6 +6,17 @@ struct GridTodayCard: View {
     let tariffSettings: TariffSettingsV3Response?
     let fallbackTariff: TariffV1Response?
 
+    @Environment(\.locale) private var locale
+
+    private func localizedString(_ key: String) -> String {
+        let bundle = Bundle.main
+        if let path = bundle.path(forResource: locale.language.languageCode?.identifier, ofType: "lproj"),
+           let locBundle = Bundle(path: path) {
+            return NSLocalizedString(key, bundle: locBundle, comment: "")
+        }
+        return String(localized: String.LocalizationValue(key))
+    }
+
     var body: some View {
         let data = mainData?.data ?? []
         let totalImport = data.reduce(0.0) { $0 + $1.importedOverTimeWhatthours }
@@ -98,8 +109,8 @@ struct GridTodayCard: View {
                     GridSeries(
                         data: mainData.data,
                         isAccent: false,
-                        gridImportLabel: String(localized: "Import"),
-                        gridExportLabel: String(localized: "Export")
+                        gridImportLabel: localizedString("Import"),
+                        gridExportLabel: localizedString("Export")
                     )
                 }
                 .chartYScale(domain: 0...max(maxKW * 1.1, 0.5))
@@ -121,8 +132,8 @@ struct GridTodayCard: View {
                 .chartLegend(.visible)
                 .chartLegend(spacing: 4)
                 .chartForegroundStyleScale([
-                    String(localized: "Import"): SerieColors.gridImportColor(),
-                    String(localized: "Export"): SerieColors.gridExportColor(),
+                    localizedString("Import"): SerieColors.gridImportColor(),
+                    localizedString("Export"): SerieColors.gridExportColor(),
                 ])
                 .frame(height: 160)
             } else if mainData == nil {

@@ -3,9 +3,9 @@ import SwiftUI
 struct EnergyCard<DetailContent: View>: View {
     let icon: String
     let iconColor: Color
-    let label: String
+    let label: LocalizedStringKey
     let value: String
-    var detail: String?
+    var detail: LocalizedStringKey?
     var showChevron: Bool = false
     var applyCardStyle: Bool = true
     var customDetail: (() -> DetailContent)?
@@ -67,8 +67,8 @@ struct EnergyCard<DetailContent: View>: View {
 
 // Convenience init without custom detail
 extension EnergyCard where DetailContent == EmptyView {
-    init(icon: String, iconColor: Color, label: String, value: String,
-         detail: String? = nil, showChevron: Bool = false,
+    init(icon: String, iconColor: Color, label: LocalizedStringKey, value: String,
+         detail: LocalizedStringKey? = nil, showChevron: Bool = false,
          applyCardStyle: Bool = true) {
         self.icon = icon
         self.iconColor = iconColor

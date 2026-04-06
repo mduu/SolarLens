@@ -22,7 +22,7 @@ struct PinnedDeviceRow: View {
                         .fontWeight(.bold)
                         .foregroundStyle(.primary)
                 } else {
-                    Text("Idle")
+                    Text(verbatim: "-")
                         .font(.subheadline)
                         .foregroundStyle(.primary.opacity(0.6))
                 }

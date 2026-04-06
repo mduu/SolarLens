@@ -95,28 +95,30 @@ struct StatisticsEnergyCards: View {
         .padding(.horizontal)
     }
 
-    private var selfConsumptionDetail: String? {
+    private var selfConsumptionDetail: LocalizedStringKey? {
         guard let rate = statistics.selfConsumptionRate else { return nil }
-        return "\(String(format: "%.0f", rate))% self-consumed"
+        let formatted = String(format: "%.0f", rate)
+        return "\(formatted)% self-consumed"
     }
 
-    private var gridExportDetail: String {
+    private var gridExportDetail: LocalizedStringKey {
         "\(format(gridExport)) exported"
     }
 
-    private var batteryDischargedDetail: String {
+    private var batteryDischargedDetail: LocalizedStringKey {
         "\(format(batteryDischarged)) discharged"
     }
 
-    private var carChargingDetail: String? {
+    private var carChargingDetail: LocalizedStringKey? {
         guard let carCharged, consumption > 0 else { return nil }
-        let percentage = carCharged / consumption * 100
-        return "\(String(format: "%.0f", percentage))% of consumption"
+        let percentage = String(format: "%.0f", carCharged / consumption * 100)
+        return "\(percentage)% of consumption"
     }
 
-    private var autarkyDetail: String? {
+    private var autarkyDetail: LocalizedStringKey? {
         guard let autarky = statistics.autarchyDegree else { return nil }
-        return "\(String(format: "%.0f", autarky))% Autarky"
+        let formatted = String(format: "%.0f", autarky)
+        return "\(formatted)% Autarky"
     }
 }
 

@@ -53,7 +53,7 @@ struct BatteryBoubleView: View {
         }
     }
 
-    private var compactForecastText: String? {
+    private var compactForecastText: LocalizedStringKey? {
         guard let forecast = batteryForecast else { return nil }
 
         if forecast.isCharging,
@@ -62,7 +62,8 @@ struct BatteryBoubleView: View {
            let time = forecast.timeWhenFullyCharged
         {
             let durationStr = forecastFormatter.string(from: duration) ?? ""
-            return "Full in \(durationStr) at \(time.formatted(date: .omitted, time: .shortened))"
+            let timeStr = time.formatted(date: .omitted, time: .shortened)
+            return "Full in \(durationStr) at \(timeStr)"
         }
 
         if forecast.isDischarging,
@@ -71,7 +72,8 @@ struct BatteryBoubleView: View {
            let time = forecast.timeWhenDischarged
         {
             let durationStr = forecastFormatter.string(from: duration) ?? ""
-            return "Empty in \(durationStr) at \(time.formatted(date: .omitted, time: .shortened))"
+            let timeStr = time.formatted(date: .omitted, time: .shortened)
+            return "Empty in \(durationStr) at \(timeStr)"
         }
 
         return nil
