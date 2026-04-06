@@ -5,12 +5,16 @@ struct ChargingModePickerView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
-    var station: ChargingStation
     @State var chargingModeConfiguration = ChargingModeConfiguration()
     @State private var showingOptionsPopup = false
     @State private var popupMode: ChargingMode?
+    @State private var popupStation: ChargingStation?
 
     private var isLandscape: Bool { verticalSizeClass == .compact }
+
+    private var stations: [ChargingStation] {
+        buildingState.overviewData.chargingStations.sorted { $0.priority < $1.priority }
+    }
 
     var body: some View {
         NavigationView {
@@ -46,10 +50,10 @@ struct ChargingModePickerView: View {
                 }
             }
             .sheet(isPresented: $showingOptionsPopup) {
-                if let popupMode {
+                if let popupMode, let popupStation {
                     ChargingOptionsPopupView(
                         chargingMode: popupMode,
-                        chargingStation: station
+                        chargingStation: popupStation
                     )
                     .presentationDetents([.height(300)])
                 }
@@ -65,7 +69,10 @@ struct ChargingModePickerView: View {
     private var portraitContent: some View {
         VStack(spacing: 16) {
             carsCard
-            chargingStationCard
+
+            ForEach(stations) { station in
+                chargingStationCard(for: station)
+            }
         }
         .padding()
     }
@@ -74,16 +81,19 @@ struct ChargingModePickerView: View {
 
     private var landscapeContent: some View {
         HStack(alignment: .top, spacing: 16) {
-            // Left column: Cars + Charging station status
+            // Left column: Cars
             VStack(spacing: 16) {
                 carsCard
-                stationStatusCard
             }
             .frame(maxWidth: .infinity)
 
-            // Right column: Charging mode picker
-            modePickerCard
-                .frame(maxWidth: .infinity)
+            // Right column: All station cards
+            VStack(spacing: 16) {
+                ForEach(stations) { station in
+                    chargingStationCard(for: station)
+                }
+            }
+            .frame(maxWidth: .infinity)
         }
         .padding()
     }
@@ -105,12 +115,10 @@ struct ChargingModePickerView: View {
                 }
 
                 if isLandscape {
-                    // Landscape: cars stacked vertically
                     ForEach(cars) { car in
                         carCard(car: car)
                     }
                 } else {
-                    // Portrait: cars in 2-column rows
                     let rows = stride(from: 0, to: cars.count, by: 2).map {
                         Array(cars[$0..<min($0 + 2, cars.count)])
                     }
@@ -135,13 +143,13 @@ struct ChargingModePickerView: View {
         }
     }
 
-    private var stationStatusView: some View {
+    private func stationStatusView(for station: ChargingStation) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 4) {
                 Image(systemName: "ev.charger")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text("Charging Station")
+                Text(station.name)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -157,7 +165,7 @@ struct ChargingModePickerView: View {
                         .symbolEffect(
                             .pulse.wholeSymbol,
                             options: .repeat(.continuous),
-                            isActive: (buildingState.chargingInfos?.currentCharging ?? 0) > 0
+                            isActive: station.currentPower > 0
                         )
                 }
 
@@ -166,8 +174,8 @@ struct ChargingModePickerView: View {
                         Image(systemName: "bolt")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        if let currentPower = buildingState.chargingInfos?.currentCharging {
-                            Text(String(format: "%.1f kW", Double(currentPower) / 1000))
+                        if station.currentPower > 0 {
+                            Text(String(format: "%.1f kW", Double(station.currentPower) / 1000))
                                 .font(.headline)
                                 .fontWeight(.bold)
                         } else {
@@ -176,19 +184,9 @@ struct ChargingModePickerView: View {
                         }
                     }
 
-                    HStack(spacing: 4) {
-                        Image(systemName: "calendar")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        if let totalToday = buildingState.chargingInfos?.totalCharedToday {
-                            Text(String(format: "%.1f kWh today", totalToday / 1000))
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        } else {
-                            Text("–")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    ChargingModelLabelView(chargingMode: station.chargingMode)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
 
                 Spacer()
@@ -196,7 +194,7 @@ struct ChargingModePickerView: View {
         }
     }
 
-    private var modePickerView: some View {
+    private func modePickerView(for station: ChargingStation) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 4) {
                 Image(systemName: "sparkles")
@@ -216,18 +214,18 @@ struct ChargingModePickerView: View {
                 GridItem(.flexible(), spacing: 10)
             ], spacing: 10) {
                 ForEach(visibleModes, id: \.self) { mode in
-                    chargingModeCell(mode: mode)
+                    chargingModeCell(mode: mode, station: station)
                 }
             }
         }
     }
 
-    /// Combined station status + mode picker (portrait)
-    private var chargingStationCard: some View {
+    /// Combined station status + mode picker card for a specific station
+    private func chargingStationCard(for station: ChargingStation) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            stationStatusView
+            stationStatusView(for: station)
             Divider()
-            modePickerView
+            modePickerView(for: station)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -237,32 +235,10 @@ struct ChargingModePickerView: View {
         )
     }
 
-    /// Station status only (landscape left column)
-    private var stationStatusCard: some View {
-        stationStatusView
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(.ultraThinMaterial)
-            )
-    }
-
-    /// Mode picker only (landscape right column)
-    private var modePickerCard: some View {
-        modePickerView
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(.ultraThinMaterial)
-            )
-    }
-
     // MARK: - Mode Cell (2-column grid)
 
     @ViewBuilder
-    private func chargingModeCell(mode: ChargingMode) -> some View {
+    private func chargingModeCell(mode: ChargingMode, station: ChargingStation) -> some View {
         let isSelected = station.chargingMode == mode
         let accentColor = modeColor(for: mode)
 
@@ -275,6 +251,7 @@ struct ChargingModePickerView: View {
                     )
                 }
             } else {
+                popupStation = station
                 popupMode = mode
                 showingOptionsPopup = true
             }
@@ -475,14 +452,10 @@ private struct ChargingModeInfoButton: View {
 }
 
 #Preview {
-    ChargingModePickerView(
-        station: ChargingStation(
-            id: "2134",
-            name: "Station 2",
-            chargingMode: .withSolarPower,
-            priority: 1,
-            currentPower: 0,
-            signal: .connected
+    ChargingModePickerView()
+        .environment(
+            CurrentBuildingState.fake(
+                overviewData: OverviewData.fake()
+            )
         )
-    )
 }

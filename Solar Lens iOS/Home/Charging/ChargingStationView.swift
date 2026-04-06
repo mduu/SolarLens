@@ -27,10 +27,8 @@ struct ChargingStationView: View {
             showChargingModeSelection = true
         }
         .sheet(isPresented: $showChargingModeSelection) {
-            ChargingModePickerView(
-                station: station
-            )
-            .presentationDetents([.large])
+            ChargingModePickerView()
+                .presentationDetents([.large])
         }  // : sheet
     }
 }

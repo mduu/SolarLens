@@ -2985,6 +2985,7 @@
       }
     },
     "Charging Station" : {
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {

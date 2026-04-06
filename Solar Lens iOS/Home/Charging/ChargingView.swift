@@ -80,7 +80,7 @@ struct ChargingStationCard: View {
             showChargingModeSelection = true
         }
         .sheet(isPresented: $showChargingModeSelection) {
-            ChargingModePickerView(station: station)
+            ChargingModePickerView()
                 .presentationDetents([.large])
         }
     }
@@ -92,7 +92,7 @@ struct ChargingStationCard: View {
         case .alwaysCharge: Image(systemName: "24.circle.fill")
         case .off: Image(systemName: "poweroff")
         case .constantCurrent: Image(systemName: "glowplug")
-        case .minimalAndSolar: Image(systemName: "fluid.batteryblock.fill")
+        case .minimalAndSolar: Image(systemName: "fluid.batteryblock")
         case .minimumQuantity: Image(systemName: "minus.plus.and.fluid.batteryblock")
         case .chargingTargetSoc: Image(systemName: "bolt.car.fill")
         }
