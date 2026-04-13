@@ -151,9 +151,30 @@ class CurrentBuildingState {
 
         do {
             print("\(Date()) - Fetching charing data")
-            chargingInfos = try await energyManager.fetchChargingData()
+
+            let fetchTask = Task {
+                try await energyManager.fetchChargingData()
+            }
+            let timeoutTask = Task {
+                try await Task.sleep(nanoseconds: UInt64(CurrentBuildingState.fetchTimeoutSeconds * Double(NSEC_PER_SEC)))
+                fetchTask.cancel()
+            }
+
+            do {
+                chargingInfos = try await fetchTask.value
+                timeoutTask.cancel()
+            } catch {
+                timeoutTask.cancel()
+                throw error
+            }
+
             print("\(Date()) - Server charging data fetched")
 
+            isLoading = false
+        } catch is CancellationError {
+            print("⏱ Charging fetch timed out after \(CurrentBuildingState.fetchTimeoutSeconds)s")
+            self.error = .fetchTimeout
+            errorMessage = "Request timed out."
             isLoading = false
         } catch {
             self.error = error as? EnergyManagerClientError
