@@ -22,6 +22,11 @@ class CurrentBuildingState {
     private let energyManager: EnergyManager
     private var activeFetchTask: Task<Void, Never>?
 
+    /// Seconds after which a hanging fetch is cancelled.
+    /// Must be ≤ the view-level timeout so the UI never shows a spinner
+    /// longer than the state layer has already given up.
+    static let fetchTimeoutSeconds: TimeInterval = 30
+
     private struct ChargingModeOverride {
         let sensorId: String
         let mode: ChargingMode
@@ -99,10 +104,10 @@ class CurrentBuildingState {
                 }
 
                 // Safety timeout: cancel the fetch and surface a timeout error
-                // if the network call hangs for more than 30 seconds so that
+                // if the network call hangs for more than fetchTimeoutSeconds so that
                 // isLoading is always reset and the UI doesn't spin forever.
                 let timeoutTask = Task {
-                    try await Task.sleep(nanoseconds: UInt64(30 * NSEC_PER_SEC))
+                    try await Task.sleep(nanoseconds: UInt64(CurrentBuildingState.fetchTimeoutSeconds * Double(NSEC_PER_SEC)))
                     fetchTask.cancel()
                 }
 
@@ -121,6 +126,10 @@ class CurrentBuildingState {
                     timeoutTask.cancel()
                     throw error
                 }
+            } catch is CancellationError {
+                print("⏱ Fetch timed out after \(CurrentBuildingState.fetchTimeoutSeconds)s")
+                self.error = .fetchTimeout
+                errorMessage = "Request timed out."
             } catch {
                 if error is RestError {
                     self.error = .apiError(apiError: error as! RestError)

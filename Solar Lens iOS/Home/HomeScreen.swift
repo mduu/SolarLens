@@ -19,8 +19,6 @@ struct HomeScreen: View {
 
     var isPortrait: Bool { verticalSizeClass != .compact }
 
-    private static let loadingTimeoutSeconds: TimeInterval = 30
-
     var body: some View {
         ZStack {
             BackgroundView()
@@ -233,7 +231,7 @@ struct HomeScreen: View {
         guard let startedAt = loadingStartedAt,
               buildingState.overviewData.lastSuccessServerFetch == nil
         else { return false }
-        return Date().timeIntervalSince(startedAt) > Self.loadingTimeoutSeconds
+        return Date().timeIntervalSince(startedAt) > CurrentBuildingState.fetchTimeoutSeconds
     }
 
     private func getAgeOfData() -> TimeInterval {
