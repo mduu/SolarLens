@@ -92,17 +92,35 @@ class CurrentBuildingState {
                 print("Fetching server data...")
 
                 var stopwatch = Stopwatch.init()
-                let newData = try await energyManager.fetchOverviewData(
-                    lastOverviewData: overviewData
-                )
-                stopwatch.stop()
+                let fetchTask = Task {
+                    try await energyManager.fetchOverviewData(
+                        lastOverviewData: overviewData
+                    )
+                }
 
-                overviewData = newData
-                applyOptimisticOverrides()
+                // Safety timeout: cancel the fetch and surface a timeout error
+                // if the network call hangs for more than 30 seconds so that
+                // isLoading is always reset and the UI doesn't spin forever.
+                let timeoutTask = Task {
+                    try await Task.sleep(nanoseconds: 30_000_000_000)
+                    fetchTask.cancel()
+                }
 
-                print(
-                    "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
-                )
+                do {
+                    let newData = try await fetchTask.value
+                    timeoutTask.cancel()
+                    stopwatch.stop()
+
+                    overviewData = newData
+                    applyOptimisticOverrides()
+
+                    print(
+                        "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
+                    )
+                } catch {
+                    timeoutTask.cancel()
+                    throw error
+                }
             } catch {
                 if error is RestError {
                     self.error = .apiError(apiError: error as! RestError)

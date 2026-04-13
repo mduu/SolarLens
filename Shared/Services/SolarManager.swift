@@ -991,6 +991,16 @@ class SolarManager: EnergyManager {
     }
 
     private func handleOnTokenExpired() async -> Bool {
+        // If a login/refresh task is already running, calling ensureLoggedIn()
+        // below would await activeLoginTask which is itself waiting for this
+        // callback to return → deadlock. Return false immediately so the refresh
+        // endpoint 401 surfaces as a normal error and performLogin() can handle
+        // it (fall through to credential login or throw loginFailed).
+        if activeLoginTask != nil {
+            print("🔑 Login already in progress, skipping token-expired callback to avoid deadlock.")
+            return false
+        }
+
         // If a refresh is already in progress, we are being called
         // recursively (e.g. the refresh endpoint itself returned 403).
         // Return false to break the cycle instead of deadlocking.

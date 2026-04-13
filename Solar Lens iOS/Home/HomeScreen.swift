@@ -11,6 +11,7 @@ struct HomeScreen: View {
     @State var solarDetailsData: SolarDetailsData?
     @State var presentOnboarding: Bool = AppSettings().showOnboarding
     @State var showError: Bool = false
+    @State var loadingStartedAt: Date? = nil
     // Survey Logic
     @State var showSurvey: Bool = false
     @AppStorage("surveyForeverDismissed") var surveyForeverDismissed: Bool = false
@@ -76,7 +77,21 @@ struct HomeScreen: View {
 
     @ViewBuilder
     private var portraitContent: some View {
-        if isLoading() {
+        if isLoadingTimedOut() {
+            VStack(spacing: 20) {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.system(size: 40))
+                    .foregroundStyle(.secondary)
+                Text("Loading took too long")
+                    .font(.headline)
+                Button("Retry") {
+                    refreshAll()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.top, 65)
+        } else if isLoading() {
             VStack {
                 MainProgressView()
             }
@@ -98,7 +113,19 @@ struct HomeScreen: View {
 
     @ViewBuilder
     private var landscapeContent: some View {
-        if isLoading() {
+        if isLoadingTimedOut() {
+            VStack(spacing: 20) {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.system(size: 40))
+                    .foregroundStyle(.secondary)
+                Text("Loading took too long")
+                    .font(.headline)
+                Button("Retry") {
+                    refreshAll()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        } else if isLoading() {
             MainProgressView(isLandscape: true)
         } else {
             HomeLandscapeLayout(
@@ -142,6 +169,7 @@ struct HomeScreen: View {
     }
 
     private func refreshAll() {
+        loadingStartedAt = nil
         fetchOverviewData()
         fetchSolarForecastData()
     }
@@ -166,7 +194,13 @@ struct HomeScreen: View {
     private func fetchOverviewData() {
         Task { @MainActor in
             print("fetch overview data")
+            if buildingState.overviewData.lastSuccessServerFetch == nil && loadingStartedAt == nil {
+                loadingStartedAt = Date()
+            }
             await buildingState.fetchServerData()
+            if buildingState.overviewData.lastSuccessServerFetch != nil {
+                loadingStartedAt = nil
+            }
         }
     }
 
@@ -196,6 +230,13 @@ struct HomeScreen: View {
     private func isLoading() -> Bool {
         buildingState.isLoading
             && buildingState.overviewData.lastSuccessServerFetch == nil
+    }
+
+    private func isLoadingTimedOut() -> Bool {
+        guard let startedAt = loadingStartedAt,
+              buildingState.overviewData.lastSuccessServerFetch == nil
+        else { return false }
+        return Date().timeIntervalSince(startedAt) > 30
     }
 
     private func getAgeOfData() -> TimeInterval {
