@@ -102,7 +102,7 @@ class CurrentBuildingState {
                 // if the network call hangs for more than 30 seconds so that
                 // isLoading is always reset and the UI doesn't spin forever.
                 let timeoutTask = Task {
-                    try await Task.sleep(nanoseconds: 30_000_000_000)
+                    try await Task.sleep(nanoseconds: UInt64(30 * NSEC_PER_SEC))
                     fetchTask.cancel()
                 }
 

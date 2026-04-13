@@ -19,6 +19,8 @@ struct HomeScreen: View {
 
     var isPortrait: Bool { verticalSizeClass != .compact }
 
+    private static let loadingTimeoutSeconds: TimeInterval = 30
+
     var body: some View {
         ZStack {
             BackgroundView()
@@ -76,21 +78,26 @@ struct HomeScreen: View {
     // MARK: - Layout Selection
 
     @ViewBuilder
+    private var loadingTimeoutView: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 40))
+                .foregroundStyle(.secondary)
+            Text("Loading took too long")
+                .font(.headline)
+            Button("Retry") {
+                refreshAll()
+            }
+            .buttonStyle(.borderedProminent)
+        }
+    }
+
+    @ViewBuilder
     private var portraitContent: some View {
         if isLoadingTimedOut() {
-            VStack(spacing: 20) {
-                Image(systemName: "exclamationmark.triangle")
-                    .font(.system(size: 40))
-                    .foregroundStyle(.secondary)
-                Text("Loading took too long")
-                    .font(.headline)
-                Button("Retry") {
-                    refreshAll()
-                }
-                .buttonStyle(.borderedProminent)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.top, 65)
+            loadingTimeoutView
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.top, 65)
         } else if isLoading() {
             VStack {
                 MainProgressView()
@@ -114,17 +121,7 @@ struct HomeScreen: View {
     @ViewBuilder
     private var landscapeContent: some View {
         if isLoadingTimedOut() {
-            VStack(spacing: 20) {
-                Image(systemName: "exclamationmark.triangle")
-                    .font(.system(size: 40))
-                    .foregroundStyle(.secondary)
-                Text("Loading took too long")
-                    .font(.headline)
-                Button("Retry") {
-                    refreshAll()
-                }
-                .buttonStyle(.borderedProminent)
-            }
+            loadingTimeoutView
         } else if isLoading() {
             MainProgressView(isLandscape: true)
         } else {
@@ -236,7 +233,7 @@ struct HomeScreen: View {
         guard let startedAt = loadingStartedAt,
               buildingState.overviewData.lastSuccessServerFetch == nil
         else { return false }
-        return Date().timeIntervalSince(startedAt) > 30
+        return Date().timeIntervalSince(startedAt) > Self.loadingTimeoutSeconds
     }
 
     private func getAgeOfData() -> TimeInterval {
