@@ -124,6 +124,7 @@ struct SolarScreen: View {
                     isStale: viewModel.overviewData.isStaleData,
                     updateTimeStamp: viewModel.overviewData.lastUpdated,
                     isLoading: viewModel.isLoading,
+                    hasError: viewModel.error != nil,
                     onRefresh: nil
                 )
                 .padding(.vertical, 4)

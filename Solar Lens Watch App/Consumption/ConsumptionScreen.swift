@@ -63,6 +63,7 @@ struct ConsumptionScreen: View {
                         isStale: buildingState.overviewData.isStaleData,
                         updateTimeStamp: buildingState.overviewData.lastUpdated,
                         isLoading: buildingState.isLoading,
+                        hasError: buildingState.error != nil,
                         onRefresh: nil
                     )
                     .padding(.top, 4)

@@ -47,7 +47,7 @@ struct ContentView: View {
                             .onTapGesture {
                                 print("Force refresh")
                                 Task {
-                                    await viewModel.fetchServerData()
+                                    await viewModel.fetchServerData(force: true)
                                 }
                             }
                             .tag(0)

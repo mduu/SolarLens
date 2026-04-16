@@ -30,6 +30,7 @@ struct HomeLandscapeLayout: View {
                         isStale: buildingState.overviewData.isStaleData,
                         updateTimeStamp: buildingState.overviewData.lastSuccessServerFetch,
                         isLoading: buildingState.isLoading,
+                        hasError: buildingState.error != nil,
                         onRefresh: nil
                     )
                     .font(.caption2)

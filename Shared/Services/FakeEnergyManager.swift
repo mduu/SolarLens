@@ -93,6 +93,16 @@ class FakeEnergyManager: EnergyManager {
         return data
     }
 
+    func fetchTodayStatistics() async throws -> TodayStatistics? {
+        return TodayStatistics(
+            selfConsumption: data.todaySelfConsumption,
+            selfConsumptionRate: data.todaySelfConsumptionRate,
+            autarchyDegree: data.todayAutarchyDegree,
+            production: data.todayProduction,
+            consumption: data.todayConsumption
+        )
+    }
+
     func fetchCarChargingTotal(period: Period) async throws -> Double {
         return 32400
     }

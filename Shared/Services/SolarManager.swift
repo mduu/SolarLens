@@ -6,6 +6,13 @@ class SolarManager: EnergyManager {
 
     nonisolated init() {}
 
+    /// True while the current async context is running *inside* the
+    /// serialized login task (i.e. `performLogin()`'s refresh/doLogin call
+    /// chain). Used by `handleOnTokenExpired()` to tell "my own refresh call
+    /// returned 401" (must NOT await the login task → deadlock) apart from
+    /// "some unrelated request raced with a login" (can safely await it).
+    @TaskLocal static var isInsideLoginTask: Bool = false
+
     private var expireAt: Date?
     private var accessClaims: [String]?
     private var activeRefreshTask: Task<Bool, Never>?
@@ -32,27 +39,26 @@ class SolarManager: EnergyManager {
             return lastOverviewData ?? OverviewData.empty()
         }
 
-        if let chart = try await solarManagerApi.getV1Chart(
+        // Fire both independent REST calls in parallel; wall-clock time is
+        // max(chart, stream) instead of chart+stream. Today's aggregated
+        // statistics are fetched separately via `fetchTodayStatistics()` so
+        // the core numbers don't wait on the slower aggregation endpoint.
+        async let chartPromise = solarManagerApi.getV1Chart(
             solarManagerId: systemInformation.sm_id
-        ) {
+        )
+        async let streamPromise = solarManagerApi.getV3StreamGateway(
+            solarManagerId: systemInformation.sm_id
+        )
+
+        let chart = try await chartPromise
+        let streamSensorInfos = try await streamPromise
+
+        if let chart {
             let batteryChargingRate = chart.battery.map {
                 $0.batteryCharging - $0.batteryDischarging
             }
 
             let lastUpdated = parseSolarManagerDateTime(chart.lastUpdate)
-
-            let streamSensorInfos =
-                try await solarManagerApi.getV3StreamGateway(
-                    solarManagerId: systemInformation.sm_id
-                )
-
-            let todayGatewayStatistics =
-                try await solarManagerApi.getV1Statistics(
-                    solarManagerId: systemInformation.sm_id,
-                    from: Date.todayStartOfDay(),
-                    to: Date.todayEndOfDay(),
-                    accuracy: .high
-                )
 
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos
@@ -114,14 +120,6 @@ class SolarManager: EnergyManager {
 
                         return mapDevice(sensorInfo, streamInfo)
                     } ?? [],
-                todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
-                todaySelfConsumptionRate: todayGatewayStatistics?
-                    .selfConsumptionRate,
-                todayAutarchyDegree: todayGatewayStatistics?.autarchyDegree,
-                todayProduction: todayGatewayStatistics?.production,
-                todayConsumption: todayGatewayStatistics?.consumption,
-                todayGridImported: nil,
-                todayGridExported: nil,
                 cars: mapCars(streamSensorInfos: streamSensorInfos)
             )
         }
@@ -133,6 +131,30 @@ class SolarManager: EnergyManager {
         errorOverviewData.hasConnectionError = true
 
         return errorOverviewData
+    }
+
+    func fetchTodayStatistics() async throws -> TodayStatistics? {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+
+        guard let systemInformation else { return nil }
+
+        let stats = try await solarManagerApi.getV1Statistics(
+            solarManagerId: systemInformation.sm_id,
+            from: Date.todayStartOfDay(),
+            to: Date.todayEndOfDay(),
+            accuracy: .high
+        )
+
+        guard let stats else { return nil }
+
+        return TodayStatistics(
+            selfConsumption: stats.selfConsumption,
+            selfConsumptionRate: stats.selfConsumptionRate,
+            autarchyDegree: stats.autarchyDegree,
+            production: stats.production,
+            consumption: stats.consumption
+        )
     }
 
     func fetchChargingData() async throws -> CharingInfoData {
@@ -633,7 +655,9 @@ class SolarManager: EnergyManager {
         }
 
         let task = Task<Void, Error> { @MainActor in
-            try await performLogin()
+            try await SolarManager.$isInsideLoginTask.withValue(true) {
+                try await performLogin()
+            }
         }
 
         activeLoginTask = task
@@ -991,12 +1015,35 @@ class SolarManager: EnergyManager {
     }
 
     private func handleOnTokenExpired() async -> Bool {
-        // If a refresh is already in progress, we are being called
-        // recursively (e.g. the refresh endpoint itself returned 403).
-        // Return false to break the cycle instead of deadlocking.
-        if activeRefreshTask != nil {
-            print("🔑 Token refresh already in progress, skipping recursive attempt.")
+        // Case 1: we're being called from *within* the login task itself
+        // (performLogin's refresh call surfaced a 401). Awaiting the login
+        // task here would wait for ourselves → deadlock. Returning false lets
+        // the 401 propagate as a normal error so performLogin() can fall
+        // through to credential login or throw loginFailed.
+        if SolarManager.isInsideLoginTask {
+            print("🔑 Token-expired fired from inside the login task; returning false to avoid self-deadlock.")
             return false
+        }
+
+        // Case 2: an unrelated request raced with an in-flight login. Wait
+        // for that login to finish and report its success — the request will
+        // then be retried with the fresh token instead of failing outright.
+        if let existingLogin = activeLoginTask {
+            print("🔑 Login already in progress; awaiting its completion before retrying the request.")
+            do {
+                try await existingLogin.value
+                return true
+            } catch {
+                return false
+            }
+        }
+
+        // Case 3: a refresh is already in progress. Await its result rather
+        // than kicking off a competing refresh (which would invalidate the
+        // other's token on the server).
+        if let existingRefresh = activeRefreshTask {
+            print("🔑 Token refresh already in progress; awaiting its result.")
+            return await existingRefresh.value
         }
 
         let task = Task<Bool, Never> { @MainActor in

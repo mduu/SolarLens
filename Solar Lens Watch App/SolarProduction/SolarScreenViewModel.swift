@@ -29,17 +29,23 @@ class SolarScreenViewModel {
             return
         }
 
-        do {
-            isLoading = true
+        isLoading = true
+        defer { isLoading = false }
 
+        do {
             if overviewData.lastUpdated == nil
                 || Date().timeIntervalSince(overviewData.lastUpdated!) > 30
             {
                 print("Fetching overview-details server data...")
 
-                overviewData = try await energyManager.fetchOverviewData(
-                    lastOverviewData: overviewData)
-         
+                let lastOverviewData = overviewData
+                overviewData = try await withFetchTimeout(
+                    CurrentBuildingState.fetchTimeoutSeconds
+                ) { [energyManager] in
+                    try await energyManager.fetchOverviewData(
+                        lastOverviewData: lastOverviewData)
+                }
+
                 print("Server overview-details data fetched at \(Date())")
             }
 
@@ -48,22 +54,31 @@ class SolarScreenViewModel {
             {
                 print("Fetching solar-details server data...")
 
-                let result = try? await energyManager.fetchSolarDetails()
-                if result != nil {
-                    solarDetailsData = result!
+                // Preserve the original `try?` semantics: treat any
+                // solar-details failure (except timeout) as "no update this
+                // tick" rather than a user-visible error.
+                let result = try? await withFetchTimeout(
+                    CurrentBuildingState.fetchTimeoutSeconds
+                ) { [energyManager] in
+                    try await energyManager.fetchSolarDetails()
+                }
+                if let result {
+                    solarDetailsData = result
                     solarDetailsLastFetchAt = Date()
                 }
-                
+
                 print("Server solar-details data fetched at \(Date())")
             }
 
             errorMessage = nil
             self.error = nil
-            isLoading = false
+        } catch is CancellationError {
+            print("⏱ Solar fetch timed out after \(CurrentBuildingState.fetchTimeoutSeconds)s")
+            self.error = .fetchTimeout
+            errorMessage = "Request timed out."
         } catch {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
-            isLoading = false
         }
     }
 }

@@ -37,7 +37,7 @@ struct BatteryChartSheet: View {
                             }
                         }
                         .padding(.top, 2)
-                    } else {
+                    } else if !viewModel.isLoading {
                         Spacer()
                         Text("No data")
                             .font(.footnote)

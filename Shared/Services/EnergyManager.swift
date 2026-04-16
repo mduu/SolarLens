@@ -1,12 +1,29 @@
 import Combine
 internal import Foundation
 
+/// Aggregated statistics for the current day. Fetched separately from the
+/// core overview so the home screen's live numbers can render before the
+/// (typically slower) aggregation endpoint returns.
+struct TodayStatistics: Sendable {
+    let selfConsumption: Double?
+    let selfConsumptionRate: Double?
+    let autarchyDegree: Double?
+    let production: Double?
+    let consumption: Double?
+}
+
 protocol EnergyManager {
     func login(username: String, password: String) async -> Bool
 
     func fetchOverviewData(lastOverviewData: OverviewData?) async throws
         -> OverviewData
-    
+
+    /// Fetches today's aggregated statistics (self-consumption, autarchy,
+    /// production/consumption totals). Intentionally split from
+    /// `fetchOverviewData` so the home screen's live numbers can render
+    /// before this typically-slower aggregation endpoint returns.
+    func fetchTodayStatistics() async throws -> TodayStatistics?
+
     func fetchChargingData() async throws -> CharingInfoData
 
     func fetchCarChargingTotal(period: Period) async throws -> Double

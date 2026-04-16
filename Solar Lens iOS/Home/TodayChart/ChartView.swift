@@ -28,7 +28,7 @@ struct ChartView: View {
                             portraitContent
                         }
 
-                    } else {
+                    } else if !viewModel.isLoading {
                         Spacer()
                         Text("No data")
                             .font(.footnote)

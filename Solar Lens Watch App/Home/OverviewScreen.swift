@@ -56,9 +56,10 @@ struct OverviewScreen: View {
                         isStale: model.overviewData.isStaleData,
                         updateTimeStamp: model.overviewData.lastSuccessServerFetch,
                         isLoading: model.isLoading,
+                        hasError: model.error != nil,
                         onRefresh: {
                             Task {
-                                await model.fetchServerData()
+                                await model.fetchServerData(force: true)
                             }
                         }
                     )

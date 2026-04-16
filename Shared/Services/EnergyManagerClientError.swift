@@ -4,4 +4,5 @@ enum EnergyManagerClientError: Error {
     case invalidData
     case apiError(apiError: RestError)
     case invalidDateCalculation
+    case fetchTimeout
 }
