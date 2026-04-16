@@ -59,7 +59,7 @@ struct OverviewScreen: View {
                         hasError: model.error != nil,
                         onRefresh: {
                             Task {
-                                await model.fetchServerData()
+                                await model.fetchServerData(force: true)
                             }
                         }
                     )

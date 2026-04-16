@@ -14,8 +14,24 @@ class SolarLensWidgetDataSource {
         if overviewData == nil
             || lastFetchOverviewData?.timeIntervalSinceNow ?? 0 < -4 * 60
         {
-            let data = try? await solarManager.fetchOverviewData(
+            // Widgets consume today's statistics fields (e.g. the
+            // efficiency widget reads todaySelfConsumptionRate and
+            // todayAutarchyDegree). Since `fetchOverviewData` no longer
+            // includes them, fetch both in parallel and merge.
+            async let corePromise = solarManager.fetchOverviewData(
                 lastOverviewData: overviewData)
+            async let statsPromise = solarManager.fetchTodayStatistics()
+
+            let data = try? await corePromise
+            if let data {
+                if let stats = try? await statsPromise {
+                    data.todaySelfConsumption = stats.selfConsumption
+                    data.todaySelfConsumptionRate = stats.selfConsumptionRate
+                    data.todayAutarchyDegree = stats.autarchyDegree
+                    data.todayProduction = stats.production
+                    data.todayConsumption = stats.consumption
+                }
+            }
 
             overviewData = data
             lastFetchOverviewData = Date()

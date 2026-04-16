@@ -39,27 +39,26 @@ class SolarManager: EnergyManager {
             return lastOverviewData ?? OverviewData.empty()
         }
 
-        if let chart = try await solarManagerApi.getV1Chart(
+        // Fire both independent REST calls in parallel; wall-clock time is
+        // max(chart, stream) instead of chart+stream. Today's aggregated
+        // statistics are fetched separately via `fetchTodayStatistics()` so
+        // the core numbers don't wait on the slower aggregation endpoint.
+        async let chartPromise = solarManagerApi.getV1Chart(
             solarManagerId: systemInformation.sm_id
-        ) {
+        )
+        async let streamPromise = solarManagerApi.getV3StreamGateway(
+            solarManagerId: systemInformation.sm_id
+        )
+
+        let chart = try await chartPromise
+        let streamSensorInfos = try await streamPromise
+
+        if let chart {
             let batteryChargingRate = chart.battery.map {
                 $0.batteryCharging - $0.batteryDischarging
             }
 
             let lastUpdated = parseSolarManagerDateTime(chart.lastUpdate)
-
-            let streamSensorInfos =
-                try await solarManagerApi.getV3StreamGateway(
-                    solarManagerId: systemInformation.sm_id
-                )
-
-            let todayGatewayStatistics =
-                try await solarManagerApi.getV1Statistics(
-                    solarManagerId: systemInformation.sm_id,
-                    from: Date.todayStartOfDay(),
-                    to: Date.todayEndOfDay(),
-                    accuracy: .high
-                )
 
             let isAnyCarCharing = getIsAnyCarCharing(
                 streamSensors: streamSensorInfos
@@ -121,14 +120,6 @@ class SolarManager: EnergyManager {
 
                         return mapDevice(sensorInfo, streamInfo)
                     } ?? [],
-                todaySelfConsumption: todayGatewayStatistics?.selfConsumption,
-                todaySelfConsumptionRate: todayGatewayStatistics?
-                    .selfConsumptionRate,
-                todayAutarchyDegree: todayGatewayStatistics?.autarchyDegree,
-                todayProduction: todayGatewayStatistics?.production,
-                todayConsumption: todayGatewayStatistics?.consumption,
-                todayGridImported: nil,
-                todayGridExported: nil,
                 cars: mapCars(streamSensorInfos: streamSensorInfos)
             )
         }
@@ -140,6 +131,30 @@ class SolarManager: EnergyManager {
         errorOverviewData.hasConnectionError = true
 
         return errorOverviewData
+    }
+
+    func fetchTodayStatistics() async throws -> TodayStatistics? {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+
+        guard let systemInformation else { return nil }
+
+        let stats = try await solarManagerApi.getV1Statistics(
+            solarManagerId: systemInformation.sm_id,
+            from: Date.todayStartOfDay(),
+            to: Date.todayEndOfDay(),
+            accuracy: .high
+        )
+
+        guard let stats else { return nil }
+
+        return TodayStatistics(
+            selfConsumption: stats.selfConsumption,
+            selfConsumptionRate: stats.selfConsumptionRate,
+            autarchyDegree: stats.autarchyDegree,
+            production: stats.production,
+            consumption: stats.consumption
+        )
     }
 
     func fetchChargingData() async throws -> CharingInfoData {

@@ -21,6 +21,15 @@ class CurrentBuildingState {
 
     private let energyManager: EnergyManager
     private var activeFetchTask: Task<Void, Never>?
+    private var lastFetchStartedAt: Date?
+
+    /// Minimum spacing between two automated `fetchServerData` calls.
+    /// Scene-phase flickers on watchOS (triggered e.g. by the Digital Crown
+    /// or the system time cover) can fire `onChange(scenePhase → .active)`
+    /// several times in quick succession; without this guard the UI shows
+    /// a brief "Aktualisiere" flash on every tiny interaction. Explicit
+    /// user refreshes bypass the debounce via `force: true`.
+    static let minFetchInterval: TimeInterval = 5
 
     /// Seconds after which a hanging fetch is cancelled at the state layer.
     /// Paired with `viewLoadingTimeoutSeconds` below so that the state layer
@@ -54,11 +63,19 @@ class CurrentBuildingState {
     init(energyManagerClient: EnergyManager) {
         self.energyManager = energyManagerClient
         updateCredentialsExists()
+        seedFromCache()
     }
 
     init() {
         self.energyManager = SolarManager.shared
         updateCredentialsExists()
+        seedFromCache()
+    }
+
+    private func seedFromCache() {
+        if let cached = OverviewDataCache.load() {
+            OverviewDataCache.apply(cached, to: overviewData)
+        }
     }
 
     func pauseFetching() {
@@ -84,7 +101,7 @@ class CurrentBuildingState {
     }
 
     @MainActor
-    func fetchServerData() async {
+    func fetchServerData(force: Bool = false) async {
         if !loginCredentialsExists || fetchingIsPaused { return }
 
         // If a fetch is already running, await its completion instead of dropping
@@ -92,6 +109,17 @@ class CurrentBuildingState {
             await existingTask.value
             return
         }
+
+        // Debounce: skip automated fetches that arrive within
+        // `minFetchInterval` of the last one so scene-phase flickers
+        // (e.g. from Digital Crown interactions) don't produce a visible
+        // loading flash on every tiny movement. `force == true` lets
+        // explicit user refreshes bypass this.
+        if !force, let lastStart = lastFetchStartedAt,
+           Date().timeIntervalSince(lastStart) < Self.minFetchInterval {
+            return
+        }
+        lastFetchStartedAt = Date()
 
         // Flip state synchronously so callers on the same MainActor never see
         // a render cycle where "a fetch is about to happen" is still rendered
@@ -111,21 +139,46 @@ class CurrentBuildingState {
 
                 var stopwatch = Stopwatch.init()
                 let lastOverviewData = overviewData
-                let newData = try await withFetchTimeout(
+
+                // Kick off core overview and today-statistics in parallel.
+                // The core call is what we gate the primary UI on; stats
+                // merge in whenever they arrive (typically later) so the
+                // flow numbers paint without waiting on the aggregation
+                // endpoint.
+                async let corePromise = withFetchTimeout(
                     CurrentBuildingState.fetchTimeoutSeconds
                 ) { [energyManager] in
                     try await energyManager.fetchOverviewData(
                         lastOverviewData: lastOverviewData
                     )
                 }
+                async let statsPromise = withFetchTimeout(
+                    CurrentBuildingState.fetchTimeoutSeconds
+                ) { [energyManager] in
+                    try await energyManager.fetchTodayStatistics()
+                }
+
+                let newData = try await corePromise
                 stopwatch.stop()
 
                 overviewData = newData
                 applyOptimisticOverrides()
+                OverviewDataCache.save(newData)
 
                 print(
                     "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
                 )
+
+                // Merge statistics when they land. A failure here does not
+                // surface — we already painted the important numbers.
+                if let stats = try? await statsPromise {
+                    overviewData.todaySelfConsumption = stats.selfConsumption
+                    overviewData.todaySelfConsumptionRate = stats.selfConsumptionRate
+                    overviewData.todayAutarchyDegree = stats.autarchyDegree
+                    overviewData.todayProduction = stats.production
+                    overviewData.todayConsumption = stats.consumption
+                    OverviewDataCache.save(overviewData)
+                }
             } catch is CancellationError {
                 print("⏱ Fetch timed out after \(CurrentBuildingState.fetchTimeoutSeconds)s")
                 self.error = .fetchTimeout
