@@ -43,18 +43,8 @@ struct UpdateTimeStampView: View {
                     }
 
                     if isLoading {
-                        HStack {
-                            Image(
-                                systemName: "arrow.trianglehead.2.counterclockwise"
-                            )
-                            .symbolEffect(
-                                .rotate.byLayer,
-                                options: .repeat(.continuous)
-                            )
-
-                            Text("Updateting")
-                        }
-                        .foregroundColor(.gray)
+                        Text("Updating")
+                            .foregroundColor(.gray)
                     }
                 }
 

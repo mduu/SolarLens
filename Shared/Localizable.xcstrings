@@ -13325,7 +13325,7 @@
         }
       }
     },
-    "Updateting" : {
+    "Updating" : {
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -13342,7 +13342,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updateting"
+            "value" : "Updating"
           }
         },
         "fr" : {
