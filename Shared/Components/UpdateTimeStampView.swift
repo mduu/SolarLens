@@ -10,6 +10,13 @@ struct UpdateTimeStampView: View {
 
     @State private var secondsElapsed: TimeInterval = 0
     @State private var isTapped = false
+    /// Gates the "Updating" label on a short delay after `isLoading`
+    /// flips true. Brief fetches (e.g. when the cache seed is already
+    /// fresh, or when watchOS scene-phase flickers fire a redundant
+    /// fetch) complete before the delay expires and therefore never
+    /// show the label. Only real, slow fetches surface it.
+    @State private var showLoadingLabel: Bool = false
+    private static let loadingLabelDelay: TimeInterval = 0.6
 
     var updateTimer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
@@ -45,15 +52,15 @@ struct UpdateTimeStampView: View {
                     // so users don't see a brief red flash on activation.
                     if hasRealProblem && secs >= 300 {
                         Text("Old data")
-                            .foregroundColor(isLoading ? color.opacity(0) : color)
+                            .foregroundColor(showLoadingLabel ? color.opacity(0) : color)
                     } else {
                         let text = secs > 0 ? secs.formatAsHMS() : ""
 
                         Text("Updated \(text)")
-                            .foregroundColor(isLoading ? color.opacity(0) : color)
+                            .foregroundColor(showLoadingLabel ? color.opacity(0) : color)
                     }
 
-                    if isLoading {
+                    if showLoadingLabel {
                         Text("Updating")
                             .foregroundColor(.secondary)
                     }
@@ -86,6 +93,27 @@ struct UpdateTimeStampView: View {
         }
         .onReceive(updateTimer) { _ in
             UpdateSecondsElaped()
+        }
+        .onChange(of: isLoading) { _, newValue in
+            if newValue {
+                // Only surface the "Updating" label if the fetch is
+                // still running after the delay; quick cached fetches
+                // (or spurious scene-phase flickers) never make it
+                // visible.
+                Task { @MainActor in
+                    try? await Task.sleep(
+                        nanoseconds: UInt64(
+                            UpdateTimeStampView.loadingLabelDelay
+                                * Double(NSEC_PER_SEC)
+                        )
+                    )
+                    if isLoading {
+                        showLoadingLabel = true
+                    }
+                }
+            } else {
+                showLoadingLabel = false
+            }
         }
     }
 
