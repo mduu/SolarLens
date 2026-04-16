@@ -93,13 +93,18 @@ class CurrentBuildingState {
             return
         }
 
+        // Flip state synchronously so callers on the same MainActor never see
+        // a render cycle where "a fetch is about to happen" is still rendered
+        // as "idle with old data" — that caused the brief "Alte Daten" flash
+        // on watch app activation.
+        isLoading = true
+        resetError()
+
         let task = Task { @MainActor in
             defer {
                 activeFetchTask = nil
                 isLoading = false
             }
-            isLoading = true
-            resetError()
 
             do {
                 print("Fetching server data...")

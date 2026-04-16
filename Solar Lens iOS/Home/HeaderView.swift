@@ -19,6 +19,7 @@ struct HeaderView: View {
                     isStale: buildingState.overviewData.isStaleData,
                     updateTimeStamp: buildingState.overviewData.lastSuccessServerFetch,
                     isLoading: buildingState.isLoading,
+                    hasError: buildingState.error != nil,
                     onRefresh: nil
                 )
                 .lineLimit(2)

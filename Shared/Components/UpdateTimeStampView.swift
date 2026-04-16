@@ -5,6 +5,7 @@ struct UpdateTimeStampView: View {
     var isStale: Bool
     var updateTimeStamp: Date?
     var isLoading: Bool
+    var hasError: Bool = false
     let onRefresh: (() -> Void)?
 
     @State private var secondsElapsed: TimeInterval = 0
@@ -30,14 +31,21 @@ struct UpdateTimeStampView: View {
                             .font(.system(size: 10))
                     }  // :if
 
-                    let color: Color = isStale ? .red : .gray
+                    let hasRealProblem = isStale || hasError
+                    let color: Color = hasRealProblem ? .red : .gray
                     let secs = secondsElapsed
-                    if secs >= 300 {
+                    // Only show the red "Old data" label when there is a
+                    // genuine persistent issue fetching fresh data (an error
+                    // occurred or the server is reporting stale telemetry).
+                    // A plain long gap since last fetch (e.g. app was
+                    // backgrounded) stays on the regular "Updated …" label
+                    // so users don't see a brief red flash on activation.
+                    if hasRealProblem && secs >= 300 {
                         Text("Old data")
                             .foregroundColor(isLoading ? color.opacity(0) : color)
                     } else {
                         let text = secs > 0 ? secs.formatAsHMS() : ""
-                        
+
                         Text("Updated \(text)")
                             .foregroundColor(isLoading ? color.opacity(0) : color)
                     }
