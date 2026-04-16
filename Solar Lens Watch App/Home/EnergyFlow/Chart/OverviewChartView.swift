@@ -115,7 +115,7 @@ struct OverviewChartView: View {
 
                         }  // :ZStack
 
-                    } else {
+                    } else if !viewModel.isLoading {
 
                         Spacer()
                         Text("No data")

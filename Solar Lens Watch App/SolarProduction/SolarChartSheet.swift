@@ -26,13 +26,13 @@ struct SolarChartView: View {
                                 .foregroundColor(.yellow)
                         }
 
-                    } else {
-                        
+                    } else if !viewModel.isLoading {
+
                         Spacer()
                         Text("No data")
                             .font(.footnote)
                         Spacer()
-                        
+
                     }
                     
                 } // :if
