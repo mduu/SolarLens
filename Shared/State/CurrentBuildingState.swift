@@ -22,10 +22,18 @@ class CurrentBuildingState {
     private let energyManager: EnergyManager
     private var activeFetchTask: Task<Void, Never>?
 
-    /// Seconds after which a hanging fetch is cancelled.
-    /// Must be ≤ the view-level timeout so the UI never shows a spinner
-    /// longer than the state layer has already given up.
+    /// Seconds after which a hanging fetch is cancelled at the state layer.
+    /// Paired with `viewLoadingTimeoutSeconds` below so that the state layer
+    /// always gives up first — leaving a small margin for the defer-driven
+    /// `isLoading = false` to propagate before the view checks whether its
+    /// own deadline has passed and shows the timeout UI.
     static let fetchTimeoutSeconds: TimeInterval = 30
+
+    /// View-layer timeout for showing the "loading took too long" UI.
+    /// Must be strictly greater than `fetchTimeoutSeconds` so the state-layer
+    /// cancellation runs first and the view never spins longer than the
+    /// state has already given up.
+    static let viewLoadingTimeoutSeconds: TimeInterval = fetchTimeoutSeconds + 2
 
     private struct ChargingModeOverride {
         let sensorId: String
@@ -97,35 +105,22 @@ class CurrentBuildingState {
                 print("Fetching server data...")
 
                 var stopwatch = Stopwatch.init()
-                let fetchTask = Task {
+                let lastOverviewData = overviewData
+                let newData = try await withFetchTimeout(
+                    CurrentBuildingState.fetchTimeoutSeconds
+                ) { [energyManager] in
                     try await energyManager.fetchOverviewData(
-                        lastOverviewData: overviewData
+                        lastOverviewData: lastOverviewData
                     )
                 }
+                stopwatch.stop()
 
-                // Safety timeout: cancel the fetch and surface a timeout error
-                // if the network call hangs for more than fetchTimeoutSeconds so that
-                // isLoading is always reset and the UI doesn't spin forever.
-                let timeoutTask = Task {
-                    try await Task.sleep(nanoseconds: UInt64(CurrentBuildingState.fetchTimeoutSeconds * Double(NSEC_PER_SEC)))
-                    fetchTask.cancel()
-                }
+                overviewData = newData
+                applyOptimisticOverrides()
 
-                do {
-                    let newData = try await fetchTask.value
-                    timeoutTask.cancel()
-                    stopwatch.stop()
-
-                    overviewData = newData
-                    applyOptimisticOverrides()
-
-                    print(
-                        "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
-                    )
-                } catch {
-                    timeoutTask.cancel()
-                    throw error
-                }
+                print(
+                    "Server data fetched at \(Date()) in \(String(stopwatch.elapsedMilliseconds() ?? 0))ms"
+                )
             } catch is CancellationError {
                 print("⏱ Fetch timed out after \(CurrentBuildingState.fetchTimeoutSeconds)s")
                 self.error = .fetchTimeout
@@ -149,37 +144,26 @@ class CurrentBuildingState {
             return
         }
 
+        isLoading = true
+        defer { isLoading = false }
+
         do {
             print("\(Date()) - Fetching charing data")
 
-            let fetchTask = Task {
+            chargingInfos = try await withFetchTimeout(
+                CurrentBuildingState.fetchTimeoutSeconds
+            ) { [energyManager] in
                 try await energyManager.fetchChargingData()
-            }
-            let timeoutTask = Task {
-                try await Task.sleep(nanoseconds: UInt64(CurrentBuildingState.fetchTimeoutSeconds * Double(NSEC_PER_SEC)))
-                fetchTask.cancel()
-            }
-
-            do {
-                chargingInfos = try await fetchTask.value
-                timeoutTask.cancel()
-            } catch {
-                timeoutTask.cancel()
-                throw error
             }
 
             print("\(Date()) - Server charging data fetched")
-
-            isLoading = false
         } catch is CancellationError {
             print("⏱ Charging fetch timed out after \(CurrentBuildingState.fetchTimeoutSeconds)s")
             self.error = .fetchTimeout
             errorMessage = "Request timed out."
-            isLoading = false
         } catch {
             self.error = error as? EnergyManagerClientError
             errorMessage = error.localizedDescription
-            isLoading = false
         }
     }
 

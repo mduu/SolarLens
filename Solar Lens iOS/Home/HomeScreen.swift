@@ -231,7 +231,7 @@ struct HomeScreen: View {
         guard let startedAt = loadingStartedAt,
               buildingState.overviewData.lastSuccessServerFetch == nil
         else { return false }
-        return Date().timeIntervalSince(startedAt) > CurrentBuildingState.fetchTimeoutSeconds
+        return Date().timeIntervalSince(startedAt) > CurrentBuildingState.viewLoadingTimeoutSeconds
     }
 
     private func getAgeOfData() -> TimeInterval {
