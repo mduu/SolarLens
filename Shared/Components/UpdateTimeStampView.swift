@@ -32,7 +32,10 @@ struct UpdateTimeStampView: View {
                     }  // :if
 
                     let hasRealProblem = isStale || hasError
-                    let color: Color = hasRealProblem ? .red : .gray
+                    // `.secondary` adapts to light/dark mode so the label
+                    // stays legible in both. Plain `.gray` is a fixed mid-
+                    // gray that's too dim on dark backgrounds.
+                    let color: Color = hasRealProblem ? .red : .secondary
                     let secs = secondsElapsed
                     // Only show the red "Old data" label when there is a
                     // genuine persistent issue fetching fresh data (an error
@@ -52,7 +55,7 @@ struct UpdateTimeStampView: View {
 
                     if isLoading {
                         Text("Updating")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                     }
                 }
 
