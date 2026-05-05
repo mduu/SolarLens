@@ -6,11 +6,6 @@ struct ContentView: View {
     @State var showAppRateRequest = AppStoreReviewManager.shared
         .checkAndRequestReview()
     @State private var loginCredentialsCheckTimer: Timer?
-    
-    // Survey Logic
-    @State var showSurvey: Bool = false
-    @AppStorage("surveyForeverDismissed") var surveyForeverDismissed: Bool = false
-    @AppStorage("surveyLastShownDate") var surveyLastShownDate: Double = 0.0
 
     var body: some View {
 
@@ -151,12 +146,6 @@ struct ContentView: View {
                             await viewModel.fetchServerData()
                         }
                     }
-                    checkSurveyDisplay()
-                }
-
-                if showSurvey {
-                    WatchSurveyView(isPresented: $showSurvey.animation())
-                        .zIndex(1)
                 }
             }
 
@@ -166,30 +155,6 @@ struct ContentView: View {
                 .padding()
                 .foregroundStyle(.accent)
                 .background(Color.black.opacity(0.7))
-        }
-    }
-
-    private func checkSurveyDisplay() {
-        let now = Date()
-        var dateComponents = DateComponents()
-        dateComponents.year = 2026
-        dateComponents.month = 3
-        dateComponents.day = 31
-        
-        guard let endDate = Calendar.current.date(from: dateComponents) else { return }
-        
-        if now > endDate { return }
-        if surveyForeverDismissed { return }
-        
-        if surveyLastShownDate > 0 {
-            let lastShown = Date(timeIntervalSince1970: surveyLastShownDate)
-            if now.timeIntervalSince(lastShown) < 86400 {
-                return
-            }
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            showSurvey = true
         }
     }
 

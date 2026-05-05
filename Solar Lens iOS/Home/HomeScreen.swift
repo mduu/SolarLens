@@ -12,10 +12,6 @@ struct HomeScreen: View {
     @State var presentOnboarding: Bool = AppSettings().showOnboarding
     @State var showError: Bool = false
     @State var loadingStartedAt: Date? = nil
-    // Survey Logic
-    @State var showSurvey: Bool = false
-    @AppStorage("surveyForeverDismissed") var surveyForeverDismissed: Bool = false
-    @AppStorage("surveyLastShownDate") var surveyLastShownDate: Double = 0.0
 
     var isPortrait: Bool { verticalSizeClass != .compact }
 
@@ -46,7 +42,6 @@ struct HomeScreen: View {
                     .onAppear {
                         fetchAndStartRefreshTimerForOverviewData()
                         fetchAndStartRefreshTimerForSolarDetailData()
-                        checkSurveyDisplay()
                     }
                     .refreshable {
                         print("fetch on pull to refresh: overview data")
@@ -65,11 +60,6 @@ struct HomeScreen: View {
 
             }  // :VStack
             .ignoresSafeArea(.container, edges: .top)
-
-            if showSurvey {
-                SurveyView(isPresented: $showSurvey.animation())
-                    .zIndex(100)
-            }
         }
     }
 
@@ -136,32 +126,6 @@ struct HomeScreen: View {
     }
 
     // MARK: - Data Management
-
-    private func checkSurveyDisplay() {
-        let now = Date()
-        var dateComponents = DateComponents()
-        dateComponents.year = 2026
-        dateComponents.month = 3
-        dateComponents.day = 31
-
-        guard let endDate = Calendar.current.date(from: dateComponents) else { return }
-
-        if now > endDate { return }
-        if surveyForeverDismissed { return }
-
-        if surveyLastShownDate > 0 {
-            let lastShown = Date(timeIntervalSince1970: surveyLastShownDate)
-            if now.timeIntervalSince(lastShown) < 86400 {
-                return
-            }
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            if !presentOnboarding {
-                showSurvey = true
-            }
-        }
-    }
 
     private func refreshAll() {
         loadingStartedAt = nil
