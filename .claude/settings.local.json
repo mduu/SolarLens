@@ -81,7 +81,15 @@
       "Bash(xattr:*)",
       "Bash(cp /Users/marc/Dev/Git/SolarLens/marketing/app_store_screens/v4/final_de/image*.png /Users/marc/Dev/Git/SolarLens/landingpage/img/screenshots/de/)",
       "Bash(cp /Users/marc/Dev/Git/SolarLens/marketing/app_store_screens/v4/final_en/image*.png /Users/marc/Dev/Git/SolarLens/landingpage/img/screenshots/en/)",
-      "Bash(gh pr:*)"
+      "Bash(gh pr:*)",
+      "Bash(gh repo:*)",
+      "Bash(gh run:*)",
+      "Bash(git rm:*)",
+      "WebFetch(domain:marcduerst.com)",
+      "Bash(rtk grep *)",
+      "Bash(rtk git *)",
+      "Bash(git ls-tree *)",
+      "Bash(rtk ls *)"
     ]
   }
 }
