@@ -115,6 +115,9 @@ SolarLens/
 │   ├── Login/                       # Authentication
 │   ├── Statistics/                  # Charts & analytics
 │   ├── Settings/                    # App settings
+│   ├── Automations/                 # On-device automation runner (story #3)
+│   │   ├── Runner/                  # AutomationManager, tasks, helpers
+│   │   └── UI/                      # Setup sheet, idle/running cards, log view
 │   └── Onboardings/                 # First-run flows
 ├── Solar Lens Watch App/            # watchOS app target
 │   ├── Home/                        # Watch dashboard
@@ -172,6 +175,28 @@ Response → Model → State update → SwiftUI re-render
 - `TimelineProvider` pattern for WidgetKit
 - `AppIntent`-based configuration for deep linking
 - Separate widget bundles per platform (iOS / watchOS)
+
+### On-Device Automation Runner (iOS only)
+
+Long-running automations (story #3 onward) execute entirely on-device — no
+server, no APNs, no cloud worker. The runner stitches together three iOS
+mechanisms to approximate continuous monitoring:
+
+| App state | Mechanism | Cadence |
+|---|---|---|
+| Foreground | `Timer.scheduledTimer` (60 s) | Precise |
+| Background | `BGAppRefreshTask` (`BGTaskScheduler`) | OS-decided, typically 15–60 min |
+| Terminated | none — state restored from `UserDefaults` snapshot on next launch | n/a |
+
+`AutomationManager` (`@Observable @MainActor`) owns at most one active
+automation at a time. Each automation persists `activeState` +
+`activeTaskParameters` after every tick under `SolarLens.activeAutomationState`,
+so the run survives an OS-induced restart. Stop conditions are **predictive**
+(e.g. soft battery floor uses an EWMA of observed tick intervals × safety
+factor) so the runner can absorb opaque BG-throttling without overshooting
+user-set limits.
+
+Decision recorded in [ADR-001](adrs/001-on-device-automation-runner.md).
 
 ## Solar Manager API Integration
 

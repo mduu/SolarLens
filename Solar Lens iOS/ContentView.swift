@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
+    @State private var automationManager = AutomationManager.shared
 
     var body: some View {
         if !buildingState.loginCredentialsExists {
@@ -11,6 +12,15 @@ struct ContentView: View {
                 Tab("Now", systemImage: "bolt.fill") {
                     HomeScreen()
                 }
+
+                Tab("Automation", systemImage: "wand.and.stars") {
+                    AutomationScreen()
+                }
+                .badge(
+                    automationManager.activeAutomation != nil
+                        ? Text(Image(systemName: "rocket.fill"))
+                        : nil
+                )
 
                 Tab("Statistics", systemImage: "chart.bar.fill") {
                     StatisticsScreen()

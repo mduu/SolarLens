@@ -66,6 +66,24 @@ The primary container for grouping related information.
 
 Use cards to group a feature's data (e.g., battery card, solar card, consumption card).
 
+#### AI variant (active automations)
+
+Reserved for cards that surface a running automation or other "AI-driven"
+state. Built on the standard card geometry (corner radius 20pt, full width)
+with a brighter material fill and two stacked overlays:
+
+- **Fill:** `.regularMaterial` (slightly more present than `.ultraThickMaterial`).
+- **Border:** `AICardBorder` — a `RoundedRectangle.stroke` driven by an
+  `AngularGradient` (purple/pink/blue) animated via `TimelineView`. Stroke
+  width 5pt.
+- **Glow:** `AICardGlow` — a blurred halo behind the card (`.padding(-6)`)
+  using the same gradient at lower opacity.
+- **Accents:** `sparkles` SF Symbol with the gradient, and the running-pill
+  pattern from "Symbol Effects" above (pulsing icon + "Running" label).
+
+Use this variant only for genuinely active states. Idle automation cards stay
+on the standard `.cardStyle()` so the AI treatment retains meaning.
+
 ### MiniDonut
 
 Circular progress indicator for percentages (battery level, efficiency).
@@ -108,8 +126,17 @@ Plus/minus stepper for numeric values (e.g., charging power).
 | `.pulse.wholeSymbol` | Active states (battery charging) |
 | `.breathe.pulse.wholeSymbol` | Continuous activity (charging station active) |
 | `.rotate.byLayer` | Refresh/loading |
+| `.pulse` (repeating) | "Something is running" indicator — running-card status pill, tab badge (e.g. rocket icon while an automation is active) |
 
 Use symbol effects sparingly — they should draw attention to active processes, not create visual noise.
+
+### Tab badges with icons
+
+Prefer an SF Symbol over a numeric badge when the count is degenerate (always
+0 or 1, e.g. the Automation tab — at most one automation runs at a time).
+Pass `Text(Image(systemName: "rocket.fill"))` to `.badge(_:)`; pass `nil` to
+hide it entirely. A meaningless `1` reads as a notification count and trains
+the user to dismiss it.
 
 ## Animation
 

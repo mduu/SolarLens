@@ -1,6 +1,6 @@
 # Story: #3, Automation – Transfer from Battery to Car
 
-**Status:** Open
+**Status:** In Progress (TestFlight 4.1.0, build 298) — Live Activity deferred, unit tests pending
 
 ## Short Description
 
@@ -505,9 +505,9 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 - No code path in this story talks to any backend other than the existing Solar Manager Cloud API.
 
 ## Test Checklist
-- [ ] App builds successfully
-- [ ] App runs correctly on iOS Simulator (and on watchOS Simulator — watchOS is unaffected by this change)
-- [ ] Automation tab is visible only on iOS (watchOS / tvOS unchanged)
+- [x] App builds successfully
+- [x] App runs correctly on iOS Simulator (and on watchOS Simulator — watchOS is unaffected by this change)
+- [x] Automation tab is visible only on iOS (watchOS / tvOS unchanged)
 - [ ] /specs have been updated if necessary
 - [ ] If architectural decisions were made, an ADR was created in /specs/adrs (likely needed: "On-device-only automation runner")
 - [ ] Story status has been set to "Done (DD.MM.YYYY)"
@@ -517,63 +517,88 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 ## Tasks
 
 ### Plumbing (do first — without these the runner is dead code)
-- [ ] Cherry-pick the `Solar Lens iOS/Scenarios/` tree from branch `79-add-scenario-charge-car-from-battery-only` and rename per the table above (folder → `Automations/`, all `Scenario*` types → `Automation*`, BG task id → `...AutomationRunner`)
-- [ ] Drop `ScenarioOneTimeTariff*` and the existing broken `ScenarioBatteryToCar.swift` while cherry-picking
-- [ ] Add `UIBackgroundModes`, `BGTaskSchedulerPermittedIdentifiers` (= `com.marcduerst.SolarManagerWatch.AutomationRunner`), `NSSupportsLiveActivities` to the iOS target Info.plist / build settings
-- [ ] Call `AutomationManager.shared.registerBackgroundTask()` from `Solar_Lens_iOSApp.init`
-- [ ] Wire `.onChange(of: scenePhase)` to `AutomationManager.handleScenePhaseChange`
-- [ ] Persist `activeState` + `activeTaskParameters` to `UserDefaults` (`SolarLens.activeAutomationState`) and restore on launch
-- [ ] Lower `foregroundTimerInterval` from 5 s to 60 s
+- [x] Cherry-pick the `Solar Lens iOS/Scenarios/` tree from branch `79-add-scenario-charge-car-from-battery-only` and rename per the table above (folder → `Automations/`, all `Scenario*` types → `Automation*`, BG task id → `...AutomationRunner`)
+- [x] Drop `ScenarioOneTimeTariff*` and the existing broken `ScenarioBatteryToCar.swift` while cherry-picking
+- [x] Add `UIBackgroundModes`, `BGTaskSchedulerPermittedIdentifiers` (= `com.marcduerst.SolarManagerWatch.AutomationRunner`), `NSSupportsLiveActivities` to the iOS target Info.plist / build settings
+- [x] Call `AutomationManager.shared.registerBackgroundTask()` from `Solar_Lens_iOSApp.init`
+- [x] Wire `.onChange(of: scenePhase)` to `AutomationManager.handleScenePhaseChange`
+- [x] Persist `activeState` + `activeTaskParameters` to `UserDefaults` (`SolarLens.activeAutomationState`) and restore on launch
+- [x] Lower `foregroundTimerInterval` from 5 s to 60 s
 
 ### Tab + UI shell
-- [ ] Add `AutomationScreen.swift` and the `Automation` tab in `ContentView`
-- [ ] `BatteryToCarCard` (idle) and `BatteryToCarRunningCard` (live state + Cancel)
-- [ ] `AutomationSetupSheet` with station picker, floor slider (default 30%), fallback-mode picker (default `.withSolarPower`)
-- [ ] Disable other automation cards while one is active (no-op today, future-proofing)
-- [ ] AI-style gradient background + shimmer (`AICardBackground`)
+- [x] Add `AutomationScreen.swift` and the `Automation` tab in `ContentView` (badge shows pulsing rocket icon while running)
+- [x] `BatteryToCarCard` (idle) and `BatteryToCarRunningCard` (live state + Cancel)
+- [x] `AutomationSetupSheet` with station picker, floor slider (5%-(SoC-1)%), fallback-mode picker (default `.withSolarPower`); whole sheet hides controls when battery too low and explains required level
+- [x] Disable other automation cards while one is active (no-op today, future-proofing)
+- [x] AI-style gradient + shimmer (`AICardBorder` rotating angular gradient stroke + `AICardGlow` blurred halo)
+- [x] Automation log viewer with live updates, search, filter pills with dynamic counts, context-aware Copy/Share menu
 
 ### Automation task rewrite
-- [ ] Rewrite `AutomationBatteryToCar.run` per the flow described above
-- [ ] Implement `AmperageRamp.compute(...)` as a pure, unit-testable function
-- [ ] Implement `convertPowerToAmps` with 1- and 3-phase support at 230 V / 400 V (default 3-phase — covers CH/DE/AT/DK domestic installs)
-- [ ] Phase setting per charging station, persisted in `AppStorage` (default 3; advanced setting in the setup sheet)
-- [ ] Add `fallbackChargingMode` to `AutomationBatteryToCarParameters`
-- [ ] Extend `AutomationBatteryToCarState` with `currentAmps`, `kWhAccumulator`, `lastTickAt`, `gridImportStreak`, `startSoc`, `smoothedTickIntervalMinutes`
-- [ ] Implement `SoftFloor.computeSafetyBuffer(...)` as a pure, unit-testable function (drain rate × smoothed tick interval × safety factor, clamped 1–8 %)
-- [ ] Stop conditions: predictive soft-floor reached (`battery − safetyBuffer ≤ floor`) OR `gridImportStreak ≥ 2` at 6 A
-- [ ] Update setup-sheet copy: floor slider labelled "Don't go below (if possible)" with helper text explaining we may stop a few % earlier in the background
-- [ ] On stop: switch to `fallbackChargingMode`, schedule local notification, end Live Activity
+- [x] Rewrite `AutomationBatteryToCar.run` per the flow described above (refactored top-down with extracted methods + private `Telemetry` struct)
+- [x] Implement `AmperageRamp.compute(...)` as a pure, unit-testable function (asymmetric controller: ramp down on import > graceW, hold in band, ramp up on export, ramp up when battery is charging — PV surplus is the goal of Battery → Car, ramp up with battery headroom margin)
+- [x] Implement `convertPowerToAmps` with 1- and 3-phase support at 230 V / 400 V (default 3-phase — covers CH/DE/AT/DK domestic installs)
+- [x] Phase setting per wallbox, persisted via `WallboxPhasesStore` (UserDefaults per wallbox ID); supports auto-switching wallboxes (`WallboxPhases.auto` uses observed W/A clamped 180–760)
+- [x] Add `fallbackChargingMode` to `AutomationBatteryToCarParameters`
+- [x] Extend `AutomationBatteryToCarState` with `currentAmps`, `kWhAccumulator`, `lastTickAt`, `gridImportStreak`, `startSoc`, `smoothedTickIntervalMinutes`, signed `batteryChargeRateW`
+- [x] Implement `SoftFloor.computeSafetyBuffer(...)` as a pure, unit-testable function (drain rate × smoothed tick interval × safety factor, clamped 1–8 %)
+- [x] Stop conditions: predictive soft-floor reached (`battery − safetyBuffer ≤ floor`) OR `gridImportStreak ≥ 2` at 6 A
+- [x] Update setup-sheet copy: floor slider labelled "Don't go below (if possible)"; dynamic threshold message; refuse-to-start state when battery too low
+- [x] On stop: switch to `fallbackChargingMode`, schedule local notification (Live Activity end deferred — see below)
+- [x] Initial amps start at `PowerToAmps.minAmps` (6A) instead of battery max — avoids overshoot from house load on first tick
 
-### Live Activity
+### Live Activity (DEFERRED — entitlements declared, implementation postponed)
 - [ ] Define `BatteryToCarAttributes`
 - [ ] Lock-screen and Dynamic Island layouts (compact + expanded) with Cancel button
 - [ ] `AutomationManager` starts/updates/ends the Activity in lock-step with the task
 
+> `NSSupportsLiveActivities = true` is set in Info.plist so the entitlement is in
+> place, but the actual `ActivityKit` integration is deferred to a follow-up
+> story. The tab badge with pulsing rocket icon currently substitutes as the
+> "automation is running" indicator.
+
 ### Local notifications
-- [ ] Request notification authorization the first time "Start Automation" is tapped (not at launch)
-- [ ] Post finished / cancelled / capped notifications via `UNUserNotificationCenter`
+- [x] Request notification authorization the first time "Start Automation" is tapped (not at launch)
+- [x] Post finished / cancelled / capped notifications via `UNUserNotificationCenter`
 
 ### Cancel
-- [ ] `AutomationManager.cancelActiveAutomation()` performs the full stop sequence (fallback mode, notification, Live Activity end)
-- [ ] Cancel button on the running card AND in the Live Activity (App Intent)
+- [x] `AutomationManager.cancelActiveAutomation()` performs the full stop sequence (fallback mode, notification)
+- [x] Cancel button on the running card
+- [ ] Cancel button in the Live Activity (App Intent) — deferred with Live Activity
 
 ### Robustness
-- [ ] Network errors during a tick: keep `currentAmps`, schedule next run, log warning. Three consecutive failed ticks → stop with `failed` status and notify "Automation stopped due to connection error".
-- [ ] If overview returns no battery devices: refuse to start with explanatory error.
-- [ ] If the chosen station disappears between ticks (e.g. user removed it): stop with `failed`.
-- [ ] Multiple-battery installations: sum `maxDischargePower` across batteries.
+- [x] Network errors during a tick: keep `currentAmps`, schedule next run, log warning. Three consecutive failed ticks → stop with `failed` status and notify "Automation stopped due to connection error".
+- [x] If overview returns no battery devices: refuse to start with explanatory error.
+- [x] If the chosen station disappears between ticks (e.g. user removed it): stop with `failed`.
+- [x] Multiple-battery installations: sum `maxDischargePower` across batteries.
 
 ### i18n & polish
-- [ ] All new strings localised in `Localizable.xcstrings` (run /translate)
-- [ ] Onboarding hint in the setup sheet about iOS background limits
-- [ ] Empty-state for "no charging stations" (offer link to Solar Manager docs)
+- [x] All new strings localised in `Localizable.xcstrings` (DE / DA / FR / IT via /translate)
+- [x] Onboarding hint in the setup sheet about iOS background limits
+- [x] Empty-state for "no charging stations" (offer link to Solar Manager docs)
 
 ### Testing
-- [ ] Unit tests for `AmperageRamp.compute(...)` covering: ramp up, ramp down, dead-band, clamp at 6 A, clamp at 32 A
+- [ ] Unit tests for `AmperageRamp.compute(...)` covering: ramp up, ramp down, dead-band, clamp at 6 A, clamp at 32 A, battery-charging-as-surplus branch
 - [ ] Unit tests for `convertPowerToAmps` (1-phase, 3-phase, edge values)
 - [ ] Unit tests for `SoftFloor.computeSafetyBuffer(...)` covering: foreground tick (≈1%), mild BG gap (≈4%), long BG gap (clamped at 8%), tiny discharge (clamped at 1%), zero/negative discharge (returns minBufferPct)
 - [ ] Integration test using `FakeEnergyManager` simulating PV + load curves over a synthetic hour
-- [ ] Manual test: start automation, background the app for 20 min, return → state should be coherent and Live Activity should reflect at least one BG-driven update
-- [ ] Manual test: kill the app while running → relaunch → state restored, automation continues (state restored from `UserDefaults`; we accept that no monitoring happens during the kill window)
-- [ ] Manual test: cancel from Live Activity (Lock Screen) → wallbox switches to fallback, notification fires
-- [ ] Field test: run on at least one CH installation **with** a heat pump and one **without** to validate the 200 W grace band; log every ramp-down with `gridImportW` so we can audit whether the band is right
+- [x] Manual test: start automation, background the app — state is coherent on return (Live Activity check skipped — feature deferred)
+- [x] Manual test: kill the app while running → relaunch → state restored from `UserDefaults`
+- [ ] Manual test: cancel from Live Activity (Lock Screen) — deferred with Live Activity
+- [x] Field test: real-world test on CH installation surfaced the "battery charging while balanced grid" gap (controller stuck at 6 A while PV was charging the battery); fixed by adding the chargingW > 0 → ramp-up branch in `AmperageRamp.compute`. Further field testing for 200 W grace band tuning still open.
+
+## Implementation notes / deviations from original spec
+
+- **Live Activity deferred.** Entitlement is in place but `ActivityKit` integration was postponed; the tab badge with pulsing rocket icon is the running indicator instead.
+- **AI visual treatment** lands as `AICardBorder` (rotating angular gradient stroke via `TimelineView`) + `AICardGlow` (blurred halo), not the `AICardBackground` shimmer originally sketched. Outcome matches the gradient/AI feel from the backlog.
+- **Phase setting** is per-wallbox (not per-station as a global) and persisted via `WallboxPhasesStore`. Adds a third option `auto` for wallboxes that switch between 1-/3-phase, with live-observed W/A clamped 180–760 W.
+- **Floor slider range** is dynamic: `5 ... max(minFloorPct + 1, currentSoC − 1)`. When the battery is too low to start, the whole control set hides and the sheet displays the minimum SoC required.
+- **Grace band** stays at 200 W (`AmperageRamp.defaultGraceW`), validated only by initial CH testing. Heat-pump field validation still pending.
+- **`run()` refactored** top-down with extracted helpers (`fetchTelemetry`, `updateTickMetrics`, `accumulateTransferredKWh`, `shouldStopOnSoftFloor`, `updateGridCapStreakAndShouldStop`, `retuneAmperage`) and a private `Telemetry` struct that bundles per-tick data (incl. signed `batteryChargeRateW`).
+- **Initial amps** start at `PowerToAmps.minAmps` (6 A), not battery max — avoids overshoot from concurrent house load on the first tick.
+- **Class is `@MainActor @Observable`** to ensure SwiftUI live updates from background `Task`s.
+
+## Remaining work to mark Done
+1. Ship `BatteryToCarAttributes` Live Activity (separate story candidate).
+2. Author unit tests for `AmperageRamp`, `PowerToAmps`, `SoftFloor`.
+3. Field-validate the 200 W grace band on a heat-pump household.
+4. Move story to `done/`, update backlog, set `Status: Done (DD.MM.YYYY)`.
