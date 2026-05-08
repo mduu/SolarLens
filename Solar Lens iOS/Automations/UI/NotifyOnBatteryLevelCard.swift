@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Idle state card for the "Transfer from Battery to Car" automation.
-struct BatteryToCarCard: View {
+/// Idle state card for the "Notify on battery level" automation.
+struct NotifyOnBatteryLevelCard: View {
     let isOtherActive: Bool
     let isHouseBatteryMissing: Bool
     let onTap: () -> Void
@@ -24,9 +24,12 @@ struct BatteryToCarCard: View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
-                    Image(systemName: "bolt.car.fill")
-                        .font(.title2)
-                    Text("Transfer from Battery to Car")
+                    Image(
+                        systemName: Automation.NotifyOnBatteryLevel
+                            .liveActivityIconSystemName
+                    )
+                    .font(.title2)
+                    Text("Notify on battery level")
                         .font(.headline)
                     Spacer()
                     if !isDisabled {
@@ -36,7 +39,7 @@ struct BatteryToCarCard: View {
                     }
                 }
                 Text(
-                    "Transfer energy from your house battery to your car. Stops automatically before the battery gets too low."
+                    "Get a push notification when your house battery reaches a level you choose. Auto-cancels after 24 hours if the level isn't reached."
                 )
                 .font(.callout)
                 .multilineTextAlignment(.leading)
@@ -60,25 +63,4 @@ struct BatteryToCarCard: View {
         .buttonStyle(.plain)
         .disabled(isDisabled)
     }
-}
-
-#Preview {
-    VStack(spacing: 12) {
-        BatteryToCarCard(
-            isOtherActive: false,
-            isHouseBatteryMissing: false,
-            onTap: {}
-        )
-        BatteryToCarCard(
-            isOtherActive: true,
-            isHouseBatteryMissing: false,
-            onTap: {}
-        )
-        BatteryToCarCard(
-            isOtherActive: false,
-            isHouseBatteryMissing: true,
-            onTap: {}
-        )
-    }
-    .padding()
 }

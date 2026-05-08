@@ -3,6 +3,9 @@ import SwiftUI
 /// Animated gradient border for the *running* state of an automation card.
 /// The angular gradient rotates slowly, giving an "AI thinking" feel that
 /// is clearly distinct from the static gradient fill of an idle card.
+///
+/// Reads its colour stops from `AutomationBrand` so the in-app running card
+/// and the iOS Live Activity Lock Screen card share one visual identity.
 struct AICardBorder: View {
     var cornerRadius: CGFloat = 20
     var lineWidth: CGFloat = 5
@@ -17,12 +20,7 @@ struct AICardBorder: View {
             RoundedRectangle(cornerRadius: cornerRadius)
                 .strokeBorder(
                     AngularGradient(
-                        colors: [
-                            Color(red: 0.42, green: 0.13, blue: 0.78),
-                            Color(red: 0.85, green: 0.20, blue: 0.55),
-                            Color(red: 0.18, green: 0.32, blue: 0.86),
-                            Color(red: 0.42, green: 0.13, blue: 0.78),
-                        ],
+                        colors: AutomationBrand.angularGradientColors,
                         center: .center,
                         angle: angle
                     ),

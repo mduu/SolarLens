@@ -26,11 +26,4 @@ Holds ideas for stories that we may do in the future. Refined stories can be fou
 - If an automation is aready running, no other automation can be started.
 - The UI should match the style of the existing UI and also look modern and let the user feel like "AI" (artificial intelligence). This means color gradient effects in purple/pink/blue etc.
 
-### New charging mode: Auto-reset to solar-only
-
 ### Make statistics exportable to Excel and/or CSV
-
-### Upgrade deprecated Solar Manager endpoints
-- Look at solar manager external API documentation (the newer one) and check which endpoints we use in SolarManagagerApi.swift
-- Create a list in story with which endpoints do need upgrade and how to upgrade each of them (does it have a 1:1 replacement (which ) or do we need to change logic etc).
-- See ``solarmanager_api.md``

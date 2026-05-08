@@ -1,11 +1,11 @@
 import SwiftUI
 
-/// Live state card while the Battery-to-Car automation is running.
-/// Visually distinct from the idle card: bright material fill with a
-/// rotating animated gradient border (vs. the idle card's flat gradient).
-struct BatteryToCarRunningCard: View {
-    let state: AutomationBatteryToCarState
-    let params: AutomationBatteryToCarParameters
+/// Live state card while the "Notify on battery level" automation is
+/// running. Shows the most recent battery reading, the user's chosen
+/// threshold, and elapsed time.
+struct NotifyOnBatteryLevelRunningCard: View {
+    let state: AutomationNotifyOnBatteryLevelState
+    let params: AutomationNotifyOnBatteryLevelParameters
     let onCancel: () -> Void
 
     private let cornerRadius: CGFloat = 20
@@ -15,13 +15,16 @@ struct BatteryToCarRunningCard: View {
             HStack(spacing: 8) {
                 Image(systemName: AutomationBrand.accentSymbol)
                     .foregroundStyle(.primary)
-                Text("Battery → Car running")
+                Text("Notify on battery level")
                     .font(.headline)
                 Spacer()
                 HStack(spacing: 5) {
-                    Image(systemName: "bolt.car.circle.fill")
-                        .symbolEffect(.pulse, options: .repeating)
-                        .symbolRenderingMode(.monochrome)
+                    Image(
+                        systemName: Automation.NotifyOnBatteryLevel
+                            .liveActivityIconSystemName
+                    )
+                    .symbolEffect(.pulse, options: .repeating)
+                    .symbolRenderingMode(.monochrome)
                     Text("Running")
                 }
                 .font(.caption.weight(.semibold))
@@ -36,22 +39,15 @@ struct BatteryToCarRunningCard: View {
             HStack(spacing: 24) {
                 metric(
                     label: "Battery",
-                    value: "\(state.lastBatteryPercentage ?? state.startSoc)%"
+                    value: state.lastBatteryLevel.map { "\($0)%" } ?? "—"
                 )
                 metric(
-                    label: "Floor",
-                    value: "\(params.minBatteryLevel)%"
+                    label: "Target",
+                    value: "\(comparator) \(params.targetBatteryLevel)%"
                 )
-                metric(
-                    label: "Current",
-                    value: "\(state.currentAmps) A"
-                )
-                metric(
-                    label: "Transferred",
-                    value: String(
-                        format: "%.2f kWh", state.kWhTransferred
-                    )
-                )
+                if let started = state.startedAt {
+                    metric(label: "Running for", value: elapsed(since: started))
+                }
             }
 
             Button(role: .destructive, action: onCancel) {
@@ -79,7 +75,26 @@ struct BatteryToCarRunningCard: View {
         )
     }
 
-    private func metric(label: LocalizedStringKey, value: String) -> some View {
+    private var comparator: String {
+        switch params.comparison {
+        case .equalOrAbove: return "≥"
+        case .equalOrBelow: return "≤"
+        }
+    }
+
+    private func elapsed(since start: Date) -> String {
+        let secs = max(0, Int(Date().timeIntervalSince(start)))
+        let m = secs / 60
+        if m < 1 { return "<1m" }
+        if m < 60 { return "\(m)m" }
+        let h = m / 60
+        let rem = m % 60
+        return rem == 0 ? "\(h)h" : "\(h)h \(rem)m"
+    }
+
+    private func metric(
+        label: LocalizedStringKey, value: String
+    ) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(label)
                 .font(.caption2)

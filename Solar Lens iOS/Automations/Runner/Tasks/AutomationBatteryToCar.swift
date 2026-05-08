@@ -25,6 +25,10 @@ final class AutomationBatteryToCar: AutomationTask {
         guard let t = await fetchTelemetry(
             host: host, params: params
         ) else {
+            host.logDebug(
+                message:
+                    "Battery to Car: telemetry fetch failed — keeping current settings, will retry next tick"
+            )
             return scheduleNextTick(state: liveState0, in: state)
         }
 
@@ -97,13 +101,17 @@ final class AutomationBatteryToCar: AutomationTask {
                 .fetchOverviewData(lastOverviewData: nil)
         } catch {
             host.logError(
-                message: "Battery to Car: fetch overview failed; will retry"
+                message:
+                    "Battery to Car: fetch overview failed (\(error.localizedDescription)); will retry next tick"
             )
             return nil
         }
 
         guard let soc = overview.currentBatteryLevel else {
-            host.logError(message: "Battery to Car: no battery level reading")
+            host.logError(
+                message:
+                    "Battery to Car: no battery level reading from house battery; cannot tick"
+            )
             return nil
         }
 
@@ -220,16 +228,33 @@ final class AutomationBatteryToCar: AutomationTask {
                 batteryMaxDischargeW: t.totalMaxDischargeW,
                 phases: params.phases,
                 observedWattsPerAmp: observedWattsPerAmp,
-                graceW: AmperageRamp.defaultGraceW
+                graceW: AmperageRamp.defaultGraceW,
+                smoothedTickIntervalMinutes:
+                    liveState.smoothedTickIntervalMinutes
             )
         )
 
         guard newAmps != liveState.currentAmps else { return }
 
-        host.logDebug(
-            message:
-                "Battery to Car: ramp \(liveState.currentAmps) A → \(newAmps) A (grid \(t.gridImportW) W)"
+        let throttling = AmperageRamp.backgroundThrottlingActive(
+            smoothedTickIntervalMinutes:
+                liveState.smoothedTickIntervalMinutes
         )
+        let intervalMin = String(
+            format: "%.1f",
+            liveState.smoothedTickIntervalMinutes
+        )
+        if throttling && newAmps < liveState.currentAmps {
+            host.logInfo(
+                message:
+                    "Battery to Car: ramp \(liveState.currentAmps) A → \(newAmps) A (BG-throttling slowdown — avg tick \(intervalMin) min, grid \(t.gridImportW) W)"
+            )
+        } else {
+            host.logDebug(
+                message:
+                    "Battery to Car: ramp \(liveState.currentAmps) A → \(newAmps) A (grid \(t.gridImportW) W, avg tick \(intervalMin) min)"
+            )
+        }
         do {
             _ = try await host.energyManager.setCarChargingMode(
                 sensorId: params.chargingDeviceId,
@@ -240,7 +265,8 @@ final class AutomationBatteryToCar: AutomationTask {
             liveState.currentAmps = newAmps
         } catch {
             host.logError(
-                message: "Battery to Car: ramp failed; retrying next tick"
+                message:
+                    "Battery to Car: ramp \(liveState.currentAmps) A → \(newAmps) A failed (\(error.localizedDescription)); keeping \(liveState.currentAmps) A, will retry next tick"
             )
         }
     }
@@ -255,11 +281,15 @@ final class AutomationBatteryToCar: AutomationTask {
     ) async -> AutomationState {
         host.logDebug(message: "Battery to Car: starting")
 
-        guard let previousMode = t.station?.chargingMode else {
-            host.logError(message: "Battery to Car: charging station not found")
+        guard let station = t.station else {
+            host.logError(
+                message:
+                    "Battery to Car: charging station id \(params.chargingDeviceId) not found in overview; cannot start"
+            )
             host.logFailure()
             return state.failed()
         }
+        let previousMode = station.chargingMode
 
         // Start conservative: at the wallbox protocol minimum (6 A) so we
         // can never overshoot a household with already-running loads. The
@@ -275,13 +305,26 @@ final class AutomationBatteryToCar: AutomationTask {
                 )
             )
         } catch {
-            host.logError(message: "Battery to Car: failed to set initial mode")
+            host.logError(
+                message:
+                    "Battery to Car: failed to set wallbox to constant current \(initialAmps) A: \(error.localizedDescription)"
+            )
             host.logFailure()
             return state.failed()
         }
 
+        let fallbackName = String(
+            localized: params.fallbackChargingMode.localizedTitle
+        )
+        let phasesName = String(localized: params.phases.localizedTitle)
+        let previousModeName = String(localized: previousMode.localizedTitle)
         host.logInfo(
-            message: "Battery to Car: started at \(initialAmps) A, battery \(t.currentBatteryLevel)%"
+            message:
+                "Battery to Car: started at \(initialAmps) A, battery \(t.currentBatteryLevel)% — floor \(params.minBatteryLevel)%, fallback after run: \(fallbackName)"
+        )
+        host.logDebug(
+            message:
+                "Battery to Car: setup — wallbox \(phasesName), previous wallbox mode \(previousModeName), battery capacity \(String(format: "%.1f", t.totalBatteryCapacityKwh)) kWh, max discharge \(t.totalMaxDischargeW) W"
         )
 
         return AutomationState(
@@ -312,8 +355,13 @@ final class AutomationBatteryToCar: AutomationTask {
         liveState: AutomationBatteryToCarState,
         telemetry t: Telemetry
     ) async -> AutomationState {
+        let fallbackName = String(
+            localized: params.fallbackChargingMode.localizedTitle
+        )
+        let reasonName = describe(stopReason: liveState.stopReason)
         host.logDebug(
-            message: "Battery to Car: stopping, switching to fallback mode"
+            message:
+                "Battery to Car: stop triggered (\(reasonName)) — switching wallbox to \(fallbackName)"
         )
 
         do {
@@ -325,7 +373,8 @@ final class AutomationBatteryToCar: AutomationTask {
             )
         } catch {
             host.logError(
-                message: "Battery to Car: failed to set fallback mode"
+                message:
+                    "Battery to Car: failed to switch wallbox to fallback mode \(fallbackName): \(error.localizedDescription) — wallbox may stay on constant current. Please check the Solar Manager app."
             )
         }
 
@@ -334,7 +383,7 @@ final class AutomationBatteryToCar: AutomationTask {
 
         host.logInfo(
             message:
-                "Battery to Car: stopped at \(t.currentBatteryLevel)%, transferred ≈ \(String(format: "%.2f", stopped.kWhTransferred)) kWh"
+                "Battery to Car: stopped at \(t.currentBatteryLevel)% (\(reasonName)) — transferred ≈ \(String(format: "%.2f", stopped.kWhTransferred)) kWh, wallbox switched to \(fallbackName)"
         )
         host.logSuccess()
 
@@ -356,6 +405,20 @@ final class AutomationBatteryToCar: AutomationTask {
             nextTaskRun: Date().addingTimeInterval(monitorInterval),
             batteryToCar: liveState
         )
+    }
+
+    /// Human-readable reason for the automation log. Not localised because
+    /// log messages are diagnostic in nature; the user-facing notification
+    /// string is composed separately by `AutomationManager`.
+    private func describe(
+        stopReason: AutomationBatteryToCarStopReason?
+    ) -> String {
+        switch stopReason {
+        case .softFloorReached: return "soft floor reached"
+        case .capped:           return "grid import unavoidable at minimum amps"
+        case .cancelled:        return "cancelled by user"
+        case .none:             return "unknown reason"
+        }
     }
 }
 

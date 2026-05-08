@@ -74,12 +74,17 @@ with a brighter material fill and two stacked overlays:
 
 - **Fill:** `.regularMaterial` (slightly more present than `.ultraThickMaterial`).
 - **Border:** `AICardBorder` — a `RoundedRectangle.stroke` driven by an
-  `AngularGradient` (purple/pink/blue) animated via `TimelineView`. Stroke
-  width 5pt.
+  `AngularGradient` of the Solar Lens brand colours (**yellow → white →
+  orange**) animated via `TimelineView`. Stroke width 5pt.
 - **Glow:** `AICardGlow` — a blurred halo behind the card (`.padding(-6)`)
   using the same gradient at lower opacity.
 - **Accents:** `sparkles` SF Symbol with the gradient, and the running-pill
   pattern from "Symbol Effects" above (pulsing icon + "Running" label).
+
+Gradient stops live as constants in `AutomationBrand` (shared module) — never
+redefine them inline in a card. The same constants are used by the iOS Live
+Activity Lock Screen card so the brand reads identically inside and outside
+the app.
 
 Use this variant only for genuinely active states. Idle automation cards stay
 on the standard `.cardStyle()` so the AI treatment retains meaning.

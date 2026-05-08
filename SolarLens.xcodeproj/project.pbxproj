@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		490F19EC2FAD1B520013F46C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1A82CC0389C00A89445 /* WidgetKit.framework */; };
+		490F19ED2FAD1B520013F46C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 493AADDD2D592A9D00591E73 /* SwiftUI.framework */; };
+		490F19FE2FAD1B540013F46C /* Solar Lens iOS LiveActivitiesExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 490F19EB2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		493AAD982D58F9DB00591E73 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EED1A82CC0389C00A89445 /* WidgetKit.framework */; };
 		493AADAA2D58F9DC00591E73 /* Solar Lens iOS WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		493AADDE2D592A9D00591E73 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 493AADDD2D592A9D00591E73 /* SwiftUI.framework */; };
@@ -22,6 +25,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		490F19FC2FAD1B540013F46C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 494882A92CA8443300C59146 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 490F19EA2FAD1B510013F46C;
+			remoteInfo = "Solar Lens iOS LiveActivitiesExtension";
+		};
 		493AADA82D58F9DC00591E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 494882A92CA8443300C59146 /* Project object */;
@@ -52,6 +62,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				490F19FE2FAD1B540013F46C /* Solar Lens iOS LiveActivitiesExtension.appex in Embed Foundation Extensions */,
 				493AADAA2D58F9DC00591E73 /* Solar Lens iOS WidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -82,6 +93,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		490F19EB2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens iOS LiveActivitiesExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		491732642D1FE8C900CA9EDF /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens iOS WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		493AADDD2D592A9D00591E73 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
@@ -98,6 +110,26 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		490F1A022FAD1B540013F46C /* Exceptions for "Solar Lens iOS LiveActivities" folder in "Solar Lens iOS LiveActivitiesExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 490F19EA2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension */;
+		};
+		490F1A032FAD1B540013F46C /* Exceptions for "Shared" folder in "Solar Lens iOS LiveActivitiesExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppIntents/Intents/CancelActiveAutomationIntent.swift,
+				Components/AutomationBrand.swift,
+				Services/Automation.swift,
+				Services/AutomationLiveActivityAttributes.swift,
+				Services/AutoResetChargingModePayload.swift,
+				Services/BatteryToCarPayload.swift,
+				Services/NotifyOnBatteryLevelPayload.swift,
+			);
+			target = 490F19EA2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension */;
+		};
 		493AADAE2D58F9DC00591E73 /* Exceptions for "Solar Lens iOS Widgets" folder in "Solar Lens iOS WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -396,6 +428,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		490F19EE2FAD1B520013F46C /* Solar Lens iOS LiveActivities */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				490F1A022FAD1B540013F46C /* Exceptions for "Solar Lens iOS LiveActivities" folder in "Solar Lens iOS LiveActivitiesExtension" target */,
+			);
+			path = "Solar Lens iOS LiveActivities";
+			sourceTree = "<group>";
+		};
 		4917325C2D1FE4A800CA9EDF /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -404,6 +444,7 @@
 				49892CFF2D244CEB00478C91 /* Exceptions for "Shared" folder in "Solar Lens WidgetsExtension" target */,
 				493AADB42D59254B00591E73 /* Exceptions for "Shared" folder in "Solar Lens iOS WidgetsExtension" target */,
 				494F21D02E505AFE00647150 /* Exceptions for "Shared" folder in "Solar Lens BigScreen" target */,
+				490F1A032FAD1B540013F46C /* Exceptions for "Shared" folder in "Solar Lens iOS LiveActivitiesExtension" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -448,6 +489,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		490F19E82FAD1B510013F46C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				490F19ED2FAD1B520013F46C /* SwiftUI.framework in Frameworks */,
+				490F19EC2FAD1B520013F46C /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		493AAD942D58F9DB00591E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -508,6 +558,7 @@
 				49892CE52D243FF100478C91 /* Solar Lens iOS */,
 				493AAD9A2D58F9DB00591E73 /* Solar Lens iOS Widgets */,
 				494F1A922E4BB61C00647150 /* Solar Lens BigScreen */,
+				490F19EE2FAD1B520013F46C /* Solar Lens iOS LiveActivities */,
 				49EED1A72CC0389C00A89445 /* Frameworks */,
 				494882B02CA8443300C59146 /* Products */,
 			);
@@ -521,6 +572,7 @@
 				49892CE42D243FF100478C91 /* Solar Lens.app */,
 				493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */,
 				494F1A912E4BB61B00647150 /* Solar Lens BigScreen.app */,
+				490F19EB2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -539,6 +591,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		490F19EA2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 490F19FF2FAD1B540013F46C /* Build configuration list for PBXNativeTarget "Solar Lens iOS LiveActivitiesExtension" */;
+			buildPhases = (
+				490F19E72FAD1B510013F46C /* Sources */,
+				490F19E82FAD1B510013F46C /* Frameworks */,
+				490F19E92FAD1B510013F46C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				490F19EE2FAD1B520013F46C /* Solar Lens iOS LiveActivities */,
+			);
+			name = "Solar Lens iOS LiveActivitiesExtension";
+			packageProductDependencies = (
+			);
+			productName = "Solar Lens iOS LiveActivitiesExtension";
+			productReference = 490F19EB2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 493AADAF2D58F9DC00591E73 /* Build configuration list for PBXNativeTarget "Solar Lens iOS WidgetsExtension" */;
@@ -651,6 +725,7 @@
 			dependencies = (
 				49892CF52D2442FA00478C91 /* PBXTargetDependency */,
 				493AADA92D58F9DC00591E73 /* PBXTargetDependency */,
+				490F19FD2FAD1B540013F46C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				4917325C2D1FE4A800CA9EDF /* Shared */,
@@ -671,9 +746,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
+				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
+					490F19EA2FAD1B510013F46C = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
 					493AAD962D58F9DB00591E73 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -717,11 +795,19 @@
 				495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */,
 				493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */,
 				494F1A902E4BB61B00647150 /* Solar Lens BigScreen */,
+				490F19EA2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		490F19E92FAD1B510013F46C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		493AAD952D58F9DB00591E73 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -760,6 +846,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		490F19E72FAD1B510013F46C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		493AAD932D58F9DB00591E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -798,6 +891,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		490F19FD2FAD1B540013F46C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 490F19EA2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension */;
+			targetProxy = 490F19FC2FAD1B540013F46C /* PBXContainerItemProxy */;
+		};
 		493AADA92D58F9DC00591E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */;
@@ -816,6 +914,77 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		490F1A002FAD1B540013F46C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS LiveActivities.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UYT5K989XD;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Solar Lens iOS LiveActivities/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens iOS LiveActivities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 4.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.SolarManagerWatch.Solar-Lens-iOS-LiveActivities";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		490F1A012FAD1B540013F46C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS LiveActivities.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
+				DEVELOPMENT_TEAM = UYT5K989XD;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Solar Lens iOS LiveActivities/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens iOS LiveActivities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 4.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marcduerst.SolarManagerWatch.Solar-Lens-iOS-LiveActivities";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		493AADAC2D58F9DC00591E73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -887,7 +1056,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 4.1.0;
-				APP_VERSION_BUILDNO = 298;
+				APP_VERSION_BUILDNO = 302;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -964,7 +1133,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_VERSION = 4.1.0;
-				APP_VERSION_BUILDNO = 298;
+				APP_VERSION_BUILDNO = 302;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -1278,7 +1447,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMPILER_INDEX_STORE_ENABLE = Default;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 298;
+				CURRENT_PROJECT_VERSION = 302;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
@@ -1323,7 +1492,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 298;
+				CURRENT_PROJECT_VERSION = 302;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Solar Lens iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = UYT5K989XD;
@@ -1362,6 +1531,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		490F19FF2FAD1B540013F46C /* Build configuration list for PBXNativeTarget "Solar Lens iOS LiveActivitiesExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				490F1A002FAD1B540013F46C /* Debug */,
+				490F1A012FAD1B540013F46C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		493AADAF2D58F9DC00591E73 /* Build configuration list for PBXNativeTarget "Solar Lens iOS WidgetsExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

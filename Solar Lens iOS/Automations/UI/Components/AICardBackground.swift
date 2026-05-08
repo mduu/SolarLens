@@ -1,8 +1,14 @@
 import SwiftUI
 
-/// Purple/pink/blue gradient with a subtle slow shimmer when `isAnimating`.
-/// Used as the background for automation cards to give them an "AI" feel.
+/// Solar Lens brand gradient with an optional slow shimmer when `isAnimating`.
+/// Used as the background for *idle* automation cards. Active/running cards
+/// use `AICardBorder` + `AICardGlow` on top of a material fill instead.
+///
+/// Reads its colour stops from `AutomationBrand` so the in-app cards and the
+/// iOS Live Activity Lock Screen card share one visual identity.
 struct AICardBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     var isAnimating: Bool = false
     var cornerRadius: CGFloat = 20
     var opacity: Double = 0.85
@@ -18,11 +24,7 @@ struct AICardBackground: View {
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(
                     LinearGradient(
-                        colors: [
-                            Color(red: 0.42, green: 0.13, blue: 0.78),
-                            Color(red: 0.85, green: 0.20, blue: 0.55),
-                            Color(red: 0.18, green: 0.32, blue: 0.86),
-                        ],
+                        colors: AutomationBrand.gradientColors,
                         startPoint: UnitPoint(
                             x: 0.0 + phase, y: 0.0
                         ),
@@ -31,8 +33,15 @@ struct AICardBackground: View {
                         )
                     )
                 )
-                .opacity(opacity)
+                .opacity(effectiveOpacity)
         }
+    }
+
+    /// Dark mode reads bright warm gradients as glare. Drop the fill to a
+    /// quieter level so the card feels like a brand accent rather than a
+    /// flashlight.
+    private var effectiveOpacity: Double {
+        colorScheme == .dark ? opacity * 0.55 : opacity
     }
 }
 

@@ -145,7 +145,7 @@ struct AutomationSetupSheet: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
-                    .tint(.purple)
+                    .tint(.orange)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
                     .disabled(selectedStation == nil)

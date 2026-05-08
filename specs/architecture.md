@@ -198,6 +198,18 @@ user-set limits.
 
 Decision recorded in [ADR-001](adrs/001-on-device-automation-runner.md).
 
+**Live Activity surface (story #4).** While an automation runs, the iOS
+Widgets extension shows a Lock Screen card and Dynamic Island content via
+`ActivityKit`. The shared `AutomationLiveActivityAttributes` carries a
+per-automation `Payload` enum so future automations plug in a new card-body
+view without touching the coordinator or the `ActivityConfiguration`.
+`AutomationLiveActivityCoordinator` (app process) owns the
+`Activity<…>?`, lazy-starts on the first content state, re-acquires
+orphans on launch, and gracefully no-ops when LAs are disabled at the OS
+level. Tapping the card opens the app on the Automation tab via
+`solarlens://automation`; the Cancel button is a `LiveActivityIntent`
+routed through a registry the app populates on init.
+
 ## Solar Manager API Integration
 
 **Base URL:** `https://cloud.solar-manager.ch`

@@ -7,6 +7,8 @@ public struct AutomationState: Codable {
 
     // Automation-specific states
     var batteryToCar: AutomationBatteryToCarState? = nil
+    var autoResetChargingMode: AutomationAutoResetChargingModeState? = nil
+    var notifyOnBatteryLevel: AutomationNotifyOnBatteryLevelState? = nil
 
     init() {
     }
@@ -15,12 +17,16 @@ public struct AutomationState: Codable {
         automation: Automation,
         status: AutomationStatus,
         nextTaskRun: Date?,
-        batteryToCar: AutomationBatteryToCarState? = nil
+        batteryToCar: AutomationBatteryToCarState? = nil,
+        autoResetChargingMode: AutomationAutoResetChargingModeState? = nil,
+        notifyOnBatteryLevel: AutomationNotifyOnBatteryLevelState? = nil
     ) {
         self.automation = automation
         self.status = status
         self.nextTaskRun = nextTaskRun
         self.batteryToCar = batteryToCar
+        self.autoResetChargingMode = autoResetChargingMode
+        self.notifyOnBatteryLevel = notifyOnBatteryLevel
     }
 
     init(automation: Automation) {
@@ -29,6 +35,10 @@ public struct AutomationState: Codable {
         switch automation {
         case .BatteryToCar:
             batteryToCar = .init()
+        case .AutoResetChargingMode:
+            autoResetChargingMode = .init()
+        case .NotifyOnBatteryLevel:
+            notifyOnBatteryLevel = .init()
         }
     }
 
@@ -37,7 +47,11 @@ public struct AutomationState: Codable {
             automation: automation!,
             status: .failed,
             nextTaskRun: nil as Date?,
-            batteryToCar: nil as AutomationBatteryToCarState?
+            batteryToCar: nil as AutomationBatteryToCarState?,
+            autoResetChargingMode:
+                nil as AutomationAutoResetChargingModeState?,
+            notifyOnBatteryLevel:
+                nil as AutomationNotifyOnBatteryLevelState?
         )
     }
 }

@@ -18,6 +18,14 @@ enum AmperageRamp {
     static let minObservedWattsPerAmp: Double = 180
     static let maxObservedWattsPerAmp: Double = 760
 
+    /// EWMA threshold above which we treat the run as being in a slow
+    /// regime (iOS BG-throttling territory). When ticks are coming in
+    /// less often than this, the wallbox can drain the battery for many
+    /// minutes between checks — so we cap and progressively halve
+    /// amperage until the EWMA recovers (typically when the user
+    /// foregrounds the app and a real tick fires).
+    static let slowTickThresholdMinutes: Double = 5.0
+
     struct Inputs {
         let currentAmps: Int
         let gridImportW: Int
@@ -32,6 +40,10 @@ enum AmperageRamp {
         /// wallbox not yet drawing). Used only when `phases == .auto`.
         let observedWattsPerAmp: Double?
         let graceW: Int
+        /// EWMA of the recent observed tick interval (in minutes). Drives
+        /// the BG-throttling-aware ramp-down. Pass the value the runner
+        /// already maintains in `AutomationBatteryToCarState`.
+        let smoothedTickIntervalMinutes: Double
     }
 
     /// Decide the next `constantCurrentSetting` in amps.
@@ -49,6 +61,13 @@ enum AmperageRamp {
     ///     - battery is discharging AND has > 2 A-steps of headroom on top
     ///       of the next step             → ramp UP
     /// - otherwise                        → HOLD
+    ///
+    /// **BG-aware clamp**: if `smoothedTickIntervalMinutes` is above the
+    /// slow-regime threshold, the result is additionally clamped to at
+    /// most `currentAmps / 2` (and never below `minAmps`). This trims
+    /// the wallbox draw progressively when iOS isn't letting us re-tick
+    /// in a timely fashion, so a long unmonitored sleep can't drain the
+    /// battery past the soft floor.
     ///
     /// Output is clamped to 6–32 A (Solar Manager protocol range).
     static func compute(_ input: Inputs) -> Int {
@@ -82,10 +101,38 @@ enum AmperageRamp {
             }
         }
 
-        return max(
+        let candidate = max(
             PowerToAmps.minAmps,
             min(PowerToAmps.maxAmps, input.currentAmps + deltaA)
         )
+
+        return applyBackgroundThrottlingClamp(candidate: candidate, input: input)
+    }
+
+    /// Cap the controller's output when the EWMA tick interval shows we
+    /// are flying blind. Halves towards `minAmps` on each subsequent
+    /// slow tick so a stuck-in-background run dials itself down rather
+    /// than holding 16 A while iOS sleeps the app for half an hour.
+    private static func applyBackgroundThrottlingClamp(
+        candidate: Int,
+        input: Inputs
+    ) -> Int {
+        guard
+            input.smoothedTickIntervalMinutes > slowTickThresholdMinutes
+        else {
+            return candidate
+        }
+        let halved = max(PowerToAmps.minAmps, input.currentAmps / 2)
+        return min(candidate, halved)
+    }
+
+    /// Returns whether the BG-throttling clamp would change the result
+    /// on this tick — useful for logging "why did the controller drop
+    /// from 12 A to 6 A?" without recomputing the whole rule.
+    static func backgroundThrottlingActive(
+        smoothedTickIntervalMinutes: Double
+    ) -> Bool {
+        smoothedTickIntervalMinutes > slowTickThresholdMinutes
     }
 
     static func effectiveStepW(_ input: Inputs) -> Double {

@@ -23,5 +23,16 @@
 	</array>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.marcduerst.SolarManagerWatch</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>solarlens</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

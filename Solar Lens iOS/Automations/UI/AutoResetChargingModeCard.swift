@@ -1,32 +1,28 @@
 import SwiftUI
 
-/// Idle state card for the "Transfer from Battery to Car" automation.
-struct BatteryToCarCard: View {
+/// Idle state card for the "Auto-reset Charging Mode" automation.
+struct AutoResetChargingModeCard: View {
     let isOtherActive: Bool
-    let isHouseBatteryMissing: Bool
     let onTap: () -> Void
 
     private var isDisabled: Bool {
-        isOtherActive || isHouseBatteryMissing
+        isOtherActive
     }
 
     private var disabledMessage: LocalizedStringResource? {
-        if isHouseBatteryMissing {
-            return "Requires a house battery"
-        }
-        if isOtherActive {
-            return "Another automation is active"
-        }
-        return nil
+        isOtherActive ? "Another automation is active" : nil
     }
 
     var body: some View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
-                    Image(systemName: "bolt.car.fill")
-                        .font(.title2)
-                    Text("Transfer from Battery to Car")
+                    Image(
+                        systemName: Automation.AutoResetChargingMode
+                            .liveActivityIconSystemName
+                    )
+                    .font(.title2)
+                    Text("Auto-reset Charging Mode")
                         .font(.headline)
                     Spacer()
                     if !isDisabled {
@@ -36,7 +32,7 @@ struct BatteryToCarCard: View {
                     }
                 }
                 Text(
-                    "Transfer energy from your house battery to your car. Stops automatically before the battery gets too low."
+                    "Set a charging mode now and let Solar Lens automatically switch back to another mode at a date and time you choose."
                 )
                 .font(.callout)
                 .multilineTextAlignment(.leading)
@@ -64,19 +60,12 @@ struct BatteryToCarCard: View {
 
 #Preview {
     VStack(spacing: 12) {
-        BatteryToCarCard(
+        AutoResetChargingModeCard(
             isOtherActive: false,
-            isHouseBatteryMissing: false,
             onTap: {}
         )
-        BatteryToCarCard(
+        AutoResetChargingModeCard(
             isOtherActive: true,
-            isHouseBatteryMissing: false,
-            onTap: {}
-        )
-        BatteryToCarCard(
-            isOtherActive: false,
-            isHouseBatteryMissing: true,
             onTap: {}
         )
     }
