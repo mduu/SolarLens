@@ -9124,6 +9124,34 @@
         }
       }
     },
+    "Floor reached in" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grænse nået om"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untergrenze in"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite atteinte dans"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soglia raggiunta tra"
+          }
+        }
+      }
+    },
     "Forecast" : {
       "localizations" : {
         "da" : {
@@ -17372,6 +17400,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data di destinazione"
+          }
+        }
+      }
+    },
+    "Target reached in" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål nået om"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zielwert in"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cible atteinte dans"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obiettivo raggiunto tra"
           }
         }
       }
