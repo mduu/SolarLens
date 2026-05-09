@@ -35,7 +35,7 @@ struct NotifyOnBatteryLevelCard: View {
                 if let msg = disabledMessage {
                     Text(msg)
                         .font(.caption2)
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
             }
@@ -45,7 +45,7 @@ struct NotifyOnBatteryLevelCard: View {
                 RoundedRectangle(cornerRadius: 14)
                     .fill(.ultraThickMaterial)
             )
-            .opacity(disabled ? 0.5 : 1)
+            .opacity(disabled ? 0.85 : 1)
         }
         .buttonStyle(.plain)
         .disabled(disabled)

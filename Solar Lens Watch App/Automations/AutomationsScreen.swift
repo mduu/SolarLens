@@ -4,6 +4,12 @@ import SwiftUI
 /// `AutomationScreen` structure: three slots, each rendered as either a
 /// running card (when that automation is currently active) or an idle
 /// card (which opens a setup sheet on tap).
+///
+/// Watch-specific UX deviation from iOS: when an automation is active,
+/// its running card is hoisted to the top of the scroll view so the
+/// user lands on the most relevant info first instead of having to
+/// scroll past disabled idle cards. iOS keeps a fixed slot order; the
+/// watch screen is too small for that.
 struct AutomationsScreen: View {
     @Environment(AutomationWatchClient.self) private var client
 
@@ -12,14 +18,25 @@ struct AutomationsScreen: View {
     @State private var notifyBatteryLevelSetupPresented = false
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 8) {
-                batteryToCarSlot
-                autoResetSlot
-                notifyOnBatteryLevelSlot
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    .orange.opacity(0.5), .orange.opacity(0.2),
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .edgesIgnoringSafeArea(.all)
+
+            ScrollView {
+                VStack(spacing: 8) {
+                    ForEach(orderedSlots, id: \.self) { slot in
+                        view(for: slot)
+                    }
+                }
+                .padding(.horizontal, 4)
+                .padding(.top, 4)
             }
-            .padding(.horizontal, 4)
-            .padding(.top, 4)
         }
         .sheet(isPresented: $batteryToCarSetupPresented) {
             BatteryToCarSetupSheet()
@@ -47,6 +64,28 @@ struct AutomationsScreen: View {
 
     private var noChargingStation: Bool {
         !(snapshot?.prerequisites.hasAnyCarChargingStation ?? false)
+    }
+
+    /// Stable canonical order — matches the iOS screen. Reordered at
+    /// render time so the running automation lands first.
+    private let canonicalOrder: [Automation] = [
+        .BatteryToCar, .AutoResetChargingMode, .NotifyOnBatteryLevel,
+    ]
+
+    private var orderedSlots: [Automation] {
+        guard let active = snapshot?.activeAutomation else {
+            return canonicalOrder
+        }
+        return [active] + canonicalOrder.filter { $0 != active }
+    }
+
+    @ViewBuilder
+    private func view(for slot: Automation) -> some View {
+        switch slot {
+        case .BatteryToCar: batteryToCarSlot
+        case .AutoResetChargingMode: autoResetSlot
+        case .NotifyOnBatteryLevel: notifyOnBatteryLevelSlot
+        }
     }
 
     @ViewBuilder
