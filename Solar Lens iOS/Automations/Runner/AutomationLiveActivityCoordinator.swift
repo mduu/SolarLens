@@ -134,10 +134,16 @@ final class AutomationLiveActivityCoordinator {
         }
     }
 
+    /// Awaitable. Callers that run inside a constrained background
+    /// runtime budget (BGAppRefreshTask, scenePhase observers, the
+    /// cancel intent's Task) **must** `await` this so the underlying
+    /// `Activity.end(...)` request reaches the system before iOS
+    /// suspends the process — otherwise the Live Activity stays on
+    /// the Lock Screen until the user manually clears it.
     func end(
         state: AutomationState,
         parameters: AutomationParameters
-    ) {
+    ) async {
         guard let activity else {
             Self.logger.debug("end() with no active activity — no-op.")
             return
@@ -155,19 +161,17 @@ final class AutomationLiveActivityCoordinator {
         let toEnd = activity
         self.activity = nil
 
-        Task {
-            if let final {
-                await toEnd.end(
-                    ActivityContent(state: final, staleDate: nil),
-                    dismissalPolicy: .after(.now + 120)
-                )
-            } else {
-                await toEnd.end(nil, dismissalPolicy: .immediate)
-            }
-            Self.logger.notice(
-                "Activity ended (id=\(toEnd.id))."
+        if let final {
+            await toEnd.end(
+                ActivityContent(state: final, staleDate: nil),
+                dismissalPolicy: .after(.now + 120)
             )
+        } else {
+            await toEnd.end(nil, dismissalPolicy: .immediate)
         }
+        Self.logger.notice(
+            "Activity ended (id=\(toEnd.id))."
+        )
     }
 
     // MARK: - Internal

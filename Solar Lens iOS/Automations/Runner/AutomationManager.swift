@@ -143,7 +143,7 @@ public final class AutomationManager: AutomationHost {
             return
         }
         guard let task = state.automation?.getAutomationTask() else {
-            terminateAutomation(reason: .cancelled)
+            Task { await terminateAutomation(reason: .cancelled) }
             return
         }
         if let p = params.batteryToCar {
@@ -242,7 +242,7 @@ public final class AutomationManager: AutomationHost {
                     notifyOnBatteryLevel: s
                 )
             }
-            self.terminateAutomation(reason: .cancelled)
+            await self.terminateAutomation(reason: .cancelled)
             _ = task // silence unused warning
         }
     }
@@ -400,9 +400,9 @@ public final class AutomationManager: AutomationHost {
                 )
 
                 if newState.status == .finishedSuccessful {
-                    terminateAutomation(reason: mapStopReason(newState))
+                    await terminateAutomation(reason: mapStopReason(newState))
                 } else if newState.status == .failed {
-                    terminateAutomation(reason: .failed)
+                    await terminateAutomation(reason: .failed)
                 }
                 return
             } catch {
@@ -416,7 +416,7 @@ public final class AutomationManager: AutomationHost {
         }
 
         logError(message: "Automation tick: all retries exhausted")
-        terminateAutomation(reason: .failed)
+        await terminateAutomation(reason: .failed)
     }
 
     // MARK: - Termination
@@ -461,7 +461,13 @@ public final class AutomationManager: AutomationHost {
         return .failed
     }
 
-    private func terminateAutomation(reason: TerminationReason) {
+    /// Async because the Live Activity end() needs to be awaited
+    /// before iOS suspends the process — otherwise BG ticks and
+    /// scenePhase observers can race the BGTask completion / suspend
+    /// and leave the LA stuck on the Lock Screen indefinitely.
+    private func terminateAutomation(
+        reason: TerminationReason
+    ) async {
         let snapshot = activeState
         let snapshotParams = activeTaskParameters
 
@@ -484,7 +490,7 @@ public final class AutomationManager: AutomationHost {
             )
 
         if let snapshot, let snapshotParams {
-            AutomationLiveActivityCoordinator.shared.end(
+            await AutomationLiveActivityCoordinator.shared.end(
                 state: snapshot,
                 parameters: snapshotParams
             )
