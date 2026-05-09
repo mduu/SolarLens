@@ -40,7 +40,10 @@ struct BatteryToCarSetupSheet: View {
                         step: 5
                     ) {
                         Text("\(minBatteryLevel)%")
+                            .font(.caption)
                             .monospacedDigit()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
                 }
 

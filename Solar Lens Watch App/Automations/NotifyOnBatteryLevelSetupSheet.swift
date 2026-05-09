@@ -33,7 +33,10 @@ struct NotifyOnBatteryLevelSetupSheet: View {
                         step: 5
                     ) {
                         Text("\(targetBatteryLevel)%")
+                            .font(.caption)
                             .monospacedDigit()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
                     if let now = client.snapshot?.currentBatteryLevel {
                         Text("Now: \(now)%")
