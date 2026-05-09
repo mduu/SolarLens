@@ -6,7 +6,8 @@ struct SolarManagerWatch_Watch_AppApp: App {
     
     @State var currentBuildingState = CurrentBuildingState(energyManagerClient: SolarManager.shared)
     @State var navigationState = NavigationState()
-    
+    @State var automationWatchClient = AutomationWatchClient.shared
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -15,6 +16,7 @@ struct SolarManagerWatch_Watch_AppApp: App {
                 }
                 .environment(currentBuildingState)
                 .environment(navigationState)
+                .environment(automationWatchClient)
         }
         // For testing specific locale, uncomment:
         // .environment(\.locale, Locale(identifier: "de"))
@@ -23,6 +25,9 @@ struct SolarManagerWatch_Watch_AppApp: App {
 
 class AppDelegate: NSObject, WKApplicationDelegate {
     func applicationDidFinishLaunching() {
-        // TODO Code here
+        // Activate WatchConnectivity early so the delegate is set before
+        // iOS delivers any queued transferUserInfo / applicationContext
+        // from a freshly-paired or recently-launched companion.
+        AutomationWatchClient.shared.start()
     }
 }

@@ -15,19 +15,12 @@ final class AutomationAutoResetChargingMode: AutomationTask {
 
     let automationName: LocalizedStringResource = "Auto-reset Charging Mode"
 
-    /// Charging modes offered to the user in the setup sheet. We restrict
-    /// to "simple" modes — the parameter-bearing ones (`.constantCurrent`,
-    /// `.chargingTargetSoc`, `.minimumQuantity`) would need additional UI
-    /// to ask for the amperage / target SoC / quantity respectively.
-    /// Easy to extend later by adding to this list and wiring the
-    /// corresponding sub-parameter into `AutomationAutoResetChargingModeParameters`.
-    static let selectableModes: [ChargingMode] = [
-        .alwaysCharge,
-        .withSolarPower,
-        .withSolarOrLowTariff,
-        .off,
-        .minimalAndSolar,
-    ]
+    /// Charging modes offered to the user in the setup sheet.
+    /// Source of truth lives in
+    /// `Shared/Services/Automations/AutoResetChargingModeOptions.swift`
+    /// so the watch setup sheet can use the same list.
+    static let selectableModes: [ChargingMode] =
+        AutoResetChargingModeOptions.selectableModes
 
     /// Identifier for the local "reset is due now" notification scheduled
     /// at start time. Stable so we can cancel it on graceful finish or
@@ -242,50 +235,7 @@ final class AutomationAutoResetChargingMode: AutomationTask {
 }
 
 // MARK: - Parameters & state
-
-struct AutomationAutoResetChargingModeParameters: Codable {
-    var chargingDeviceId: String = ""
-    /// Mode the wallbox is set to immediately when the user taps Start.
-    var activeChargingMode: ChargingMode = .alwaysCharge
-    /// Mode the wallbox is set to once `resetAt` is reached (or on cancel).
-    var afterResetChargingMode: ChargingMode = .withSolarPower
-    /// Absolute date when the post-reset mode is applied.
-    var resetAt: Date = Date().addingTimeInterval(60 * 60)
-
-    init() {}
-
-    init(
-        chargingDeviceId: String,
-        activeChargingMode: ChargingMode,
-        afterResetChargingMode: ChargingMode,
-        resetAt: Date
-    ) {
-        self.chargingDeviceId = chargingDeviceId
-        self.activeChargingMode = activeChargingMode
-        self.afterResetChargingMode = afterResetChargingMode
-        self.resetAt = resetAt
-    }
-}
-
-enum AutomationAutoResetChargingModeStopReason: String, Codable {
-    case resetCompleted
-    case cancelled
-}
-
-struct AutomationAutoResetChargingModeState: Codable {
-    var isStarted: Bool = false
-    var startedAt: Date? = nil
-    /// Recorded when the active mode was successfully applied at the very
-    /// first tick. `nil` if the API call failed or the run hasn't started
-    /// yet.
-    var appliedActiveModeAt: Date? = nil
-    /// Recorded when the post-reset mode was successfully applied (either
-    /// because the reset time fired or the user cancelled).
-    var appliedAfterResetModeAt: Date? = nil
-    /// Snapshot of the mode that was set as the active mode — useful for
-    /// diagnostics if the user reports something unexpected.
-    var activeChargingModeAtStart: ChargingMode? = nil
-    var stopReason: AutomationAutoResetChargingModeStopReason? = nil
-
-    init() {}
-}
+//
+// Codable model structs live in
+// `Shared/Services/Automations/AutomationAutoResetChargingModeParameters.swift`
+// so the watch app can decode them over WatchConnectivity.

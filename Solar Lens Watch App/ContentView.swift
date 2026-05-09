@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(CurrentBuildingState.self) var viewModel
     @Environment(NavigationState.self) var navigationState
+    @Environment(AutomationWatchClient.self) var automationWatchClient
     @State var showAppRateRequest = AppStoreReviewManager.shared
         .checkAndRequestReview()
     @State private var loginCredentialsCheckTimer: Timer?
@@ -130,6 +131,24 @@ struct ContentView: View {
                             }  // :.toolbar
                             .tag(5)
 
+                        if let snap = automationWatchClient.snapshot,
+                           snap.prerequisites.hasAnyBattery
+                            || snap.prerequisites.hasAnyCarChargingStation
+                        {
+                            AutomationsScreen()
+                                .toolbar {
+                                    ToolbarItem(placement: .topBarLeading) {
+                                        HStack {
+                                            HomeButton()
+                                            Text("Automation")
+                                                .foregroundColor(.orange)
+                                                .font(.headline)
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                                .tag(6)
+                        }
 
                     }  // :TabView
                     .tabViewStyle(.verticalPage(transitionStyle: .blur))

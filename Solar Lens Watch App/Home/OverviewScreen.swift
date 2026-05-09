@@ -3,6 +3,7 @@ import SwiftUI
 struct OverviewScreen: View {
     @Environment(CurrentBuildingState.self) private var model
     @Environment(NavigationState.self) private var navigationState
+    @Environment(AutomationWatchClient.self) private var automationWatchClient
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var showSettings: Bool = false
@@ -145,6 +146,26 @@ struct OverviewScreen: View {
                     }  // :HStack
                     .padding(.bottom, -7)
                 }  // :VStack
+
+                // Additive top-trailing layer — does not touch any of the
+                // existing layout layers above. Renders the automation
+                // running icon when an automation is active on the iPhone.
+                VStack {
+                    HStack {
+                        Spacer()
+                        if let active = automationWatchClient.snapshot?
+                            .activeAutomation
+                        {
+                            AutomationRunningIndicator(
+                                activeAutomation: active
+                            ) {
+                                navigationState.navigate(to: .automations)
+                            }
+                            .padding(.trailing, 8)
+                        }
+                    }
+                    Spacer()
+                }
             }  // :ZStack
         }  // :VStack
     }
@@ -173,6 +194,7 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
+        .environment(AutomationWatchClient.shared)
 }
 
 #Preview("Stale data") {
@@ -202,6 +224,7 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
+        .environment(AutomationWatchClient.shared)
 }
 
 #Preview("Loading") {
@@ -228,6 +251,7 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
+        .environment(AutomationWatchClient.shared)
 }
 
 #Preview("German") {

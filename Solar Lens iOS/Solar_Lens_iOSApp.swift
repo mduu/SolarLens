@@ -20,6 +20,13 @@ struct Solar_Lens_iOSApp: App {
         LiveActivityCancelHandler.shared = {
             AutomationManager.shared.cancelActiveAutomation()
         }
+
+        // Activate the watch bridge synchronously so the WCSession
+        // delegate is set before iOS delivers any queued transferUserInfo
+        // commands from the watch.
+        AutomationWatchBridge.shared.start(
+            buildingState: currentBuildingState
+        )
     }
 
     var body: some Scene {

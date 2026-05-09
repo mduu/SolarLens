@@ -1,6 +1,6 @@
 internal import Foundation
 
-public struct AutomationState: Codable {
+public struct AutomationState: Codable, Sendable {
     var automation: Automation? = nil
     var status: AutomationStatus = .none
     var nextTaskRun: Date? = nil

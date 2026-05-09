@@ -4,10 +4,10 @@ public import Foundation
 /// Activity content budget. The LA renders the current battery level and
 /// the user-set threshold; the actual condition check still happens on
 /// every monitor tick inside the runner.
-public struct NotifyOnBatteryLevelPayload: Codable, Hashable {
+public struct NotifyOnBatteryLevelPayload: Codable, Hashable, Sendable {
     /// Comparison the user picked. Stored as a raw string so both app and
     /// widget extension targets agree on the wire format.
-    public enum Comparison: String, Codable, Hashable {
+    public enum Comparison: String, Codable, Hashable, Sendable {
         case equalOrAbove
         case equalOrBelow
     }

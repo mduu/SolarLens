@@ -23,19 +23,23 @@ struct ContentView: View {
                         .topLevelTabSwipe()
                 }
 
-                Tab(
-                    "Automation",
-                    systemImage: "wand.and.stars",
-                    value: AppTab.automation
-                ) {
-                    AutomationScreen()
-                        .topLevelTabSwipe()
+                if buildingState.overviewData.hasAnyBattery
+                    || buildingState.overviewData.hasAnyCarChargingStation
+                {
+                    Tab(
+                        "Automation",
+                        systemImage: "wand.and.stars",
+                        value: AppTab.automation
+                    ) {
+                        AutomationScreen()
+                            .topLevelTabSwipe()
+                    }
+                    .badge(
+                        automationManager.activeAutomation != nil
+                            ? Text(Image(systemName: "bolt.car.circle.fill"))
+                            : nil
+                    )
                 }
-                .badge(
-                    automationManager.activeAutomation != nil
-                        ? Text(Image(systemName: "bolt.car.circle.fill"))
-                        : nil
-                )
 
                 Tab(
                     "Statistics",

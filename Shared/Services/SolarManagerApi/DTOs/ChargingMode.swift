@@ -1,6 +1,6 @@
 import AppIntents
 
-enum ChargingMode: Int, Codable, CaseIterable, Identifiable, AppEnum {
+enum ChargingMode: Int, Codable, CaseIterable, Identifiable, AppEnum, Sendable {
     case alwaysCharge = 0
     case withSolarPower = 1
     case withSolarOrLowTariff = 2

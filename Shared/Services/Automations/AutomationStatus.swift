@@ -1,4 +1,4 @@
-public enum AutomationStatus: String, Codable {
+public enum AutomationStatus: String, Codable, Sendable {
     case none = "none"
     case starting = "starting"
     case running = "running"
