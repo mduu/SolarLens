@@ -28,13 +28,15 @@ enum DynamicIslandLayouts {
 
     static func trailingCancelButton() -> some View {
         Button(intent: CancelActiveAutomationIntent()) {
-            Label("Cancel", systemImage: "stop.fill")
-                .labelStyle(.titleAndIcon)
-                .font(.caption.weight(.semibold))
+            Image(systemName: "stop.fill")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 38, height: 38)
+                .background(Circle().fill(Color.red))
         }
-        .buttonStyle(.borderedProminent)
-        .tint(.red.opacity(0.85))
+        .buttonStyle(.plain)
         .padding(.trailing, 4)
+        .accessibilityLabel("Cancel automation")
     }
 
     @ViewBuilder

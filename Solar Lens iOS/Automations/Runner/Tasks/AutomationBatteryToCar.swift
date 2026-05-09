@@ -1,4 +1,5 @@
 internal import Foundation
+internal import UserNotifications
 
 /// Automation: drain the house battery (and only the house battery) into the
 /// car. Sets the wallbox to *Constant current* at an amperage matched to the
@@ -9,6 +10,21 @@ final class AutomationBatteryToCar: AutomationTask {
 
     let automationName: LocalizedStringResource = "Battery to Car"
     private let monitorInterval: TimeInterval = 60
+
+    /// Window inside which we treat the predicted soft-floor crossing as
+    /// "imminent" and schedule a calendar-triggered fallback
+    /// notification. The forecast is a linear extrapolation from
+    /// instantaneous discharge — it can be very wrong further out, so
+    /// we ONLY trust it within this short window. The regular tick
+    /// cadence is unaffected: we keep polling on `monitorInterval` (and
+    /// whatever iOS gives us in BG, typically ~7 min) so that the
+    /// predictive notification is just a backstop, not a replacement.
+    private let imminentForecastWindow: TimeInterval = 15 * 60
+
+    /// Identifier used for the pre-scheduled "soft floor due" local
+    /// notification. Stable so we can replace / cancel it across ticks.
+    static let softFloorDueNotificationId =
+        "automation.batteryToCar.softFloorDue"
 
     func run(
         host: any AutomationHost,
@@ -70,7 +86,115 @@ final class AutomationBatteryToCar: AutomationTask {
             telemetry: t, liveState: &liveState
         )
 
-        return scheduleNextTick(state: liveState, in: state)
+        return scheduleNextTickConsideringForecast(
+            host: host,
+            params: params,
+            telemetry: t,
+            liveState: liveState,
+            in: state
+        )
+    }
+
+    /// Picks the next tick time and, when the floor is imminent,
+    /// pre-arms a calendar-triggered fallback notification.
+    ///
+    /// `nextTaskRun` is **always** the regular monitor interval — the
+    /// linear forecast is just an extrapolation from instantaneous
+    /// discharge and can be wildly wrong further out (clouds clear, a
+    /// load drops, etc.), so we never let it dictate when we re-check.
+    /// The pre-scheduled notification is a pure backstop: if iOS
+    /// doesn't grant us BG runtime in time and the forecast turns out
+    /// right, the user still gets nudged at the predicted moment. If
+    /// the forecast moves further out on the next tick, the
+    /// notification is cancelled and re-scheduled (or dropped).
+    private func scheduleNextTickConsideringForecast(
+        host: any AutomationHost,
+        params: AutomationBatteryToCarParameters,
+        telemetry t: Telemetry,
+        liveState: AutomationBatteryToCarState,
+        in fullState: AutomationState
+    ) -> AutomationState {
+        let regularNext = Date().addingTimeInterval(monitorInterval)
+
+        if let secondsToFloor = t.overview.forecastSeconds(
+            toReach: params.minBatteryLevel
+        ),
+           secondsToFloor > 0,
+           secondsToFloor <= imminentForecastWindow
+        {
+            let dueAt = Date().addingTimeInterval(secondsToFloor)
+            scheduleSoftFloorDueNotification(
+                at: dueAt,
+                floorPct: params.minBatteryLevel
+            )
+            host.logDebug(
+                message:
+                    "Battery to Car: floor forecast in \(Int(secondsToFloor))s — pre-scheduling backstop notification (regular tick cadence unchanged)"
+            )
+        } else {
+            cancelSoftFloorDueNotification()
+        }
+
+        return AutomationState(
+            automation: fullState.automation!,
+            status: .running,
+            nextTaskRun: regularNext,
+            batteryToCar: liveState
+        )
+    }
+
+    // MARK: - Soft-floor pre-scheduled notification
+
+    private func scheduleSoftFloorDueNotification(
+        at date: Date,
+        floorPct: Int
+    ) {
+        let center = UNUserNotificationCenter.current()
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "Battery → Car heads-up")
+        content.body = String(
+            localized:
+                "Battery is approaching the \(floorPct)% floor — open Solar Lens to apply your fallback charging mode."
+        )
+        content.sound = .default
+        content.interruptionLevel = .timeSensitive
+        content.categoryIdentifier =
+            AutomationNotificationDelegate.openHomeCategoryId
+        content.userInfo = [
+            AutomationNotificationDelegate.deepLinkUserInfoKey:
+                "solarlens://automation",
+        ]
+
+        let comps = Calendar.current.dateComponents(
+            [.year, .month, .day, .hour, .minute, .second],
+            from: date
+        )
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: comps,
+            repeats: false
+        )
+        let request = UNNotificationRequest(
+            identifier: Self.softFloorDueNotificationId,
+            content: content,
+            trigger: trigger
+        )
+
+        Task {
+            // Replace any prior pre-scheduled notification (forecast may
+            // have moved since the previous tick). `add` overwrites by
+            // identifier, but explicit cancel keeps the model clear.
+            center.removePendingNotificationRequests(
+                withIdentifiers: [Self.softFloorDueNotificationId]
+            )
+            try? await center.add(request)
+        }
+    }
+
+    private func cancelSoftFloorDueNotification() {
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(
+                withIdentifiers: [Self.softFloorDueNotificationId]
+            )
     }
 
     // MARK: - Telemetry

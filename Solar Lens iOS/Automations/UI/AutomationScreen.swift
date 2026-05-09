@@ -54,87 +54,102 @@ struct AutomationScreen: View {
         }
     }
 
-    /// Either the running card for the currently-active automation, or
-    /// the list of idle cards when nothing is running.
+    /// Always shows every automation. Whichever one is currently
+    /// running renders as a *running* card; the others render as
+    /// *disabled* idle cards so the user can still see them but has to
+    /// cancel the active automation first to start a different one.
+    /// Idle cards also disable themselves on missing prerequisites
+    /// (battery present for the battery automations, charging station
+    /// present for the charging-mode automation).
     @ViewBuilder
     private var mainContent: some View {
-        switch manager.activeAutomation {
-        case .BatteryToCar:
-            if let runState = manager.activeStateSnapshot?.batteryToCar,
-               let runParams = manager.activeParametersSnapshot?
-                .batteryToCar {
-                BatteryToCarRunningCard(
-                    state: runState,
-                    params: runParams,
-                    onCancel: { manager.cancelActiveAutomation() }
-                )
-                .padding(.horizontal, 4)
-            } else {
-                idleCards
-            }
-        case .AutoResetChargingMode:
-            if let runState = manager.activeStateSnapshot?
-                .autoResetChargingMode,
-               let runParams = manager.activeParametersSnapshot?
-                .autoResetChargingMode {
-                AutoResetChargingModeRunningCard(
-                    state: runState,
-                    params: runParams,
-                    onCancel: { manager.cancelActiveAutomation() }
-                )
-                .padding(.horizontal, 4)
-            } else {
-                idleCards
-            }
-        case .NotifyOnBatteryLevel:
-            if let runState = manager.activeStateSnapshot?
-                .notifyOnBatteryLevel,
-               let runParams = manager.activeParametersSnapshot?
-                .notifyOnBatteryLevel {
-                NotifyOnBatteryLevelRunningCard(
-                    state: runState,
-                    params: runParams,
-                    onCancel: { manager.cancelActiveAutomation() }
-                )
-                .padding(.horizontal, 4)
-            } else {
-                idleCards
-            }
-        case .none:
-            idleCards
+        VStack(spacing: 12) {
+            batteryToCarSlot
+            autoResetSlot
+            notifyOnBatteryLevelSlot
         }
     }
 
-    private var idleCards: some View {
-        VStack(spacing: 12) {
+    private var anotherIsActive: Bool {
+        manager.activeAutomation != nil
+    }
+    private var noBattery: Bool {
+        !buildingState.overviewData.hasAnyBattery
+    }
+    private var noChargingStation: Bool {
+        !buildingState.overviewData.hasAnyCarChargingStation
+    }
+
+    @ViewBuilder
+    private var batteryToCarSlot: some View {
+        if manager.activeAutomation == .BatteryToCar,
+           let runState = manager.activeStateSnapshot?.batteryToCar,
+           let runParams = manager.activeParametersSnapshot?.batteryToCar
+        {
+            BatteryToCarRunningCard(
+                state: runState,
+                params: runParams,
+                onCancel: { manager.cancelActiveAutomation() }
+            )
+            .padding(.horizontal, 4)
+        } else {
             BatteryToCarCard(
-                isOtherActive: manager.activeAutomation != nil,
-                isHouseBatteryMissing:
-                    !buildingState.overviewData.hasAnyBattery,
+                isOtherActive: anotherIsActive,
+                isHouseBatteryMissing: noBattery,
                 onTap: {
-                    if manager.activeAutomation == nil
-                        && buildingState.overviewData.hasAnyBattery {
+                    if !anotherIsActive && !noBattery {
                         batteryToCarSetupPresented = true
                     }
                 }
             )
+        }
+    }
 
+    @ViewBuilder
+    private var autoResetSlot: some View {
+        if manager.activeAutomation == .AutoResetChargingMode,
+           let runState = manager.activeStateSnapshot?.autoResetChargingMode,
+           let runParams = manager.activeParametersSnapshot?
+            .autoResetChargingMode
+        {
+            AutoResetChargingModeRunningCard(
+                state: runState,
+                params: runParams,
+                onCancel: { manager.cancelActiveAutomation() }
+            )
+            .padding(.horizontal, 4)
+        } else {
             AutoResetChargingModeCard(
-                isOtherActive: manager.activeAutomation != nil,
+                isOtherActive: anotherIsActive,
+                isChargingStationMissing: noChargingStation,
                 onTap: {
-                    if manager.activeAutomation == nil {
+                    if !anotherIsActive && !noChargingStation {
                         autoResetSetupPresented = true
                     }
                 }
             )
+        }
+    }
 
+    @ViewBuilder
+    private var notifyOnBatteryLevelSlot: some View {
+        if manager.activeAutomation == .NotifyOnBatteryLevel,
+           let runState = manager.activeStateSnapshot?.notifyOnBatteryLevel,
+           let runParams = manager.activeParametersSnapshot?
+            .notifyOnBatteryLevel
+        {
+            NotifyOnBatteryLevelRunningCard(
+                state: runState,
+                params: runParams,
+                onCancel: { manager.cancelActiveAutomation() }
+            )
+            .padding(.horizontal, 4)
+        } else {
             NotifyOnBatteryLevelCard(
-                isOtherActive: manager.activeAutomation != nil,
-                isHouseBatteryMissing:
-                    !buildingState.overviewData.hasAnyBattery,
+                isOtherActive: anotherIsActive,
+                isHouseBatteryMissing: noBattery,
                 onTap: {
-                    if manager.activeAutomation == nil
-                        && buildingState.overviewData.hasAnyBattery {
+                    if !anotherIsActive && !noBattery {
                         notifyBatteryLevelSetupPresented = true
                     }
                 }

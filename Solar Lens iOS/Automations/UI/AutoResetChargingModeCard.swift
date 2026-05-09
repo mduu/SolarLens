@@ -3,45 +3,52 @@ import SwiftUI
 /// Idle state card for the "Auto-reset Charging Mode" automation.
 struct AutoResetChargingModeCard: View {
     let isOtherActive: Bool
+    let isChargingStationMissing: Bool
     let onTap: () -> Void
 
     private var isDisabled: Bool {
-        isOtherActive
+        isOtherActive || isChargingStationMissing
     }
 
     private var disabledMessage: LocalizedStringResource? {
-        isOtherActive ? "Another automation is active" : nil
+        if isChargingStationMissing {
+            return "Requires a charging station"
+        }
+        if isOtherActive {
+            return "Another automation is active"
+        }
+        return nil
     }
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    Image(
-                        systemName: Automation.AutoResetChargingMode
-                            .liveActivityIconSystemName
-                    )
-                    .font(.title2)
+            HStack(alignment: .top, spacing: 16) {
+                Image(
+                    systemName: Automation.AutoResetChargingMode
+                        .liveActivityIconSystemName
+                )
+                .font(.system(size: 56, weight: .regular))
+                .foregroundStyle(.orange)
+                .symbolRenderingMode(.hierarchical)
+                .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 8) {
                     Text("Auto-reset Charging Mode")
                         .font(.headline)
-                    Spacer()
-                    if !isDisabled {
-                        Image(systemName: "chevron.right")
+                        .multilineTextAlignment(.leading)
+                    Text(
+                        "Set a charging mode now and let Solar Lens automatically switch back to another mode at a date and time you choose."
+                    )
+                    .font(.callout)
+                    .multilineTextAlignment(.leading)
+
+                    if let msg = disabledMessage {
+                        Label(msg, systemImage: "info.circle")
                             .font(.footnote)
-                            .opacity(0.7)
+                            .padding(.top, 4)
                     }
                 }
-                Text(
-                    "Set a charging mode now and let Solar Lens automatically switch back to another mode at a date and time you choose."
-                )
-                .font(.callout)
-                .multilineTextAlignment(.leading)
-
-                if let msg = disabledMessage {
-                    Label(msg, systemImage: "info.circle")
-                        .font(.footnote)
-                        .padding(.top, 4)
-                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -56,18 +63,4 @@ struct AutoResetChargingModeCard: View {
         .buttonStyle(.plain)
         .disabled(isDisabled)
     }
-}
-
-#Preview {
-    VStack(spacing: 12) {
-        AutoResetChargingModeCard(
-            isOtherActive: false,
-            onTap: {}
-        )
-        AutoResetChargingModeCard(
-            isOtherActive: true,
-            onTap: {}
-        )
-    }
-    .padding()
 }

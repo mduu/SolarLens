@@ -3,6 +3,10 @@ import SwiftUI
 /// Live state card while the Battery-to-Car automation is running.
 /// Visually distinct from the idle card: bright material fill with a
 /// rotating animated gradient border (vs. the idle card's flat gradient).
+///
+/// Layout: large per-automation glyph on the left, title + metrics
+/// flowing to the right of it, and a round red Stop button anchored
+/// top-right as the cancel affordance.
 struct BatteryToCarRunningCard: View {
     let state: AutomationBatteryToCarState
     let params: AutomationBatteryToCarParameters
@@ -12,54 +16,45 @@ struct BatteryToCarRunningCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 8) {
-                Image(systemName: AutomationBrand.accentSymbol)
-                    .foregroundStyle(.primary)
-                Text("Battery → Car running")
-                    .font(.headline)
-                Spacer()
-                HStack(spacing: 5) {
-                    Image(systemName: "bolt.car.circle.fill")
-                        .symbolEffect(.pulse, options: .repeating)
-                        .symbolRenderingMode(.monochrome)
-                    Text("Running")
+            HStack(alignment: .top, spacing: 16) {
+                Image(systemName: "bolt.car.circle.fill")
+                    .font(.system(size: 56, weight: .regular))
+                    .foregroundStyle(.orange)
+                    .symbolRenderingMode(.hierarchical)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Text("Battery → Car running")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        AutomationCircularCancelButton(action: onCancel)
+                    }
+
+                    HStack(alignment: .top, spacing: 18) {
+                        metric(
+                            label: "Battery",
+                            value:
+                                "\(state.lastBatteryPercentage ?? state.startSoc)%"
+                        )
+                        metric(
+                            label: "Floor",
+                            value: "\(params.minBatteryLevel)%"
+                        )
+                        metric(
+                            label: "Current",
+                            value: "\(state.currentAmps) A"
+                        )
+                        metric(
+                            label: "Transferred",
+                            value: String(
+                                format: "%.2f kWh", state.kWhTransferred
+                            )
+                        )
+                    }
                 }
-                .font(.caption.weight(.semibold))
-                .padding(.horizontal, 9)
-                .padding(.vertical, 4)
-                .background(
-                    Capsule().fill(Color(red: 0.13, green: 0.66, blue: 0.32))
-                )
-                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-
-            HStack(spacing: 24) {
-                metric(
-                    label: "Battery",
-                    value: "\(state.lastBatteryPercentage ?? state.startSoc)%"
-                )
-                metric(
-                    label: "Floor",
-                    value: "\(params.minBatteryLevel)%"
-                )
-                metric(
-                    label: "Current",
-                    value: "\(state.currentAmps) A"
-                )
-                metric(
-                    label: "Transferred",
-                    value: String(
-                        format: "%.2f kWh", state.kWhTransferred
-                    )
-                )
-            }
-
-            Button(role: .destructive, action: onCancel) {
-                Label("Cancel automation", systemImage: "stop.fill")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.red.opacity(0.85))
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)

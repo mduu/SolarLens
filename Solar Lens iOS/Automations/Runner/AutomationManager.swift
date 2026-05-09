@@ -9,6 +9,14 @@ public final class AutomationManager: AutomationHost {
 
     public static let shared: AutomationManager = AutomationManager()
 
+    /// Posted whenever an automation terminates (graceful, cancelled, or
+    /// failed). Listeners — currently `Solar_Lens_iOSApp` — use this to
+    /// trigger a fresh fetch of `OverviewData` so the in-app charging
+    /// mode reflects whatever the automation switched the wallbox to.
+    public static let automationTerminatedNotification = Notification.Name(
+        "com.marcduerst.SolarManagerWatch.AutomationTerminated"
+    )
+
     private let identifier =
         "com.marcduerst.SolarManagerWatch.AutomationRunner"
     static private let foregroundTimerInterval: TimeInterval = 60
@@ -461,13 +469,17 @@ public final class AutomationManager: AutomationHost {
         stopTimer()
 
         // Cancel any per-automation pending pre-scheduled notifications
-        // so a stale "reset is due" pop-up doesn't fire after the user
+        // so a stale heads-up pop-up doesn't fire after the user
         // already cancelled or the run already finished.
         UNUserNotificationCenter.current()
             .removePendingNotificationRequests(
                 withIdentifiers: [
                     AutomationAutoResetChargingMode
                         .resetDueNotificationId,
+                    AutomationBatteryToCar
+                        .softFloorDueNotificationId,
+                    AutomationNotifyOnBatteryLevel
+                        .thresholdDueNotificationId,
                 ]
             )
 
@@ -487,6 +499,14 @@ public final class AutomationManager: AutomationHost {
         activeState = nil
         activeTaskParameters = nil
         persistState()
+
+        // Tell whoever's interested that an automation just ended so the
+        // app can refetch overview data — the wallbox mode visible in the
+        // in-app UI is otherwise still the pre-termination value.
+        NotificationCenter.default.post(
+            name: Self.automationTerminatedNotification,
+            object: nil
+        )
     }
 
     // MARK: - Persistence

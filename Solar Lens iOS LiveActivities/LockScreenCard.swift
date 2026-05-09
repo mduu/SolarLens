@@ -6,43 +6,57 @@ import WidgetKit
 
 /// Shared chrome for the Lock Screen / banner Live Activity card.
 ///
-/// Composes the brand identity (sparkles + title gradient + brand border),
-/// exposes a Cancel button, and slots a per-automation body picked from
-/// the `Payload` case — never knows about specific automations beyond that
-/// switch.
+/// Layout: large per-automation glyph anchored on the left so the user
+/// can tell automations apart at a glance, title + per-automation body
+/// flowing to the right, and a round red Stop button in the top-right
+/// corner. The Stop button is intentionally bigger and red — this is
+/// a destructive "cancel the automation now" affordance, not the iOS
+/// chrome "close" X.
 ///
 /// Live Activity rendering is more restricted than regular SwiftUI:
 /// no `Material`, no `TimelineView` at the outer level, no async tasks.
-/// The platter background is set via the `.activityBackgroundTint` modifier
-/// applied by `AutomationLiveActivity` on the outer view.
+/// The platter background is set via the `.activityBackgroundTint`
+/// modifier applied by `AutomationLiveActivity` on the outer view.
 struct LockScreenCard: View {
     let context: ActivityViewContext<AutomationLiveActivityAttributes>
 
     private let cornerRadius: CGFloat = 20
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 8) {
-                Image(systemName: context.state.iconSystemName)
-                    .foregroundStyle(AutomationBrand.titleGradient)
-                    .font(.title3)
-                Text(automationTitle)
-                    .font(.headline)
-                Spacer()
-                Button(intent: CancelActiveAutomationIntent()) {
-                    Label("Cancel", systemImage: "stop.fill")
-                        .labelStyle(.titleAndIcon)
-                        .font(.caption.weight(.semibold))
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.red.opacity(0.85))
-            }
+        HStack(alignment: .top, spacing: 14) {
+            Image(systemName: context.state.iconSystemName)
+                .font(.system(size: 48, weight: .regular))
+                .foregroundStyle(.orange)
+                .symbolRenderingMode(.hierarchical)
+                .accessibilityHidden(true)
 
-            cardBody(for: context.state)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .top, spacing: 12) {
+                    Text(automationTitle)
+                        .font(.headline)
+                        .lineLimit(2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    cancelButton
+                }
+                cardBody(for: context.state)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .overlay(LockScreenBorder(cornerRadius: cornerRadius))
+    }
+
+    private var cancelButton: some View {
+        Button(intent: CancelActiveAutomationIntent()) {
+            Image(systemName: "stop.fill")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 38, height: 38)
+                .background(Circle().fill(Color.red))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Cancel automation")
     }
 
     private var automationTitle: LocalizedStringKey {

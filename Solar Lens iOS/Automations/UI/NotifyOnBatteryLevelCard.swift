@@ -22,33 +22,33 @@ struct NotifyOnBatteryLevelCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    Image(
-                        systemName: Automation.NotifyOnBatteryLevel
-                            .liveActivityIconSystemName
-                    )
-                    .font(.title2)
+            HStack(alignment: .top, spacing: 16) {
+                Image(
+                    systemName: Automation.NotifyOnBatteryLevel
+                        .liveActivityIconSystemName
+                )
+                .font(.system(size: 56, weight: .regular))
+                .foregroundStyle(.orange)
+                .symbolRenderingMode(.hierarchical)
+                .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 8) {
                     Text("Notify on battery level")
                         .font(.headline)
-                    Spacer()
-                    if !isDisabled {
-                        Image(systemName: "chevron.right")
+                        .multilineTextAlignment(.leading)
+                    Text(
+                        "Get a push notification when your house battery reaches a level you choose. Auto-cancels after 24 hours if the level isn't reached."
+                    )
+                    .font(.callout)
+                    .multilineTextAlignment(.leading)
+
+                    if let msg = disabledMessage {
+                        Label(msg, systemImage: "info.circle")
                             .font(.footnote)
-                            .opacity(0.7)
+                            .padding(.top, 4)
                     }
                 }
-                Text(
-                    "Get a push notification when your house battery reaches a level you choose. Auto-cancels after 24 hours if the level isn't reached."
-                )
-                .font(.callout)
-                .multilineTextAlignment(.leading)
-
-                if let msg = disabledMessage {
-                    Label(msg, systemImage: "info.circle")
-                        .font(.footnote)
-                        .padding(.top, 4)
-                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)

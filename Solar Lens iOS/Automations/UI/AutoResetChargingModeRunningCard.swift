@@ -1,8 +1,12 @@
 import SwiftUI
 
 /// Live state card while the Auto-reset Charging Mode automation is
-/// running. Uses SwiftUI's native `Text(timerInterval:)` for the countdown
-/// — the timer continues to update even when the runner isn't ticking.
+/// running. Native `Text(timerInterval:)` keeps the countdown ticking
+/// without any runner involvement.
+///
+/// Layout: large per-automation glyph on the left, title + metrics
+/// flowing to the right of it, and a round red Stop button anchored
+/// top-right as the cancel affordance.
 struct AutoResetChargingModeRunningCard: View {
     let state: AutomationAutoResetChargingModeState
     let params: AutomationAutoResetChargingModeParameters
@@ -12,48 +16,38 @@ struct AutoResetChargingModeRunningCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 8) {
-                Image(systemName: AutomationBrand.accentSymbol)
-                    .foregroundStyle(.primary)
-                Text("Auto-reset Charging Mode running")
-                    .font(.headline)
-                Spacer()
-                HStack(spacing: 5) {
-                    Image(
-                        systemName: Automation.AutoResetChargingMode
-                            .liveActivityIconSystemName
-                    )
-                    .symbolEffect(.pulse, options: .repeating)
-                    .symbolRenderingMode(.monochrome)
-                    Text("Running")
+            HStack(alignment: .top, spacing: 16) {
+                Image(
+                    systemName: Automation.AutoResetChargingMode
+                        .liveActivityIconSystemName
+                )
+                .font(.system(size: 56, weight: .regular))
+                .foregroundStyle(.orange)
+                .symbolRenderingMode(.hierarchical)
+                .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Text("Auto-reset Charging Mode running")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        AutomationCircularCancelButton(action: onCancel)
+                    }
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        metric(
+                            label: "Active mode",
+                            value: localizedTitle(of: params.activeChargingMode)
+                        )
+                        resetCountdown
+                        metric(
+                            label: "After reset",
+                            value: localizedTitle(of: params.afterResetChargingMode)
+                        )
+                    }
                 }
-                .font(.caption.weight(.semibold))
-                .padding(.horizontal, 9)
-                .padding(.vertical, 4)
-                .background(
-                    Capsule().fill(Color(red: 0.13, green: 0.66, blue: 0.32))
-                )
-                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-
-            VStack(alignment: .leading, spacing: 10) {
-                metric(
-                    label: "Active mode",
-                    value: localizedTitle(of: params.activeChargingMode)
-                )
-                resetCountdown
-                metric(
-                    label: "After reset",
-                    value: localizedTitle(of: params.afterResetChargingMode)
-                )
-            }
-
-            Button(role: .destructive, action: onCancel) {
-                Label("Cancel automation", systemImage: "stop.fill")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.red.opacity(0.85))
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -73,8 +67,6 @@ struct AutoResetChargingModeRunningCard: View {
         )
     }
 
-    /// Live countdown to the reset moment. SwiftUI re-renders this `Text`
-    /// once per second on its own — no app or runner ticks needed.
     private var resetCountdown: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("Resets in")

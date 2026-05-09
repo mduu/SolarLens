@@ -1,8 +1,7 @@
 import SwiftUI
 
 /// Live state card while the "Notify on battery level" automation is
-/// running. Shows the most recent battery reading, the user's chosen
-/// threshold, and elapsed time.
+/// running.
 struct NotifyOnBatteryLevelRunningCard: View {
     let state: AutomationNotifyOnBatteryLevelState
     let params: AutomationNotifyOnBatteryLevelParameters
@@ -12,50 +11,44 @@ struct NotifyOnBatteryLevelRunningCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 8) {
-                Image(systemName: AutomationBrand.accentSymbol)
-                    .foregroundStyle(.primary)
-                Text("Notify on battery level")
-                    .font(.headline)
-                Spacer()
-                HStack(spacing: 5) {
-                    Image(
-                        systemName: Automation.NotifyOnBatteryLevel
-                            .liveActivityIconSystemName
-                    )
-                    .symbolEffect(.pulse, options: .repeating)
-                    .symbolRenderingMode(.monochrome)
-                    Text("Running")
-                }
-                .font(.caption.weight(.semibold))
-                .padding(.horizontal, 9)
-                .padding(.vertical, 4)
-                .background(
-                    Capsule().fill(Color(red: 0.13, green: 0.66, blue: 0.32))
+            HStack(alignment: .top, spacing: 16) {
+                Image(
+                    systemName: Automation.NotifyOnBatteryLevel
+                        .liveActivityIconSystemName
                 )
-                .foregroundStyle(.white)
-            }
+                .font(.system(size: 56, weight: .regular))
+                .foregroundStyle(.orange)
+                .symbolRenderingMode(.hierarchical)
+                .accessibilityHidden(true)
 
-            HStack(spacing: 24) {
-                metric(
-                    label: "Battery",
-                    value: state.lastBatteryLevel.map { "\($0)%" } ?? "—"
-                )
-                metric(
-                    label: "Target",
-                    value: "\(comparator) \(params.targetBatteryLevel)%"
-                )
-                if let started = state.startedAt {
-                    metric(label: "Running for", value: elapsed(since: started))
-                }
-            }
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Text("Notify on battery level")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        AutomationCircularCancelButton(action: onCancel)
+                    }
 
-            Button(role: .destructive, action: onCancel) {
-                Label("Cancel automation", systemImage: "stop.fill")
-                    .frame(maxWidth: .infinity)
+                    HStack(spacing: 24) {
+                        metric(
+                            label: "Battery",
+                            value: state.lastBatteryLevel
+                                .map { "\($0)%" } ?? "—"
+                        )
+                        metric(
+                            label: "Target",
+                            value: "\(comparator) \(params.targetBatteryLevel)%"
+                        )
+                        if let started = state.startedAt {
+                            metric(
+                                label: "Running for",
+                                value: elapsed(since: started)
+                            )
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.red.opacity(0.85))
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)

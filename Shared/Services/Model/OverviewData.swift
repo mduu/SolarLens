@@ -189,6 +189,51 @@ class OverviewData {
         )
     }
 
+    /// Linear extrapolation: how many seconds until the battery reaches
+    /// `targetPercent`, assuming the current charge / discharge rate
+    /// holds steady? Returns `nil` when:
+    ///   - no battery on the system,
+    ///   - current battery level isn't available,
+    ///   - we're heading the wrong direction (e.g. battery is charging
+    ///     but `targetPercent` is below the current level — we'd never
+    ///     reach it without a sign flip),
+    ///   - flow rate is too small to make a meaningful estimate (|rate|
+    ///     ≤ 50 W — same threshold the in-app battery sheet uses to
+    ///     consider the battery "idle"),
+    ///   - the target is essentially the current level (we're already
+    ///     there).
+    ///
+    /// Uses the same math as `getBatteryForecast` but parametrised on
+    /// the target so automations can ask "when will we hit my soft
+    /// floor?" / "when will we hit my notify threshold?".
+    func forecastSeconds(toReach targetPercent: Int) -> TimeInterval? {
+        guard let currentPercent = currentBatteryLevel else { return nil }
+        guard targetPercent != currentPercent else { return 0 }
+
+        let batteries = devices.filter { $0.deviceType == .battery }
+        let totalCapacityKwh: Double = batteries.reduce(0) { acc, b in
+            acc + (b.batteryInfo?.batteryCapacityKwh ?? 0)
+        }
+        guard totalCapacityKwh > 0 else { return nil }
+
+        let rateW = currentBatteryChargeRate ?? 0
+        let isDischarging = rateW < -50
+        let isCharging = rateW > 50
+
+        // Wrong direction → unreachable.
+        if targetPercent < currentPercent && !isDischarging { return nil }
+        if targetPercent > currentPercent && !isCharging { return nil }
+
+        // Energy that needs to flow, in kWh. Always positive here.
+        let percentDelta = abs(currentPercent - targetPercent)
+        let energyNeededKwh = totalCapacityKwh
+            * Double(percentDelta) / 100.0
+
+        let rateKw = Double(abs(rateW)) / 1000.0
+        let hours = energyNeededKwh / rateKw
+        return TimeInterval(hours * 3600)
+    }
+
     /**
      Return <code>true</code> if the fetched server-data is outdated.
      This indicates a server-side issue in Solar Manager backend.
