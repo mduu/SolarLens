@@ -171,7 +171,7 @@ public class BlobStorageService
             var cutoffTime = DateTime.UtcNow - maxAge;
             var deletedCount = 0;
 
-            await foreach (var blobItem in containerClient.GetBlobsAsync(BlobTraits.Metadata))
+            await foreach (var blobItem in containerClient.GetBlobsAsync(new GetBlobsOptions { Traits = BlobTraits.Metadata }))
             {
                 if (blobItem.Properties.CreatedOn < cutoffTime)
                 {
