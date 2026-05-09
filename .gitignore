@@ -85,3 +85,4 @@ __azurite_db*.json
 build
 .obsidian
 specs/.claude/settings.local.json
+.claude/settings.local.json
