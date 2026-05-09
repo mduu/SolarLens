@@ -19,12 +19,18 @@ enum TopLevelTabOrder {
 }
 
 /// Horizontal drag gesture that moves the selection one tab forward
-/// (left-swipe) or back (right-swipe). Mirrors the convention iOS
-/// uses for paging `TabView(.page)` and the existing inner-tab swipe
-/// in `StatisticsScreen`. Vertical scrolling is preserved because we
-/// (1) require horizontal translation > vertical and (2) attach via
-/// `simultaneousGesture` so a `ScrollView` underneath still wins on
-/// vertical-dominant drags.
+/// (left-swipe) or back (right-swipe). Vertical scrolling is preserved
+/// because we (1) require horizontal translation > vertical and
+/// (2) attach via `simultaneousGesture` so a `ScrollView` underneath
+/// still wins on vertical-dominant drags.
+///
+/// The transition itself is intentionally instant. Apple's HIG does
+/// not endorse swipe-between-tabs for bottom-tab-bar layouts (their
+/// own first-party apps don't ship it), and there is no system
+/// primitive that animates a page slide between bottom-tab-bar tabs:
+/// `.tabViewStyle(.page)` and paginated `ScrollView` both replace the
+/// tab bar. So we keep the gesture as a discoverable shortcut and
+/// match how the system swaps tabs on a tab-bar tap — instantly.
 private struct TopLevelTabSwipeModifier: ViewModifier {
     let selection: TabSelection
 
@@ -40,13 +46,9 @@ private struct TopLevelTabSwipeModifier: ViewModifier {
                         of: selection.selectedTab
                     ) else { return }
                     if h < 0, i < order.count - 1 {
-                        withAnimation {
-                            selection.selectedTab = order[i + 1]
-                        }
+                        selection.selectedTab = order[i + 1]
                     } else if h > 0, i > 0 {
-                        withAnimation {
-                            selection.selectedTab = order[i - 1]
-                        }
+                        selection.selectedTab = order[i - 1]
                     }
                 }
         )
