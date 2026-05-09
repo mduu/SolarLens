@@ -357,6 +357,15 @@ class CurrentBuildingState {
 
     @MainActor
     func setSensorPriority(sensorId: String, newPriority: Int) async {
+        await setSensorPriorities([(sensorId: sensorId, priority: newPriority)])
+    }
+
+    @MainActor
+    func setSensorPriorities(
+        _ updates: [(sensorId: String, priority: Int)]
+    ) async {
+        guard !updates.isEmpty else { return }
+
         guard loginCredentialsExists && !isChangingSensorPriority
         else {
             print("WARN: Login-Credentials don't exists or is loading already")
@@ -369,21 +378,22 @@ class CurrentBuildingState {
         }
 
         do {
-
             resetError()
 
-            print(
-                "\(Date()): Set sensor \(sensorId) to priority \(newPriority)"
-            )
+            for update in updates {
+                print(
+                    "\(Date()): Set sensor \(update.sensorId) to priority \(update.priority)"
+                )
 
-            _ = try await energyManager.setSensorPriority(
-                sensorId: sensorId,
-                priority: newPriority
-            )
+                _ = try await energyManager.setSensorPriority(
+                    sensorId: update.sensorId,
+                    priority: update.priority
+                )
 
-            print(
-                "\(Date()): Sensor \(sensorId) priority se to \(newPriority)."
-            )
+                print(
+                    "\(Date()): Sensor \(update.sensorId) priority set to \(update.priority)."
+                )
+            }
 
             await fetchServerData()
 

@@ -114,24 +114,22 @@ struct DevicePrioritySheet: View {
                         .contentShape(Rectangle())
                 }
                 .onMove { indices, newOffset in
-                    if let index = indices.first {
-                        let device = buildingState.overviewData.devices[index]
+                    var reordered = buildingState.overviewData.devices
+                        .sorted(by: { $0.priority < $1.priority })
+                    reordered.move(fromOffsets: indices, toOffset: newOffset)
 
-                        Task {
-                            isLoading = true
-
-                            let newPriority =
-                                newOffset > index
-                                ? newOffset
-                                : newOffset + 1
-
-                            await buildingState.setSensorPriority(
-                                sensorId: device.id,
-                                newPriority: newPriority
-                            )
-
-                            isLoading = false
+                    let updates: [(sensorId: String, priority: Int)] =
+                        reordered.enumerated().compactMap { idx, device in
+                            let newPriority = idx + 1
+                            return device.priority == newPriority
+                                ? nil
+                                : (sensorId: device.id, priority: newPriority)
                         }
+
+                    Task {
+                        isLoading = true
+                        await buildingState.setSensorPriorities(updates)
+                        isLoading = false
                     }
                 }
             }
