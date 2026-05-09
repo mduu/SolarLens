@@ -38,17 +38,7 @@ struct NotifyOnBatteryLevelRunningCard: View {
                     .foregroundStyle(.secondary)
             }
 
-            if let eta = state.forecastedTargetAt, eta > Date() {
-                HStack(spacing: 4) {
-                    Image(systemName: "hourglass")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Text(timerInterval: Date()...eta, countsDown: true)
-                        .monospacedDigit()
-                        .font(.caption2)
-                        .foregroundStyle(.primary)
-                }
-            }
+            forecastRow(eta: state.forecastedTargetAt)
 
             Button(role: .destructive, action: onCancel) {
                 Label("Stop", systemImage: "stop.circle.fill")
@@ -69,5 +59,24 @@ struct NotifyOnBatteryLevelRunningCard: View {
             RoundedRectangle(cornerRadius: 14)
                 .stroke(.orange.opacity(0.6), lineWidth: 1.5)
         )
+    }
+
+    @ViewBuilder
+    private func forecastRow(eta: Date?) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Target reached in")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            if let eta, eta > Date() {
+                Text(timerInterval: Date()...eta, countsDown: true)
+                    .monospacedDigit()
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.primary)
+            } else {
+                Text("—")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 }
