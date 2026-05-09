@@ -289,6 +289,7 @@ final class AutomationBatteryToCar: AutomationTask {
         }
         s.lastTickAt = t.now
         s.lastBatteryPercentage = t.currentBatteryLevel
+        s.lastBatteryChargeRate = t.batteryChargeRateW
         return s
     }
 

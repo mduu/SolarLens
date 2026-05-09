@@ -89,6 +89,7 @@ final class AutomationNotifyOnBatteryLevel: AutomationTask {
 
         var live = liveState0
         live.lastBatteryLevel = batteryLevel
+        live.lastBatteryChargeRate = overview.currentBatteryChargeRate
         live.lastTickAt = Date()
 
         if Self.conditionMet(level: batteryLevel, params: params) {

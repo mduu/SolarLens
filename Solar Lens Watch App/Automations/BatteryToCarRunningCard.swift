@@ -46,6 +46,15 @@ struct BatteryToCarRunningCard: View {
                     .foregroundStyle(.secondary)
             }
 
+            if let rate = BatteryRateFormatter.format(
+                rateW: state.lastBatteryChargeRate
+            ) {
+                Text(rate)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
+
             forecastRow(eta: state.forecastedFloorAt)
 
             Button(role: .destructive, action: onCancel) {

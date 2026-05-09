@@ -46,6 +46,10 @@ struct AutomationBatteryToCarState: Codable, Sendable {
     /// floor. Refreshed each tick. `nil` if the forecast is
     /// unavailable (idle/charging battery, no telemetry yet).
     var forecastedFloorAt: Date? = nil
+    /// Most recent house-battery charge rate (W). Positive = charging,
+    /// negative = discharging, near-zero = idle. Used by the UI to
+    /// explain why a forecast isn't available.
+    var lastBatteryChargeRate: Int? = nil
 
     init() {}
 

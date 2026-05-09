@@ -47,6 +47,12 @@ struct NotifyOnBatteryLevelRunningCard: View {
                         }
                     }
 
+                    if let rate = BatteryRateFormatter.format(
+                        rateW: state.lastBatteryChargeRate
+                    ) {
+                        metric(label: "Trend", value: rate)
+                    }
+
                     if let eta = state.forecastedTargetAt, eta > Date() {
                         forecastMetric(
                             label: "Target reached in", eta: eta

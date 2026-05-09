@@ -27,6 +27,10 @@ struct AutomationNotifyOnBatteryLevelState: Codable, Sendable {
     var startedAt: Date? = nil
     var lastTickAt: Date? = nil
     var lastBatteryLevel: Int? = nil
+    /// Most recent house-battery charge rate (W). Positive = charging,
+    /// negative = discharging, near-zero = idle. Used by the UI to
+    /// explain why a forecast isn't available (idle / wrong direction).
+    var lastBatteryChargeRate: Int? = nil
     var stopReason: AutomationNotifyOnBatteryLevelStopReason? = nil
     /// Most recent linear forecast for when the battery hits the
     /// user-set threshold. Refreshed each tick. `nil` if no forecast
