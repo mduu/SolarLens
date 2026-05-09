@@ -41,7 +41,7 @@ struct BatteryToCarCard: View {
                     Text(
                         "Transfer energy from your house battery to your car. Stops automatically before the battery gets too low."
                     )
-                    .font(.callout)
+                    .font(.footnote)
                     .multilineTextAlignment(.leading)
 
                     if let msg = disabledMessage {

@@ -39,7 +39,7 @@ struct NotifyOnBatteryLevelCard: View {
                     Text(
                         "Get a push notification when your house battery reaches a level you choose. Auto-cancels after 24 hours if the level isn't reached."
                     )
-                    .font(.callout)
+                    .font(.footnote)
                     .multilineTextAlignment(.leading)
 
                     if let msg = disabledMessage {

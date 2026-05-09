@@ -39,7 +39,7 @@ struct AutoResetChargingModeCard: View {
                     Text(
                         "Set a charging mode now and let Solar Lens automatically switch back to another mode at a date and time you choose."
                     )
-                    .font(.callout)
+                    .font(.footnote)
                     .multilineTextAlignment(.leading)
 
                     if let msg = disabledMessage {
