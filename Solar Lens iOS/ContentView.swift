@@ -9,15 +9,18 @@ enum AppTab: Hashable {
 struct ContentView: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @State private var automationManager = AutomationManager.shared
-    @State private var selectedTab: AppTab = .now
+    @State private var tabSelection = TabSelection.shared
 
     var body: some View {
+        @Bindable var tabSelection = tabSelection
+
         if !buildingState.loginCredentialsExists {
             LoginScreen()
         } else {
-            TabView(selection: $selectedTab) {
+            TabView(selection: $tabSelection.selectedTab) {
                 Tab("Now", systemImage: "bolt.fill", value: AppTab.now) {
                     HomeScreen()
+                        .topLevelTabSwipe()
                 }
 
                 Tab(
@@ -26,6 +29,7 @@ struct ContentView: View {
                     value: AppTab.automation
                 ) {
                     AutomationScreen()
+                        .topLevelTabSwipe()
                 }
                 .badge(
                     automationManager.activeAutomation != nil
@@ -38,6 +42,9 @@ struct ContentView: View {
                     systemImage: "chart.bar.fill",
                     value: AppTab.statistics
                 ) {
+                    // StatisticsScreen has its own period-paging swipe;
+                    // it bubbles up to switch the top-level tab when the
+                    // user crosses the today (first-period) boundary.
                     StatisticsScreen()
                 }
             }
@@ -55,11 +62,11 @@ struct ContentView: View {
         guard url.scheme == "solarlens" else { return }
         switch url.host {
         case "automation":
-            selectedTab = .automation
+            tabSelection.selectedTab = .automation
         case "home", "now":
-            selectedTab = .now
+            tabSelection.selectedTab = .now
         case "statistics":
-            selectedTab = .statistics
+            tabSelection.selectedTab = .statistics
         default:
             break
         }

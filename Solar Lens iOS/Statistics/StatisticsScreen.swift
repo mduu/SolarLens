@@ -139,8 +139,19 @@ struct StatisticsScreen: View {
 
                             if horizontal < 0, index < periods.count - 1 {
                                 withAnimation { viewModel.selectedPeriod = periods[index + 1] }
-                            } else if horizontal > 0, index > 0 {
-                                withAnimation { viewModel.selectedPeriod = periods[index - 1] }
+                            } else if horizontal > 0 {
+                                if index > 0 {
+                                    withAnimation { viewModel.selectedPeriod = periods[index - 1] }
+                                } else {
+                                    // At the today (first-period) boundary,
+                                    // the right-swipe leaves Statistics and
+                                    // jumps to the previous top-level tab
+                                    // (Automation). Mirrors the swipe-back
+                                    // semantics from Now / Automation.
+                                    withAnimation {
+                                        TabSelection.shared.selectedTab = .automation
+                                    }
+                                }
                             }
                         }
                 )
