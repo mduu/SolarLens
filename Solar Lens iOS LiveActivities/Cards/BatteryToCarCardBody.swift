@@ -27,6 +27,9 @@ struct BatteryToCarCardBody: View {
                     value: primaryMetric.value
                 )
             }
+            if let eta = payload.forecastedFloorAt, eta > Date() {
+                etaLine(eta: eta)
+            }
             HStack(spacing: 10) {
                 Label("Floor \(payload.floorSoc)%", systemImage: "arrow.down.to.line")
                     .labelStyle(.titleAndIcon)
@@ -36,6 +39,20 @@ struct BatteryToCarCardBody: View {
             .font(.caption2)
             .foregroundStyle(.secondary)
         }
+    }
+
+    /// Live-counting "Floor reached in 1h 23m" line. Uses the system
+    /// `Text(timerInterval:)` so the LA renders the countdown without
+    /// the runner needing to push updates.
+    private func etaLine(eta: Date) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "hourglass")
+            Text("Floor reached in")
+            Text(timerInterval: Date()...eta, countsDown: true)
+                .monospacedDigit()
+        }
+        .font(.caption2.weight(.semibold))
+        .foregroundStyle(.primary)
     }
 
     private var elapsedShort: String {

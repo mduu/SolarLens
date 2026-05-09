@@ -116,20 +116,27 @@ final class AutomationBatteryToCar: AutomationTask {
     ) -> AutomationState {
         let regularNext = Date().addingTimeInterval(monitorInterval)
 
-        if let secondsToFloor = t.overview.forecastSeconds(
+        // Capture the forecast on EVERY tick (not just within the
+        // imminent window) so the in-app card and Live Activity can
+        // display an ETA whenever it's available. The notification
+        // backstop is still gated on the imminent window.
+        let secondsToFloor = t.overview.forecastSeconds(
             toReach: params.minBatteryLevel
-        ),
-           secondsToFloor > 0,
-           secondsToFloor <= imminentForecastWindow
-        {
-            let dueAt = Date().addingTimeInterval(secondsToFloor)
+        )
+
+        var liveState = liveState
+        liveState.forecastedFloorAt = secondsToFloor.flatMap {
+            $0 > 0 ? Date().addingTimeInterval($0) : nil
+        }
+
+        if let s = secondsToFloor, s > 0, s <= imminentForecastWindow {
             scheduleSoftFloorDueNotification(
-                at: dueAt,
+                at: Date().addingTimeInterval(s),
                 floorPct: params.minBatteryLevel
             )
             host.logDebug(
                 message:
-                    "Battery to Car: floor forecast in \(Int(secondsToFloor))s — pre-scheduling backstop notification (regular tick cadence unchanged)"
+                    "Battery to Car: floor forecast in \(Int(s))s — pre-scheduling backstop notification (regular tick cadence unchanged)"
             )
         } else {
             cancelSoftFloorDueNotification()
@@ -587,6 +594,10 @@ struct AutomationBatteryToCarState: Codable {
     var gridImportStreak: Int = 0
     var smoothedTickIntervalMinutes: Double = 1.0
     var stopReason: AutomationBatteryToCarStopReason? = nil
+    /// Most recent linear forecast for when the battery hits the soft
+    /// floor. Refreshed each tick. `nil` if the forecast is
+    /// unavailable (idle/charging battery, no telemetry yet).
+    var forecastedFloorAt: Date? = nil
 
     init() {}
 

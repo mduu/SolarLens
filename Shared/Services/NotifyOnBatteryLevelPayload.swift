@@ -27,15 +27,24 @@ public struct NotifyOnBatteryLevelPayload: Codable, Hashable {
     /// When the run started — drives "running for Xm" in the LA.
     public var startedAt: Date
 
+    /// When the linear forecast says the battery will reach the
+    /// user-set threshold. `nil` when no forecast is possible (idle
+    /// battery, wrong direction, no telemetry yet). LA renders this as
+    /// a native `Text(timerInterval:)` countdown so the ETA ticks down
+    /// without the runner being involved.
+    public var forecastedTargetAt: Date?
+
     public init(
         targetBatteryLevel: Int,
         comparison: Comparison,
         lastBatteryLevel: Int?,
-        startedAt: Date
+        startedAt: Date,
+        forecastedTargetAt: Date?
     ) {
         self.targetBatteryLevel = targetBatteryLevel
         self.comparison = comparison
         self.lastBatteryLevel = lastBatteryLevel
         self.startedAt = startedAt
+        self.forecastedTargetAt = forecastedTargetAt
     }
 }

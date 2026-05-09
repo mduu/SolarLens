@@ -31,7 +31,8 @@ extension AutomationBatteryToCar: AutomationLiveActivityProvider {
             floorSoc: params.minBatteryLevel,
             stationPowerW: stationW,
             currentAmps: live.currentAmps,
-            kWhTransferred: live.kWhTransferred
+            kWhTransferred: live.kWhTransferred,
+            forecastedFloorAt: live.forecastedFloorAt
         )
 
         return AutomationLiveActivityAttributes.ContentState(

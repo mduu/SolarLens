@@ -134,20 +134,27 @@ final class AutomationNotifyOnBatteryLevel: AutomationTask {
     ) -> AutomationState {
         let regularNext = Date().addingTimeInterval(monitorInterval)
 
-        if let secondsToTarget = overview.forecastSeconds(
+        // Capture the forecast on EVERY tick (not just within the
+        // imminent window) so the in-app card and Live Activity can
+        // display an ETA whenever it's available. The notification
+        // backstop is still gated on the imminent window.
+        let secondsToTarget = overview.forecastSeconds(
             toReach: params.targetBatteryLevel
-        ),
-           secondsToTarget > 0,
-           secondsToTarget <= imminentForecastWindow
-        {
-            let dueAt = Date().addingTimeInterval(secondsToTarget)
+        )
+
+        var liveState = liveState
+        liveState.forecastedTargetAt = secondsToTarget.flatMap {
+            $0 > 0 ? Date().addingTimeInterval($0) : nil
+        }
+
+        if let s = secondsToTarget, s > 0, s <= imminentForecastWindow {
             scheduleThresholdDueNotification(
-                at: dueAt,
+                at: Date().addingTimeInterval(s),
                 params: params
             )
             host.logDebug(
                 message:
-                    "Notify on battery level: forecast threshold in \(Int(secondsToTarget))s — pre-scheduling backstop notification (regular tick cadence unchanged)"
+                    "Notify on battery level: forecast threshold in \(Int(s))s — pre-scheduling backstop notification (regular tick cadence unchanged)"
             )
         } else {
             cancelThresholdDueNotification()
@@ -396,6 +403,10 @@ struct AutomationNotifyOnBatteryLevelState: Codable {
     var lastTickAt: Date? = nil
     var lastBatteryLevel: Int? = nil
     var stopReason: AutomationNotifyOnBatteryLevelStopReason? = nil
+    /// Most recent linear forecast for when the battery hits the
+    /// user-set threshold. Refreshed each tick. `nil` if no forecast
+    /// is possible (battery idle, wrong direction, no telemetry yet).
+    var forecastedTargetAt: Date? = nil
 
     init() {}
 }

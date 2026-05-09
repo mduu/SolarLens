@@ -52,6 +52,12 @@ struct BatteryToCarRunningCard: View {
                             )
                         )
                     }
+
+                    if let eta = state.forecastedFloorAt, eta > Date() {
+                        forecastMetric(
+                            label: "Floor reached in", eta: eta
+                        )
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -83,5 +89,23 @@ struct BatteryToCarRunningCard: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.primary)
         }
+    }
+
+    /// "Floor reached in 1h 23m" using a native `Text(timerInterval:)`
+    /// so the countdown ticks down once per second without the runner
+    /// re-rendering the card.
+    private func forecastMetric(
+        label: LocalizedStringKey, eta: Date
+    ) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "hourglass")
+                .foregroundStyle(.secondary)
+            Text(label)
+                .foregroundStyle(.secondary)
+            Text(timerInterval: Date()...eta, countsDown: true)
+                .monospacedDigit()
+                .foregroundStyle(.primary)
+        }
+        .font(.caption.weight(.semibold))
     }
 }

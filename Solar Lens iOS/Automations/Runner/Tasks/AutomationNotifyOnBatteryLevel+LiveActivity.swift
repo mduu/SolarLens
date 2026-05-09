@@ -18,7 +18,8 @@ extension AutomationNotifyOnBatteryLevel: AutomationLiveActivityProvider {
             targetBatteryLevel: params.targetBatteryLevel,
             comparison: params.comparison,
             lastBatteryLevel: live.lastBatteryLevel,
-            startedAt: startedAt
+            startedAt: startedAt,
+            forecastedTargetAt: live.forecastedTargetAt
         )
 
         let comparator: String = {

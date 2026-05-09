@@ -25,6 +25,9 @@ struct NotifyOnBatteryLevelCardBody: View {
                     value: "\(comparator) \(payload.targetBatteryLevel)%"
                 )
             }
+            if let eta = payload.forecastedTargetAt, eta > Date() {
+                etaLine(eta: eta)
+            }
             HStack(spacing: 10) {
                 Label("Running for \(elapsedShort)", systemImage: "clock")
                     .labelStyle(.titleAndIcon)
@@ -32,6 +35,20 @@ struct NotifyOnBatteryLevelCardBody: View {
             .font(.caption2)
             .foregroundStyle(.secondary)
         }
+    }
+
+    /// Live-counting "Target reached in 1h 23m" line. Uses the system
+    /// `Text(timerInterval:)` so the LA renders the countdown without
+    /// the runner needing to push updates.
+    private func etaLine(eta: Date) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "hourglass")
+            Text("Target reached in")
+            Text(timerInterval: Date()...eta, countsDown: true)
+                .monospacedDigit()
+        }
+        .font(.caption2.weight(.semibold))
+        .foregroundStyle(.primary)
     }
 
     private var comparator: String {
