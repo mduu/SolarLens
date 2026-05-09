@@ -56,8 +56,14 @@ class CurrentBuildingState {
         let timestamp: Date
     }
 
+    private struct SensorPriorityOverride {
+        var priorities: [String: Int]
+        var timestamp: Date
+    }
+
     private var chargingModeOverride: ChargingModeOverride?
     private var batteryModeOverride: BatteryModeOverride?
+    private var sensorPriorityOverride: SensorPriorityOverride?
     private let optimisticOverrideTimeout: TimeInterval = 60
 
     init(energyManagerClient: EnergyManager) {
@@ -395,6 +401,19 @@ class CurrentBuildingState {
                 )
             }
 
+            // Optimistic UI: backend propagation can take ~1 minute. Hold the
+            // requested priorities locally, merging into any in-flight override
+            // so an earlier batch isn't dropped by a later partial reorder.
+            var merged = sensorPriorityOverride?.priorities ?? [:]
+            for update in updates {
+                merged[update.sensorId] = update.priority
+            }
+            sensorPriorityOverride = SensorPriorityOverride(
+                priorities: merged,
+                timestamp: Date()
+            )
+            applyOptimisticOverrides()
+
             await fetchServerData()
 
             sensorPrioritySetSuccessfully = true
@@ -507,6 +526,27 @@ class CurrentBuildingState {
                 }
             } else {
                 batteryModeOverride = nil
+            }
+        }
+
+        if var override = sensorPriorityOverride {
+            if now.timeIntervalSince(override.timestamp) >= optimisticOverrideTimeout {
+                sensorPriorityOverride = nil
+            } else {
+                for (sensorId, desired) in override.priorities {
+                    guard let device = overviewData.devices
+                        .first(where: { $0.id == sensorId })
+                    else {
+                        override.priorities.removeValue(forKey: sensorId)
+                        continue
+                    }
+                    if device.priority == desired {
+                        override.priorities.removeValue(forKey: sensorId)
+                    } else {
+                        device.priority = desired
+                    }
+                }
+                sensorPriorityOverride = override.priorities.isEmpty ? nil : override
             }
         }
     }
