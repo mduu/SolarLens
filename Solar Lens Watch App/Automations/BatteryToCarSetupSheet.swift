@@ -45,6 +45,11 @@ struct BatteryToCarSetupSheet: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                     }
+                    if let now = client.snapshot?.currentBatteryLevel {
+                        Text("Now: \(now)%")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Section("After run, set charging station to") {

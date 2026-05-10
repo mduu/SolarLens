@@ -96,6 +96,16 @@ struct AutomationSetupSheet: View {
                             )
                         }
                         .padding(.vertical, 4)
+                        if let current = buildingState.overviewData
+                            .currentBatteryLevel
+                        {
+                            Label(
+                                "Current battery: \(current)%",
+                                systemImage: "battery.50"
+                            )
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        }
                     } footer: {
                         Text(
                             "We'll stop a few % earlier when iOS is throttling background updates so the battery stays above your floor when possible."
