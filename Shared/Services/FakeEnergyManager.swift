@@ -107,6 +107,14 @@ class FakeEnergyManager: EnergyManager {
         return 32400
     }
 
+    func fetchHeatpumpTotal(period: Period) async throws -> Double {
+        return 18750
+    }
+
+    func fetchBoilerTotal(period: Period) async throws -> Double {
+        return 9100
+    }
+
     func fetchChargingData() async throws -> CharingInfoData {
         return CharingInfoData(
             totalCharedToday: 32400,

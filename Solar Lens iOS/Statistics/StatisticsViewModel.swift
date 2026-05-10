@@ -15,6 +15,8 @@ class StatisticsViewModel {
     var batteryCharged: Double = 0
     var batteryDischarged: Double = 0
     var carCharged: Double? = nil
+    var heatpumpConsumed: Double? = nil
+    var boilerConsumed: Double? = nil
     var isCurrentlyCharging: Bool = false
 
     var selectedPeriod: StatisticsPeriod = .today
@@ -67,7 +69,7 @@ class StatisticsViewModel {
             accuracy: .high
         )
         computeBatteryTotals(from: todayData?.data ?? [])
-        await fetchCarCharging(period: .day)
+        await fetchAuxiliaryConsumers(period: .day)
         dailyStats = nil
         monthlyStats = nil
         customStats = nil
@@ -87,7 +89,7 @@ class StatisticsViewModel {
             dailyStats = calculateDailyStatistics(dataPoints: mainData.data)
             computeBatteryTotals(from: mainData.data)
         }
-        await fetchCarCharging(period: .week)
+        await fetchAuxiliaryConsumers(period: .week)
         statistics = try? await energyManager.fetchStatistics(
             from: start,
             to: Date(),
@@ -112,7 +114,7 @@ class StatisticsViewModel {
             dailyStats = calculateDailyStatistics(dataPoints: mainData.data)
             computeBatteryTotals(from: mainData.data)
         }
-        await fetchCarCharging(period: .month)
+        await fetchAuxiliaryConsumers(period: .month)
         statistics = try? await energyManager.fetchStatistics(
             from: start,
             to: Date(),
@@ -169,8 +171,11 @@ class StatisticsViewModel {
         )
         computeBatteryTotals(from: mainData?.data ?? [])
 
-        // Car charging API only supports day/week/month — no yearly data available
+        // Per-sensor consumption API only supports day/week/month — no
+        // yearly data available for car charging / heat pump / boiler.
         carCharged = nil
+        heatpumpConsumed = nil
+        boilerConsumed = nil
 
         todayData = nil
         dailyStats = nil
@@ -229,6 +234,8 @@ class StatisticsViewModel {
         batteryCharged = 0
         batteryDischarged = 0
         carCharged = nil
+        heatpumpConsumed = nil
+        boilerConsumed = nil
 
         todayData = nil
         dailyStats = nil
@@ -277,6 +284,8 @@ class StatisticsViewModel {
         }
 
         carCharged = nil
+        heatpumpConsumed = nil
+        boilerConsumed = nil
 
         let accuracy: Accuracy = daysBetween <= 7 ? .high : (daysBetween <= 90 ? .medium : .low)
         statistics = try? await energyManager.fetchStatistics(
@@ -374,11 +383,18 @@ class StatisticsViewModel {
         batteryDischarged = dataPoints.reduce(0) { $0 + $1.batteryDischargedWh }
     }
 
+    /// Fetches per-period totals for the auxiliary consumer cards on
+    /// the Statistics tab — car charging stations, heat pumps, and
+    /// boilers (water heaters). All three use the same per-sensor
+    /// consumption endpoint server-side, so we keep them in one
+    /// concurrent batch.
     @MainActor
-    private func fetchCarCharging(period: Period) async {
+    private func fetchAuxiliaryConsumers(period: Period) async {
         let chargingData = try? await energyManager.fetchChargingData()
         isCurrentlyCharging = (chargingData?.currentCharging ?? 0) > 0
         carCharged = (try? await energyManager.fetchCarChargingTotal(period: period)) ?? 0
+        heatpumpConsumed = (try? await energyManager.fetchHeatpumpTotal(period: period)) ?? 0
+        boilerConsumed = (try? await energyManager.fetchBoilerTotal(period: period)) ?? 0
     }
 
     private func calculateDailyStatistics(dataPoints: [MainDataItem]) -> [DayStatistic] {

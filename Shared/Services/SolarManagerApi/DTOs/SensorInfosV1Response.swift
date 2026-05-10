@@ -73,11 +73,31 @@ struct SensorInfosV1Response : Codable {
         return isDevice() && type
             .caseInsensitiveCompare("Battery") == .orderedSame
     }
-    
+
+    func isHeatpump() -> Bool {
+        return isDevice() && type
+            .caseInsensitiveCompare("Heatpump") == .orderedSame
+    }
+
+    /// True when the sensor represents an electric water heater
+    /// ("Boiler" in Swiss/German usage). The Solar Manager backend's
+    /// per-sensor `type` string for these isn't pinned down in our
+    /// codebase — the aggregate block is named `waterHeaters`, so we
+    /// tolerate a small set of likely spellings.
+    func isBoiler() -> Bool {
+        return isDevice() && Self.boilerTypeStrings.contains {
+            type.caseInsensitiveCompare($0) == .orderedSame
+        }
+    }
+
+    private static let boilerTypeStrings = [
+        "Water Heater", "WaterHeater", "Boiler",
+    ]
+
     func isDevice() -> Bool {
         return deviceType == .device
     }
-    
+
     func isCar() -> Bool {
         return deviceType == .car
     }

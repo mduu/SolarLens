@@ -365,6 +365,8 @@ struct StatisticsScreen: View {
                 batteryCharged: viewModel.batteryCharged,
                 batteryDischarged: viewModel.batteryDischarged,
                 carCharged: viewModel.carCharged,
+                heatpumpConsumed: viewModel.heatpumpConsumed,
+                boilerConsumed: viewModel.boilerConsumed,
                 isCurrentlyCharging: viewModel.isCurrentlyCharging,
                 hasBattery: buildingState.overviewData.hasAnyBattery,
                 hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation
@@ -418,6 +420,8 @@ struct StatisticsScreen: View {
             batteryCharged: viewModel.batteryCharged,
             batteryDischarged: viewModel.batteryDischarged,
             carCharged: viewModel.carCharged,
+            heatpumpConsumed: viewModel.heatpumpConsumed,
+            boilerConsumed: viewModel.boilerConsumed,
             isCurrentlyCharging: viewModel.isCurrentlyCharging,
             hasBattery: buildingState.overviewData.hasAnyBattery,
             hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation

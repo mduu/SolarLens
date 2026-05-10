@@ -195,24 +195,21 @@ class SolarManager: EnergyManager {
     }
 
     func fetchCarChargingTotal(period: Period) async throws -> Double {
-        try await ensureLoggedIn()
-        try await ensureSmId()
-        try await ensureSensorInfosAreCurrent()
+        try await fetchSensorTotalsBy(
+            ids: getCharingStationSensorIds(), period: period
+        )
+    }
 
-        let chargingStationSensorIds = getCharingStationSensorIds()
-        var total: Double = 0
+    func fetchHeatpumpTotal(period: Period) async throws -> Double {
+        try await fetchSensorTotalsBy(
+            ids: getHeatpumpSensorIds(), period: period
+        )
+    }
 
-        for sensorId in chargingStationSensorIds {
-            let data = try? await solarManagerApi.getV1ConsumptionSensor(
-                sensorId: sensorId,
-                period: period
-            )
-            if let data {
-                total += data.totalConsumption
-            }
-        }
-
-        return total
+    func fetchBoilerTotal(period: Period) async throws -> Double {
+        try await fetchSensorTotalsBy(
+            ids: getBoilerSensorIds(), period: period
+        )
     }
 
     func fetchSolarDetails() async throws -> SolarDetailsData {
@@ -813,6 +810,37 @@ class SolarManager: EnergyManager {
     private func getCharingStationSensorIds() -> [String] {
         return
             sensorInfos?.filter { $0.isCarCharging() }.map { $0._id } ?? []
+    }
+
+    private func getHeatpumpSensorIds() -> [String] {
+        return sensorInfos?.filter { $0.isHeatpump() }.map { $0._id } ?? []
+    }
+
+    private func getBoilerSensorIds() -> [String] {
+        return sensorInfos?.filter { $0.isBoiler() }.map { $0._id } ?? []
+    }
+
+    /// Aggregate `totalConsumption` over a list of sensor IDs for the
+    /// given period. Used by the per-category statistics fetchers
+    /// (charging stations, heat pumps, boilers).
+    private func fetchSensorTotalsBy(
+        ids: [String], period: Period
+    ) async throws -> Double {
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        var total: Double = 0
+        for sensorId in ids {
+            let data = try? await solarManagerApi.getV1ConsumptionSensor(
+                sensorId: sensorId,
+                period: period
+            )
+            if let data {
+                total += data.totalConsumption
+            }
+        }
+        return total
     }
 
     private func mapDevice(

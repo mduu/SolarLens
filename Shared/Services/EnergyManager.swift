@@ -27,7 +27,17 @@ protocol EnergyManager {
     func fetchChargingData() async throws -> CharingInfoData
 
     func fetchCarChargingTotal(period: Period) async throws -> Double
-    
+
+    /// Aggregate per-period consumption across all heat-pump sensors.
+    /// Used by the iOS Statistics tab. Returns 0 when no heat pumps are
+    /// configured.
+    func fetchHeatpumpTotal(period: Period) async throws -> Double
+
+    /// Aggregate per-period consumption across all boiler / water-heater
+    /// sensors. Used by the iOS Statistics tab. Returns 0 when none are
+    /// configured.
+    func fetchBoilerTotal(period: Period) async throws -> Double
+
     func fetchSolarDetails() async throws -> SolarDetailsData
     
     func fetchMainData(from: Date, to: Date, interval: Int) async throws -> MainData

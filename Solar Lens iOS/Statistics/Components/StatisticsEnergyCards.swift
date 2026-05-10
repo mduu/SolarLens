@@ -5,6 +5,8 @@ struct StatisticsEnergyCards: View {
     var batteryCharged: Double = 0
     var batteryDischarged: Double = 0
     var carCharged: Double? = nil
+    var heatpumpConsumed: Double? = nil
+    var boilerConsumed: Double? = nil
     var isCurrentlyCharging: Bool = false
     var hasBattery: Bool = false
     var hasCarChargingStation: Bool = false
@@ -15,9 +17,17 @@ struct StatisticsEnergyCards: View {
     private var gridImport: Double { max(0, consumption - selfConsumption) }
     private var gridExport: Double { max(0, production - selfConsumption) }
     private var showCarCharging: Bool { hasCarChargingStation && carCharged != nil }
+    private var showHeatpump: Bool { (heatpumpConsumed ?? 0) > 0 }
+    private var showBoiler: Bool { (boilerConsumed ?? 0) > 0 }
 
     private var useMWh: Bool {
-        let maxValue = [production, consumption, gridImport, gridExport, batteryCharged, batteryDischarged, carCharged ?? 0].map { abs($0) }.max() ?? 0
+        let maxValue = [
+            production, consumption, gridImport, gridExport,
+            batteryCharged, batteryDischarged,
+            carCharged ?? 0,
+            heatpumpConsumed ?? 0,
+            boilerConsumed ?? 0,
+        ].map { abs($0) }.max() ?? 0
         return maxValue / 1000 >= 1000
     }
 
@@ -91,6 +101,29 @@ struct StatisticsEnergyCards: View {
                     detail: carChargingDetail
                 )
             }
+
+            // Heat pump and boiler tiles, in addition to Car Charging.
+            // They pair up naturally in the next 2-column grid row;
+            // each is hidden when its value is 0 (no such device or
+            // no consumption in the selected period).
+            if showHeatpump {
+                EnergyCard(
+                    icon: "air.conditioner.horizontal",
+                    iconColor: .red,
+                    label: "Heat pump",
+                    value: format(heatpumpConsumed ?? 0),
+                    detail: heatpumpDetail
+                )
+            }
+            if showBoiler {
+                EnergyCard(
+                    icon: "drop.halffull",
+                    iconColor: .indigo,
+                    label: "Boiler",
+                    value: format(boilerConsumed ?? 0),
+                    detail: boilerDetail
+                )
+            }
         }
         .padding(.horizontal)
     }
@@ -112,6 +145,22 @@ struct StatisticsEnergyCards: View {
     private var carChargingDetail: LocalizedStringKey? {
         guard let carCharged, consumption > 0 else { return nil }
         let percentage = String(format: "%.0f", carCharged / consumption * 100)
+        return "\(percentage)% of consumption"
+    }
+
+    private var heatpumpDetail: LocalizedStringKey? {
+        guard let heatpumpConsumed, consumption > 0 else { return nil }
+        let percentage = String(
+            format: "%.0f", heatpumpConsumed / consumption * 100
+        )
+        return "\(percentage)% of consumption"
+    }
+
+    private var boilerDetail: LocalizedStringKey? {
+        guard let boilerConsumed, consumption > 0 else { return nil }
+        let percentage = String(
+            format: "%.0f", boilerConsumed / consumption * 100
+        )
         return "\(percentage)% of consumption"
     }
 
