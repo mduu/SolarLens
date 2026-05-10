@@ -29,7 +29,7 @@ struct NotifyOnBatteryLevelRunningCard: View {
                         AutomationCircularCancelButton(action: onCancel)
                     }
 
-                    HStack(spacing: 24) {
+                    HStack(alignment: .top, spacing: 24) {
                         metric(
                             label: "Battery",
                             value: state.lastBatteryLevel
@@ -39,24 +39,25 @@ struct NotifyOnBatteryLevelRunningCard: View {
                             label: "Target",
                             value: "\(comparator) \(params.targetBatteryLevel)%"
                         )
+                        if let eta = state.forecastedTargetAt,
+                           eta > Date()
+                        {
+                            etaMetric(eta: eta)
+                        }
+                    }
+
+                    HStack(alignment: .top, spacing: 24) {
                         if let started = state.startedAt {
                             metric(
                                 label: "Running for",
                                 value: elapsed(since: started)
                             )
                         }
-                    }
-
-                    if let rate = BatteryRateFormatter.format(
-                        rateW: state.lastBatteryChargeRate
-                    ) {
-                        metric(label: "Trend", value: rate)
-                    }
-
-                    if let eta = state.forecastedTargetAt, eta > Date() {
-                        forecastMetric(
-                            label: "Target reached in", eta: eta
-                        )
+                        if let rate = BatteryRateFormatter.format(
+                            rateW: state.lastBatteryChargeRate
+                        ) {
+                            metric(label: "Trend", value: rate)
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -110,21 +111,23 @@ struct NotifyOnBatteryLevelRunningCard: View {
         }
     }
 
-    /// "Target reached in 1h 23m" using a native `Text(timerInterval:)`
-    /// so the countdown ticks down once per second without the runner
-    /// re-rendering the card.
-    private func forecastMetric(
-        label: LocalizedStringKey, eta: Date
-    ) -> some View {
-        HStack(spacing: 6) {
-            Image(systemName: "clock")
+    /// "Target reached in" metric rendered next to the Battery / Target
+    /// metrics with the same top-label / bold-value layout. Uses
+    /// `Text(timerInterval:)` so the countdown ticks down once per
+    /// second without the runner re-rendering the card.
+    private func etaMetric(eta: Date) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("Target reached in")
+                .font(.caption2)
                 .foregroundStyle(.secondary)
-            Text(label)
-                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
             Text(timerInterval: Date()...eta, countsDown: true)
+                .font(.subheadline.weight(.semibold))
                 .monospacedDigit()
                 .foregroundStyle(.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
-        .font(.caption.weight(.semibold))
     }
 }
