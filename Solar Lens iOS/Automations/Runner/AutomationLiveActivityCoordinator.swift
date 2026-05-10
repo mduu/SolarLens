@@ -144,10 +144,6 @@ final class AutomationLiveActivityCoordinator {
         state: AutomationState,
         parameters: AutomationParameters
     ) async {
-        guard let activity else {
-            Self.logger.debug("end() with no active activity — no-op.")
-            return
-        }
         let final: AutomationLiveActivityAttributes.ContentState? = {
             guard let automation = state.automation,
                   let task = automation.getAutomationTask()
@@ -158,20 +154,33 @@ final class AutomationLiveActivityCoordinator {
             )
         }()
 
-        let toEnd = activity
+        let tracked = activity
         self.activity = nil
 
-        if let final {
-            await toEnd.end(
-                ActivityContent(state: final, staleDate: nil),
-                dismissalPolicy: .after(.now + 120)
-            )
+        if let tracked {
+            if let final {
+                await tracked.end(
+                    ActivityContent(state: final, staleDate: nil),
+                    dismissalPolicy: .after(.now + 120)
+                )
+            } else {
+                await tracked.end(nil, dismissalPolicy: .immediate)
+            }
+            Self.logger.notice("Activity ended (id=\(tracked.id)).")
         } else {
-            await toEnd.end(nil, dismissalPolicy: .immediate)
+            Self.logger.debug(
+                "end() called with no tracked activity — falling through to system-level cleanup."
+            )
         }
-        Self.logger.notice(
-            "Activity ended (id=\(toEnd.id))."
-        )
+
+        // Defensive: end any other system activities of our attributes
+        // type. Without this, an orphan (e.g. created in a previous
+        // process lifetime, or surviving a scenePhase / BGTask race
+        // where our tracked reference was already nil) keeps the LA
+        // stuck on the Lock Screen indefinitely. `start()` already
+        // does the same flush before requesting a new activity; doing
+        // it here too closes the symmetry.
+        await endStaleActivities(reason: "after explicit end")
     }
 
     // MARK: - Internal
