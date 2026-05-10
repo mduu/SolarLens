@@ -444,7 +444,7 @@ Localizable.xcstrings
   Battery → Car) and the primary live metric (kWh transferred). Expanded
   view shows the full body and a Cancel button.
 - Cancel on the Lock Screen / Dynamic Island terminates the automation
-  exactly like the in-app Cancel button, including switching the wallbox
+  exactly like the in-app Cancel button, including switching the charging station
   back to the user-chosen fallback charging mode and posting the local
   notification.
 - Adding a new automation requires only: a new `Automation` enum case,
@@ -513,7 +513,7 @@ Localizable.xcstrings
 ### Testing
 - [ ] Unit tests for `AutomationBatteryToCar.makeLiveActivityContentState(...)` — payload mapping for typical / edge state values
 - [ ] Manual test: start automation, lock device → card appears with live data and updates over time
-- [ ] Manual test: tap Cancel on the Lock Screen → wallbox switches to fallback, notification fires, activity ends
+- [ ] Manual test: tap Cancel on the Lock Screen → charging station switches to fallback, notification fires, activity ends
 - [ ] Manual test: kill app → relaunch → existing activity is resumed (or ended cleanly)
 - [ ] Manual test: toggle Settings → Notifications → Solar Lens → Live Activities OFF → start automation → app keeps working without LA
 - [ ] Manual test: Always-On Display → Lock Screen card reads correctly (no rotating gradient)

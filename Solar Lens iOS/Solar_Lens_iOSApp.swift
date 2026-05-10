@@ -38,7 +38,7 @@ struct Solar_Lens_iOSApp: App {
                         .handleScenePhaseChange(oldPhase, newPhase)
 
                     // Refresh OverviewData on return to foreground so any
-                    // wallbox / battery state mutated while the app was
+                    // charging station / battery state mutated while the app was
                     // backgrounded shows up immediately. The 5 s debounce
                     // inside CurrentBuildingState absorbs scene-phase
                     // flickers (.inactive ↔ .active blink during transitions).
@@ -52,8 +52,27 @@ struct Solar_Lens_iOSApp: App {
                     NotificationCenter.default.publisher(
                         for: AutomationManager.automationTerminatedNotification
                     )
-                ) { _ in
-                    // Bypass the 5 s debounce — we *know* the wallbox
+                ) { notification in
+                    // Apply an optimistic UI override BEFORE the refetch
+                    // so the in-app charging-mode UI shows the new mode
+                    // right away. Without this, the backend takes
+                    // 30–60 s to expose the changed charging station mode in
+                    // OverviewData, and the user sees the pre-cancel
+                    // mode for that entire window.
+                    if let stationId = notification.userInfo?[
+                        AutomationManager.terminatedChargingStationIdKey
+                    ] as? String,
+                        let modeRaw = notification.userInfo?[
+                            AutomationManager.terminatedChargingModeRawKey
+                        ] as? Int,
+                        let mode = ChargingMode(rawValue: modeRaw)
+                    {
+                        currentBuildingState.applyOptimisticChargingMode(
+                            sensorId: stationId,
+                            mode: mode
+                        )
+                    }
+                    // Bypass the 5 s debounce — we *know* the charging station
                     // mode just changed, so refetch immediately.
                     Task {
                         await currentBuildingState

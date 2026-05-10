@@ -361,6 +361,26 @@ class CurrentBuildingState {
         }
     }
 
+    /// Applies the same optimistic UI override that `setCarChargingMode`
+    /// uses, but without making an API call. Lets callers that switched
+    /// the charging station mode through other paths (notably the automation
+    /// runner on cancel/finish) make the new mode visible in the UI
+    /// without waiting for the next backend propagation cycle.
+    @MainActor
+    func applyOptimisticChargingMode(
+        sensorId: String,
+        mode: ChargingMode
+    ) {
+        let chargingStation = overviewData.chargingStations
+            .first(where: { $0.id == sensorId })
+        chargingStation?.chargingMode = mode
+        chargingModeOverride = ChargingModeOverride(
+            sensorId: sensorId,
+            mode: mode,
+            timestamp: Date()
+        )
+    }
+
     @MainActor
     func setSensorPriority(sensorId: String, newPriority: Int) async {
         await setSensorPriorities([(sensorId: sensorId, priority: newPriority)])

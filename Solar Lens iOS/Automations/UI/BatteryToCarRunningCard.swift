@@ -45,18 +45,20 @@ struct BatteryToCarRunningCard: View {
                             label: "Current",
                             value: "\(state.currentAmps) A"
                         )
+                    }
+
+                    HStack(alignment: .top, spacing: 18) {
+                        if let rate = BatteryRateFormatter.format(
+                            rateW: state.lastBatteryChargeRate
+                        ) {
+                            metric(label: "Trend", value: rate)
+                        }
                         metric(
-                            label: "Transferred",
+                            label: "∑ Total",
                             value: String(
                                 format: "%.2f kWh", state.kWhTransferred
                             )
                         )
-                    }
-
-                    if let rate = BatteryRateFormatter.format(
-                        rateW: state.lastBatteryChargeRate
-                    ) {
-                        metric(label: "Trend", value: rate)
                     }
 
                     if let eta = state.forecastedFloorAt, eta > Date() {
@@ -104,7 +106,7 @@ struct BatteryToCarRunningCard: View {
         label: LocalizedStringKey, eta: Date
     ) -> some View {
         HStack(spacing: 6) {
-            Image(systemName: "hourglass")
+            Image(systemName: "clock")
                 .foregroundStyle(.secondary)
             Text(label)
                 .foregroundStyle(.secondary)

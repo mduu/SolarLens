@@ -8,7 +8,7 @@
 
 Story #3 introduces an "Automation" tab in the iOS app whose first workflow
 ("Transfer from Battery to Car") needs to run for tens of minutes to several
-hours, monitor live PV/battery/grid signals every ~60 s, re-tune the wallbox
+hours, monitor live PV/battery/grid signals every ~60 s, re-tune the charging station
 amperage, and stop predictively before a user-set battery floor is crossed or
 sustained grid import becomes unavoidable.
 
@@ -164,7 +164,7 @@ Automation (e.g., "every 5 min run Solar Lens").
   Activity.
 - **BG visibility gap.** Until the Live Activity ships (deferred from story
   #3), the only running indicator outside the app is a tab badge. For the
-  Battery → Car automation this is acceptable because the wallbox itself
+  Battery → Car automation this is acceptable because the charging station itself
   surfaces the active charge. Future automations without a physical
   side-effect surface will need the Live Activity before shipping.
 - **Field-tuned magic numbers.** The `200 W` grace band on grid flow and the

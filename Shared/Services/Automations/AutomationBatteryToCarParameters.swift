@@ -4,7 +4,7 @@ struct AutomationBatteryToCarParameters: Codable, Sendable {
     var chargingDeviceId: String = ""
     var minBatteryLevel: Int = 30
     var fallbackChargingMode: ChargingMode = .withSolarPower
-    var phases: WallboxPhases = .three
+    var phases: ChargingStationPhases = .three
 
     init() {}
 
@@ -12,7 +12,7 @@ struct AutomationBatteryToCarParameters: Codable, Sendable {
         chargingDeviceId: String,
         minBatteryLevel: Int,
         fallbackChargingMode: ChargingMode,
-        phases: WallboxPhases = .three
+        phases: ChargingStationPhases = .three
     ) {
         self.chargingDeviceId = chargingDeviceId
         self.minBatteryLevel = minBatteryLevel

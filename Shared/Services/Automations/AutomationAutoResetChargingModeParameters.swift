@@ -2,9 +2,9 @@ internal import Foundation
 
 struct AutomationAutoResetChargingModeParameters: Codable, Sendable {
     var chargingDeviceId: String = ""
-    /// Mode the wallbox is set to immediately when the user taps Start.
+    /// Mode the charging station is set to immediately when the user taps Start.
     var activeChargingMode: ChargingMode = .alwaysCharge
-    /// Mode the wallbox is set to once `resetAt` is reached (or on cancel).
+    /// Mode the charging station is set to once `resetAt` is reached (or on cancel).
     var afterResetChargingMode: ChargingMode = .withSolarPower
     /// Absolute date when the post-reset mode is applied.
     var resetAt: Date = Date().addingTimeInterval(60 * 60)

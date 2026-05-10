@@ -233,7 +233,7 @@ class CorrectionFactor {
 - What-if simulator: "How much more autarky with +5 kWh battery?"
 - Seasonal wrap-up (Spotify Wrapped style)
 - Live Activity / Dynamic Island for ongoing EV charging with PV share
-- Interactive Widgets: toggle Boiler/Wallbox from homescreen
+- Interactive Widgets: toggle Boiler/Charging station from homescreen
 - Expanded App Intents: `getForecastForDateRange`, `getBestChargingWindow`
 
 ### Forecast Source Toggle (Settings)

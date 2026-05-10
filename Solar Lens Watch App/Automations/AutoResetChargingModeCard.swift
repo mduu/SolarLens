@@ -29,7 +29,7 @@ struct AutoResetChargingModeCard: View {
                         .lineLimit(1)
                 }
                 Text(
-                    "Switch the wallbox now and reset to another mode later."
+                    "Switch the charging station now and reset to another mode later."
                 )
                 .font(.caption2)
                 .foregroundStyle(.secondary)

@@ -74,7 +74,7 @@ struct AutoResetChargingModeSetupSheet: View {
                         Text("Active charging mode")
                     } footer: {
                         Text(
-                            "The mode the wallbox is set to immediately when this automation starts."
+                            "The mode the charging station is set to immediately when this automation starts."
                         )
                     }
 
@@ -106,7 +106,7 @@ struct AutoResetChargingModeSetupSheet: View {
                         Text("After reset")
                     } footer: {
                         Text(
-                            "The mode the wallbox is reset to once the date and time is reached, or when you cancel the automation."
+                            "The mode the charging station is reset to once the date and time is reached, or when you cancel the automation."
                         )
                     }
 
@@ -168,7 +168,7 @@ struct AutoResetChargingModeSetupSheet: View {
         // to mean the 14:30 minute as a whole — i.e. the reset should
         // fire after that minute completes (14:31:00) rather than at
         // its very start. We snap to the start of the chosen minute and
-        // add 60 s so the wallbox is guaranteed to stay on the active
+        // add 60 s so the charging station is guaranteed to stay on the active
         // mode for the full picked minute and never switch even a
         // fraction of a second early.
         let calendar = Calendar.current

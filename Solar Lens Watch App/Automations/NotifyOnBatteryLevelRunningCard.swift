@@ -72,10 +72,14 @@ struct NotifyOnBatteryLevelRunningCard: View {
 
     @ViewBuilder
     private func forecastRow(eta: Date?) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+        HStack(alignment: .firstTextBaseline, spacing: 4) {
+            Image(systemName: "clock")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
             Text("Target reached in")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
+            Spacer()
             if let eta, eta > Date() {
                 Text(timerInterval: Date()...eta, countsDown: true)
                     .monospacedDigit()

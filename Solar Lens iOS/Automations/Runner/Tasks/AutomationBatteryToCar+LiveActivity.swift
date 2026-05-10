@@ -40,7 +40,7 @@ extension AutomationBatteryToCar: AutomationLiveActivityProvider {
                 .liveActivityIconSystemName,
             startedAt: startedAt,
             primaryMetric: .init(
-                label: String(localized: "Transferred"),
+                label: String(localized: "Total"),
                 value: "\(kWh) kWh"
             ),
             secondaryMetric: .init(

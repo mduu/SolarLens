@@ -3,7 +3,7 @@ internal import UserNotifications
 
 /// Automation: poll the house battery every few minutes and fire a local
 /// notification once the level meets a user-chosen condition (≥ X% or
-/// ≤ X%). The automation does not control any wallbox — its only effect
+/// ≤ X%). The automation does not control any charging station — its only effect
 /// on the world is the notification at the end of a successful run.
 ///
 /// Self-cancels if no match is found within 24 h, so a poorly-chosen

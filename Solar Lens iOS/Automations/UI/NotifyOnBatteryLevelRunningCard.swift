@@ -117,7 +117,7 @@ struct NotifyOnBatteryLevelRunningCard: View {
         label: LocalizedStringKey, eta: Date
     ) -> some View {
         HStack(spacing: 6) {
-            Image(systemName: "hourglass")
+            Image(systemName: "clock")
                 .foregroundStyle(.secondary)
             Text(label)
                 .foregroundStyle(.secondary)

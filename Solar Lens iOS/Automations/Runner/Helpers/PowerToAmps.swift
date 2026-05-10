@@ -6,13 +6,13 @@ enum PowerToAmps {
     static let voltageLineToLine = 400.0
     static let voltageLineToNeutral = 230.0
 
-    /// Convert a power budget (W) into a wallbox `constantCurrentSetting` in
+    /// Convert a power budget (W) into a charging station `constantCurrentSetting` in
     /// amps, clamped to the protocol-allowed 6–32 A range.
     ///
     /// - Parameters:
     ///   - powerW: power budget in Watts (e.g. summed `maxDischargePower`).
     ///   - phases: 1 or 3. Default 3 — covers typical CH/DE/AT/DK domestic
-    ///     wallboxes (11 kW @ 16 A or 22 kW @ 32 A on 400 V).
+    ///     charging stations (11 kW @ 16 A or 22 kW @ 32 A on 400 V).
     ///
     /// Floor (rather than round) so the initial setting is strictly under
     /// the stated capacity; the monitoring loop ramps up from there.

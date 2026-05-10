@@ -8,10 +8,10 @@ public import Foundation
 /// `Text(timerInterval:)` from the `resetAt` date, so this payload doesn't
 /// have to be re-pushed every second to keep the timer ticking.
 public struct AutoResetChargingModePayload: Codable, Hashable {
-    /// Localised name of the mode the wallbox is currently set to (the one
+    /// Localised name of the mode the charging station is currently set to (the one
     /// the user picked as the active mode at start time).
     public var activeModeTitle: String
-    /// Localised name of the mode the wallbox will be switched to once
+    /// Localised name of the mode the charging station will be switched to once
     /// `resetAt` is reached (or when the user cancels).
     public var afterResetModeTitle: String
     /// Absolute date when the reset fires. Drives the LA's native

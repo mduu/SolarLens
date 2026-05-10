@@ -10,7 +10,7 @@ struct BatteryToCarSetupSheet: View {
     @State private var chargingDeviceId: String = ""
     @State private var minBatteryLevel: Int = 30
     @State private var fallbackChargingMode: ChargingMode = .withSolarPower
-    @State private var phases: WallboxPhases = .three
+    @State private var phases: ChargingStationPhases = .three
 
     private var stations: [AutomationWatchSnapshot.WatchChargingStation] {
         client.snapshot?.chargingStations ?? []
@@ -47,7 +47,7 @@ struct BatteryToCarSetupSheet: View {
                     }
                 }
 
-                Section("After run, set wallbox to") {
+                Section("After run, set charging station to") {
                     Picker(
                         "Mode",
                         selection: $fallbackChargingMode
@@ -63,7 +63,7 @@ struct BatteryToCarSetupSheet: View {
 
                 Section("Phases") {
                     Picker("Phases", selection: $phases) {
-                        ForEach(WallboxPhases.allCases) { p in
+                        ForEach(ChargingStationPhases.allCases) { p in
                             Text(p.localizedTitle).tag(p)
                         }
                     }

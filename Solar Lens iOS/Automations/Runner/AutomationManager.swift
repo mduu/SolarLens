@@ -12,10 +12,21 @@ public final class AutomationManager: AutomationHost {
     /// Posted whenever an automation terminates (graceful, cancelled, or
     /// failed). Listeners — currently `Solar_Lens_iOSApp` — use this to
     /// trigger a fresh fetch of `OverviewData` so the in-app charging
-    /// mode reflects whatever the automation switched the wallbox to.
+    /// mode reflects whatever the automation switched the charging station to.
     public static let automationTerminatedNotification = Notification.Name(
         "com.marcduerst.SolarManagerWatch.AutomationTerminated"
     )
+
+    /// Optional `userInfo` keys posted on
+    /// `automationTerminatedNotification` when the run also switched
+    /// the charging station charging mode. The app uses these to prime an
+    /// optimistic override on `CurrentBuildingState` so the UI reflects
+    /// the new mode immediately, without waiting for the backend to
+    /// propagate the change through `OverviewData`.
+    public static let terminatedChargingStationIdKey =
+        "com.marcduerst.SolarManagerWatch.terminatedChargingStationId"
+    public static let terminatedChargingModeRawKey =
+        "com.marcduerst.SolarManagerWatch.terminatedChargingModeRaw"
 
     private let identifier =
         "com.marcduerst.SolarManagerWatch.AutomationRunner"
@@ -73,7 +84,7 @@ public final class AutomationManager: AutomationHost {
                 // immediately instead of waiting up to 60 s for the next
                 // foreground timer fire. Without this, a series of short
                 // foreground sessions can leave the controller asleep
-                // for many minutes — long enough for the wallbox to
+                // for many minutes — long enough for the charging station to
                 // drain past the soft floor.
                 if let nextRun = activeState?.nextTaskRun, nextRun < Date() {
                     Task { await self.runActiveAutomation() }
@@ -152,7 +163,7 @@ public final class AutomationManager: AutomationHost {
             )
             logInfo(
                 message:
-                    "Automation \(activeAutomationName) cancelled by user — switching wallbox to \(fallback)"
+                    "Automation \(activeAutomationName) cancelled by user — switching charging station to \(fallback)"
             )
         } else if let p = params.autoResetChargingMode {
             let fallback = String(
@@ -160,10 +171,10 @@ public final class AutomationManager: AutomationHost {
             )
             logInfo(
                 message:
-                    "Automation \(activeAutomationName) cancelled by user — switching wallbox to \(fallback)"
+                    "Automation \(activeAutomationName) cancelled by user — switching charging station to \(fallback)"
             )
         } else if params.notifyOnBatteryLevel != nil {
-            // Monitoring-only — no wallbox to switch back, just stop.
+            // Monitoring-only — no charging station to switch back, just stop.
             logInfo(
                 message:
                     "Automation \(activeAutomationName) cancelled by user"
@@ -176,9 +187,9 @@ public final class AutomationManager: AutomationHost {
         }
 
         Task {
-            // Best-effort: switch wallbox to the per-automation fallback
+            // Best-effort: switch charging station to the per-automation fallback
             // mode. Both currently-known automations end on a fallback;
-            // future automations that don't touch the wallbox can be
+            // future automations that don't touch the charging station can be
             // added without a branch here.
             if let p = params.batteryToCar {
                 let fallbackName = String(
@@ -194,7 +205,7 @@ public final class AutomationManager: AutomationHost {
                 } catch {
                     self.logError(
                         message:
-                            "Cancel: failed to switch wallbox to \(fallbackName) (\(error.localizedDescription)) — please verify the wallbox state in the Solar Manager app"
+                            "Cancel: failed to switch charging station to \(fallbackName) (\(error.localizedDescription)) — please verify the charging station state in the Solar Manager app"
                     )
                 }
             } else if let p = params.autoResetChargingMode {
@@ -211,7 +222,7 @@ public final class AutomationManager: AutomationHost {
                 } catch {
                     self.logError(
                         message:
-                            "Cancel: failed to switch wallbox to \(fallbackName) (\(error.localizedDescription)) — please verify the wallbox state in the Solar Manager app"
+                            "Cancel: failed to switch charging station to \(fallbackName) (\(error.localizedDescription)) — please verify the charging station state in the Solar Manager app"
                     )
                 }
             }
@@ -507,11 +518,32 @@ public final class AutomationManager: AutomationHost {
         persistState()
 
         // Tell whoever's interested that an automation just ended so the
-        // app can refetch overview data — the wallbox mode visible in the
+        // app can refetch overview data — the charging station mode visible in the
         // in-app UI is otherwise still the pre-termination value.
+        //
+        // When the run switched a charging station mode (Battery → Car cancel /
+        // Auto-reset finish or cancel), include the station id + new
+        // mode so the app can apply an optimistic UI override
+        // immediately. The backend can take 30–60 s to propagate the
+        // charging station change into the next OverviewData fetch, and without
+        // an override the UI keeps showing the pre-termination mode for
+        // that entire window.
+        var userInfo: [AnyHashable: Any] = [:]
+        if let p = snapshotParams?.batteryToCar {
+            userInfo[Self.terminatedChargingStationIdKey] =
+                p.chargingDeviceId
+            userInfo[Self.terminatedChargingModeRawKey] =
+                p.fallbackChargingMode.rawValue
+        } else if let p = snapshotParams?.autoResetChargingMode {
+            userInfo[Self.terminatedChargingStationIdKey] =
+                p.chargingDeviceId
+            userInfo[Self.terminatedChargingModeRawKey] =
+                p.afterResetChargingMode.rawValue
+        }
         NotificationCenter.default.post(
             name: Self.automationTerminatedNotification,
-            object: nil
+            object: nil,
+            userInfo: userInfo
         )
     }
 
@@ -612,19 +644,19 @@ public final class AutomationManager: AutomationHost {
             content.title = String(localized: "Battery-to-Car finished")
             content.body = String(
                 localized:
-                    "≈ \(kwh) kWh transferred from battery (\(s.startSoc)% → \(endSoc)%). Wallbox switched to \(modeName)."
+                    "≈ \(kwh) kWh transferred from battery (\(s.startSoc)% → \(endSoc)%). Charging station switched to \(modeName)."
             )
         case .capped:
             content.title = String(localized: "Battery-to-Car stopped")
             content.body = String(
                 localized:
-                    "Stopped to avoid grid import. ≈ \(kwh) kWh transferred (\(s.startSoc)% → \(endSoc)%). Wallbox switched to \(modeName)."
+                    "Stopped to avoid grid import. ≈ \(kwh) kWh transferred (\(s.startSoc)% → \(endSoc)%). Charging station switched to \(modeName)."
             )
         case .cancelled:
             content.title = String(localized: "Battery-to-Car cancelled")
             content.body = String(
                 localized:
-                    "Cancelled by you. ≈ \(kwh) kWh transferred so far. Wallbox switched to \(modeName)."
+                    "Cancelled by you. ≈ \(kwh) kWh transferred so far. Charging station switched to \(modeName)."
             )
         case .resetCompleted, .conditionMet, .timedOut:
             // Not applicable to Battery → Car, but compiler requires
@@ -632,13 +664,13 @@ public final class AutomationManager: AutomationHost {
             content.title = String(localized: "Battery-to-Car finished")
             content.body = String(
                 localized:
-                    "≈ \(kwh) kWh transferred from battery (\(s.startSoc)% → \(endSoc)%). Wallbox switched to \(modeName)."
+                    "≈ \(kwh) kWh transferred from battery (\(s.startSoc)% → \(endSoc)%). Charging station switched to \(modeName)."
             )
         case .failed:
             content.title = String(localized: "Battery-to-Car stopped")
             content.body = String(
                 localized:
-                    "An error occurred while monitoring. Wallbox should now be on \(modeName)."
+                    "An error occurred while monitoring. Charging station should now be on \(modeName)."
             )
         }
     }
@@ -668,7 +700,7 @@ public final class AutomationManager: AutomationHost {
             )
             content.body = String(
                 localized:
-                    "Cancelled by you. Wallbox switched to \(modeName)."
+                    "Cancelled by you. Charging station switched to \(modeName)."
             )
         case .failed:
             content.title = String(
@@ -676,7 +708,7 @@ public final class AutomationManager: AutomationHost {
             )
             content.body = String(
                 localized:
-                    "Couldn't apply the charging-mode change. Please verify the wallbox state in the Solar Manager app."
+                    "Couldn't apply the charging-mode change. Please verify the charging station state in the Solar Manager app."
             )
         case .softFloorReached, .capped, .conditionMet, .timedOut:
             // Not applicable to Auto-reset, but compiler requires
@@ -685,7 +717,7 @@ public final class AutomationManager: AutomationHost {
                 localized: "Auto-reset Charging Mode stopped"
             )
             content.body = String(
-                localized: "Wallbox should now be on \(modeName)."
+                localized: "Charging station should now be on \(modeName)."
             )
         }
     }

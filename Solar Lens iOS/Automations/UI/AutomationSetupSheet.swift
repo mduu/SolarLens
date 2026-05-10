@@ -8,7 +8,7 @@ struct AutomationSetupSheet: View {
     @State private var selectedStationId: String = ""
     @State private var minBatteryLevel: Double = 30
     @State private var fallbackMode: ChargingMode = .withSolarPower
-    @State private var phases: WallboxPhases = .default
+    @State private var phases: ChargingStationPhases = .default
 
     private var stations: [ChargingStation] {
         buildingState.overviewData.chargingStations
@@ -103,7 +103,7 @@ struct AutomationSetupSheet: View {
                     }
 
                     Section("After this automation") {
-                        Picker("Switch wallbox to", selection: $fallbackMode) {
+                        Picker("Switch charging station to", selection: $fallbackMode) {
                             ForEach(
                                 ChargingMode.allCases,
                                 id: \.self
@@ -115,15 +115,15 @@ struct AutomationSetupSheet: View {
                     }
 
                     Section {
-                        Picker("Wallbox phases", selection: $phases) {
-                            ForEach(WallboxPhases.allCases) { mode in
+                        Picker("Charging station phases", selection: $phases) {
+                            ForEach(ChargingStationPhases.allCases) { mode in
                                 Text(String(localized: mode.localizedTitle))
                                     .tag(mode)
                             }
                         }
                     } footer: {
                         Text(
-                            "Most domestic wallboxes in Switzerland, Germany, Austria and Denmark are 3-phase. Pick \"Auto\" if your wallbox switches between 1- and 3-phase based on load (e.g. go-eCharger, Easee)."
+                            "Most domestic charging stations in Switzerland, Germany, Austria and Denmark are 3-phase. Pick \"Auto\" if your charging station switches between 1- and 3-phase based on load (e.g. go-eCharger, Easee)."
                         )
                     }
                 }
@@ -157,16 +157,16 @@ struct AutomationSetupSheet: View {
                     selectedStationId = first.id
                 }
                 clampFloorToCurrentSoc()
-                phases = WallboxPhasesStore.phases(for: selectedStationId)
+                phases = ChargingStationPhasesStore.phases(for: selectedStationId)
             }
             .onChange(of: maxFloorPct) { _, _ in
                 clampFloorToCurrentSoc()
             }
             .onChange(of: selectedStationId) { _, newId in
-                phases = WallboxPhasesStore.phases(for: newId)
+                phases = ChargingStationPhasesStore.phases(for: newId)
             }
             .onChange(of: phases) { _, newPhases in
-                WallboxPhasesStore.save(
+                ChargingStationPhasesStore.save(
                     newPhases, for: selectedStationId
                 )
             }

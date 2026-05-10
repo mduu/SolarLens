@@ -1,8 +1,8 @@
 internal import Foundation
 internal import UserNotifications
 
-/// Automation: switch the wallbox to a user-chosen charging mode now, sleep
-/// until a user-chosen reset date, then switch the wallbox to a second
+/// Automation: switch the charging station to a user-chosen charging mode now, sleep
+/// until a user-chosen reset date, then switch the charging station to a second
 /// user-chosen charging mode.
 ///
 /// Cadence is fundamentally simpler than `AutomationBatteryToCar`:
@@ -98,7 +98,7 @@ final class AutomationAutoResetChargingMode: AutomationTask {
         } catch {
             host.logError(
                 message:
-                    "Auto-reset Charging Mode: failed to set wallbox to \(activeName): \(error.localizedDescription)"
+                    "Auto-reset Charging Mode: failed to set charging station to \(activeName): \(error.localizedDescription)"
             )
             host.logFailure()
             return state.failed()
@@ -106,12 +106,12 @@ final class AutomationAutoResetChargingMode: AutomationTask {
 
         host.logInfo(
             message:
-                "Auto-reset Charging Mode: started — wallbox set to \(activeName), will reset to \(postName) at \(formatted(params.resetAt))"
+                "Auto-reset Charging Mode: started — charging station set to \(activeName), will reset to \(postName) at \(formatted(params.resetAt))"
         )
 
         // Schedule a local notification at the reset time. Without this,
         // iOS may not give us BG runtime around `resetAt` and the user
-        // would see the LA countdown reach 0 with the wallbox still on
+        // would see the LA countdown reach 0 with the charging station still on
         // the active mode. The notification reliably fires at the
         // user-chosen moment; tapping it brings the app to foreground,
         // which immediately runs a tick that finishes the run.
@@ -145,7 +145,7 @@ final class AutomationAutoResetChargingMode: AutomationTask {
         content.title = String(localized: "Auto-reset Charging Mode")
         content.body = String(
             localized:
-                "Reset time reached — open Solar Lens to apply \(afterModeName) to the wallbox."
+                "Reset time reached — open Solar Lens to apply \(afterModeName) to the charging station."
         )
         content.sound = .default
         content.interruptionLevel = .timeSensitive
@@ -188,7 +188,7 @@ final class AutomationAutoResetChargingMode: AutomationTask {
         )
         host.logDebug(
             message:
-                "Auto-reset Charging Mode: reset time reached — switching wallbox to \(postName)"
+                "Auto-reset Charging Mode: reset time reached — switching charging station to \(postName)"
         )
 
         do {
@@ -201,7 +201,7 @@ final class AutomationAutoResetChargingMode: AutomationTask {
         } catch {
             host.logError(
                 message:
-                    "Auto-reset Charging Mode: failed to switch wallbox to \(postName): \(error.localizedDescription) — wallbox may stay on the active mode. Please check the Solar Manager app."
+                    "Auto-reset Charging Mode: failed to switch charging station to \(postName): \(error.localizedDescription) — charging station may stay on the active mode. Please check the Solar Manager app."
             )
             // We still terminate; the user gets a "failed" notification path.
             host.logFailure()
@@ -214,7 +214,7 @@ final class AutomationAutoResetChargingMode: AutomationTask {
 
         host.logInfo(
             message:
-                "Auto-reset Charging Mode: reset completed — wallbox switched to \(postName)"
+                "Auto-reset Charging Mode: reset completed — charging station switched to \(postName)"
         )
         host.logSuccess()
 

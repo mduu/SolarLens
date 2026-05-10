@@ -4,7 +4,7 @@
 
 ## Short Description
 
-Add a new "Automation" tab to the iOS app that lets the user run advanced charging workflows. The first (and currently only) automation is **"Transfer from Battery to Car"**: it sets the selected wallbox to *Constant current* with a power level small enough to be served by the house battery alone (no grid import), continuously adjusts that power level as PV / consumers change, and stops when a user-chosen battery floor (%) is reached or grid import becomes unavoidable. After the run, the wallbox is switched to a user-selected fallback charging mode and a local notification summarises what was transferred. The automation is **pure client-side** — no server, no cloud function, no APNs.
+Add a new "Automation" tab to the iOS app that lets the user run advanced charging workflows. The first (and currently only) automation is **"Transfer from Battery to Car"**: it sets the selected charging station to *Constant current* with a power level small enough to be served by the house battery alone (no grid import), continuously adjusts that power level as PV / consumers change, and stops when a user-chosen battery floor (%) is reached or grid import becomes unavoidable. After the run, the charging station is switched to a user-selected fallback charging mode and a local notification summarises what was transferred. The automation is **pure client-side** — no server, no cloud function, no APNs.
 
 ## Additional Information
 
@@ -142,15 +142,15 @@ TabView
 
 ### Power → Amps conversion
 
-Solar Manager wallboxes accept `constantCurrentSetting` in Amps (range **6–32 A**, see `ControlCarChargingRequest`).
+Solar Manager charging stations accept `constantCurrentSetting` in Amps (range **6–32 A**, see `ControlCarChargingRequest`).
 
 Battery `maxDischargePower` is given in Watts (`BatteryInfo.maxDischargePower: Int`). To convert:
 
 ```swift
 // Target audience: Switzerland (primary), Germany, Austria, Denmark.
 // All four use the same domestic grid: 230 V phase-to-neutral / 400 V line-to-line, 50 Hz.
-// Domestic wallboxes in this region are typically 3-phase 400 V (11 kW @ 16 A or
-// 22 kW @ 32 A). 1-phase 230 V wallboxes (≤ 7.4 kW @ 32 A) exist but are less
+// Domestic charging stations in this region are typically 3-phase 400 V (11 kW @ 16 A or
+// 22 kW @ 32 A). 1-phase 230 V charging stations (≤ 7.4 kW @ 32 A) exist but are less
 // common — exposed as an advanced setting; default 3-phase.
 //
 // → P[W] = √3 · U · I · cos φ ≈ 1.732 · 400 · I (cos φ ≈ 1 for EV charging)
@@ -194,7 +194,7 @@ Available signals on every tick (from `OverviewData`):
 | `currentBatteryChargeRate` | overview | + = charging, − = discharging (W) |
 | `currentGridToHouse` | overview | grid import (W) — should stay ≈ 0 |
 | `currentSolarToGrid` | overview | grid export (W) — surplus we could absorb |
-| station `currentPower` | overview | wallbox draw right now (W) |
+| station `currentPower` | overview | charging station draw right now (W) |
 | `currentBatteryLevel` | overview | SoC % |
 
 Tuning rule (PI-style, simple and safe):
@@ -231,7 +231,7 @@ Key properties:
 - Asymmetric: ramps down aggressively (any sustained grid import is corrected next tick) and ramps up one step at a time (avoids oscillation when a thermostat or an oven cycles).
 - 200 W grace band for grid flow — see "Grace band sizing" below.
 - Only writes a new amperage when it actually changes — saves API calls.
-- Lower clamp at 6 A: below that the wallbox cannot run constant-current at all. If even 6 A causes grid import for two consecutive ticks → STOP (capped) per Step 5.
+- Lower clamp at 6 A: below that the charging station cannot run constant-current at all. If even 6 A causes grid import for two consecutive ticks → STOP (capped) per Step 5.
 
 #### Grace band sizing
 
@@ -264,7 +264,7 @@ The user-chosen battery percentage is a **soft floor**: "don't go below this if 
 So we stop **early**, with a safety buffer that grows with how stale our last tick was:
 
 ```swift
-// drain rate the *whole house* puts on the battery right now (not just the wallbox —
+// drain rate the *whole house* puts on the battery right now (not just the charging station —
 // the fridge / heat-pump / etc. keep running too)
 let dischargeW = max(0, -overview.currentBatteryChargeRate)         // W
 
@@ -314,7 +314,7 @@ Initialised to `1.0` (foreground assumption) when the automation starts.
 
 #### Optional: BG-aware ramp-down (follow-up)
 
-If `smoothedTickIntervalMinutes > 5` we could *also* ramp the wallbox down preemptively (e.g., halve `currentAmps`) so a long sleep can't drain as fast. Defer this for a follow-up story — the predictive stop above already gets us most of the way.
+If `smoothedTickIntervalMinutes > 5` we could *also* ramp the charging station down preemptively (e.g., halve `currentAmps`) so a long sleep can't drain as fast. Defer this for a follow-up story — the predictive stop above already gets us most of the way.
 
 ### Monitoring strategy (the pure-iOS part)
 
@@ -327,7 +327,7 @@ If `smoothedTickIntervalMinutes > 5` we could *also* ramp the wallbox down preem
 
 This means: **we cannot promise minute-accurate stop behaviour while the app is suspended.** Acceptable failure modes:
 
-- We arrive late to "battery floor reached": the wallbox is still drawing constant current. Battery dips a few % below the floor before we get a BG slot. This is bounded — once we wake up we stop immediately. We log it as `Stopped X% below target due to background latency`.
+- We arrive late to "battery floor reached": the charging station is still drawing constant current. Battery dips a few % below the floor before we get a BG slot. This is bounded — once we wake up we stop immediately. We log it as `Stopped X% below target due to background latency`.
 - We arrive late to "grid import detected": same shape. Worst case: a few hundred Wh of grid import before we get a BG slot.
 
 Mitigations:
@@ -479,7 +479,7 @@ struct BatteryToCarAttributes: ActivityAttributes {
 
 `AutomationManager` owns the `Activity<BatteryToCarAttributes>?` reference and updates `ContentState` after each successful tick.
 
-Lock-screen layout: name, current SoC (with a thin gradient ring filling toward the floor), wallbox W, kWh transferred, Cancel button.
+Lock-screen layout: name, current SoC (with a thin gradient ring filling toward the floor), charging station W, kWh transferred, Cancel button.
 Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 
 ### Why not just one of these alternatives?
@@ -497,10 +497,10 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 
 - A new "Automation" tab is visible in the iOS app between "Now" and "Statistics".
 - Tapping the "Transfer from Battery to Car" card opens a setup sheet asking for charging station, battery floor (%), and post-run charging mode (default "Solar only").
-- "Start" sets the wallbox to *Constant current* at an amperage matched to the battery's max discharge power, starts a Live Activity, and begins monitoring.
+- "Start" sets the charging station to *Constant current* at an amperage matched to the battery's max discharge power, starts a Live Activity, and begins monitoring.
 - Every ~60 s while the app is foregrounded (and opportunistically in the background) the amperage is re-tuned: ramped down on grid import, ramped up while the battery has headroom. All of this is visible in the Live Activity and in the running card.
 - The run stops *predictively* when the battery is about to cross the soft floor (so it normally stays above the user's chosen %; in the worst-case background-throttling scenario it may dip a few % below), when grid import becomes unavoidable for two consecutive ticks at 6 A, or when the user taps Cancel.
-- On stop, the wallbox is switched to the user-selected fallback charging mode, the Live Activity ends, and a local notification summarises "Charged ~X.X kWh from battery (Y% → Z%). Switched to *fallback*."
+- On stop, the charging station is switched to the user-selected fallback charging mode, the Live Activity ends, and a local notification summarises "Charged ~X.X kWh from battery (Y% → Z%). Switched to *fallback*."
 - While an automation is running, no other automation can be started; the UI reflects that.
 - No code path in this story talks to any backend other than the existing Solar Manager Cloud API.
 
@@ -537,7 +537,7 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 - [x] Rewrite `AutomationBatteryToCar.run` per the flow described above (refactored top-down with extracted methods + private `Telemetry` struct)
 - [x] Implement `AmperageRamp.compute(...)` as a pure, unit-testable function (asymmetric controller: ramp down on import > graceW, hold in band, ramp up on export, ramp up when battery is charging — PV surplus is the goal of Battery → Car, ramp up with battery headroom margin)
 - [x] Implement `convertPowerToAmps` with 1- and 3-phase support at 230 V / 400 V (default 3-phase — covers CH/DE/AT/DK domestic installs)
-- [x] Phase setting per wallbox, persisted via `WallboxPhasesStore` (UserDefaults per wallbox ID); supports auto-switching wallboxes (`WallboxPhases.auto` uses observed W/A clamped 180–760)
+- [x] Phase setting per charging station, persisted via `Charging stationPhasesStore` (UserDefaults per charging station ID); supports auto-switching charging stations (`Charging stationPhases.auto` uses observed W/A clamped 180–760)
 - [x] Add `fallbackChargingMode` to `AutomationBatteryToCarParameters`
 - [x] Extend `AutomationBatteryToCarState` with `currentAmps`, `kWhAccumulator`, `lastTickAt`, `gridImportStreak`, `startSoc`, `smoothedTickIntervalMinutes`, signed `batteryChargeRateW`
 - [x] Implement `SoftFloor.computeSafetyBuffer(...)` as a pure, unit-testable function (drain rate × smoothed tick interval × safety factor, clamped 1–8 %)
@@ -590,7 +590,7 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 
 - **Live Activity deferred.** Entitlement is in place but `ActivityKit` integration was postponed; the tab badge with pulsing rocket icon is the running indicator instead.
 - **AI visual treatment** lands as `AICardBorder` (rotating angular gradient stroke via `TimelineView`) + `AICardGlow` (blurred halo), not the `AICardBackground` shimmer originally sketched. Outcome matches the gradient/AI feel from the backlog.
-- **Phase setting** is per-wallbox (not per-station as a global) and persisted via `WallboxPhasesStore`. Adds a third option `auto` for wallboxes that switch between 1-/3-phase, with live-observed W/A clamped 180–760 W.
+- **Phase setting** is per-charging station (not per-station as a global) and persisted via `Charging stationPhasesStore`. Adds a third option `auto` for charging stations that switch between 1-/3-phase, with live-observed W/A clamped 180–760 W.
 - **Floor slider range** is dynamic: `5 ... max(minFloorPct + 1, currentSoC − 1)`. When the battery is too low to start, the whole control set hides and the sheet displays the minimum SoC required.
 - **Grace band** stays at 200 W (`AmperageRamp.defaultGraceW`), validated only by initial CH testing. Heat-pump field validation still pending.
 - **`run()` refactored** top-down with extracted helpers (`fetchTelemetry`, `updateTickMetrics`, `accumulateTransferredKWh`, `shouldStopOnSoftFloor`, `updateGridCapStreakAndShouldStop`, `retuneAmperage`) and a private `Telemetry` struct that bundles per-tick data (incl. signed `batteryChargeRateW`).

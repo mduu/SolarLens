@@ -38,20 +38,27 @@ struct BatteryToCarRunningCard: View {
                 Text("\(state.currentAmps) A")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Text("·")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                Text(String(format: "%.2f kWh", state.kWhTransferred))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                Spacer()
+                if let rate = BatteryRateFormatter.format(
+                    rateW: state.lastBatteryChargeRate
+                ) {
+                    Text(rate)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                }
             }
 
-            if let rate = BatteryRateFormatter.format(
-                rateW: state.lastBatteryChargeRate
-            ) {
-                Text(rate)
+            HStack(spacing: 4) {
+                Text("∑")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text("Total")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                Spacer()
+                Text(String(format: "%.2f kWh", state.kWhTransferred))
+                    .font(.caption.weight(.semibold))
                     .monospacedDigit()
             }
 
@@ -80,10 +87,14 @@ struct BatteryToCarRunningCard: View {
 
     @ViewBuilder
     private func forecastRow(eta: Date?) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+        HStack(alignment: .firstTextBaseline, spacing: 4) {
+            Image(systemName: "clock")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
             Text("Floor reached in")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
+            Spacer()
             if let eta, eta > Date() {
                 Text(timerInterval: Date()...eta, countsDown: true)
                     .monospacedDigit()

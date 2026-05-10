@@ -2,7 +2,7 @@ internal import Foundation
 internal import UserNotifications
 
 /// Automation: drain the house battery (and only the house battery) into the
-/// car. Sets the wallbox to *Constant current* at an amperage matched to the
+/// car. Sets the charging station to *Constant current* at an amperage matched to the
 /// battery's max discharge, monitors and re-tunes every tick, stops just
 /// before the user-chosen soft floor or when grid import becomes unavoidable.
 final class AutomationBatteryToCar: AutomationTask {
@@ -48,7 +48,7 @@ final class AutomationBatteryToCar: AutomationTask {
             return scheduleNextTick(state: liveState0, in: state)
         }
 
-        // First tick of this run: set up the wallbox + capture starting SoC.
+        // First tick of this run: set up the charging station + capture starting SoC.
         if !liveState0.isStarted {
             return await startRun(
                 host: host, parameters: params,
@@ -423,7 +423,7 @@ final class AutomationBatteryToCar: AutomationTask {
         }
         let previousMode = station.chargingMode
 
-        // Start conservative: at the wallbox protocol minimum (6 A) so we
+        // Start conservative: at the charging station protocol minimum (6 A) so we
         // can never overshoot a household with already-running loads. The
         // controller ramps up by 1 A per tick when grid export proves there
         // is true surplus to absorb.
@@ -439,7 +439,7 @@ final class AutomationBatteryToCar: AutomationTask {
         } catch {
             host.logError(
                 message:
-                    "Battery to Car: failed to set wallbox to constant current \(initialAmps) A: \(error.localizedDescription)"
+                    "Battery to Car: failed to set charging station to constant current \(initialAmps) A: \(error.localizedDescription)"
             )
             host.logFailure()
             return state.failed()
@@ -456,7 +456,7 @@ final class AutomationBatteryToCar: AutomationTask {
         )
         host.logDebug(
             message:
-                "Battery to Car: setup — wallbox \(phasesName), previous wallbox mode \(previousModeName), battery capacity \(String(format: "%.1f", t.totalBatteryCapacityKwh)) kWh, max discharge \(t.totalMaxDischargeW) W"
+                "Battery to Car: setup — charging station \(phasesName), previous charging station mode \(previousModeName), battery capacity \(String(format: "%.1f", t.totalBatteryCapacityKwh)) kWh, max discharge \(t.totalMaxDischargeW) W"
         )
 
         return AutomationState(
@@ -493,7 +493,7 @@ final class AutomationBatteryToCar: AutomationTask {
         let reasonName = describe(stopReason: liveState.stopReason)
         host.logDebug(
             message:
-                "Battery to Car: stop triggered (\(reasonName)) — switching wallbox to \(fallbackName)"
+                "Battery to Car: stop triggered (\(reasonName)) — switching charging station to \(fallbackName)"
         )
 
         do {
@@ -506,7 +506,7 @@ final class AutomationBatteryToCar: AutomationTask {
         } catch {
             host.logError(
                 message:
-                    "Battery to Car: failed to switch wallbox to fallback mode \(fallbackName): \(error.localizedDescription) — wallbox may stay on constant current. Please check the Solar Manager app."
+                    "Battery to Car: failed to switch charging station to fallback mode \(fallbackName): \(error.localizedDescription) — charging station may stay on constant current. Please check the Solar Manager app."
             )
         }
 
@@ -515,7 +515,7 @@ final class AutomationBatteryToCar: AutomationTask {
 
         host.logInfo(
             message:
-                "Battery to Car: stopped at \(t.currentBatteryLevel)% (\(reasonName)) — transferred ≈ \(String(format: "%.2f", stopped.kWhTransferred)) kWh, wallbox switched to \(fallbackName)"
+                "Battery to Car: stopped at \(t.currentBatteryLevel)% (\(reasonName)) — transferred ≈ \(String(format: "%.2f", stopped.kWhTransferred)) kWh, charging station switched to \(fallbackName)"
         )
         host.logSuccess()
 

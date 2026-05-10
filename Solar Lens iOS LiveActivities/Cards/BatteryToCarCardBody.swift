@@ -31,10 +31,22 @@ struct BatteryToCarCardBody: View {
                 etaLine(eta: eta)
             }
             HStack(spacing: 10) {
-                Label("Floor \(payload.floorSoc)%", systemImage: "arrow.down.to.line")
-                    .labelStyle(.titleAndIcon)
+                Label(
+                    "Floor \(payload.floorSoc)%",
+                    systemImage: "arrow.down.to.line"
+                )
+                .labelStyle(.titleAndIcon)
                 Text("•")
-                Text("\(elapsedShort) ago")
+                Label {
+                    HStack(spacing: 3) {
+                        Text("Running for")
+                        Text(startedAt, style: .timer)
+                            .monospacedDigit()
+                    }
+                } icon: {
+                    Image(systemName: "clock")
+                }
+                .labelStyle(.titleAndIcon)
             }
             .font(.caption2)
             .foregroundStyle(.secondary)
@@ -46,23 +58,13 @@ struct BatteryToCarCardBody: View {
     /// the runner needing to push updates.
     private func etaLine(eta: Date) -> some View {
         HStack(spacing: 6) {
-            Image(systemName: "hourglass")
+            Image(systemName: "clock")
             Text("Floor reached in")
             Text(timerInterval: Date()...eta, countsDown: true)
                 .monospacedDigit()
         }
         .font(.caption2.weight(.semibold))
         .foregroundStyle(.primary)
-    }
-
-    private var elapsedShort: String {
-        let seconds = max(0, Int(Date().timeIntervalSince(startedAt)))
-        let m = seconds / 60
-        if m < 1 { return "<1m" }
-        if m < 60 { return "\(m)m" }
-        let h = m / 60
-        let rem = m % 60
-        return rem == 0 ? "\(h)h" : "\(h)h \(rem)m"
     }
 
     private func metric(

@@ -20,7 +20,7 @@ enum AmperageRamp {
 
     /// EWMA threshold above which we treat the run as being in a slow
     /// regime (iOS BG-throttling territory). When ticks are coming in
-    /// less often than this, the wallbox can drain the battery for many
+    /// less often than this, the charging station can drain the battery for many
     /// minutes between checks — so we cap and progressively halve
     /// amperage until the EWMA recovers (typically when the user
     /// foregrounds the app and a real tick fires).
@@ -34,10 +34,10 @@ enum AmperageRamp {
         /// negative = battery discharging into loads.
         let batteryChargeRateW: Int
         let batteryMaxDischargeW: Int
-        let phases: WallboxPhases
-        /// Live W/A observed at the wallbox: `station.currentPower /
+        let phases: ChargingStationPhases
+        /// Live W/A observed at the charging station: `station.currentPower /
         /// currentAmps`. Pass `nil` if unavailable (e.g. first tick or
-        /// wallbox not yet drawing). Used only when `phases == .auto`.
+        /// charging station not yet drawing). Used only when `phases == .auto`.
         let observedWattsPerAmp: Double?
         let graceW: Int
         /// EWMA of the recent observed tick interval (in minutes). Drives
@@ -65,7 +65,7 @@ enum AmperageRamp {
     /// **BG-aware clamp**: if `smoothedTickIntervalMinutes` is above the
     /// slow-regime threshold, the result is additionally clamped to at
     /// most `currentAmps / 2` (and never below `minAmps`). This trims
-    /// the wallbox draw progressively when iOS isn't letting us re-tick
+    /// the charging station draw progressively when iOS isn't letting us re-tick
     /// in a timely fashion, so a long unmonitored sleep can't drain the
     /// battery past the soft floor.
     ///
