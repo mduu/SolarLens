@@ -30,7 +30,7 @@ struct NotifyOnBatteryLevelSetupSheet: View {
                     Stepper(
                         value: $targetBatteryLevel,
                         in: 0...100,
-                        step: 5
+                        step: 2
                     ) {
                         Text("\(targetBatteryLevel)%")
                             .font(.caption)

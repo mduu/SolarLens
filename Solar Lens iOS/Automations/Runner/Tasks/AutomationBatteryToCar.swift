@@ -11,6 +11,20 @@ final class AutomationBatteryToCar: AutomationTask {
     let automationName: LocalizedStringResource = "Battery to Car"
     private let monitorInterval: TimeInterval = 60
 
+    /// Grace period after starting before the "no draw → car full / not
+    /// connected" auto-cancel kicks in. Long enough to let the charging
+    /// station respond to the constant-current command, ramp up draw,
+    /// and for the next telemetry tick to land. Anything shorter risks
+    /// false positives during the cold-start window.
+    private let carNotChargingGrace: TimeInterval = 2 * 60
+
+    /// Threshold below which the charging station's reported `currentPower`
+    /// is treated as "not drawing". Even at the protocol minimum (6 A)
+    /// a 1-phase station pulls ≈ 1.4 kW, so 50 W safely separates "off"
+    /// from "charging slowly". Matches the idle threshold used for the
+    /// battery rate display.
+    private let carNotChargingPowerThresholdW: Int = 50
+
     /// Window inside which we treat the predicted soft-floor crossing as
     /// "imminent" and schedule a calendar-triggered fallback
     /// notification. The forecast is a linear extrapolation from
@@ -75,6 +89,21 @@ final class AutomationBatteryToCar: AutomationTask {
         // Stop condition (b): grid import sustained at minimum amps.
         if updateGridCapStreakAndShouldStop(&liveState, telemetry: t) {
             liveState.stopReason = .capped
+            return await stopRun(
+                host: host, parameters: params,
+                state: state, liveState: liveState, telemetry: t
+            )
+        }
+
+        // Stop condition (c): charging station is on constant current
+        // but not drawing power past the grace window. Strong signal
+        // the car is already full or not plugged in — no point keeping
+        // the house battery on stand-by. Switches to the user's
+        // fallback mode and notifies via the standard finish path.
+        if shouldStopOnCarNotCharging(
+            liveState: liveState, telemetry: t
+        ) {
+            liveState.stopReason = .carNotCharging
             return await stopRun(
                 host: host, parameters: params,
                 state: state, liveState: liveState, telemetry: t
@@ -305,6 +334,17 @@ final class AutomationBatteryToCar: AutomationTask {
             Double(station.currentPower) / 1000.0 * dtH
     }
 
+    private func shouldStopOnCarNotCharging(
+        liveState: AutomationBatteryToCarState,
+        telemetry t: Telemetry
+    ) -> Bool {
+        guard let startedAt = liveState.startedAt else { return false }
+        guard Date().timeIntervalSince(startedAt) >= carNotChargingGrace
+        else { return false }
+        guard let station = t.station else { return false }
+        return station.currentPower <= carNotChargingPowerThresholdW
+    }
+
     private func shouldStopOnSoftFloor(
         liveState: AutomationBatteryToCarState,
         params: AutomationBatteryToCarParameters,
@@ -463,18 +503,22 @@ final class AutomationBatteryToCar: AutomationTask {
             automation: state.automation!,
             status: .running,
             nextTaskRun: t.now.addingTimeInterval(monitorInterval),
-            batteryToCar: AutomationBatteryToCarState(
-                isStarted: true,
-                startSoc: t.currentBatteryLevel,
-                lastBatteryPercentage: t.currentBatteryLevel,
-                previousChargingMode: previousMode,
-                currentAmps: initialAmps,
-                kWhTransferred: 0,
-                lastTickAt: t.now,
-                gridImportStreak: 0,
-                smoothedTickIntervalMinutes: 1.0,
-                stopReason: nil
-            )
+            batteryToCar: {
+                var s = AutomationBatteryToCarState(
+                    isStarted: true,
+                    startSoc: t.currentBatteryLevel,
+                    lastBatteryPercentage: t.currentBatteryLevel,
+                    previousChargingMode: previousMode,
+                    currentAmps: initialAmps,
+                    kWhTransferred: 0,
+                    lastTickAt: t.now,
+                    gridImportStreak: 0,
+                    smoothedTickIntervalMinutes: 1.0,
+                    stopReason: nil
+                )
+                s.startedAt = t.now
+                return s
+            }()
         )
     }
 
@@ -549,6 +593,7 @@ final class AutomationBatteryToCar: AutomationTask {
         case .softFloorReached: return "soft floor reached"
         case .capped:           return "grid import unavoidable at minimum amps"
         case .cancelled:        return "cancelled by user"
+        case .carNotCharging:   return "charging station drew no power past grace window — car likely full or not connected"
         case .none:             return "unknown reason"
         }
     }

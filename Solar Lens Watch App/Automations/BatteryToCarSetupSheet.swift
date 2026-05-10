@@ -37,7 +37,7 @@ struct BatteryToCarSetupSheet: View {
                     Stepper(
                         value: $minBatteryLevel,
                         in: 5...90,
-                        step: 5
+                        step: 2
                     ) {
                         Text("\(minBatteryLevel)%")
                             .font(.caption)

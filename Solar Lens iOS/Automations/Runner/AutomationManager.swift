@@ -439,6 +439,7 @@ public final class AutomationManager: AutomationHost {
         case resetCompleted
         case conditionMet
         case timedOut
+        case carNotCharging
         case failed
     }
 
@@ -454,6 +455,7 @@ public final class AutomationManager: AutomationHost {
             case .softFloorReached: return .softFloorReached
             case .capped:           return .capped
             case .cancelled:        return .cancelled
+            case .carNotCharging:   return .carNotCharging
             }
         }
         if let reason = state.autoResetChargingMode?.stopReason {
@@ -658,6 +660,12 @@ public final class AutomationManager: AutomationHost {
                 localized:
                     "Cancelled by you. ≈ \(kwh) kWh transferred so far. Charging station switched to \(modeName)."
             )
+        case .carNotCharging:
+            content.title = String(localized: "Battery-to-Car cancelled")
+            content.body = String(
+                localized:
+                    "The car appears to be full or not connected — the charging station hasn't drawn any power. Switched to \(modeName)."
+            )
         case .resetCompleted, .conditionMet, .timedOut:
             // Not applicable to Battery → Car, but compiler requires
             // exhaustiveness.
@@ -710,7 +718,8 @@ public final class AutomationManager: AutomationHost {
                 localized:
                     "Couldn't apply the charging-mode change. Please verify the charging station state in the Solar Manager app."
             )
-        case .softFloorReached, .capped, .conditionMet, .timedOut:
+        case .softFloorReached, .capped, .conditionMet, .timedOut,
+            .carNotCharging:
             // Not applicable to Auto-reset, but compiler requires
             // exhaustiveness. Use the generic "stopped" wording.
             content.title = String(
@@ -778,7 +787,7 @@ public final class AutomationManager: AutomationHost {
             content.body = String(
                 localized: "An error occurred while monitoring."
             )
-        case .softFloorReached, .capped, .resetCompleted:
+        case .softFloorReached, .capped, .resetCompleted, .carNotCharging:
             // Not applicable to this automation, but compiler requires
             // exhaustiveness.
             content.title = String(

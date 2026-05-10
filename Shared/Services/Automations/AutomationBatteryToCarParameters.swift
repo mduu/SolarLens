@@ -25,10 +25,15 @@ enum AutomationBatteryToCarStopReason: String, Codable, Sendable {
     case softFloorReached
     case capped
     case cancelled
+    /// Charging station has been at near-zero draw for the whole grace
+    /// window after start — strong signal the car is full or not
+    /// plugged in. Auto-cancel and notify.
+    case carNotCharging
 }
 
 struct AutomationBatteryToCarState: Codable, Sendable {
     var isStarted: Bool = false
+    var startedAt: Date? = nil
     var startSoc: Int = 0
     var endSoc: Int? = nil
     var lastBatteryPercentage: Int? = nil
