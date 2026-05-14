@@ -131,24 +131,26 @@ struct ContentView: View {
                             }  // :.toolbar
                             .tag(5)
 
-                        if let snap = automationWatchClient.snapshot,
-                           snap.prerequisites.hasAnyBattery
-                            || snap.prerequisites.hasAnyCarChargingStation
-                        {
-                            AutomationsScreen()
-                                .toolbar {
-                                    ToolbarItem(placement: .topBarLeading) {
-                                        HStack {
-                                            HomeButton()
-                                            Text("Automation")
-                                                .foregroundColor(.orange)
-                                                .font(.headline)
-                                            Spacer()
-                                        }
+                        // Always include the Automations tab — its
+                        // membership used to flip when the snapshot
+                        // first arrived from the iPhone, and dynamic
+                        // tab membership in `verticalPage` TabView is
+                        // suspected of occasionally wedging the watch
+                        // SwiftUI runloop. Disabled cards inside the
+                        // screen still communicate the prerequisites.
+                        AutomationsScreen()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    HStack {
+                                        HomeButton()
+                                        Text("Automation")
+                                            .foregroundColor(.orange)
+                                            .font(.headline)
+                                        Spacer()
                                     }
                                 }
-                                .tag(6)
-                        }
+                            }
+                            .tag(6)
 
                     }  // :TabView
                     .tabViewStyle(.verticalPage(transitionStyle: .blur))

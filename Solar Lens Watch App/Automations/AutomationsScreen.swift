@@ -30,6 +30,9 @@ struct AutomationsScreen: View {
 
             ScrollView {
                 VStack(spacing: 8) {
+                    if snapshot == nil {
+                        waitingForIPhoneHint
+                    }
                     ForEach(orderedSlots, id: \.self) { slot in
                         view(for: slot)
                     }
@@ -54,16 +57,38 @@ struct AutomationsScreen: View {
 
     private var snapshot: AutomationWatchSnapshot? { client.snapshot }
 
+    /// Compact placeholder shown until the iPhone has delivered the
+    /// first snapshot. Without it, the idle cards would render
+    /// disabled with a misleading "Requires a house battery" message
+    /// — the prerequisites are unknown at this point, not absent.
+    private var waitingForIPhoneHint: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "iphone.gen3")
+                .foregroundStyle(.secondary)
+            Text("Waiting for iPhone…")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding(.horizontal, 4)
+    }
+
     private var anotherIsActive: Bool {
         snapshot?.activeAutomation != nil
     }
 
+    /// True only when we **know** the system has no house battery. With
+    /// no snapshot yet we treat the answer as unknown (false) so we
+    /// don't lie about "requires a house battery" before the first
+    /// state push from the iPhone has landed.
     private var noBattery: Bool {
-        !(snapshot?.prerequisites.hasAnyBattery ?? false)
+        guard let snap = snapshot else { return false }
+        return !snap.prerequisites.hasAnyBattery
     }
 
     private var noChargingStation: Bool {
-        !(snapshot?.prerequisites.hasAnyCarChargingStation ?? false)
+        guard let snap = snapshot else { return false }
+        return !snap.prerequisites.hasAnyCarChargingStation
     }
 
     /// Stable canonical order — matches the iOS screen. Reordered at
