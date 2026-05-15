@@ -3,6 +3,7 @@ import SwiftUI
 /// Watch setup sheet for the Auto-reset Charging Mode automation.
 struct AutoResetChargingModeSetupSheet: View {
     @Environment(AutomationWatchClient.self) private var client
+    @Environment(CurrentBuildingState.self) private var buildingState
     @Environment(\.dismiss) private var dismiss
 
     @State private var chargingDeviceId: String = ""
@@ -11,8 +12,8 @@ struct AutoResetChargingModeSetupSheet: View {
         .withSolarPower
     @State private var resetAt: Date = Date().addingTimeInterval(60 * 60)
 
-    private var stations: [AutomationWatchSnapshot.WatchChargingStation] {
-        client.snapshot?.chargingStations ?? []
+    private var stations: [ChargingStation] {
+        buildingState.overviewData.chargingStations
     }
 
     private var modesDifferent: Bool {

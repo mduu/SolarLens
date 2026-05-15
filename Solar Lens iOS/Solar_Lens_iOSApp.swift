@@ -24,9 +24,7 @@ struct Solar_Lens_iOSApp: App {
         // Activate the watch bridge synchronously so the WCSession
         // delegate is set before iOS delivers any queued transferUserInfo
         // commands from the watch.
-        AutomationWatchBridge.shared.start(
-            buildingState: currentBuildingState
-        )
+        AutomationWatchBridge.shared.start()
     }
 
     var body: some Scene {

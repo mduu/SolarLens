@@ -3,6 +3,7 @@ import SwiftUI
 /// Watch setup sheet for the Notify on Battery Level automation.
 struct NotifyOnBatteryLevelSetupSheet: View {
     @Environment(AutomationWatchClient.self) private var client
+    @Environment(CurrentBuildingState.self) private var buildingState
     @Environment(\.dismiss) private var dismiss
 
     @State private var targetBatteryLevel: Int = 80
@@ -38,7 +39,7 @@ struct NotifyOnBatteryLevelSetupSheet: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                     }
-                    if let now = client.snapshot?.currentBatteryLevel {
+                    if let now = buildingState.overviewData.currentBatteryLevel {
                         Text("Now: \(now)%")
                             .font(.caption2)
                             .foregroundStyle(.secondary)

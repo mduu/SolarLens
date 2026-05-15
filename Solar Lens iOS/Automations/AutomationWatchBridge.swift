@@ -4,12 +4,18 @@ import WatchConnectivity
 /// iOS-side WatchConnectivity glue for the Automation feature.
 ///
 /// - Pushes an `AutomationWatchSnapshot` to the watch via
-///   `updateApplicationContext` whenever `AutomationManager` or relevant
-///   `CurrentBuildingState` fields change. Latest-snapshot-wins —
-///   coalesced by iOS, no need to throttle aggressively, but we debounce
-///   ~500 ms to absorb burst observation re-fires.
+///   `updateApplicationContext` whenever `AutomationManager`'s active
+///   automation state actually changes (not just timestamps).
 /// - Receives `AutomationWatchCommand` from the watch and delegates to
 ///   `AutomationManager.shared`.
+///
+/// The snapshot deliberately only carries iPhone-exclusive automation
+/// state — the watch already loads Solar Manager telemetry (charging
+/// stations, battery level, prerequisites) on its own via REST, so we
+/// don't duplicate it here. That keeps the push frequency at "only
+/// when an automation actually changes" — typically a single push at
+/// app launch, then zero pushes when idle, and one per tick (~60 s)
+/// while a run is active.
 ///
 /// Activation happens once at app launch from `Solar_Lens_iOSApp.init()`
 /// — synchronous so the delegate is set before iOS delivers any queued
@@ -19,16 +25,21 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
 
     static let shared = AutomationWatchBridge()
 
-    private var buildingState: CurrentBuildingState?
     private var debounceTask: Task<Void, Never>?
     private var didStart = false
+
+    /// Last payload actually sent to the watch. Used to skip
+    /// `updateApplicationContext` when the snapshot is bit-identical
+    /// to the previous push — otherwise iOS will happily ship the
+    /// same payload over and over and the watch will re-decode +
+    /// re-render for no reason.
+    private var lastPushedData: Data?
 
     private var session: WCSession { WCSession.default }
 
     /// Activate the WCSession and start observing changes. Call once
     /// from `Solar_Lens_iOSApp.init()`. Safe to call multiple times.
-    func start(buildingState: CurrentBuildingState) {
-        self.buildingState = buildingState
+    func start() {
         guard !didStart else { return }
         didStart = true
 
@@ -52,6 +63,11 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
     /// Re-arms `withObservationTracking` after each fire.
     /// `withObservationTracking` is one-shot; we re-subscribe inside
     /// `onChange` to keep listening for the next change.
+    ///
+    /// Tracks **only** `AutomationManager.shared`'s state. The watch
+    /// reads its own Solar Manager data for everything else, so we
+    /// deliberately do NOT track `CurrentBuildingState` here — that
+    /// would push the watch every 15 s for nothing.
     private func observeChanges() {
         withObservationTracking { [weak self] in
             guard let self else { return }
@@ -59,12 +75,6 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
             _ = mgr.activeAutomation
             _ = mgr.activeStateSnapshot
             _ = mgr.activeParametersSnapshot
-            if let overview = self.buildingState?.overviewData {
-                _ = overview.hasAnyBattery
-                _ = overview.hasAnyCarChargingStation
-                _ = overview.chargingStations
-                _ = overview.currentBatteryLevel
-            }
         } onChange: { [weak self] in
             Task { @MainActor in
                 self?.scheduleSnapshotPush()
@@ -86,14 +96,27 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
         guard WCSession.isSupported() else { return }
         guard session.activationState == .activated else { return }
         let snapshot = makeSnapshot()
+        let data: Data
         do {
-            let data = try JSONEncoder().encode(snapshot)
+            data = try JSONEncoder().encode(snapshot)
+        } catch {
+            AutomationManager.shared.logError(
+                message: "WatchBridge encode failed: \(error)"
+            )
+            return
+        }
+        if data == lastPushedData {
+            // Content unchanged since the last push — skip the
+            // WCSession roundtrip and the watch-side re-render it
+            // would cause.
+            return
+        }
+        do {
             try session.updateApplicationContext(
                 [AutomationWCKey.snapshot: data]
             )
+            lastPushedData = data
         } catch {
-            // Logged through AutomationManager so it shows up in the log
-            // viewer alongside automation events.
             AutomationManager.shared.logError(
                 message: "WatchBridge push failed: \(error)"
             )
@@ -102,22 +125,11 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
 
     private func makeSnapshot() -> AutomationWatchSnapshot {
         let mgr = AutomationManager.shared
-        let overview = buildingState?.overviewData
         return AutomationWatchSnapshot(
             schemaVersion: AutomationWatchSnapshot.currentSchemaVersion,
-            lastUpdated: Date(),
             activeAutomation: mgr.activeAutomation,
             state: mgr.activeStateSnapshot,
-            parameters: mgr.activeParametersSnapshot,
-            prerequisites: .init(
-                hasAnyBattery: overview?.hasAnyBattery ?? false,
-                hasAnyCarChargingStation:
-                    overview?.hasAnyCarChargingStation ?? false
-            ),
-            chargingStations: overview?.chargingStations.map {
-                .init(id: $0.id, name: $0.name)
-            } ?? [],
-            currentBatteryLevel: overview?.currentBatteryLevel
+            parameters: mgr.activeParametersSnapshot
         )
     }
 

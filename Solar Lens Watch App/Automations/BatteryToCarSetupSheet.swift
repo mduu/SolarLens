@@ -5,6 +5,7 @@ import SwiftUI
 /// charging mode, and phases; Stepper for the battery floor.
 struct BatteryToCarSetupSheet: View {
     @Environment(AutomationWatchClient.self) private var client
+    @Environment(CurrentBuildingState.self) private var buildingState
     @Environment(\.dismiss) private var dismiss
 
     @State private var chargingDeviceId: String = ""
@@ -12,8 +13,8 @@ struct BatteryToCarSetupSheet: View {
     @State private var fallbackChargingMode: ChargingMode = .withSolarPower
     @State private var phases: ChargingStationPhases = .three
 
-    private var stations: [AutomationWatchSnapshot.WatchChargingStation] {
-        client.snapshot?.chargingStations ?? []
+    private var stations: [ChargingStation] {
+        buildingState.overviewData.chargingStations
     }
 
     private var canStart: Bool {
@@ -45,7 +46,7 @@ struct BatteryToCarSetupSheet: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                     }
-                    if let now = client.snapshot?.currentBatteryLevel {
+                    if let now = buildingState.overviewData.currentBatteryLevel {
                         Text("Now: \(now)%")
                             .font(.caption2)
                             .foregroundStyle(.secondary)

@@ -10,8 +10,18 @@ import SwiftUI
 /// user lands on the most relevant info first instead of having to
 /// scroll past disabled idle cards. iOS keeps a fixed slot order; the
 /// watch screen is too small for that.
+///
+/// Data sources, by design:
+/// - **Automation state** (active / state / parameters) comes from the
+///   iPhone via `AutomationWatchClient.snapshot` — only the iPhone
+///   runner knows it.
+/// - **Solar Manager telemetry** (prerequisites flags, charging
+///   stations) is loaded by the watch itself via `CurrentBuildingState`
+///   over REST, identical to the iOS app. We intentionally do NOT pipe
+///   it through WCSession to avoid a periodic push every 15 s.
 struct AutomationsScreen: View {
     @Environment(AutomationWatchClient.self) private var client
+    @Environment(CurrentBuildingState.self) private var buildingState
 
     @State private var batteryToCarSetupPresented = false
     @State private var autoResetSetupPresented = false
@@ -30,9 +40,6 @@ struct AutomationsScreen: View {
 
             ScrollView {
                 VStack(spacing: 8) {
-                    if snapshot == nil {
-                        waitingForIPhoneHint
-                    }
                     ForEach(orderedSlots, id: \.self) { slot in
                         view(for: slot)
                     }
@@ -44,51 +51,32 @@ struct AutomationsScreen: View {
         .sheet(isPresented: $batteryToCarSetupPresented) {
             BatteryToCarSetupSheet()
                 .environment(client)
+                .environment(buildingState)
         }
         .sheet(isPresented: $autoResetSetupPresented) {
             AutoResetChargingModeSetupSheet()
                 .environment(client)
+                .environment(buildingState)
         }
         .sheet(isPresented: $notifyBatteryLevelSetupPresented) {
             NotifyOnBatteryLevelSetupSheet()
                 .environment(client)
+                .environment(buildingState)
         }
     }
 
     private var snapshot: AutomationWatchSnapshot? { client.snapshot }
 
-    /// Compact placeholder shown until the iPhone has delivered the
-    /// first snapshot. Without it, the idle cards would render
-    /// disabled with a misleading "Requires a house battery" message
-    /// — the prerequisites are unknown at this point, not absent.
-    private var waitingForIPhoneHint: some View {
-        HStack(spacing: 6) {
-            Image(systemName: "iphone.gen3")
-                .foregroundStyle(.secondary)
-            Text("Waiting for iPhone…")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-            Spacer()
-        }
-        .padding(.horizontal, 4)
-    }
-
     private var anotherIsActive: Bool {
         snapshot?.activeAutomation != nil
     }
 
-    /// True only when we **know** the system has no house battery. With
-    /// no snapshot yet we treat the answer as unknown (false) so we
-    /// don't lie about "requires a house battery" before the first
-    /// state push from the iPhone has landed.
     private var noBattery: Bool {
-        guard let snap = snapshot else { return false }
-        return !snap.prerequisites.hasAnyBattery
+        !buildingState.overviewData.hasAnyBattery
     }
 
     private var noChargingStation: Bool {
-        guard let snap = snapshot else { return false }
-        return !snap.prerequisites.hasAnyCarChargingStation
+        !buildingState.overviewData.hasAnyCarChargingStation
     }
 
     /// Stable canonical order — matches the iOS screen. Reordered at
