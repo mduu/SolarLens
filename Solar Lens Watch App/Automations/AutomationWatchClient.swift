@@ -4,36 +4,32 @@ import WatchConnectivity
 /// Master kill-switch for the Automation feature on the watch app.
 ///
 /// When `false`, every newly-introduced code path from the 4.1 watch
-/// automation feature is dormant:
-/// - `AutomationWatchClient.start()` is a no-op (no `WCSession`
-///   activation, no delegate, no reachability callbacks).
-/// - The Automations tab is not present in `ContentView`'s `TabView`.
-/// - The `OverviewScreen` running-automation indicator overlay is not
-///   added to the `ZStack`.
-///
-/// Used as a diagnostic build: if the watch app stops freezing on
-/// real devices with this flag set to `false`, the cause lies inside
-/// the automation-watch additions. Re-enable progressively to
-/// isolate which piece is responsible.
+/// automation feature is dormant. Kept around so we can flip back to
+/// `false` for further isolation if needed.
 enum WatchAutomationFeature {
-    /// Set to `false` to ship a build with the watch automation
-    /// surface fully disabled. Flip back to `true` once the freeze
-    /// root cause has been isolated and fixed.
-    static let enabled = false
+    static let enabled = true
 }
 
 /// watchOS-side WatchConnectivity glue for the Automation feature.
 ///
 /// - Receives `AutomationWatchSnapshot` from iOS via
 ///   `applicationContext` updates (latest-snapshot-wins). Exposes the
-///   decoded snapshot as an `@Observable` property so SwiftUI views
-///   re-render automatically.
+///   decoded snapshot as the only `@Observable` property so SwiftUI
+///   views re-render automatically.
 /// - Sends `AutomationWatchCommand` (start / cancel) back to iOS:
 ///   `sendMessage` for immediate delivery when the iPhone is reachable,
 ///   `transferUserInfo` (queued) otherwise.
 ///
 /// The watch UI does NOT block on the reply; it shows optimistic state
 /// and converges to the next snapshot push from iOS.
+///
+/// Deliberately **not** tracking `WCSession.isReachable` — that signal
+/// flips constantly on a worn watch (every BT range / sleep / wake
+/// edge), and the prior implementation hopped to the main actor +
+/// mutated an `@Observable` property on each flip. Over hours of normal
+/// use this stress is the prime suspect for the watchOS freeze that
+/// landed the app in the system's "do-not-launch" state. We read
+/// `session.isReachable` ad-hoc when we actually want to send.
 @MainActor
 @Observable
 final class AutomationWatchClient: NSObject, WCSessionDelegate {
@@ -43,14 +39,6 @@ final class AutomationWatchClient: NSObject, WCSessionDelegate {
     /// Latest snapshot received from iOS, or `nil` if none has arrived
     /// yet (unpaired, app uninstalled on iPhone, or first launch).
     var snapshot: AutomationWatchSnapshot?
-
-    /// Whether the iPhone is currently reachable for `sendMessage`. We
-    /// fall back to `transferUserInfo` (queued) when this is false.
-    var isReachable: Bool = false
-
-    /// Most recent decode / send error, if any. Surfaced for diagnostics
-    /// only; the UI relies on the next snapshot push for confirmation.
-    var lastError: String?
 
     @ObservationIgnored
     private var didStart = false
@@ -84,20 +72,13 @@ final class AutomationWatchClient: NSObject, WCSessionDelegate {
     }
 
     private func send(_ command: AutomationWatchCommand) {
-        guard WCSession.isSupported() else {
-            lastError = "WatchConnectivity not supported"
-            return
-        }
-        guard session.activationState == .activated else {
-            lastError = "WatchConnectivity not activated"
-            return
-        }
+        guard WCSession.isSupported() else { return }
+        guard session.activationState == .activated else { return }
 
         let data: Data
         do {
             data = try JSONEncoder().encode(command)
         } catch {
-            lastError = "encode failed: \(error)"
             return
         }
         let payload: [String: Any] = [AutomationWCKey.command: data]
@@ -109,13 +90,11 @@ final class AutomationWatchClient: NSObject, WCSessionDelegate {
                     // Reply is informational only; the snapshot push is
                     // the source of truth.
                 },
-                errorHandler: { [weak self] error in
+                errorHandler: { [weak self] _ in
                     Task { @MainActor in
                         // Fallback to the queued path so the command
                         // still gets delivered when the phone wakes.
                         self?.session.transferUserInfo(payload)
-                        self?.lastError =
-                            "sendMessage failed, queued: \(error.localizedDescription)"
                     }
                 }
             )
@@ -130,23 +109,18 @@ final class AutomationWatchClient: NSObject, WCSessionDelegate {
         guard let data = context[AutomationWCKey.snapshot] as? Data else {
             return
         }
-        do {
-            let decoded = try JSONDecoder().decode(
-                AutomationWatchSnapshot.self,
-                from: data
-            )
-            guard decoded.schemaVersion
-                == AutomationWatchSnapshot.currentSchemaVersion
-            else {
-                lastError =
-                    "snapshot schema mismatch: got \(decoded.schemaVersion)"
-                return
-            }
-            snapshot = decoded
-            lastError = nil
-        } catch {
-            lastError = "decode failed: \(error)"
+        guard let decoded = try? JSONDecoder().decode(
+            AutomationWatchSnapshot.self,
+            from: data
+        ) else {
+            return
         }
+        guard decoded.schemaVersion
+            == AutomationWatchSnapshot.currentSchemaVersion
+        else {
+            return
+        }
+        snapshot = decoded
     }
 
     // MARK: - WCSessionDelegate
@@ -157,9 +131,7 @@ final class AutomationWatchClient: NSObject, WCSessionDelegate {
         error: Error?
     ) {
         let context = session.receivedApplicationContext
-        let reachable = session.isReachable
         Task { @MainActor in
-            self.isReachable = reachable
             self.applyContext(context)
         }
     }
@@ -171,8 +143,11 @@ final class AutomationWatchClient: NSObject, WCSessionDelegate {
         Task { @MainActor in self.applyContext(applicationContext) }
     }
 
-    nonisolated func sessionReachabilityDidChange(_ session: WCSession) {
-        let reachable = session.isReachable
-        Task { @MainActor in self.isReachable = reachable }
-    }
+    // `sessionReachabilityDidChange` is intentionally NOT implemented.
+    // On a worn watch this delegate method fires on every BT range /
+    // sleep / wake transition and would otherwise push a main-actor
+    // hop + observable mutation per event — accumulating over hours
+    // and suspected of triggering watchOS' resource watchdog. We
+    // re-read `session.isReachable` directly inside `send()` when we
+    // actually need it.
 }
