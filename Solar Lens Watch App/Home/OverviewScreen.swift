@@ -150,21 +150,26 @@ struct OverviewScreen: View {
                 // Additive top-trailing layer — does not touch any of the
                 // existing layout layers above. Renders the automation
                 // running icon when an automation is active on the iPhone.
-                VStack {
-                    HStack {
-                        Spacer()
-                        if let active = automationWatchClient.snapshot?
-                            .activeAutomation
-                        {
-                            AutomationRunningIndicator(
-                                activeAutomation: active
-                            ) {
-                                navigationState.navigate(to: .automations)
+                // Gated by WatchAutomationFeature.enabled so the
+                // diagnostic disabled build doesn't read the snapshot
+                // at all from this view.
+                if WatchAutomationFeature.enabled {
+                    VStack {
+                        HStack {
+                            Spacer()
+                            if let active = automationWatchClient.snapshot?
+                                .activeAutomation
+                            {
+                                AutomationRunningIndicator(
+                                    activeAutomation: active
+                                ) {
+                                    navigationState.navigate(to: .automations)
+                                }
+                                .padding(.trailing, 8)
                             }
-                            .padding(.trailing, 8)
                         }
+                        Spacer()
                     }
-                    Spacer()
                 }
             }  // :ZStack
         }  // :VStack

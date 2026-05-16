@@ -1,6 +1,27 @@
 internal import Foundation
 import WatchConnectivity
 
+/// Master kill-switch for the Automation feature on the watch app.
+///
+/// When `false`, every newly-introduced code path from the 4.1 watch
+/// automation feature is dormant:
+/// - `AutomationWatchClient.start()` is a no-op (no `WCSession`
+///   activation, no delegate, no reachability callbacks).
+/// - The Automations tab is not present in `ContentView`'s `TabView`.
+/// - The `OverviewScreen` running-automation indicator overlay is not
+///   added to the `ZStack`.
+///
+/// Used as a diagnostic build: if the watch app stops freezing on
+/// real devices with this flag set to `false`, the cause lies inside
+/// the automation-watch additions. Re-enable progressively to
+/// isolate which piece is responsible.
+enum WatchAutomationFeature {
+    /// Set to `false` to ship a build with the watch automation
+    /// surface fully disabled. Flip back to `true` once the freeze
+    /// root cause has been isolated and fixed.
+    static let enabled = false
+}
+
 /// watchOS-side WatchConnectivity glue for the Automation feature.
 ///
 /// - Receives `AutomationWatchSnapshot` from iOS via
@@ -41,6 +62,7 @@ final class AutomationWatchClient: NSObject, WCSessionDelegate {
     /// `WKApplicationDelegate.applicationDidFinishLaunching` so the
     /// delegate is set before iOS delivers any queued payload.
     func start() {
+        guard WatchAutomationFeature.enabled else { return }
         guard !didStart else { return }
         didStart = true
         guard WCSession.isSupported() else { return }
