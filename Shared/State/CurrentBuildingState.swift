@@ -421,13 +421,35 @@ class CurrentBuildingState {
                 )
             }
 
-            // Optimistic UI: backend propagation can take ~1 minute. Hold the
-            // requested priorities locally, merging into any in-flight override
-            // so an earlier batch isn't dropped by a later partial reorder.
-            var merged = sensorPriorityOverride?.priorities ?? [:]
-            for update in updates {
-                merged[update.sensorId] = update.priority
+            // Optimistic UI: backend propagation can take ~1 minute. Build a
+            // complete, conflict-free priority permutation locally so single
+            // updates (watch arrow taps) don't leave two devices sharing the
+            // same priority — which produced duplicate up/down arrows and an
+            // unstable sort order. Explicit updates are authoritative; the
+            // remaining devices keep their current relative order and slide
+            // into the freed slots.
+            let updateById = Dictionary(
+                uniqueKeysWithValues: updates.map { ($0.sensorId, $0.priority) }
+            )
+            let assignedPriorities = Set(updateById.values)
+            let unchangedDevices = overviewData.devices
+                .filter { updateById[$0.id] == nil }
+                .sorted(by: { $0.priority < $1.priority })
+
+            var availableSlots: [Int] = []
+            var slot = 1
+            while availableSlots.count < unchangedDevices.count {
+                if !assignedPriorities.contains(slot) {
+                    availableSlots.append(slot)
+                }
+                slot += 1
             }
+
+            var merged: [String: Int] = updateById
+            for (device, prio) in zip(unchangedDevices, availableSlots) {
+                merged[device.id] = prio
+            }
+
             sensorPriorityOverride = SensorPriorityOverride(
                 priorities: merged,
                 timestamp: Date()
