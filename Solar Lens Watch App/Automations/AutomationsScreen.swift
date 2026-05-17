@@ -13,14 +13,16 @@ import SwiftUI
 ///
 /// Data sources, by design:
 /// - **Automation state** (active / state / parameters) comes from the
-///   iPhone via `AutomationWatchClient.snapshot` — only the iPhone
-///   runner knows it.
+///   iPhone via `AutomationStateStore.snapshot` — only the iPhone
+///   runner knows it. The WCSession plumbing lives in
+///   `AutomationWatchSession` and is intentionally invisible to this
+///   view.
 /// - **Solar Manager telemetry** (prerequisites flags, charging
 ///   stations) is loaded by the watch itself via `CurrentBuildingState`
 ///   over REST, identical to the iOS app. We intentionally do NOT pipe
 ///   it through WCSession to avoid a periodic push every 15 s.
 struct AutomationsScreen: View {
-    @Environment(AutomationWatchClient.self) private var client
+    @Environment(AutomationStateStore.self) private var store
     @Environment(CurrentBuildingState.self) private var buildingState
 
     @State private var batteryToCarSetupPresented = false
@@ -50,22 +52,19 @@ struct AutomationsScreen: View {
         }
         .sheet(isPresented: $batteryToCarSetupPresented) {
             BatteryToCarSetupSheet()
-                .environment(client)
                 .environment(buildingState)
         }
         .sheet(isPresented: $autoResetSetupPresented) {
             AutoResetChargingModeSetupSheet()
-                .environment(client)
                 .environment(buildingState)
         }
         .sheet(isPresented: $notifyBatteryLevelSetupPresented) {
             NotifyOnBatteryLevelSetupSheet()
-                .environment(client)
                 .environment(buildingState)
         }
     }
 
-    private var snapshot: AutomationWatchSnapshot? { client.snapshot }
+    private var snapshot: AutomationWatchSnapshot? { store.snapshot }
 
     private var anotherIsActive: Bool {
         snapshot?.activeAutomation != nil
@@ -110,7 +109,9 @@ struct AutomationsScreen: View {
             BatteryToCarRunningCard(
                 state: runState,
                 params: runParams,
-                onCancel: { client.cancelActiveAutomation() }
+                onCancel: {
+                    AutomationWatchSession.shared.cancelActiveAutomation()
+                }
             )
         } else {
             BatteryToCarCard(
@@ -130,7 +131,9 @@ struct AutomationsScreen: View {
             AutoResetChargingModeRunningCard(
                 state: runState,
                 params: runParams,
-                onCancel: { client.cancelActiveAutomation() }
+                onCancel: {
+                    AutomationWatchSession.shared.cancelActiveAutomation()
+                }
             )
         } else {
             AutoResetChargingModeCard(
@@ -150,7 +153,9 @@ struct AutomationsScreen: View {
             NotifyOnBatteryLevelRunningCard(
                 state: runState,
                 params: runParams,
-                onCancel: { client.cancelActiveAutomation() }
+                onCancel: {
+                    AutomationWatchSession.shared.cancelActiveAutomation()
+                }
             )
         } else {
             NotifyOnBatteryLevelCard(

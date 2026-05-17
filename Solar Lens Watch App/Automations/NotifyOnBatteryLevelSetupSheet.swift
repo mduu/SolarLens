@@ -2,7 +2,6 @@ import SwiftUI
 
 /// Watch setup sheet for the Notify on Battery Level automation.
 struct NotifyOnBatteryLevelSetupSheet: View {
-    @Environment(AutomationWatchClient.self) private var client
     @Environment(CurrentBuildingState.self) private var buildingState
     @Environment(\.dismiss) private var dismiss
 
@@ -54,7 +53,7 @@ struct NotifyOnBatteryLevelSetupSheet: View {
                                 comparison: comparison
                             )
                         )
-                        client.startAutomation(
+                        AutomationWatchSession.shared.startAutomation(
                             .NotifyOnBatteryLevel,
                             parameters: params
                         )

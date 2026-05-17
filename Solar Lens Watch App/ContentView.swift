@@ -3,7 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(CurrentBuildingState.self) var viewModel
     @Environment(NavigationState.self) var navigationState
-    @Environment(AutomationWatchClient.self) var automationWatchClient
+    @Environment(AutomationStateStore.self) var automationStateStore
     @State var showAppRateRequest = AppStoreReviewManager.shared
         .checkAndRequestReview()
     @State private var loginCredentialsCheckTimer: Timer?
@@ -131,26 +131,19 @@ struct ContentView: View {
                             }  // :.toolbar
                             .tag(5)
 
-                        // Automations tab — gated by the master
-                        // WatchAutomationFeature.enabled flag. In the
-                        // diagnostic disabled build the tab is absent
-                        // entirely so we can verify the freeze is
-                        // caused by the watch automation surface.
-                        if WatchAutomationFeature.enabled {
-                            AutomationsScreen()
-                                .toolbar {
-                                    ToolbarItem(placement: .topBarLeading) {
-                                        HStack {
-                                            HomeButton()
-                                            Text("Automation")
-                                                .foregroundColor(.orange)
-                                                .font(.headline)
-                                            Spacer()
-                                        }
+                        AutomationsScreen()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    HStack {
+                                        HomeButton()
+                                        Text("Automation")
+                                            .foregroundColor(.orange)
+                                            .font(.headline)
+                                        Spacer()
                                     }
                                 }
-                                .tag(6)
-                        }
+                            }
+                            .tag(6)
 
                     }  // :TabView
                     .tabViewStyle(.verticalPage(transitionStyle: .blur))

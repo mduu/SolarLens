@@ -4,7 +4,6 @@ import SwiftUI
 /// Watch-friendly Form: navigation-link Pickers for charging station,
 /// charging mode, and phases; Stepper for the battery floor.
 struct BatteryToCarSetupSheet: View {
-    @Environment(AutomationWatchClient.self) private var client
     @Environment(CurrentBuildingState.self) private var buildingState
     @Environment(\.dismiss) private var dismiss
 
@@ -86,7 +85,7 @@ struct BatteryToCarSetupSheet: View {
                                 phases: phases
                             )
                         )
-                        client.startAutomation(
+                        AutomationWatchSession.shared.startAutomation(
                             .BatteryToCar,
                             parameters: params
                         )

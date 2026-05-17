@@ -2,7 +2,6 @@ import SwiftUI
 
 /// Watch setup sheet for the Auto-reset Charging Mode automation.
 struct AutoResetChargingModeSetupSheet: View {
-    @Environment(AutomationWatchClient.self) private var client
     @Environment(CurrentBuildingState.self) private var buildingState
     @Environment(\.dismiss) private var dismiss
 
@@ -98,7 +97,7 @@ struct AutoResetChargingModeSetupSheet: View {
                                 resetAt: resetAt
                             )
                         )
-                        client.startAutomation(
+                        AutomationWatchSession.shared.startAutomation(
                             .AutoResetChargingMode,
                             parameters: params
                         )

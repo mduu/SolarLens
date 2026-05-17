@@ -3,7 +3,7 @@ import SwiftUI
 struct OverviewScreen: View {
     @Environment(CurrentBuildingState.self) private var model
     @Environment(NavigationState.self) private var navigationState
-    @Environment(AutomationWatchClient.self) private var automationWatchClient
+    @Environment(AutomationStateStore.self) private var automationStateStore
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var showSettings: Bool = false
@@ -150,26 +150,21 @@ struct OverviewScreen: View {
                 // Additive top-trailing layer — does not touch any of the
                 // existing layout layers above. Renders the automation
                 // running icon when an automation is active on the iPhone.
-                // Gated by WatchAutomationFeature.enabled so the
-                // diagnostic disabled build doesn't read the snapshot
-                // at all from this view.
-                if WatchAutomationFeature.enabled {
-                    VStack {
-                        HStack {
-                            Spacer()
-                            if let active = automationWatchClient.snapshot?
-                                .activeAutomation
-                            {
-                                AutomationRunningIndicator(
-                                    activeAutomation: active
-                                ) {
-                                    navigationState.navigate(to: .automations)
-                                }
-                                .padding(.trailing, 8)
-                            }
-                        }
+                VStack {
+                    HStack {
                         Spacer()
+                        if let active = automationStateStore.snapshot?
+                            .activeAutomation
+                        {
+                            AutomationRunningIndicator(
+                                activeAutomation: active
+                            ) {
+                                navigationState.navigate(to: .automations)
+                            }
+                            .padding(.trailing, 8)
+                        }
                     }
+                    Spacer()
                 }
             }  // :ZStack
         }  // :VStack
@@ -199,7 +194,7 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
-        .environment(AutomationWatchClient.shared)
+        .environment(AutomationStateStore.shared)
 }
 
 #Preview("Stale data") {
@@ -229,7 +224,7 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
-        .environment(AutomationWatchClient.shared)
+        .environment(AutomationStateStore.shared)
 }
 
 #Preview("Loading") {
@@ -256,7 +251,7 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
-        .environment(AutomationWatchClient.shared)
+        .environment(AutomationStateStore.shared)
 }
 
 #Preview("German") {
