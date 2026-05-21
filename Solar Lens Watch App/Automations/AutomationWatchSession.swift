@@ -59,23 +59,67 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
         }
     }
 
+    /// Hard ceiling on how long we'll hold a
+    /// `WKWatchConnectivityRefreshBackgroundTask` before force-
+    /// completing it. watchOS grants roughly 30 s of background
+    /// runtime per refresh task; sitting on one until the OS reclaims
+    /// the runtime counts as misbehavior. 25 s gives us safety
+    /// margin.
+    private static let backgroundTaskTimeout: TimeInterval = 25
+
     /// Called by `AppDelegate.handle(_:)` for each
-    /// `WKWatchConnectivityRefreshBackgroundTask`. We hold the task
-    /// and complete it only once `WCSession.hasContentPending` is
-    /// `false`.
+    /// `WKWatchConnectivityRefreshBackgroundTask`. We complete the
+    /// task immediately if WCSession reports nothing pending (a
+    /// common case when the OS opportunistically wakes us without
+    /// new content); otherwise we hold it under an explicit timeout
+    /// so a stalled framework state can never make us miss the
+    /// deadline.
     func handle(backgroundTask task: WKRefreshBackgroundTask) {
         queue.async { [weak self] in
             guard let self else {
                 task.setTaskCompletedWithSnapshot(false)
                 return
             }
+            let session = WCSession.default
+
+            // Race-safe early exit: if the session isn't fully
+            // activated yet at this exact moment, we have no clean
+            // way to know whether content is coming. Complete the
+            // task now — the framework will still deliver any
+            // subsequent applicationContext via the regular
+            // delegate path; we don't lose data.
+            if session.activationState != .activated {
+                task.setTaskCompletedWithSnapshot(false)
+                return
+            }
+
+            // Fast path: framework reports the queue is already
+            // drained. No need to hold the task at all.
+            if !session.hasContentPending {
+                task.setTaskCompletedWithSnapshot(false)
+                return
+            }
+
+            // Slow path: park the task and arm a hard timeout.
             self.pendingWCTasks.append(task)
-            self.completePendingIfDrained()
+            self.queue.asyncAfter(
+                deadline: .now() + Self.backgroundTaskTimeout
+            ) { [weak self] in
+                guard let self else { return }
+                if let idx = self.pendingWCTasks.firstIndex(
+                    where: { $0 === task }
+                ) {
+                    self.pendingWCTasks.remove(at: idx)
+                    task.setTaskCompletedWithSnapshot(false)
+                }
+            }
         }
     }
 
     /// Always called on `queue`. Completes every held background task
-    /// when WCSession reports no pending content.
+    /// when WCSession reports no pending content. Safe to call
+    /// repeatedly; once a task has been completed (here or by the
+    /// timeout) it is removed from the pending list.
     private func completePendingIfDrained() {
         let session = WCSession.default
         guard session.activationState == .activated,
