@@ -455,6 +455,7 @@ public final class AutomationManager: AutomationHost {
         case conditionMet
         case timedOut
         case carNotCharging
+        case userOverride
         case failed
     }
 
@@ -471,12 +472,14 @@ public final class AutomationManager: AutomationHost {
             case .capped:           return .capped
             case .cancelled:        return .cancelled
             case .carNotCharging:   return .carNotCharging
+            case .userOverride:     return .userOverride
             }
         }
         if let reason = state.autoResetChargingMode?.stopReason {
             switch reason {
             case .resetCompleted:   return .resetCompleted
             case .cancelled:        return .cancelled
+            case .userOverride:     return .userOverride
             }
         }
         if let reason = state.notifyOnBatteryLevel?.stopReason {
@@ -681,6 +684,12 @@ public final class AutomationManager: AutomationHost {
                 localized:
                     "The car appears to be full or not connected — the charging station hasn't drawn any power. Switched to \(modeName)."
             )
+        case .userOverride:
+            content.title = String(localized: "Battery-to-Car cancelled")
+            content.body = String(
+                localized:
+                    "You changed the charging mode manually. The automation stopped and left the charging station as you set it."
+            )
         case .resetCompleted, .conditionMet, .timedOut:
             // Not applicable to Battery → Car, but compiler requires
             // exhaustiveness.
@@ -732,6 +741,14 @@ public final class AutomationManager: AutomationHost {
             content.body = String(
                 localized:
                     "Couldn't apply the charging-mode change. Please verify the charging station state in the Solar Manager app."
+            )
+        case .userOverride:
+            content.title = String(
+                localized: "Auto-reset Charging Mode cancelled"
+            )
+            content.body = String(
+                localized:
+                    "You changed the charging mode manually. The automation stopped and left the charging station as you set it."
             )
         case .softFloorReached, .capped, .conditionMet, .timedOut,
             .carNotCharging:
@@ -802,7 +819,8 @@ public final class AutomationManager: AutomationHost {
             content.body = String(
                 localized: "An error occurred while monitoring."
             )
-        case .softFloorReached, .capped, .resetCompleted, .carNotCharging:
+        case .softFloorReached, .capped, .resetCompleted, .carNotCharging,
+            .userOverride:
             // Not applicable to this automation, but compiler requires
             // exhaustiveness.
             content.title = String(

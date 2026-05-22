@@ -186,6 +186,51 @@ final class AutomationAutoResetChargingMode: AutomationTask {
         let postName = String(
             localized: params.afterResetChargingMode.localizedTitle
         )
+
+        // Before applying the after-reset mode, check whether the user
+        // already changed the charging mode manually away from the one
+        // we set at start. If so, respect that — terminate without
+        // overwriting the user's choice. Failure to fetch is treated as
+        // "no override detected" so a transient network issue never
+        // prevents the normal reset path.
+        let currentMode: ChargingMode? = await {
+            do {
+                let overview = try await host.energyManager
+                    .fetchOverviewData(lastOverviewData: nil)
+                return overview.chargingStations
+                    .first { $0.id == params.chargingDeviceId }?
+                    .chargingMode
+            } catch {
+                host.logDebug(
+                    message:
+                        "Auto-reset Charging Mode: pre-reset overview fetch failed (\(error.localizedDescription)) — skipping user-override check"
+                )
+                return nil
+            }
+        }()
+
+        if let currentMode,
+           currentMode != params.activeChargingMode {
+            let currentName = String(
+                localized: currentMode.localizedTitle
+            )
+            host.logInfo(
+                message:
+                    "Auto-reset Charging Mode: user override detected — charging station is on \(currentName), expected the active mode. Leaving station as configured by the user, NOT applying \(postName)."
+            )
+
+            var stopped = liveState
+            stopped.stopReason = .userOverride
+            host.logSuccess()
+
+            return AutomationState(
+                automation: state.automation!,
+                status: .finishedSuccessful,
+                nextTaskRun: nil,
+                autoResetChargingMode: stopped
+            )
+        }
+
         host.logDebug(
             message:
                 "Auto-reset Charging Mode: reset time reached — switching charging station to \(postName)"

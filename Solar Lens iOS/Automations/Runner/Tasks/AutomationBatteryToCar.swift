@@ -110,6 +110,21 @@ final class AutomationBatteryToCar: AutomationTask {
             )
         }
 
+        // Stop condition (d): user changed the charging mode manually
+        // away from `.constantCurrent`. Respect that — terminate
+        // without applying the fallback mode, leaving the charging
+        // station exactly as the user configured it. Important:
+        // checked BEFORE `retuneAmperage` so the next tick can't
+        // overwrite the user's manual change with another
+        // `.constantCurrent` set-call.
+        if shouldStopOnUserOverride(telemetry: t) {
+            liveState.stopReason = .userOverride
+            return await stopRun(
+                host: host, parameters: params,
+                state: state, liveState: liveState, telemetry: t
+            )
+        }
+
         await retuneAmperage(
             host: host, params: params,
             telemetry: t, liveState: &liveState
@@ -345,6 +360,26 @@ final class AutomationBatteryToCar: AutomationTask {
         return station.currentPower <= carNotChargingPowerThresholdW
     }
 
+    /// True once telemetry reports a charging mode other than
+    /// `.constantCurrent` — the only mode this automation ever sets.
+    /// Any divergence is treated as a user-initiated manual change
+    /// (e.g. tapped a mode in the Solar Manager app) and should
+    /// terminate the run *without* overwriting the user's choice with
+    /// the fallback mode.
+    ///
+    /// Guarded on `station != nil` so a transient missing-station tick
+    /// doesn't false-positive. No grace window: at the next tick after
+    /// `startRun()` returns, the charging station already reflects the
+    /// `.constantCurrent` set call (the API is synchronous on the
+    /// backend), so a non-matching mode at *any* monitor tick is a
+    /// real user override.
+    private func shouldStopOnUserOverride(
+        telemetry t: Telemetry
+    ) -> Bool {
+        guard let station = t.station else { return false }
+        return station.chargingMode != .constantCurrent
+    }
+
     private func shouldStopOnSoftFloor(
         liveState: AutomationBatteryToCarState,
         params: AutomationBatteryToCarParameters,
@@ -535,32 +570,52 @@ final class AutomationBatteryToCar: AutomationTask {
             localized: params.fallbackChargingMode.localizedTitle
         )
         let reasonName = describe(stopReason: liveState.stopReason)
-        host.logDebug(
-            message:
-                "Battery to Car: stop triggered (\(reasonName)) — switching charging station to \(fallbackName)"
-        )
 
-        do {
-            _ = try await host.energyManager.setCarChargingMode(
-                sensorId: params.chargingDeviceId,
-                carCharging: ControlCarChargingRequest(
-                    chargingMode: params.fallbackChargingMode
-                )
-            )
-        } catch {
-            host.logError(
+        // .userOverride means the user already chose a different mode
+        // themselves. Sending the fallback mode now would overwrite
+        // that — exactly what the user did NOT want.
+        let skipFallbackApply = liveState.stopReason == .userOverride
+
+        if skipFallbackApply {
+            host.logDebug(
                 message:
-                    "Battery to Car: failed to switch charging station to fallback mode \(fallbackName): \(error.localizedDescription) — charging station may stay on constant current. Please check the Solar Manager app."
+                    "Battery to Car: stop triggered (\(reasonName)) — leaving charging station on user-chosen mode, NOT applying fallback"
             )
+        } else {
+            host.logDebug(
+                message:
+                    "Battery to Car: stop triggered (\(reasonName)) — switching charging station to \(fallbackName)"
+            )
+
+            do {
+                _ = try await host.energyManager.setCarChargingMode(
+                    sensorId: params.chargingDeviceId,
+                    carCharging: ControlCarChargingRequest(
+                        chargingMode: params.fallbackChargingMode
+                    )
+                )
+            } catch {
+                host.logError(
+                    message:
+                        "Battery to Car: failed to switch charging station to fallback mode \(fallbackName): \(error.localizedDescription) — charging station may stay on constant current. Please check the Solar Manager app."
+                )
+            }
         }
 
         var stopped = liveState
         stopped.endSoc = t.currentBatteryLevel
 
-        host.logInfo(
-            message:
-                "Battery to Car: stopped at \(t.currentBatteryLevel)% (\(reasonName)) — transferred ≈ \(String(format: "%.2f", stopped.kWhTransferred)) kWh, charging station switched to \(fallbackName)"
-        )
+        if skipFallbackApply {
+            host.logInfo(
+                message:
+                    "Battery to Car: stopped at \(t.currentBatteryLevel)% (\(reasonName)) — transferred ≈ \(String(format: "%.2f", stopped.kWhTransferred)) kWh, charging station left on user-chosen mode"
+            )
+        } else {
+            host.logInfo(
+                message:
+                    "Battery to Car: stopped at \(t.currentBatteryLevel)% (\(reasonName)) — transferred ≈ \(String(format: "%.2f", stopped.kWhTransferred)) kWh, charging station switched to \(fallbackName)"
+            )
+        }
         host.logSuccess()
 
         return AutomationState(
@@ -594,6 +649,7 @@ final class AutomationBatteryToCar: AutomationTask {
         case .capped:           return "grid import unavoidable at minimum amps"
         case .cancelled:        return "cancelled by user"
         case .carNotCharging:   return "charging station drew no power past grace window — car likely full or not connected"
+        case .userOverride:     return "user changed the charging mode manually"
         case .none:             return "unknown reason"
         }
     }

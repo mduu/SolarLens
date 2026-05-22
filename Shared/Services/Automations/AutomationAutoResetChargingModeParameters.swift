@@ -27,6 +27,12 @@ struct AutomationAutoResetChargingModeParameters: Codable, Sendable {
 enum AutomationAutoResetChargingModeStopReason: String, Codable, Sendable {
     case resetCompleted
     case cancelled
+    /// Charging station's reported mode is no longer
+    /// `params.activeChargingMode`. Strong signal the user changed
+    /// the mode manually; we respect that, terminate, and **do not**
+    /// apply the after-reset mode — the charging station is left
+    /// exactly as the user configured it.
+    case userOverride
 }
 
 struct AutomationAutoResetChargingModeState: Codable, Sendable {

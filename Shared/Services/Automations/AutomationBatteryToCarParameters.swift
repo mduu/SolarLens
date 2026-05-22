@@ -29,6 +29,12 @@ enum AutomationBatteryToCarStopReason: String, Codable, Sendable {
     /// window after start — strong signal the car is full or not
     /// plugged in. Auto-cancel and notify.
     case carNotCharging
+    /// Charging station's reported mode is no longer the one the
+    /// automation set (constant current). Strong signal the user
+    /// changed the mode manually; we respect that, terminate, and
+    /// **do not** apply the fallback mode — the charging station is
+    /// left exactly as the user configured it.
+    case userOverride
 }
 
 struct AutomationBatteryToCarState: Codable, Sendable {
