@@ -3,7 +3,6 @@ import SwiftUI
 struct OverviewScreen: View {
     @Environment(CurrentBuildingState.self) private var model
     @Environment(NavigationState.self) private var navigationState
-    @Environment(AutomationStateStore.self) private var automationStateStore
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var showSettings: Bool = false
@@ -147,25 +146,8 @@ struct OverviewScreen: View {
                     .padding(.bottom, -7)
                 }  // :VStack
 
-                // Additive top-trailing layer — does not touch any of the
-                // existing layout layers above. Renders the automation
-                // running icon when an automation is active on the iPhone.
-                VStack {
-                    HStack {
-                        Spacer()
-                        if let active = automationStateStore.snapshot?
-                            .activeAutomation
-                        {
-                            AutomationRunningIndicator(
-                                activeAutomation: active
-                            ) {
-                                navigationState.navigate(to: .automations)
-                            }
-                            .padding(.trailing, 8)
-                        }
-                    }
-                    Spacer()
-                }
+                // No watch-side automation UI in 4.1 — see
+                // SolarManagerWatchApp.AppDelegate for context.
             }  // :ZStack
         }  // :VStack
     }
@@ -194,7 +176,6 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
-        .environment(AutomationStateStore.shared)
 }
 
 #Preview("Stale data") {
@@ -224,7 +205,6 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
-        .environment(AutomationStateStore.shared)
 }
 
 #Preview("Loading") {
@@ -251,7 +231,6 @@ struct OverviewScreen: View {
             )
         )
         .environment(NavigationState.init())
-        .environment(AutomationStateStore.shared)
 }
 
 #Preview("German") {

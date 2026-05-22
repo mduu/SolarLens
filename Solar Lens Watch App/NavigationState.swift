@@ -17,7 +17,6 @@ enum MainTab: Int, CaseIterable, Identifiable {
     case consumption = 3
     case battery = 4
     case grid = 5
-    case automations = 6
 
     var id: Self { self }
 }
