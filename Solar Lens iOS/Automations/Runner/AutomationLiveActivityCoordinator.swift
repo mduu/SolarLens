@@ -236,6 +236,16 @@ final class AutomationLiveActivityCoordinator {
         }
     }
 
+    /// Public wrapper around the stale-activity sweep. Used when the
+    /// caller knows there is no live automation to end, but a system
+    /// Live Activity might still be lingering (e.g. the Stop button
+    /// on a finished-but-still-visible LA was tapped while the
+    /// automation state had already been cleared on the iOS side).
+    func dismissAllStaleActivities(reason: String) async {
+        activity = nil
+        await endStaleActivities(reason: reason)
+    }
+
     /// Ends every system activity of our attributes type, regardless of
     /// state. Used right before requesting a new activity so we don't
     /// fight a lingering `.dismissed` activity for the visible slot.

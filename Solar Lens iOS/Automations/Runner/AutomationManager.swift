@@ -151,6 +151,21 @@ public final class AutomationManager: AutomationHost {
     public func cancelActiveAutomation() {
         guard let state = activeState,
               let params = activeTaskParameters else {
+            // No active automation, but the caller is still asking us
+            // to cancel something — most commonly the Stop button on
+            // a Live Activity that's still showing the previous run's
+            // post-stop linger (`dismissalPolicy: .after(.now + 120)`).
+            // Without this defensive sweep the tap would silently
+            // do nothing and the LA would sit there for the rest of
+            // its dismissal window. Tear down any system LA of our
+            // type immediately so the button actually does what the
+            // user expects.
+            Task {
+                await AutomationLiveActivityCoordinator.shared
+                    .dismissAllStaleActivities(
+                        reason: "cancel tapped with no active automation"
+                    )
+            }
             return
         }
         guard let task = state.automation?.getAutomationTask() else {
