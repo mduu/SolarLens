@@ -144,11 +144,23 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
     /// so a concurrent write from the diagnostics queue can't corrupt
     /// the bytes WatchConnectivity is reading.
     func exportLogToPhone() {
+        // Optimistic UI: flip to .sending immediately so the button
+        // disables and the status line shows progress. Any early-out
+        // below will reset to .failed with a reason.
+        Task { @MainActor in
+            DiagnosticsExportState.shared.status = .sending
+        }
         queue.async { [weak self] in
             guard let self else { return }
-            guard WCSession.isSupported() else { return }
+            guard WCSession.isSupported() else {
+                Self.publishExport(.failed("WatchConnectivity unsupported"))
+                return
+            }
             let session = WCSession.default
-            guard session.activationState == .activated else { return }
+            guard session.activationState == .activated else {
+                Self.publishExport(.failed("WCSession not activated yet"))
+                return
+            }
             guard let src = WatchDiagnostics.shared.logFileURL,
                 FileManager.default.fileExists(atPath: src.path)
             else {
@@ -156,6 +168,7 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
                     kind: "wc-export-skipped",
                     data: ["reason": "no log file"]
                 )
+                Self.publishExport(.failed("No log file yet"))
                 return
             }
             // Snapshot into a temp file. Name carries timestamp so the
@@ -175,6 +188,9 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
                     kind: "wc-export-failed",
                     data: ["stage": "copy", "error": error.localizedDescription]
                 )
+                Self.publishExport(
+                    .failed("Copy failed: \(error.localizedDescription)")
+                )
                 return
             }
             session.transferFile(
@@ -184,6 +200,10 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
             WatchDiagnostics.shared.appendBreadcrumb(
                 kind: "wc-export-started"
             )
+            // Status stays .sending until `session(_:didFinish:error:)`
+            // fires — for `transferFile` that callback runs only after
+            // the iPhone has actually received the file. So a sustained
+            // .sending means "queued, waiting for iPhone reachability."
         }
     }
 
@@ -194,13 +214,29 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
     ) {
         // Clean up the temp snapshot regardless of success.
         try? FileManager.default.removeItem(at: fileTransfer.file.fileURL)
+        let ok = error == nil
         WatchDiagnostics.shared.appendBreadcrumb(
             kind: "wc-export-done",
             data: [
-                "ok": error == nil,
+                "ok": ok,
                 "error": error?.localizedDescription ?? "",
             ]
         )
+        Self.publishExport(
+            ok
+                ? .sent
+                : .failed(error?.localizedDescription ?? "unknown")
+        )
+    }
+
+    /// Marshal a status update onto the main actor for the SwiftUI
+    /// observer to pick up.
+    private static func publishExport(
+        _ status: DiagnosticsExportState.Status
+    ) {
+        Task { @MainActor in
+            DiagnosticsExportState.shared.status = status
+        }
     }
 
     // MARK: - Sending commands

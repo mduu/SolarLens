@@ -7,7 +7,7 @@ import SwiftUI
 struct DiagnosticsView: View {
     @State private var content: String = ""
     @State private var showClearConfirm = false
-    @State private var exportFeedback: String?
+    @State private var exportObserver = DiagnosticsExportState.shared
 
     var body: some View {
         ScrollView {
@@ -36,20 +36,14 @@ struct DiagnosticsView: View {
 
                 Button {
                     AutomationWatchSession.shared.exportLogToPhone()
-                    exportFeedback = String(
-                        localized: "Sending to iPhone…"
-                    )
                 } label: {
                     Label("Send to iPhone", systemImage: "iphone.gen3")
                 }
                 .buttonBorderShape(.roundedRectangle)
                 .tint(.accent)
+                .disabled(exportObserver.status == .sending)
 
-                if let exportFeedback {
-                    Text(exportFeedback)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
+                exportStatusLine
 
                 Button(role: .destructive) {
                     showClearConfirm = true
@@ -75,6 +69,51 @@ struct DiagnosticsView: View {
             content = WatchDiagnostics.shared.readAll()
         }
     }
+
+    @ViewBuilder
+    private var exportStatusLine: some View {
+        switch exportObserver.status {
+        case .idle:
+            EmptyView()
+        case .sending:
+            Label("Sending to iPhone…", systemImage: "arrow.up.circle")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        case .sent:
+            Label("Sent — open Solar Lens on iPhone → Settings → Activity log from Watch.", systemImage: "checkmark.circle.fill")
+                .font(.caption2)
+                .foregroundStyle(.green)
+        case .failed(let message):
+            Label(
+                "Send failed: \(message)",
+                systemImage: "exclamationmark.triangle.fill"
+            )
+            .font(.caption2)
+            .foregroundStyle(.red)
+        }
+    }
+}
+
+/// Observable status of the last "Send to iPhone" export attempt.
+/// `AutomationWatchSession` writes here from its WCSession callbacks
+/// (via `Task { @MainActor in ... }`); `DiagnosticsView` reads it to
+/// surface real feedback after the asynchronous transfer completes.
+@MainActor
+@Observable
+final class DiagnosticsExportState {
+
+    enum Status: Equatable {
+        case idle
+        case sending
+        case sent
+        case failed(String)
+    }
+
+    static let shared = DiagnosticsExportState()
+
+    var status: Status = .idle
+
+    private init() {}
 }
 
 #Preview {

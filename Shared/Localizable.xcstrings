@@ -21570,6 +21570,62 @@
           }
         }
       }
+    },
+    "Sent — open Solar Lens on iPhone → Settings → Activity log from Watch." : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendt — åbn Solar Lens på iPhone → Indstillinger → Aktivitetslog fra uret."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesendet — öffne Solar Lens auf dem iPhone → Einstellungen → Aktivitätsprotokoll von der Watch."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyé — ouvrez Solar Lens sur l’iPhone → Réglages → Journal d’activité depuis la Watch."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviato — apri Solar Lens su iPhone → Impostazioni → Registro attività dall’orologio."
+          }
+        }
+      }
+    },
+    "Send failed: %@" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send mislykkedes: %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senden fehlgeschlagen: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de l’envoi : %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invio non riuscito: %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
