@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(CurrentBuildingState.self) var viewModel
     @Environment(NavigationState.self) var navigationState
+    @Environment(AutomationStateStore.self) var automationStateStore
     @State var showAppRateRequest = AppStoreReviewManager.shared
         .checkAndRequestReview()
     @State private var loginCredentialsCheckTimer: Timer?
@@ -129,6 +130,20 @@ struct ContentView: View {
                                 }  // :ToolbarItem
                             }  // :.toolbar
                             .tag(5)
+
+                        AutomationsScreen()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    HStack {
+                                        HomeButton()
+                                        Text("Automation")
+                                            .foregroundColor(.orange)
+                                            .font(.headline)
+                                        Spacer()
+                                    }
+                                }
+                            }
+                            .tag(6)
 
                     }  // :TabView
                     .tabViewStyle(.verticalPage(transitionStyle: .blur))
