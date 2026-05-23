@@ -4,6 +4,7 @@ struct SettingsView: View {
     @Environment(CurrentBuildingState.self) var model: CurrentBuildingState
     @State private var showConfirmation = false
     @State private var showRateApp = false
+    @State private var showDiagnostics = false
 
     var body: some View {
         ScrollView {
@@ -43,6 +44,16 @@ struct SettingsView: View {
                 .foregroundColor(.accent)
                 .sheet(isPresented: $showRateApp) {
                     AppReviewRequestView()
+                }
+
+                Button("Activity log", systemImage: "doc.text.magnifyingglass") {
+                    showDiagnostics = true
+                }
+                .labelStyle(.titleAndIcon)
+                .buttonBorderShape(.roundedRectangle)
+                .foregroundColor(.accent)
+                .sheet(isPresented: $showDiagnostics) {
+                    DiagnosticsView()
                 }
 
                 HStack {

@@ -56,6 +56,7 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
             self.didActivate = true
             WCSession.default.delegate = self
             WCSession.default.activate()
+            WatchDiagnostics.shared.appendBreadcrumb(kind: "wc-start")
         }
     }
 
@@ -132,6 +133,76 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
         }
     }
 
+    // MARK: - Diagnostics export
+
+    /// Ships the current `watch-diagnostics.log` to the iPhone via
+    /// `WCSession.transferFile`. iOS persists it and surfaces it under
+    /// Settings → Activity log. Best-effort: silently no-ops if the
+    /// session isn't activated or the log doesn't exist yet.
+    ///
+    /// We snapshot the live log into a temp file before transferring
+    /// so a concurrent write from the diagnostics queue can't corrupt
+    /// the bytes WatchConnectivity is reading.
+    func exportLogToPhone() {
+        queue.async { [weak self] in
+            guard let self else { return }
+            guard WCSession.isSupported() else { return }
+            let session = WCSession.default
+            guard session.activationState == .activated else { return }
+            guard let src = WatchDiagnostics.shared.logFileURL,
+                FileManager.default.fileExists(atPath: src.path)
+            else {
+                WatchDiagnostics.shared.appendBreadcrumb(
+                    kind: "wc-export-skipped",
+                    data: ["reason": "no log file"]
+                )
+                return
+            }
+            // Snapshot into a temp file. Name carries timestamp so the
+            // iPhone-side filename is informative.
+            let ts = Int(Date().timeIntervalSince1970)
+            let tempDir = FileManager.default.temporaryDirectory
+            let dest = tempDir.appendingPathComponent(
+                "watch-diagnostics-\(ts).log"
+            )
+            do {
+                if FileManager.default.fileExists(atPath: dest.path) {
+                    try FileManager.default.removeItem(at: dest)
+                }
+                try FileManager.default.copyItem(at: src, to: dest)
+            } catch {
+                WatchDiagnostics.shared.appendBreadcrumb(
+                    kind: "wc-export-failed",
+                    data: ["stage": "copy", "error": error.localizedDescription]
+                )
+                return
+            }
+            session.transferFile(
+                dest,
+                metadata: ["kind": "diagnostics-log"]
+            )
+            WatchDiagnostics.shared.appendBreadcrumb(
+                kind: "wc-export-started"
+            )
+        }
+    }
+
+    func session(
+        _ session: WCSession,
+        didFinish fileTransfer: WCSessionFileTransfer,
+        error: (any Error)?
+    ) {
+        // Clean up the temp snapshot regardless of success.
+        try? FileManager.default.removeItem(at: fileTransfer.file.fileURL)
+        WatchDiagnostics.shared.appendBreadcrumb(
+            kind: "wc-export-done",
+            data: [
+                "ok": error == nil,
+                "error": error?.localizedDescription ?? "",
+            ]
+        )
+    }
+
     // MARK: - Sending commands
 
     func startAutomation(
@@ -201,6 +272,13 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
         activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
     ) {
+        WatchDiagnostics.shared.appendBreadcrumb(
+            kind: "wc-activated",
+            data: [
+                "state": activationState.rawValue,
+                "error": error?.localizedDescription ?? "",
+            ]
+        )
         publishIfSnapshot(in: session.receivedApplicationContext)
         queue.async { [weak self] in self?.completePendingIfDrained() }
     }
@@ -209,6 +287,7 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
         _ session: WCSession,
         didReceiveApplicationContext applicationContext: [String: Any]
     ) {
+        WatchDiagnostics.shared.appendBreadcrumb(kind: "wc-appcontext")
         publishIfSnapshot(in: applicationContext)
         queue.async { [weak self] in self?.completePendingIfDrained() }
     }
@@ -217,6 +296,7 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
         _ session: WCSession,
         didReceiveUserInfo userInfo: [String: Any] = [:]
     ) {
+        WatchDiagnostics.shared.appendBreadcrumb(kind: "wc-userinfo")
         // We don't currently use userInfo for inbound state, but the
         // OS still routes a background task here when the iPhone
         // chose `transferUserInfo`. Drain-check so the task can

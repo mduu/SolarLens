@@ -77,6 +77,10 @@ struct SettingsScreen: View {
             Section(header: Text("Integrations")) {
                 integrationsSectionContent
             }
+
+            Section(header: Text("Diagnostics")) {
+                diagnosticsSectionContent
+            }
         }
         .listStyle(.grouped)
     }
@@ -98,6 +102,10 @@ struct SettingsScreen: View {
 
                 Section(header: Text("Integrations")) {
                     integrationsSectionContent
+                }
+
+                Section(header: Text("Diagnostics")) {
+                    diagnosticsSectionContent
                 }
             }
             .listStyle(.grouped)
@@ -179,6 +187,18 @@ struct SettingsScreen: View {
             color: .orange,
             isOn: settings.appearanceUseWarmBackgroundWithDefault
         )
+    }
+
+    @ViewBuilder
+    private var diagnosticsSectionContent: some View {
+        SettingNavigationItem(
+            imageName: "applewatch.radiowaves.left.and.right",
+            text: "Activity log from Watch",
+            color: .gray,
+            disabled: false
+        ) {
+            WatchLogsView()
+        }
     }
 
     @ViewBuilder

@@ -171,6 +171,28 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
         }
     }
 
+    /// Receives the rolling activity log shipped from the watch via
+    /// `DiagnosticsView`. We copy the temp file out of the
+    /// WatchConnectivity-controlled location immediately (the OS
+    /// reclaims it shortly after this callback returns) into the iOS
+    /// app Documents dir, where Settings → Activity log can list and
+    /// share it.
+    nonisolated func session(
+        _ session: WCSession,
+        didReceive file: WCSessionFile
+    ) {
+        let metadata = file.metadata ?? [:]
+        guard metadata["kind"] as? String == "diagnostics-log" else { return }
+        let src = file.fileURL
+        do {
+            let dest = try WatchLogsStore.shared
+                .ingest(temporaryFile: src)
+            print("WatchBridge: received diagnostics log → \(dest.path)")
+        } catch {
+            print("WatchBridge: failed to ingest diagnostics log: \(error)")
+        }
+    }
+
     @MainActor
     private func handleCommand(payload: [String: Any]) -> [String: Any] {
         guard let data = payload[AutomationWCKey.command] as? Data else {

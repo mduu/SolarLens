@@ -5,6 +5,8 @@ import WatchKit
 struct SolarManagerWatch_Watch_AppApp: App {
     @WKApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    @Environment(\.scenePhase) private var scenePhase
+
     @State var currentBuildingState = CurrentBuildingState(energyManagerClient: SolarManager.shared)
     @State var navigationState = NavigationState()
     @State var automationStateStore = AutomationStateStore.shared
@@ -19,13 +21,38 @@ struct SolarManagerWatch_Watch_AppApp: App {
                 .environment(navigationState)
                 .environment(automationStateStore)
         }
+        .onChange(of: scenePhase) { old, new in
+            WatchDiagnostics.shared.appendBreadcrumb(
+                kind: "scenePhase",
+                data: [
+                    "from": describe(scenePhase: old),
+                    "to": describe(scenePhase: new),
+                ]
+            )
+            WatchDiagnostics.shared.scenePhaseChanged(
+                toActive: new == .active
+            )
+        }
         // For testing specific locale, uncomment:
         // .environment(\.locale, Locale(identifier: "de"))
+    }
+
+    private func describe(scenePhase: ScenePhase) -> String {
+        switch scenePhase {
+        case .active: return "active"
+        case .inactive: return "inactive"
+        case .background: return "background"
+        @unknown default: return "unknown"
+        }
     }
 }
 
 class AppDelegate: NSObject, WKApplicationDelegate {
     func applicationDidFinishLaunching() {
+        // Start lifecycle breadcrumbs first so we capture the launch
+        // marker before anything else runs.
+        WatchDiagnostics.shared.start()
+
         // Per Apple's guidance the WCSession is activated once and
         // stays active for the rest of the process lifetime.
         AutomationWatchSession.shared.start()
@@ -44,11 +71,19 @@ class AppDelegate: NSObject, WKApplicationDelegate {
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
         for task in backgroundTasks {
             if task is WKWatchConnectivityRefreshBackgroundTask {
+                WatchDiagnostics.shared.appendBreadcrumb(
+                    kind: "bg-task",
+                    data: ["type": "WCRefresh"]
+                )
                 AutomationWatchSession.shared.handle(backgroundTask: task)
             } else {
                 // Snapshots, app refresh, URL session tasks — none of
                 // these are something we asked for. Acknowledge so
                 // the OS doesn't think we're stuck on them either.
+                WatchDiagnostics.shared.appendBreadcrumb(
+                    kind: "bg-task",
+                    data: ["type": String(describing: type(of: task))]
+                )
                 task.setTaskCompletedWithSnapshot(false)
             }
         }
