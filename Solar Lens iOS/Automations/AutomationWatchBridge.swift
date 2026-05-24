@@ -1,4 +1,5 @@
 internal import Foundation
+import UIKit
 import WatchConnectivity
 
 /// iOS-side WatchConnectivity glue for the Automation feature.
@@ -205,10 +206,43 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
             )
             switch cmd {
             case .start(let automation, let parameters):
+                // ActivityKit's `Activity.request(...)` for an in-app
+                // (non-push) Live Activity needs the app to be either
+                // foreground or holding an explicit background-runtime
+                // claim. WCSession message delivery alone gives us only
+                // a brief processing window; once it lapses the LA
+                // request silently gets deferred to the next `update()`
+                // — which is exactly the "appears minutes later" symptom
+                // users see when starting from the watch.
+                //
+                // Open a UIBackgroundTask so iOS keeps us alive long
+                // enough for AutomationLiveActivityCoordinator's async
+                // request-activity Task to complete. 8 s is comfortably
+                // longer than the typical `endStaleActivities` + request
+                // round-trip and well within the OS budget.
+                let app = UIApplication.shared
+                var bgTask: UIBackgroundTaskIdentifier = .invalid
+                bgTask = app.beginBackgroundTask(
+                    withName: "AutomationStartFromWatch"
+                ) {
+                    if bgTask != .invalid {
+                        app.endBackgroundTask(bgTask)
+                        bgTask = .invalid
+                    }
+                }
+
                 AutomationManager.shared.startAutomation(
                     automation: automation,
                     parameters: parameters
                 )
+
+                Task { @MainActor in
+                    try? await Task.sleep(for: .seconds(8))
+                    if bgTask != .invalid {
+                        app.endBackgroundTask(bgTask)
+                        bgTask = .invalid
+                    }
+                }
             case .cancel:
                 AutomationManager.shared.cancelActiveAutomation()
             }

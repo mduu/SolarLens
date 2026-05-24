@@ -89,6 +89,19 @@ public final class AutomationManager: AutomationHost {
                 if let nextRun = activeState?.nextTaskRun, nextRun < Date() {
                     Task { await self.runActiveAutomation() }
                 }
+                // Safety net for the watch-start flow: if the Live
+                // Activity wasn't created at start time (most often
+                // because the initial Activity.request was rejected from
+                // background context), the coordinator's lazy-start
+                // inside `update()` will pick it up now that we're
+                // foreground. Cheap no-op if the LA is already up.
+                if let state = activeState,
+                    let params = activeTaskParameters
+                {
+                    AutomationLiveActivityCoordinator.shared.update(
+                        state: state, parameters: params
+                    )
+                }
             }
             ensureForegroundTimerStarted()
         case .inactive:
