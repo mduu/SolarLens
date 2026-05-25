@@ -34,17 +34,24 @@ public struct NotifyOnBatteryLevelPayload: Codable, Hashable, Sendable {
     /// without the runner being involved.
     public var forecastedTargetAt: Date?
 
+    /// Latest house-battery charge rate in watts. Drives the "Trend"
+    /// metric on the LA card, mirroring the in-app running card.
+    /// `nil` before the first telemetry tick.
+    public var lastBatteryChargeRateW: Int?
+
     public init(
         targetBatteryLevel: Int,
         comparison: Comparison,
         lastBatteryLevel: Int?,
         startedAt: Date,
-        forecastedTargetAt: Date?
+        forecastedTargetAt: Date?,
+        lastBatteryChargeRateW: Int? = nil
     ) {
         self.targetBatteryLevel = targetBatteryLevel
         self.comparison = comparison
         self.lastBatteryLevel = lastBatteryLevel
         self.startedAt = startedAt
         self.forecastedTargetAt = forecastedTargetAt
+        self.lastBatteryChargeRateW = lastBatteryChargeRateW
     }
 }

@@ -126,6 +126,7 @@
 				Services/Automation.swift,
 				Services/AutomationLiveActivityAttributes.swift,
 				Services/AutoResetChargingModePayload.swift,
+				Services/Automations/BatteryRateFormatter.swift,
 				Services/BatteryToCarPayload.swift,
 				Services/NotifyOnBatteryLevelPayload.swift,
 			);

@@ -16,6 +16,11 @@ public struct BatteryToCarPayload: Codable, Hashable {
     /// a native `Text(timerInterval:)` countdown so the ETA ticks down
     /// without the runner being involved.
     public var forecastedFloorAt: Date?
+    /// Latest house-battery charge rate in watts. Positive = charging,
+    /// negative = discharging, near-zero = idle. Drives the "Trend"
+    /// metric on the LA card, mirroring the in-app running card.
+    /// `nil` before the first telemetry tick.
+    public var lastBatteryChargeRateW: Int?
 
     public init(
         batterySoc: Int,
@@ -23,7 +28,8 @@ public struct BatteryToCarPayload: Codable, Hashable {
         stationPowerW: Int,
         currentAmps: Int,
         kWhTransferred: Double,
-        forecastedFloorAt: Date?
+        forecastedFloorAt: Date?,
+        lastBatteryChargeRateW: Int? = nil
     ) {
         self.batterySoc = batterySoc
         self.floorSoc = floorSoc
@@ -31,5 +37,6 @@ public struct BatteryToCarPayload: Codable, Hashable {
         self.currentAmps = currentAmps
         self.kWhTransferred = kWhTransferred
         self.forecastedFloorAt = forecastedFloorAt
+        self.lastBatteryChargeRateW = lastBatteryChargeRateW
     }
 }
