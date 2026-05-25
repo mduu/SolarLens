@@ -148,25 +148,48 @@ final class AutomationNotifyOnBatteryLevel: AutomationTask {
             $0 > 0 ? Date().addingTimeInterval($0) : nil
         }
 
+        // When the threshold is imminent, do TWO things:
+        //   1. Pre-arm a calendar-triggered backstop notification at
+        //      the predicted moment (delivers even if iOS doesn't grant
+        //      us BG runtime).
+        //   2. **Re-schedule the next runner tick to that same moment
+        //      (plus a 30 s settle margin)** instead of waiting the full
+        //      monitorInterval. Without this, the backstop notification
+        //      can fire while the runner still has minutes to wait
+        //      until its next normal tick — so the user sees the
+        //      notification but the LA / in-app card still shows the
+        //      automation as running for several more minutes.
+        let nextTaskRun: Date
         if let s = secondsToTarget, s > 0, s <= imminentForecastWindow {
+            let forecastedAt = Date().addingTimeInterval(s)
             scheduleThresholdDueNotification(
-                at: Date().addingTimeInterval(s),
+                at: forecastedAt,
                 params: params
             )
+            let forecastedTick = forecastedAt.addingTimeInterval(30)
+            nextTaskRun = min(regularNext, forecastedTick)
             host.logDebug(
                 message:
-                    "Notify on battery level: forecast threshold in \(Int(s))s — pre-scheduling backstop notification (regular tick cadence unchanged)"
+                    "Notify on battery level: forecast threshold in \(Int(s))s — backstop scheduled, next tick aligned to \(format(date: nextTaskRun))"
             )
         } else {
             cancelThresholdDueNotification()
+            nextTaskRun = regularNext
         }
 
         return AutomationState(
             automation: fullState.automation!,
             status: .running,
-            nextTaskRun: regularNext,
+            nextTaskRun: nextTaskRun,
             notifyOnBatteryLevel: liveState
         )
+    }
+
+    private func format(date: Date) -> String {
+        let f = DateFormatter()
+        f.dateStyle = .none
+        f.timeStyle = .medium
+        return f.string(from: date)
     }
 
     private func scheduleThresholdDueNotification(

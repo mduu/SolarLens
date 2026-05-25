@@ -52,6 +52,10 @@ public final class AutomationManager: AutomationHost {
         activeState?.automation?.getAutomationTask()?.automationName ?? "-"
     }
     private var timer: Timer?
+    /// Last time the foreground-restore force-tick fired. Used as a
+    /// thrash floor in `handleScenePhaseChange(.active)` so flicking
+    /// between apps doesn't re-fetch overview data each time.
+    private var lastForegroundTickAt: Date?
     @ObservationIgnored
     private var lastBackgroundFireAt: Date?
 
@@ -78,15 +82,35 @@ public final class AutomationManager: AutomationHost {
         case .active:
             if activeState?.automation != nil {
                 logDebug(message: "App became active (foreground)")
-                // If a tick is overdue (most likely because iOS didn't
-                // fire BGAppRefreshTask in the meantime, or the user only
-                // briefly foregrounds the app between checks), catch up
-                // immediately instead of waiting up to 60 s for the next
-                // foreground timer fire. Without this, a series of short
-                // foreground sessions can leave the controller asleep
-                // for many minutes — long enough for the charging station to
-                // drain past the soft floor.
-                if let nextRun = activeState?.nextTaskRun, nextRun < Date() {
+                // Force a tick when the user surfaces the app, unless
+                // we've already ticked very recently. Catches three
+                // related cases:
+                //
+                //   - iOS didn't fire BGAppRefreshTask while we were
+                //     suspended → `nextTaskRun` is overdue.
+                //   - A pre-scheduled "threshold imminent" /
+                //     "floor due" notification just fired in the
+                //     background, the user opened the app to verify,
+                //     and the LA/UI still shows the previous tick's
+                //     pre-threshold data because we're not strictly
+                //     "overdue" yet.
+                //   - User opens the app between BG cycles just to
+                //     check progress — fresh data is the natural
+                //     expectation.
+                //
+                // The 30-second floor prevents repeated tick storms
+                // when the user toggles between apps in quick
+                // succession.
+                let forceTick: Bool = {
+                    if let last = lastForegroundTickAt,
+                        Date().timeIntervalSince(last) < 30
+                    {
+                        return false
+                    }
+                    return true
+                }()
+                if forceTick {
+                    lastForegroundTickAt = Date()
                     Task { await self.runActiveAutomation() }
                 }
                 // Safety net for the watch-start flow: if the Live
