@@ -3,6 +3,14 @@ Holds ideas for stories that we may do in the future. Refined stories can be fou
 
 ## Ideas
 
+### Notification: Improve battery-level notification timing
+- Customer feedback (v4.1): the battery-level notification often arrives much too late. Root cause analysis (v4.1 vs. v4.2 — mechanism unchanged): the 5-min poll only runs in background when iOS grants a BG refresh, which is opportunistic and often delayed by 15–60+ min. The 15-min linear forecast backstop only helps when (a) the app got a tick shortly before the threshold and (b) the extrapolated charge rate holds — it misses when charge/discharge fluctuates.
+- Improvement ideas, in ascending effort:
+  1. Widen the forecast-backstop window (e.g. 60 min instead of 15) and re-adjust the pre-scheduled notification on every tick — cheapest lever, no new infrastructure.
+  2. Staggered backstops (e.g. at forecasted −10 %, −5 %, and threshold) that replace each other as forecasts refresh.
+  3. Server-side pushes via the existing Azure Functions backend — the only path to genuinely reliable timing since it is independent of iOS BG scheduling; requires push registration, server-side monitor state, and APNs setup.
+- Applies to all threshold notifications, but battery level is where customers notice latency (slow-moving value, user waits for it).
+
 ### Notification: Smart plug on/off
 - Follow-up to story #5 (Notifications subsystem). Notify when a user-selected smart plug switches on or off.
 - Different shape from the current threshold-based notifications (boolean state, plug selection, no kW threshold) — slot into the existing `NotificationMonitor` model or branch the protocol if too divergent.
