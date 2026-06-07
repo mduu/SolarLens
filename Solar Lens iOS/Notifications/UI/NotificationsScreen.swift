@@ -10,17 +10,28 @@ import SwiftUI
 struct NotificationsScreen: View {
     @Environment(CurrentBuildingState.self) private var buildingState
     @State private var manager = NotificationManager.shared
+    @State private var history = NotificationHistoryManager.shared
     @State private var presentedSetupKind: SolarLensNotification?
+    @State private var historySheetPresented = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 14) {
                     headerCard
-                    ForEach(SolarLensNotification.allCases, id: \.self) {
-                        kind in
-                        if isAvailable(kind) {
-                            row(for: kind)
+                    // Two-column grid so more kinds fit above the fold.
+                    LazyVGrid(
+                        columns: [
+                            GridItem(.flexible(), spacing: 12),
+                            GridItem(.flexible()),
+                        ],
+                        spacing: 12
+                    ) {
+                        ForEach(SolarLensNotification.allCases, id: \.self) {
+                            kind in
+                            if isAvailable(kind) {
+                                row(for: kind)
+                            }
                         }
                     }
                 }
@@ -33,6 +44,32 @@ struct NotificationsScreen: View {
                     Text("Notifications")
                         .font(.title2.weight(.bold))
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        historySheetPresented = true
+                    } label: {
+                        // The badge must stay within the label's bounds —
+                        // toolbar items clip overflowing content. So we
+                        // reserve space around the icon (constant, to keep
+                        // the icon from shifting when the badge appears)
+                        // and place the badge inside it.
+                        ZStack(alignment: .topTrailing) {
+                            Image(systemName: "clock.arrow.circlepath")
+                                .padding(.top, 5)
+                                .padding(.trailing, 9)
+                            if history.unreadCount > 0 {
+                                Text("\(history.unreadCount)")
+                                    .font(.caption2.weight(.bold))
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 4)
+                                    .padding(.vertical, 1)
+                                    .background(Capsule().fill(.red))
+                            }
+                        }
+                    }
+                    .accessibilityLabel("Show notification history")
+                    .foregroundStyle(.secondary)
+                }
             }
             .sheet(item: $presentedSetupKind) { kind in
                 NotificationSetupSheet(
@@ -40,11 +77,17 @@ struct NotificationsScreen: View {
                     existing: manager.monitor(for: kind)
                 )
             }
+            .sheet(isPresented: $historySheetPresented) {
+                NotificationHistoryView()
+            }
         }
     }
 
+    /// Kept deliberately compact (footnote text, tight spacing) — the
+    /// header is explanatory chrome and shouldn't push the actual
+    /// notification rows below the fold.
     private var headerCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 8) {
                 Image(systemName: "bell.badge")
                 Text("Stay informed")
@@ -53,17 +96,10 @@ struct NotificationsScreen: View {
             Text(
                 "Get a notification when battery, solar, grid or charging crosses a level you choose. Run several in parallel."
             )
-            .font(.callout)
+            .font(.footnote)
             .foregroundStyle(.secondary)
-
-            Label(
-                "Keep Solar Lens open for the most precise timing.",
-                systemImage: "info.circle"
-            )
-            .font(.caption)
-            .foregroundStyle(.primary)
         }
-        .padding()
+        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 16).fill(.regularMaterial)

@@ -11,6 +11,7 @@ struct ContentView: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @State private var automationManager = AutomationManager.shared
     @State private var notificationManager = NotificationManager.shared
+    @State private var notificationHistory = NotificationHistoryManager.shared
     @State private var tabSelection = TabSelection.shared
 
     var body: some View {
@@ -43,18 +44,26 @@ struct ContentView: View {
                     )
                 }
 
+                // Badge semantics:
+                // - unread fired notifications → red badge with count
+                //   (cleared when the history sheet is opened)
+                // - no unread, but at least one kind enabled → plain red
+                //   dot (a space renders as a numberless badge)
+                // - neither → no badge
                 Tab(
                     "Notifications",
-                    systemImage: "bell.badge.fill",
+                    systemImage: "bell.badge",
                     value: AppTab.notifications
                 ) {
                     NotificationsScreen()
                         .topLevelTabSwipe()
                 }
                 .badge(
-                    notificationManager.hasActiveMonitors
-                        ? Text("\(notificationManager.activeMonitors.count)")
-                        : nil
+                    notificationHistory.unreadCount > 0
+                        ? Text("\(notificationHistory.unreadCount)")
+                        : (notificationManager.hasActiveMonitors
+                            ? Text(verbatim: " ")
+                            : nil)
                 )
 
                 Tab(

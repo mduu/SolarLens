@@ -1,9 +1,14 @@
 import SwiftUI
 
-/// Row shown when a given notification kind IS enabled.
+/// Tile shown when a given notification kind IS enabled.
 ///
-/// Single tap → edit (re-open the setup sheet). Disable button on the
-/// trailing edge removes the monitor.
+/// Single tap → edit (re-open the setup sheet). Disable button in the
+/// top-trailing corner removes the monitor.
+///
+/// Laid out as a compact grid tile (two columns on the Notifications
+/// screen): threshold + live value + arm state, in as little height as
+/// possible. The full fire history lives in `NotificationHistoryView`,
+/// so "last fired" is not repeated here.
 struct NotificationRunningRow: View {
     let monitor: NotificationMonitor
     let onDisable: () -> Void
@@ -11,66 +16,51 @@ struct NotificationRunningRow: View {
 
     var body: some View {
         Button(action: onEdit) {
-            HStack(alignment: .top, spacing: 16) {
-                Image(systemName: monitor.kind.iconSystemName)
-                    .font(.system(size: 36, weight: .regular))
-                    .foregroundStyle(.green)
-                    .symbolRenderingMode(.hierarchical)
-                    .frame(width: 44)
-                    .accessibilityHidden(true)
-
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Text(String(localized: monitor.kind.localizedTitleKey))
-                            .font(.headline)
-                        Spacer(minLength: 0)
-                        Button(role: .destructive) {
-                            onDisable()
-                        } label: {
-                            Image(systemName: "minus.circle.fill")
-                                .font(.title2)
-                                .foregroundStyle(.red.opacity(0.85))
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Disable notification")
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .top) {
+                    Image(systemName: monitor.kind.iconSystemName)
+                        .font(.system(size: 26, weight: .regular))
+                        .foregroundStyle(.green)
+                        .symbolRenderingMode(.hierarchical)
+                        .accessibilityHidden(true)
+                    Spacer(minLength: 0)
+                    Button(role: .destructive) {
+                        onDisable()
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(.red.opacity(0.85))
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Disable notification")
+                }
 
+                Text(String(localized: monitor.kind.localizedTitleKey))
+                    .font(.subheadline.weight(.semibold))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2, reservesSpace: true)
+
+                HStack(spacing: 6) {
                     Text(thresholdDescription)
                         .font(.subheadline.weight(.semibold))
-
-                    HStack(spacing: 16) {
-                        if let value = monitor.lastValue {
-                            metric(
-                                label: "Now",
-                                value: formatValue(value, for: monitor.kind)
-                            )
-                        }
-                        if let lastFired = monitor.lastFiredAt {
-                            metric(
-                                label: "Last fired",
-                                value: shortAgo(since: lastFired)
-                            )
-                        }
-                        switch monitor.armState {
-                        case .armed:
-                            metric(
-                                label: "State",
-                                value: String(localized: "Watching")
-                            )
-                        case .firedWaitingForReset:
-                            metric(
-                                label: "State",
-                                value: String(localized: "Waiting to re-arm")
-                            )
-                        }
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                    repeatBadge
+                    repeatIcon
                 }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    if let value = monitor.lastValue {
+                        Text(
+                            String(
+                                localized:
+                                    "Now: \(formatValue(value, for: monitor.kind))"
+                            )
+                        )
+                    }
+                    stateText
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
             }
-            .padding()
+            .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 16).fill(.regularMaterial)
@@ -93,30 +83,30 @@ struct NotificationRunningRow: View {
         return "\(comparator) \(formatValue(monitor.threshold, for: monitor.kind))"
     }
 
-    private var repeatBadge: some View {
-        HStack(spacing: 4) {
-            Image(
-                systemName: monitor.repeatMode == .once
-                    ? "1.circle" : "arrow.triangle.2.circlepath"
-            )
-            Text(
-                monitor.repeatMode == .once
-                    ? "Notify once" : "Notify on every re-occurrence"
-            )
+    @ViewBuilder
+    private var stateText: some View {
+        switch monitor.armState {
+        case .armed:
+            Text("Watching")
+        case .firedWaitingForReset:
+            Text("Waiting to re-arm")
         }
-        .font(.caption2)
-        .foregroundStyle(.secondary)
     }
 
-    private func metric(label: LocalizedStringKey, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 1) {
-            Text(label)
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-            Text(value)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.primary)
-        }
+    /// Icon-only repeat mode (tile width is scarce); the meaning is
+    /// spelled out for VoiceOver.
+    private var repeatIcon: some View {
+        Image(
+            systemName: monitor.repeatMode == .once
+                ? "1.circle" : "arrow.triangle.2.circlepath"
+        )
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .accessibilityLabel(
+            monitor.repeatMode == .once
+                ? Text("Notify once")
+                : Text("Notify on every re-occurrence")
+        )
     }
 
     private func formatValue(
@@ -126,14 +116,5 @@ struct NotificationRunningRow: View {
             return "\(value)%"
         }
         return String(format: "%.1f kW", Double(value) / 1000.0)
-    }
-
-    private func shortAgo(since date: Date) -> String {
-        let secs = max(0, Int(Date().timeIntervalSince(date)))
-        if secs < 60 { return "\(secs)s" }
-        let m = secs / 60
-        if m < 60 { return "\(m)m" }
-        let h = m / 60
-        return "\(h)h"
     }
 }

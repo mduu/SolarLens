@@ -258,6 +258,16 @@ public final class NotificationManager {
         monitor.lastFiredAt = Date()
         monitor.fireCount += 1
         postFiredNotification(monitor: monitor)
+        NotificationHistoryManager.shared.record(
+            NotificationFiredEvent(
+                id: UUID(),
+                kind: monitor.kind,
+                value: monitor.lastValue ?? 0,
+                threshold: monitor.threshold,
+                comparison: monitor.comparison,
+                time: monitor.lastFiredAt ?? Date()
+            )
+        )
         cancelBatteryImminentBackstop(monitor: monitor)
         log(
             info:

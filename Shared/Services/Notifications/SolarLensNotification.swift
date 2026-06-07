@@ -71,6 +71,26 @@ extension SolarLensNotification {
         }
     }
 
+    /// One-glance blurb sized for the two-column grid tiles (fits two
+    /// caption lines at half-screen width). The full description
+    /// (`localizedDescriptionKey`) stays on the setup sheet.
+    public var localizedShortDescriptionKey: String.LocalizationValue {
+        switch self {
+        case .BatteryLevel:
+            return "When the house battery hits your level."
+        case .SolarProduction:
+            return "When solar production crosses your level."
+        case .GridExport:
+            return "When grid feed-in crosses your level."
+        case .GridImport:
+            return "When grid import crosses your level."
+        case .OverallConsumption:
+            return "When home consumption crosses your level."
+        case .ChargingThroughput:
+            return "When car charging power crosses your level."
+        }
+    }
+
     /// Short description shown on the idle card / setup-sheet footer.
     public var localizedDescriptionKey: String.LocalizationValue {
         switch self {
