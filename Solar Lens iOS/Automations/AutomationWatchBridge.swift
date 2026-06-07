@@ -76,6 +76,9 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
             _ = mgr.activeAutomation
             _ = mgr.activeStateSnapshot
             _ = mgr.activeParametersSnapshot
+            // Story #5: also observe NotificationManager so notification
+            // enable/disable/update propagates to the watch.
+            _ = NotificationManager.shared.activeMonitors
         } onChange: { [weak self] in
             Task { @MainActor in
                 self?.scheduleSnapshotPush()
@@ -130,7 +133,8 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
             schemaVersion: AutomationWatchSnapshot.currentSchemaVersion,
             activeAutomation: mgr.activeAutomation,
             state: mgr.activeStateSnapshot,
-            parameters: mgr.activeParametersSnapshot
+            parameters: mgr.activeParametersSnapshot,
+            notifications: NotificationManager.shared.activeMonitors
         )
     }
 
@@ -245,6 +249,12 @@ final class AutomationWatchBridge: NSObject, WCSessionDelegate {
                 }
             case .cancel:
                 AutomationManager.shared.cancelActiveAutomation()
+            case .enableNotification(let monitor):
+                NotificationManager.shared.enable(monitor)
+            case .updateNotification(let monitor):
+                NotificationManager.shared.update(monitor)
+            case .disableNotification(let id):
+                NotificationManager.shared.disable(id: id)
             }
             // Push back fresh state immediately so the watch reflects
             // the result without waiting for the debounce window.

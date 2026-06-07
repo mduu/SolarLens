@@ -3,12 +3,14 @@ import SwiftUI
 enum AppTab: Hashable {
     case now
     case automation
+    case notifications
     case statistics
 }
 
 struct ContentView: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @State private var automationManager = AutomationManager.shared
+    @State private var notificationManager = NotificationManager.shared
     @State private var tabSelection = TabSelection.shared
 
     var body: some View {
@@ -42,6 +44,20 @@ struct ContentView: View {
                 }
 
                 Tab(
+                    "Notifications",
+                    systemImage: "bell.badge.fill",
+                    value: AppTab.notifications
+                ) {
+                    NotificationsScreen()
+                        .topLevelTabSwipe()
+                }
+                .badge(
+                    notificationManager.hasActiveMonitors
+                        ? Text("\(notificationManager.activeMonitors.count)")
+                        : nil
+                )
+
+                Tab(
                     "Statistics",
                     systemImage: "chart.bar.fill",
                     value: AppTab.statistics
@@ -52,7 +68,6 @@ struct ContentView: View {
                     StatisticsScreen()
                 }
             }
-            .applyLiquidGlassTabBar()
             .onOpenURL { url in
                 handleDeepLink(url)
             }
@@ -67,6 +82,8 @@ struct ContentView: View {
         switch url.host {
         case "automation":
             tabSelection.selectedTab = .automation
+        case "notifications":
+            tabSelection.selectedTab = .notifications
         case "home", "now":
             tabSelection.selectedTab = .now
         case "statistics":
@@ -74,21 +91,6 @@ struct ContentView: View {
         default:
             break
         }
-    }
-}
-
-extension View {
-    @ViewBuilder
-    func applyLiquidGlassTabBar() -> some View {
-        #if os(iOS)
-        if #available(iOS 26.0, *) {
-            self.tabBarMinimizeBehavior(.onScrollDown)
-        } else {
-            self
-        }
-        #else
-        self
-        #endif
     }
 }
 

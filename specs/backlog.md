@@ -3,12 +3,21 @@ Holds ideas for stories that we may do in the future. Refined stories can be fou
 
 ## Ideas
 
+### Notification: Smart plug on/off
+- Follow-up to story #5 (Notifications subsystem). Notify when a user-selected smart plug switches on or off.
+- Different shape from the current threshold-based notifications (boolean state, plug selection, no kW threshold) — slot into the existing `NotificationMonitor` model or branch the protocol if too divergent.
+
+### Notification: Live Activity for the Battery-Level monitor
+- Story #5 dropped Live Activity support when migrating Notify-on-Battery-Level out of Automations. The pre-scheduled "forecast backstop" notification still fires at the predicted moment, so users still get a heads-up — but they no longer get the live Dynamic Island / Lock Screen countdown.
+- If user feedback shows this matters, port the existing `NotifyOnBatteryLevelPayload` / `NotifyOnBatteryLevelCardBody` LA pattern back over the new `NotificationMonitor` model.
+
 ### Re-style charging mode selection
 - Show more (all) charging modes without the need to scroll.
 - Make room for additional charging modes.
 - If a user have multiple charging station more of them get - at partially - visible.
 - Do this on the iOS and the watchOS app.
 - Make sure multiple charging stations still gets supported and listed below each other (as today).
+  
 ### Automation: Transfer from battery to car
 - In branch ``79-add-scenario-charge-car-from-battery-only`` there is a draft of a new scenario management. I am not happy with that implementation but there is draft implementation of a background worker (in ``ScenarioManager``). Maybe what makes sense for this implementation too.
 - A new tab on the mainscreen called "Automation"

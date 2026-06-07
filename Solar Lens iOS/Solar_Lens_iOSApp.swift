@@ -8,7 +8,18 @@ struct Solar_Lens_iOSApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        // One-shot migration of legacy NotifyOnBatteryLevel automation
+        // state into the new NotificationManager store. Must run BEFORE
+        // AutomationManager.restorePersistedState (called from its
+        // private init) reads the legacy keys, otherwise the now-removed
+        // Automation enum case would fail to decode and the running
+        // monitor would be silently dropped. See ADR-002.
+        NotificationMigration.runIfNeeded()
+
         AutomationManager.shared.registerBackgroundTask()
+        // Touch the shared NotificationManager so its init() restores
+        // any persisted monitors and the foreground timer arms itself.
+        _ = NotificationManager.shared
 
         // Make automation notifications visible while the app is in the
         // foreground — without this iOS only adds them to Notification
@@ -33,6 +44,8 @@ struct Solar_Lens_iOSApp: App {
                 .environment(currentBuildingState)
                 .onChange(of: scenePhase) { oldPhase, newPhase in
                     AutomationManager.shared
+                        .handleScenePhaseChange(oldPhase, newPhase)
+                    NotificationManager.shared
                         .handleScenePhaseChange(oldPhase, newPhase)
 
                     // Refresh OverviewData on return to foreground so any

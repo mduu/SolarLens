@@ -11,8 +11,6 @@ extension Automation {
             return AutomationBatteryToCar.shared
         case .AutoResetChargingMode:
             return AutomationAutoResetChargingMode.shared
-        case .NotifyOnBatteryLevel:
-            return AutomationNotifyOnBatteryLevel.shared
         }
     }
 

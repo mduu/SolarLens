@@ -132,7 +132,9 @@ public final class AutomationManager: AutomationHost {
             break
         case .background:
             stopTimer()
-            if activeState?.automation != nil {
+            if activeState?.automation != nil
+                || NotificationManager.shared.hasActiveMonitors
+            {
                 logDebug(
                     message: "App moved to background — scheduling BG refresh"
                 )
@@ -225,12 +227,6 @@ public final class AutomationManager: AutomationHost {
                 message:
                     "Automation \(activeAutomationName) cancelled by user — switching charging station to \(fallback)"
             )
-        } else if params.notifyOnBatteryLevel != nil {
-            // Monitoring-only — no charging station to switch back, just stop.
-            logInfo(
-                message:
-                    "Automation \(activeAutomationName) cancelled by user"
-            )
         } else {
             logInfo(
                 message:
@@ -296,14 +292,6 @@ public final class AutomationManager: AutomationHost {
                     nextTaskRun: nil,
                     autoResetChargingMode: s
                 )
-            } else if var s = self.activeState?.notifyOnBatteryLevel {
-                s.stopReason = .cancelled
-                self.activeState = AutomationState(
-                    automation: state.automation!,
-                    status: .finishedSuccessful,
-                    nextTaskRun: nil,
-                    notifyOnBatteryLevel: s
-                )
             }
             await self.terminateAutomation(reason: .cancelled)
             _ = task // silence unused warning
@@ -365,8 +353,10 @@ public final class AutomationManager: AutomationHost {
         }
         lastBackgroundFireAt = start
 
-        guard activeState?.automation?.getAutomationTask() != nil else {
-            logDebug(message: "BG fired but no automation active — skipping")
+        let hasAutomation = activeState?.automation?.getAutomationTask() != nil
+        let hasNotifications = NotificationManager.shared.hasActiveMonitors
+        guard hasAutomation || hasNotifications else {
+            logDebug(message: "BG fired but nothing to drain — skipping")
             task.setTaskCompleted(success: true)
             return
         }
@@ -382,14 +372,24 @@ public final class AutomationManager: AutomationHost {
         }
 
         Task {
-            await runActiveAutomation()
+            if hasAutomation {
+                await runActiveAutomation()
+            }
+            // Drain notifications on the same wake-up — single BG budget
+            // serves both subsystems. See ADR-002.
+            if hasNotifications {
+                await NotificationManager.shared
+                    .runOverdueMonitorsInBackground()
+            }
             let durationSec = Int(Date().timeIntervalSince(start))
             self.logDebug(
                 message: "BG tick completed in \(durationSec)s"
             )
             task.setTaskCompleted(success: true)
 
-            if activeState?.automation != nil {
+            if activeState?.automation != nil
+                || NotificationManager.shared.hasActiveMonitors
+            {
                 scheduleNextBackgroundCall()
             }
         }
@@ -398,14 +398,16 @@ public final class AutomationManager: AutomationHost {
     private func scheduleNextBackgroundCall() {
         let request = BGAppRefreshTaskRequest(identifier: identifier)
 
-        // Hint iOS with the best-known due date. Battery → Car keeps
-        // nextTaskRun at "now + 60 s" so this collapses to the previous
-        // behaviour. Auto-reset Charging Mode parks nextTaskRun at the
-        // user-chosen reset date hours away — telling iOS that lets it
-        // budget BG runtime for around that moment instead of waking us
-        // every 15–60 min for nothing.
+        // Hint iOS with the best-known due date — the minimum across
+        // the active automation's nextTaskRun and the earliest pending
+        // notification check. The two managers share this BG task
+        // identifier (ADR-002) so both contribute to the hint.
         let minimum = Date(timeIntervalSinceNow: 60)
-        let next = activeState?.nextTaskRun ?? minimum
+        let automationNext = activeState?.nextTaskRun
+        let notificationsNext =
+            NotificationManager.shared.earliestNextCheck
+        let candidates = [automationNext, notificationsNext].compactMap { $0 }
+        let next = candidates.min() ?? minimum
         request.earliestBeginDate = max(next, minimum)
 
         do {
@@ -519,13 +521,6 @@ public final class AutomationManager: AutomationHost {
             case .userOverride:     return .userOverride
             }
         }
-        if let reason = state.notifyOnBatteryLevel?.stopReason {
-            switch reason {
-            case .conditionMet:     return .conditionMet
-            case .timedOut:         return .timedOut
-            case .cancelled:        return .cancelled
-            }
-        }
         return .failed
     }
 
@@ -552,8 +547,6 @@ public final class AutomationManager: AutomationHost {
                         .resetDueNotificationId,
                     AutomationBatteryToCar
                         .softFloorDueNotificationId,
-                    AutomationNotifyOnBatteryLevel
-                        .thresholdDueNotificationId,
                 ]
             )
 
@@ -658,12 +651,6 @@ public final class AutomationManager: AutomationHost {
                   let p = params?.autoResetChargingMode {
             notificationKey = "automation.autoResetChargingMode"
             populateAutoResetChargingMode(
-                content: content, reason: reason, state: s, params: p
-            )
-        } else if let s = state?.notifyOnBatteryLevel,
-                  let p = params?.notifyOnBatteryLevel {
-            notificationKey = "automation.notifyOnBatteryLevel"
-            populateNotifyOnBatteryLevel(
                 content: content, reason: reason, state: s, params: p
             )
         } else {
@@ -796,75 +783,6 @@ public final class AutomationManager: AutomationHost {
             )
             content.body = String(
                 localized: "Charging station should now be on \(modeName)."
-            )
-        }
-    }
-
-    private func populateNotifyOnBatteryLevel(
-        content: UNMutableNotificationContent,
-        reason: TerminationReason,
-        state s: AutomationNotifyOnBatteryLevelState,
-        params p: AutomationNotifyOnBatteryLevelParameters
-    ) {
-        let level = s.lastBatteryLevel ?? 0
-        let comparator: String
-        switch p.comparison {
-        case .equalOrAbove: comparator = "≥"
-        case .equalOrBelow: comparator = "≤"
-        }
-
-        // The action button + tap-to-open routing both go through this
-        // category. The userInfo carries a deep link that the
-        // delegate's didReceive routes to the Now tab so the user lands
-        // on the main screen.
-        content.categoryIdentifier =
-            AutomationNotificationDelegate.openHomeCategoryId
-        content.userInfo = [
-            AutomationNotificationDelegate.deepLinkUserInfoKey:
-                "solarlens://home",
-        ]
-        content.interruptionLevel = .timeSensitive
-
-        switch reason {
-        case .conditionMet:
-            content.title = String(
-                localized: "Battery level reached"
-            )
-            content.body = String(
-                localized:
-                    "Your house battery is at \(level)% (target \(comparator) \(p.targetBatteryLevel)%)."
-            )
-        case .timedOut:
-            content.title = String(
-                localized: "Notify on battery level cancelled"
-            )
-            content.body = String(
-                localized:
-                    "24 hours passed and the battery never reached \(comparator) \(p.targetBatteryLevel)%. Last seen: \(level)%."
-            )
-        case .cancelled:
-            content.title = String(
-                localized: "Notify on battery level cancelled"
-            )
-            content.body = String(
-                localized: "Cancelled by you."
-            )
-        case .failed:
-            content.title = String(
-                localized: "Notify on battery level stopped"
-            )
-            content.body = String(
-                localized: "An error occurred while monitoring."
-            )
-        case .softFloorReached, .capped, .resetCompleted, .carNotCharging,
-            .userOverride:
-            // Not applicable to this automation, but compiler requires
-            // exhaustiveness.
-            content.title = String(
-                localized: "Notify on battery level stopped"
-            )
-            content.body = String(
-                localized: "Last seen: \(level)%."
             )
         }
     }

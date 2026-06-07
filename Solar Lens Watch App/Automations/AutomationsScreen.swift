@@ -27,7 +27,6 @@ struct AutomationsScreen: View {
 
     @State private var batteryToCarSetupPresented = false
     @State private var autoResetSetupPresented = false
-    @State private var notifyBatteryLevelSetupPresented = false
 
     var body: some View {
         ZStack {
@@ -58,10 +57,6 @@ struct AutomationsScreen: View {
             AutoResetChargingModeSetupSheet()
                 .environment(buildingState)
         }
-        .sheet(isPresented: $notifyBatteryLevelSetupPresented) {
-            NotifyOnBatteryLevelSetupSheet()
-                .environment(buildingState)
-        }
     }
 
     private var snapshot: AutomationWatchSnapshot? { store.snapshot }
@@ -81,7 +76,7 @@ struct AutomationsScreen: View {
     /// Stable canonical order — matches the iOS screen. Reordered at
     /// render time so the running automation lands first.
     private let canonicalOrder: [Automation] = [
-        .BatteryToCar, .AutoResetChargingMode, .NotifyOnBatteryLevel,
+        .BatteryToCar, .AutoResetChargingMode,
     ]
 
     private var orderedSlots: [Automation] {
@@ -96,7 +91,6 @@ struct AutomationsScreen: View {
         switch slot {
         case .BatteryToCar: batteryToCarSlot
         case .AutoResetChargingMode: autoResetSlot
-        case .NotifyOnBatteryLevel: notifyOnBatteryLevelSlot
         }
     }
 
@@ -144,25 +138,4 @@ struct AutomationsScreen: View {
         }
     }
 
-    @ViewBuilder
-    private var notifyOnBatteryLevelSlot: some View {
-        if snapshot?.activeAutomation == .NotifyOnBatteryLevel,
-           let runState = snapshot?.state?.notifyOnBatteryLevel,
-           let runParams = snapshot?.parameters?.notifyOnBatteryLevel
-        {
-            NotifyOnBatteryLevelRunningCard(
-                state: runState,
-                params: runParams,
-                onCancel: {
-                    AutomationWatchSession.shared.cancelActiveAutomation()
-                }
-            )
-        } else {
-            NotifyOnBatteryLevelCard(
-                isOtherActive: anotherIsActive,
-                isHouseBatteryMissing: noBattery,
-                onTap: { notifyBatteryLevelSetupPresented = true }
-            )
-        }
-    }
 }

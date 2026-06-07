@@ -60,13 +60,6 @@ enum DynamicIslandLayouts {
             )
             .padding(.horizontal, 4)
             .padding(.top, 2)
-        case .notifyOnBatteryLevel(let payload):
-            NotifyOnBatteryLevelCardBody(
-                payload: payload,
-                compact: true
-            )
-            .padding(.horizontal, 4)
-            .padding(.top, 2)
         }
     }
 

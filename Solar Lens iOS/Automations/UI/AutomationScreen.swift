@@ -5,7 +5,6 @@ struct AutomationScreen: View {
     @State private var manager = AutomationManager.shared
     @State private var batteryToCarSetupPresented = false
     @State private var autoResetSetupPresented = false
-    @State private var notifyBatteryLevelSetupPresented = false
     @State private var logSheetPresented = false
 
     var body: some View {
@@ -45,9 +44,6 @@ struct AutomationScreen: View {
             .sheet(isPresented: $autoResetSetupPresented) {
                 AutoResetChargingModeSetupSheet()
             }
-            .sheet(isPresented: $notifyBatteryLevelSetupPresented) {
-                NotifyOnBatteryLevelSetupSheet()
-            }
             .sheet(isPresented: $logSheetPresented) {
                 AutomationLogView()
             }
@@ -66,7 +62,6 @@ struct AutomationScreen: View {
         VStack(spacing: 12) {
             batteryToCarSlot
             autoResetSlot
-            notifyOnBatteryLevelSlot
         }
     }
 
@@ -125,32 +120,6 @@ struct AutomationScreen: View {
                 onTap: {
                     if !anotherIsActive && !noChargingStation {
                         autoResetSetupPresented = true
-                    }
-                }
-            )
-        }
-    }
-
-    @ViewBuilder
-    private var notifyOnBatteryLevelSlot: some View {
-        if manager.activeAutomation == .NotifyOnBatteryLevel,
-           let runState = manager.activeStateSnapshot?.notifyOnBatteryLevel,
-           let runParams = manager.activeParametersSnapshot?
-            .notifyOnBatteryLevel
-        {
-            NotifyOnBatteryLevelRunningCard(
-                state: runState,
-                params: runParams,
-                onCancel: { manager.cancelActiveAutomation() }
-            )
-            .padding(.horizontal, 4)
-        } else {
-            NotifyOnBatteryLevelCard(
-                isOtherActive: anotherIsActive,
-                isHouseBatteryMissing: noBattery,
-                onTap: {
-                    if !anotherIsActive && !noBattery {
-                        notifyBatteryLevelSetupPresented = true
                     }
                 }
             )

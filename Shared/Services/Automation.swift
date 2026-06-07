@@ -4,10 +4,15 @@
 /// alongside the iOS app. The `getAutomationTask()` extension that maps a
 /// case to its `AutomationTask` lives in the iOS app target only —
 /// `AutomationTask` and the runner are not shared.
+///
+/// Notifications (read-only monitors that poll a value and post a local
+/// notification) used to live here too as `NotifyOnBatteryLevel`. They
+/// have been extracted into their own subsystem — see
+/// [ADR-002](../../specs/adrs/002-notifications-separate-from-automations.md)
+/// and [story #5](../../specs/stories/005-introduce-notifications.md).
 public enum Automation: String, Codable, Hashable, Sendable {
     case BatteryToCar
     case AutoResetChargingMode
-    case NotifyOnBatteryLevel
 }
 
 extension Automation {
@@ -22,8 +27,6 @@ extension Automation {
             return "bolt.car.circle.fill"
         case .AutoResetChargingMode:
             return "timer.circle.fill"
-        case .NotifyOnBatteryLevel:
-            return "bell.badge.fill"
         }
     }
 }

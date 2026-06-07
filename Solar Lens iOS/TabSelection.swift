@@ -15,7 +15,7 @@ final class TabSelection {
 /// modifier and `StatisticsScreen`'s boundary handling stay in sync if
 /// we ever reorder.
 enum TopLevelTabOrder {
-    static let tabs: [AppTab] = [.now, .automation, .statistics]
+    static let tabs: [AppTab] = [.now, .automation, .notifications, .statistics]
 }
 
 /// Horizontal drag gesture that moves the selection one tab forward

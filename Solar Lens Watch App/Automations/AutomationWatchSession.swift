@@ -252,6 +252,25 @@ final class AutomationWatchSession: NSObject, WCSessionDelegate,
         send(.cancel)
     }
 
+    // MARK: - Notifications (story #5)
+    //
+    // Watch acts as a thin remote control: enable/update/disable are
+    // sent to the iPhone, which is the single source of truth for the
+    // active monitor list. The watch sees the result through the next
+    // `AutomationWatchSnapshot` push.
+
+    func enableNotification(_ monitor: NotificationMonitor) {
+        send(.enableNotification(monitor))
+    }
+
+    func updateNotification(_ monitor: NotificationMonitor) {
+        send(.updateNotification(monitor))
+    }
+
+    func disableNotification(id: UUID) {
+        send(.disableNotification(id: id))
+    }
+
     private func send(_ command: AutomationWatchCommand) {
         queue.async {
             guard WCSession.isSupported() else { return }

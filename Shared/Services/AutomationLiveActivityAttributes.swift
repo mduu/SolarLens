@@ -78,7 +78,6 @@ public struct AutomationLiveActivityAttributes: ActivityAttributes {
         public enum Payload: Codable, Hashable {
             case batteryToCar(BatteryToCarPayload)
             case autoResetChargingMode(AutoResetChargingModePayload)
-            case notifyOnBatteryLevel(NotifyOnBatteryLevelPayload)
         }
     }
 }

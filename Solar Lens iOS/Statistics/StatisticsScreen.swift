@@ -146,10 +146,13 @@ struct StatisticsScreen: View {
                                     // At the today (first-period) boundary,
                                     // the right-swipe leaves Statistics and
                                     // jumps to the previous top-level tab
-                                    // (Automation). Mirrors the swipe-back
-                                    // semantics from Now / Automation.
-                                    withAnimation {
-                                        TabSelection.shared.selectedTab = .automation
+                                    // per TopLevelTabOrder. Mirrors the
+                                    // swipe-back semantics of the other tabs.
+                                    let order = TopLevelTabOrder.tabs
+                                    if let i = order.firstIndex(of: .statistics), i > 0 {
+                                        withAnimation {
+                                            TabSelection.shared.selectedTab = order[i - 1]
+                                        }
                                     }
                                 }
                             }

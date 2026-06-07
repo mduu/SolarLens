@@ -145,6 +145,20 @@ struct ContentView: View {
                             }
                             .tag(6)
 
+                        WatchNotificationsScreen()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    HStack {
+                                        HomeButton()
+                                        Text("Notifications")
+                                            .foregroundColor(.orange)
+                                            .font(.headline)
+                                        Spacer()
+                                    }
+                                }
+                            }
+                            .tag(7)
+
                     }  // :TabView
                     .tabViewStyle(.verticalPage(transitionStyle: .blur))
                     .sheet(isPresented: $showAppRateRequest) {

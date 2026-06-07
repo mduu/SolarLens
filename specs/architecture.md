@@ -118,6 +118,9 @@ SolarLens/
 │   ├── Automations/                 # On-device automation runner (story #3)
 │   │   ├── Runner/                  # AutomationManager, tasks, helpers
 │   │   └── UI/                      # Setup sheet, idle/running cards, log view
+│   ├── Notifications/               # Notifications subsystem (story #5, ADR-002)
+│   │   ├── Runner/                  # NotificationManager + migration
+│   │   └── UI/                      # Tab screen, idle/running rows, setup sheet
 │   └── Onboardings/                 # First-run flows
 ├── Solar Lens Watch App/            # watchOS app target
 │   ├── Home/                        # Watch dashboard
@@ -197,6 +200,22 @@ factor) so the runner can absorb opaque BG-throttling without overshooting
 user-set limits.
 
 Decision recorded in [ADR-001](adrs/001-on-device-automation-runner.md).
+
+### Notifications Subsystem (iOS only, watchOS thin client)
+
+Read-only monitors (story #5) — "notify when battery ≥ 80 %",
+"notify when grid export ≥ 3 kW", etc. — are runnable **in parallel**
+with each other and with a controlling automation. `NotificationManager`
+holds an array of `NotificationMonitor`s, ticks each one on its own
+`nextCheckAt`, and reuses the automation runner's `BGAppRefreshTask`
+identifier so a single iOS BG wake services both subsystems.
+
+Hysteresis-based re-arm (deadband + dwell) prevents notification spam
+when a value flaps around the threshold. The watchOS app is a thin
+remote control: enable / update / disable commands flow to iPhone via
+`WCSession`; the iPhone is the single source of truth.
+
+Decision recorded in [ADR-002](adrs/002-notifications-separate-from-automations.md).
 
 **Live Activity surface (story #4).** While an automation runs, the iOS
 Widgets extension shows a Lock Screen card and Dynamic Island content via

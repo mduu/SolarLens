@@ -65,8 +65,6 @@ struct LockScreenCard: View {
             return "Battery → Car running"
         case .AutoResetChargingMode:
             return "Auto-reset Charging Mode"
-        case .NotifyOnBatteryLevel:
-            return "Notify on battery level"
         }
     }
 
@@ -83,8 +81,6 @@ struct LockScreenCard: View {
             )
         case .autoResetChargingMode(let payload):
             AutoResetChargingModeCardBody(payload: payload)
-        case .notifyOnBatteryLevel(let payload):
-            NotifyOnBatteryLevelCardBody(payload: payload)
         }
     }
 }
