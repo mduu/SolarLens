@@ -1,6 +1,6 @@
 # Story: #3, Automation – Transfer from Battery to Car
 
-**Status:** In Progress (TestFlight 4.1.0, build 298) — Live Activity deferred, unit tests pending
+**Status:** Done (09.06.2026) — shipped in 4.1.0. Live Activity split out into story #4 (done). Unit/integration tests were not written and are accepted as documented tech debt (see Tasks → Testing and backlog).
 
 ## Short Description
 
@@ -508,11 +508,11 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 - [x] App builds successfully
 - [x] App runs correctly on iOS Simulator (and on watchOS Simulator — watchOS is unaffected by this change)
 - [x] Automation tab is visible only on iOS (watchOS / tvOS unchanged)
-- [ ] /specs have been updated if necessary
-- [ ] If architectural decisions were made, an ADR was created in /specs/adrs (likely needed: "On-device-only automation runner")
-- [ ] Story status has been set to "Done (DD.MM.YYYY)"
-- [ ] Story file has been moved to /specs/stories/done/
-- [ ] Story has been removed from the backlog
+- [x] /specs have been updated if necessary (architecture.md → On-Device Automation Runner)
+- [x] If architectural decisions were made, an ADR was created in /specs/adrs ([ADR-001](../../adrs/001-on-device-automation-runner.md))
+- [x] Story status has been set to "Done (DD.MM.YYYY)"
+- [x] Story file has been moved to /specs/stories/done/
+- [x] Story has been removed from the backlog
 
 ## Tasks
 
@@ -546,10 +546,10 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 - [x] On stop: switch to `fallbackChargingMode`, schedule local notification (Live Activity end deferred — see below)
 - [x] Initial amps start at `PowerToAmps.minAmps` (6A) instead of battery max — avoids overshoot from house load on first tick
 
-### Live Activity (DEFERRED — entitlements declared, implementation postponed)
-- [ ] Define `BatteryToCarAttributes`
-- [ ] Lock-screen and Dynamic Island layouts (compact + expanded) with Cancel button
-- [ ] `AutomationManager` starts/updates/ends the Activity in lock-step with the task
+### Live Activity (SPLIT OUT → story #4, done)
+- [x] Define `BatteryToCarAttributes` — delivered in [story #4](004-live-activity-for-automations.md)
+- [x] Lock-screen and Dynamic Island layouts (compact + expanded) with Cancel button — delivered in story #4
+- [x] `AutomationManager` starts/updates/ends the Activity in lock-step with the task — delivered in story #4
 
 > `NSSupportsLiveActivities = true` is set in Info.plist so the entitlement is in
 > place, but the actual `ActivityKit` integration is deferred to a follow-up
@@ -563,7 +563,7 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 ### Cancel
 - [x] `AutomationManager.cancelActiveAutomation()` performs the full stop sequence (fallback mode, notification)
 - [x] Cancel button on the running card
-- [ ] Cancel button in the Live Activity (App Intent) — deferred with Live Activity
+- [x] Cancel button in the Live Activity (App Intent) — delivered in [story #4](004-live-activity-for-automations.md)
 
 ### Robustness
 - [x] Network errors during a tick: keep `currentAmps`, schedule next run, log warning. Three consecutive failed ticks → stop with `failed` status and notify "Automation stopped due to connection error".
@@ -577,13 +577,16 @@ Dynamic Island compact: SoC%, ⚡power. Expanded: full layout with Cancel.
 - [x] Empty-state for "no charging stations" (offer link to Solar Manager docs)
 
 ### Testing
-- [ ] Unit tests for `AmperageRamp.compute(...)` covering: ramp up, ramp down, dead-band, clamp at 6 A, clamp at 32 A, battery-charging-as-surplus branch
-- [ ] Unit tests for `convertPowerToAmps` (1-phase, 3-phase, edge values)
-- [ ] Unit tests for `SoftFloor.computeSafetyBuffer(...)` covering: foreground tick (≈1%), mild BG gap (≈4%), long BG gap (clamped at 8%), tiny discharge (clamped at 1%), zero/negative discharge (returns minBufferPct)
-- [ ] Integration test using `FakeEnergyManager` simulating PV + load curves over a synthetic hour
-- [x] Manual test: start automation, background the app — state is coherent on return (Live Activity check skipped — feature deferred)
+> **Not done — accepted as tech debt at close.** The automated tests below for the
+> pure controller functions were never written; the feature shipped in 4.1.0 and
+> was validated by manual + field testing instead. Tracked as a backlog item.
+- [ ] Unit tests for `AmperageRamp.compute(...)` covering: ramp up, ramp down, dead-band, clamp at 6 A, clamp at 32 A, battery-charging-as-surplus branch — NOT DONE (tech debt)
+- [ ] Unit tests for `convertPowerToAmps` (1-phase, 3-phase, edge values) — NOT DONE (tech debt)
+- [ ] Unit tests for `SoftFloor.computeSafetyBuffer(...)` covering: foreground tick (≈1%), mild BG gap (≈4%), long BG gap (clamped at 8%), tiny discharge (clamped at 1%), zero/negative discharge (returns minBufferPct) — NOT DONE (tech debt)
+- [ ] Integration test using `FakeEnergyManager` simulating PV + load curves over a synthetic hour — NOT DONE (tech debt)
+- [x] Manual test: start automation, background the app — state is coherent on return
 - [x] Manual test: kill the app while running → relaunch → state restored from `UserDefaults`
-- [ ] Manual test: cancel from Live Activity (Lock Screen) — deferred with Live Activity
+- [x] Manual test: cancel from Live Activity (Lock Screen) — delivered & tested in [story #4](004-live-activity-for-automations.md)
 - [x] Field test: real-world test on CH installation surfaced the "battery charging while balanced grid" gap (controller stuck at 6 A while PV was charging the battery); fixed by adding the chargingW > 0 → ramp-up branch in `AmperageRamp.compute`. Further field testing for 200 W grace band tuning still open.
 
 ## Implementation notes / deviations from original spec
