@@ -30,6 +30,12 @@ public final class AutomationManager: AutomationHost {
 
     private let identifier =
         "com.marcduerst.SolarManagerWatch.AutomationRunner"
+    /// Second, complementary wake source (story #6). `BGProcessingTask`
+    /// is granted more readily than `BGAppRefreshTask` while charging /
+    /// on Wi-Fi (often overnight), so registering both gives notifications
+    /// more chances to be checked on time. Both drain the same subsystems.
+    private let processingIdentifier =
+        "com.marcduerst.SolarManagerWatch.NotificationProcessing"
     static private let foregroundTimerInterval: TimeInterval = 60
     private let stateStorageKey = "SolarLens.activeAutomationState"
     private let parametersStorageKey = "SolarLens.activeAutomationParameters"
@@ -69,6 +75,13 @@ public final class AutomationManager: AutomationHost {
             using: nil
         ) { task in
             self.handleBackgroundTask(task: task as! BGAppRefreshTask)
+        }
+
+        BGTaskScheduler.shared.register(
+            forTaskWithIdentifier: processingIdentifier,
+            using: nil
+        ) { task in
+            self.handleProcessingTask(task: task as! BGProcessingTask)
         }
 
         logDebug(message: "Background tasks registered with iOS")
@@ -395,7 +408,74 @@ public final class AutomationManager: AutomationHost {
         }
     }
 
+    /// Second wake source — same drain as `handleBackgroundTask`, but
+    /// triggered by the more-readily-granted `BGProcessingTask` (story #6).
+    private func handleProcessingTask(task: BGProcessingTask) {
+        let start = Date()
+        logInfo(message: "iOS gave us BG processing runtime")
+        lastBackgroundFireAt = start
+
+        let hasAutomation = activeState?.automation?.getAutomationTask() != nil
+        let hasNotifications = NotificationManager.shared.hasActiveMonitors
+        guard hasAutomation || hasNotifications else {
+            logDebug(message: "BG processing fired but nothing to drain")
+            task.setTaskCompleted(success: true)
+            return
+        }
+
+        task.expirationHandler = {
+            self.logError(message: "BG processing runtime expired by iOS")
+            task.setTaskCompleted(success: false)
+            self.scheduleNextProcessingCall()
+        }
+
+        Task {
+            if hasAutomation { await runActiveAutomation() }
+            if hasNotifications {
+                await NotificationManager.shared
+                    .runOverdueMonitorsInBackground()
+            }
+            task.setTaskCompleted(success: true)
+            if activeState?.automation != nil
+                || NotificationManager.shared.hasActiveMonitors
+            {
+                scheduleNextProcessingCall()
+            }
+        }
+    }
+
+    private func scheduleNextProcessingCall() {
+        let request = BGProcessingTaskRequest(identifier: processingIdentifier)
+        // We need network to poll Solar Manager; do not require external
+        // power so daytime PV events (e.g. battery reaching 100 %) can
+        // still be serviced, while iOS remains free to prefer charging.
+        request.requiresNetworkConnectivity = true
+        request.requiresExternalPower = false
+
+        let minimum = Date(timeIntervalSinceNow: 60)
+        let automationNext = activeState?.nextTaskRun
+        let notificationsNext =
+            NotificationManager.shared.earliestNextCheck
+        let candidates = [automationNext, notificationsNext].compactMap { $0 }
+        let next = candidates.min() ?? minimum
+        request.earliestBeginDate = max(next, minimum)
+
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            logDebug(
+                message:
+                    "Next background processing scheduled for \(format(date: request.earliestBeginDate))"
+            )
+        } catch {
+            logDebug(
+                message:
+                    "Skipping BG processing schedule: \(error.localizedDescription)"
+            )
+        }
+    }
+
     private func scheduleNextBackgroundCall() {
+        scheduleNextProcessingCall()
         let request = BGAppRefreshTaskRequest(identifier: identifier)
 
         // Hint iOS with the best-known due date — the minimum across

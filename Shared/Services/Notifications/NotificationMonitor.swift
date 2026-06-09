@@ -87,6 +87,13 @@ public struct NotificationMonitor: Codable, Hashable, Sendable, Identifiable {
     /// if iOS doesn't grant BG runtime.
     public var forecastedTargetAt: Date?
 
+    /// Previous observed value / time, kept so kinds without a dedicated
+    /// rate signal (e.g. `SolarProduction`) can estimate a slope from two
+    /// consecutive samples for the forecast backstop. `BatteryLevel` uses
+    /// its own charge-rate forecast and ignores these.
+    public var previousValue: Int?
+    public var previousCheckAt: Date?
+
     public init(
         id: UUID = UUID(),
         kind: SolarLensNotification,
@@ -101,7 +108,9 @@ public struct NotificationMonitor: Codable, Hashable, Sendable, Identifiable {
         lastFiredAt: Date? = nil,
         fireCount: Int = 0,
         lastBatteryChargeRate: Int? = nil,
-        forecastedTargetAt: Date? = nil
+        forecastedTargetAt: Date? = nil,
+        previousValue: Int? = nil,
+        previousCheckAt: Date? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -117,6 +126,8 @@ public struct NotificationMonitor: Codable, Hashable, Sendable, Identifiable {
         self.fireCount = fireCount
         self.lastBatteryChargeRate = lastBatteryChargeRate
         self.forecastedTargetAt = forecastedTargetAt
+        self.previousValue = previousValue
+        self.previousCheckAt = previousCheckAt
     }
 }
 

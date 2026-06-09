@@ -69,9 +69,7 @@ struct NotificationSetupSheet: View {
                 } header: {
                     Text("Threshold")
                 } footer: {
-                    Text(
-                        "Solar Lens checks every few minutes. While Solar Lens is in the foreground the check is precise; in the background iOS decides when to wake the app."
-                    )
+                    Text(timingFooter)
                 }
 
                 Section {
@@ -157,6 +155,25 @@ struct NotificationSetupSheet: View {
         case .GridImport, .OverallConsumption: return 30
         default: return 20
         }
+    }
+
+    /// Honest, per-kind expectation about background timing (story #6).
+    /// Battery / solar can be forecast ahead and pre-scheduled, so they
+    /// arrive close to the crossing even while suspended; the others rely
+    /// on iOS granting a background check and can be delayed while the
+    /// phone is idle. No guarantee is implied.
+    private var timingFooter: String {
+        let forecastable = kind == .BatteryLevel || kind == .SolarProduction
+        if forecastable {
+            return String(
+                localized:
+                    "While Solar Lens is open the check is immediate. In the background timing is best-effort — but Solar Lens predicts this value and schedules the alert ahead, so it usually arrives close to the crossing even when the app is closed."
+            )
+        }
+        return String(
+            localized:
+                "While Solar Lens is open the check is immediate. In the background iOS decides when to wake the app, so this alert can be delayed (sometimes well over an hour) while your phone is idle. This value can't be predicted ahead."
+        )
     }
 
     private var currentValueDescription: String? {

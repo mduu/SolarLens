@@ -20,6 +20,7 @@
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.marcduerst.SolarManagerWatch.AutomationRunner</string>
+		<string>com.marcduerst.SolarManagerWatch.NotificationProcessing</string>
 	</array>
 	<key>NSSupportsLiveActivities</key>
 	<true/>

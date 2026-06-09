@@ -27,12 +27,36 @@ public final class NotificationManager {
     static let foregroundTimerInterval: TimeInterval = 60
     private let monitorsStorageKey = "SolarLens.notifications.monitors"
 
-    /// Pre-scheduled "imminent threshold" notification id used by the
-    /// battery-level monitor. Stable so it can be replaced / cancelled
-    /// across ticks. Exposed `internal` so AutomationManager can wipe
-    /// it on automation termination too (defence in depth).
+    /// How far ahead a forecast crossing may be and still get a
+    /// pre-scheduled backstop notification. Widened from the original
+    /// 15 min (story #6): a crossing predicted well ahead now still gets
+    /// a `UNCalendarNotificationTrigger` that fires on time while the app
+    /// is suspended — the fix for the "battery hit 100 % at 10:20,
+    /// notified at 15:22" field case.
+    static let forecastWindow: TimeInterval = 90 * 60
+
+    /// Pre-scheduled "threshold forecast" notification id prefix. Stable
+    /// per monitor so it can be replaced / cancelled across ticks.
+    /// Exposed `internal` so AutomationManager can wipe it too.
+    static let thresholdForecastIdPrefix = "notification.forecast."
+
+    /// Legacy id prefix from the battery-only backstop (pre story #6).
+    /// Kept only so a pending notification scheduled by an older build is
+    /// cancelled cleanly on disable/upgrade.
     static let batteryThresholdImminentIdPrefix =
         "notification.batteryLevel.imminent."
+
+    /// Kinds whose crossing time can be linearly forecast from live
+    /// telemetry, so we can pre-schedule a local notification that fires
+    /// on time even while suspended. The other kinds (grid / consumption
+    /// / charging) jump in seconds and are not forecastable — they rely
+    /// on actually getting a BG tick.
+    static func isForecastable(_ kind: SolarLensNotification) -> Bool {
+        switch kind {
+        case .BatteryLevel, .SolarProduction: return true
+        default: return false
+        }
+    }
 
     /// Public read-only view of the currently-active monitors. SwiftUI
     /// reads this through Observation; mutations happen via
@@ -104,7 +128,8 @@ public final class NotificationManager {
         UNUserNotificationCenter.current()
             .removePendingNotificationRequests(
                 withIdentifiers: [
-                    Self.batteryThresholdImminentIdPrefix + removed.id.uuidString
+                    Self.thresholdForecastIdPrefix + removed.id.uuidString,
+                    Self.batteryThresholdImminentIdPrefix + removed.id.uuidString,
                 ]
             )
         persistState()
@@ -136,12 +161,16 @@ public final class NotificationManager {
         switch newPhase {
         case .active:
             ensureForegroundTimerStarted()
-            // Force a tick on overdue monitors when the user surfaces.
-            // 30 s floor prevents thrash when toggling between apps.
+            // On surfacing: tick overdue monitors, and also refresh every
+            // forecastable armed monitor's backstop with fresh data.
             let now = Date()
             for m in activeMonitors {
-                if let next = m.nextCheckAt, now.timeIntervalSince(next) >= -1
-                {
+                let due =
+                    m.nextCheckAt.map { now.timeIntervalSince($0) >= -1 }
+                    ?? true
+                let forecastRefresh =
+                    m.armState == .armed && Self.isForecastable(m.kind)
+                if due || forecastRefresh {
                     Task { await tick(monitorId: m.id) }
                 }
             }
@@ -159,11 +188,17 @@ public final class NotificationManager {
     /// have ticked once.
     public func runOverdueMonitorsInBackground() async {
         let now = Date()
-        let dueIds = activeMonitors.compactMap { m -> UUID? in
-            guard let next = m.nextCheckAt else { return m.id }
-            return next <= now ? m.id : nil
+        // Tick a monitor when it is due OR when it is a forecastable
+        // armed monitor — the latter so every rare BG wake refreshes its
+        // forecast backstop with fresh data, not just the monitor that
+        // happened to be due (story #6).
+        let ids = activeMonitors.compactMap { m -> UUID? in
+            let due = m.nextCheckAt.map { $0 <= now } ?? true
+            let forecastRefresh =
+                m.armState == .armed && Self.isForecastable(m.kind)
+            return (due || forecastRefresh) ? m.id : nil
         }
-        for id in dueIds {
+        for id in ids {
             await tick(monitorId: id)
         }
     }
@@ -212,6 +247,10 @@ public final class NotificationManager {
             return
         }
 
+        // Keep the prior sample so non-rate kinds (solar) can estimate a
+        // slope for the forecast backstop.
+        monitor.previousValue = monitor.lastValue
+        monitor.previousCheckAt = monitor.lastCheckAt
         monitor.lastValue = value
         monitor.lastCheckAt = Date()
         if monitor.kind == .BatteryLevel {
@@ -235,18 +274,21 @@ public final class NotificationManager {
             }
         }
 
-        // Battery-level monitor: refresh the forecast + imminent backstop.
-        if monitor.kind == .BatteryLevel, monitor.armState == .armed,
-           let overview = overview
-        {
-            updateBatteryForecastAndBackstop(
-                monitor: &monitor, overview: overview
-            )
-        }
-
+        // Default next tick; a forecast may tighten it below.
         monitor.nextCheckAt = Date().addingTimeInterval(
             Self.recheckInterval(for: monitor.kind)
         )
+
+        // Forecastable kinds (battery, solar): refresh the forecast and
+        // (re-)schedule the pre-scheduled backstop notification so it
+        // fires on time even if iOS never grants another BG tick. May
+        // pull `nextCheckAt` earlier to align with the predicted moment.
+        if Self.isForecastable(monitor.kind), monitor.armState == .armed,
+           let overview = overview
+        {
+            updateForecastAndBackstop(monitor: &monitor, overview: overview)
+        }
+
         updateMonitor(monitor)
     }
 
@@ -268,7 +310,7 @@ public final class NotificationManager {
                 time: monitor.lastFiredAt ?? Date()
             )
         )
-        cancelBatteryImminentBackstop(monitor: monitor)
+        cancelForecastBackstop(monitor: monitor)
         log(
             info:
                 "Notification \(monitor.kind.rawValue) fired (\(formatValue(monitor.lastValue ?? 0, for: monitor.kind)) — \(describe(monitor)))"
@@ -336,52 +378,119 @@ public final class NotificationManager {
         return 5 * 60
     }
 
-    // MARK: - Battery-level forecast backstop
+    // MARK: - Forecast backstop (battery + solar)
 
-    /// Refresh the linear forecast for the battery-level monitor and,
-    /// when the threshold is imminent (≤ 15 min away), pre-schedule a
-    /// calendar-triggered notification at the predicted moment. Same
-    /// mechanism the old automation used — see ADR-001.
-    private func updateBatteryForecastAndBackstop(
+    /// Refresh the linear forecast for a forecastable monitor and, when
+    /// the crossing is predicted within `forecastWindow`, pre-schedule a
+    /// calendar-triggered notification at the predicted moment. This is
+    /// the only mechanism that fires on time while the app is suspended
+    /// (see story #6 / ADR-001). Re-armed on every tick, so a later tick
+    /// with a corrected rate moves the notification to the better time.
+    private func updateForecastAndBackstop(
         monitor: inout NotificationMonitor,
         overview: OverviewData
     ) {
-        let seconds = overview.forecastSeconds(toReach: monitor.threshold)
+        let seconds = forecastSecondsToThreshold(
+            monitor: monitor, overview: overview
+        )
         monitor.forecastedTargetAt = seconds.flatMap {
             $0 > 0 ? Date().addingTimeInterval($0) : nil
         }
-        let imminentWindow: TimeInterval = 15 * 60
         guard let secondsToTarget = seconds,
               secondsToTarget > 0,
-              secondsToTarget <= imminentWindow
+              secondsToTarget <= Self.forecastWindow
         else {
-            cancelBatteryImminentBackstop(monitor: monitor)
+            cancelForecastBackstop(monitor: monitor)
             return
         }
         let firesAt = Date().addingTimeInterval(secondsToTarget)
-        scheduleBatteryImminentBackstop(monitor: monitor, at: firesAt)
-        // Align the next tick to right after the forecast moment.
+        scheduleForecastBackstop(monitor: monitor, at: firesAt)
+        // Align the next tick to right after the forecast moment so a
+        // foreground/BG tick (if granted) can confirm with live data.
         monitor.nextCheckAt = min(
             monitor.nextCheckAt
-                ?? Date().addingTimeInterval(Self.recheckInterval(for: .BatteryLevel)),
+                ?? Date().addingTimeInterval(
+                    Self.recheckInterval(for: monitor.kind)
+                ),
             firesAt.addingTimeInterval(30)
         )
     }
 
-    private func scheduleBatteryImminentBackstop(
+    /// Seconds until the threshold is forecast to be crossed, or `nil`
+    /// when not forecastable / not heading toward the threshold.
+    ///
+    /// - `BatteryLevel`: charge-rate extrapolation (`forecastSeconds`).
+    /// - `SolarProduction`: slope from the last two samples, guarded so
+    ///   noisy / cloudy periods don't mis-fire (must be moving toward the
+    ///   threshold, above a noise floor).
+    private func forecastSecondsToThreshold(
+        monitor: NotificationMonitor, overview: OverviewData
+    ) -> TimeInterval? {
+        switch monitor.kind {
+        case .BatteryLevel:
+            return overview.forecastSeconds(toReach: monitor.threshold)
+        case .SolarProduction:
+            return slopeForecastSeconds(monitor: monitor)
+        default:
+            return nil
+        }
+    }
+
+    /// Two-sample linear slope forecast in watts. Conservative on
+    /// purpose: requires the value to be moving *toward* the threshold
+    /// from the correct side and faster than a noise floor (~50 W/min),
+    /// so a flat or jittery signal produces no backstop.
+    private func slopeForecastSeconds(
+        monitor: NotificationMonitor
+    ) -> TimeInterval? {
+        guard let cur = monitor.lastValue,
+              let curAt = monitor.lastCheckAt,
+              let prev = monitor.previousValue,
+              let prevAt = monitor.previousCheckAt
+        else { return nil }
+        let dt = curAt.timeIntervalSince(prevAt)
+        guard dt > 0 else { return nil }
+
+        let slopePerSec = Double(cur - prev) / dt  // W/s
+        let noiseFloor = 50.0 / 60.0               // 50 W per minute
+
+        switch monitor.comparison {
+        case .equalOrAbove:
+            // Must currently be below and rising.
+            guard cur < monitor.threshold, slopePerSec > noiseFloor else {
+                return nil
+            }
+        case .equalOrBelow:
+            // Must currently be above and falling.
+            guard cur > monitor.threshold, slopePerSec < -noiseFloor else {
+                return nil
+            }
+        }
+
+        let secs = Double(monitor.threshold - cur) / slopePerSec
+        return secs > 0 ? secs : nil
+    }
+
+    private func scheduleForecastBackstop(
         monitor: NotificationMonitor, at date: Date
     ) {
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
-        content.title = String(localized: "Battery level reached")
+        content.title = String(localized: monitor.kind.localizedTitleKey)
         let comparator: String
         switch monitor.comparison {
         case .equalOrAbove: comparator = "≥"
         case .equalOrBelow: comparator = "≤"
         }
+        let thresholdText = formatValue(
+            monitor.threshold, for: monitor.kind
+        )
+        // Worded as a forecast/estimate, never a hard claim — the real
+        // confirmation fires from an actual tick. Avoids a false
+        // "reached X" when the rate changed (story #6 false-alarm note).
         content.body = String(
             localized:
-                "Your house battery is forecast to reach \(comparator) \(monitor.threshold)% — open Solar Lens to see the live state."
+                "Forecast to cross \(comparator) \(thresholdText) around now — open Solar Lens to verify."
         )
         content.sound = .default
         content.interruptionLevel = .timeSensitive
@@ -389,7 +498,7 @@ public final class NotificationManager {
             AutomationNotificationDelegate.openHomeCategoryId
         content.userInfo = [
             AutomationNotificationDelegate.deepLinkUserInfoKey:
-                "solarlens://home",
+                "solarlens://notifications",
         ]
 
         let comps = Calendar.current.dateComponents(
@@ -398,7 +507,7 @@ public final class NotificationManager {
         let trigger = UNCalendarNotificationTrigger(
             dateMatching: comps, repeats: false
         )
-        let id = Self.batteryThresholdImminentIdPrefix + monitor.id.uuidString
+        let id = Self.thresholdForecastIdPrefix + monitor.id.uuidString
         let request = UNNotificationRequest(
             identifier: id, content: content, trigger: trigger
         )
@@ -408,10 +517,15 @@ public final class NotificationManager {
         }
     }
 
-    private func cancelBatteryImminentBackstop(monitor: NotificationMonitor) {
-        let id = Self.batteryThresholdImminentIdPrefix + monitor.id.uuidString
+    private func cancelForecastBackstop(monitor: NotificationMonitor) {
         UNUserNotificationCenter.current()
-            .removePendingNotificationRequests(withIdentifiers: [id])
+            .removePendingNotificationRequests(
+                withIdentifiers: [
+                    Self.thresholdForecastIdPrefix + monitor.id.uuidString,
+                    Self.batteryThresholdImminentIdPrefix
+                        + monitor.id.uuidString,
+                ]
+            )
     }
 
     // MARK: - Posting fired notifications

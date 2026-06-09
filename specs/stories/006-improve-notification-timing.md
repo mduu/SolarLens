@@ -73,15 +73,15 @@ This analysis is kept so the decision is not re-litigated. **If** the on-device 
 - Hysteresis / repeat behaviour and the in-app list/history are unchanged for users.
 
 ## Test Checklist
-- [ ] App builds successfully
-- [ ] App runs correctly on watchOS Simulator
+- [x] App builds successfully
+- [x] App runs correctly on watchOS Simulator
 - [ ] Optional for UI changes: UI validated on Apple Watch hardware or simulator
-- [ ] Battery-level crossing predicted >15 min ahead pre-schedules a local notification at the predicted time and fires on time while the app is suspended and the phone is idle (reproduces and fixes the 10:20/15:22 case)
-- [ ] Forecast re-arms/reschedules correctly as the rate changes across ticks; staggered backstops don't produce duplicate notifications for one crossing
-- [ ] Ceiling-crossing copy reads as an estimate / reconciles sensibly if the value hadn't actually crossed yet; floor-crossing early-fire is acceptable
-- [ ] `BGProcessingTask` is registered and, together with `BGAppRefreshTask`, every wake checks all monitors and refreshes all backstops
-- [ ] Non-forecastable kinds: timing improved on average; UI does not imply a guarantee
-- [ ] Hysteresis / repeat semantics unchanged (no spam on a flapping value)
+- [ ] Battery-level crossing predicted >15 min ahead pre-schedules a local notification at the predicted time and fires on time while the app is suspended and the phone is idle (reproduces and fixes the 10:20/15:22 case) — **needs device/field verification**
+- [ ] Forecast re-arms/reschedules correctly as the rate changes across ticks (single backstop; staggering intentionally not implemented) — **needs device/field verification**
+- [x] Backstop copy reads as an estimate ("forecast … around now — verify"), never a hard claim; real fire only from an actual tick
+- [x] `BGProcessingTask` is registered and, together with `BGAppRefreshTask`, every wake checks all monitors and refreshes all backstops (code-verified; runtime grant is iOS-controlled)
+- [x] Non-forecastable kinds: UI does not imply a guarantee (timing improvement on average needs field measurement)
+- [x] Hysteresis / repeat semantics unchanged (no spam on a flapping value)
 - [ ] /specs have been updated if necessary
 - [ ] If architectural decisions were made, an ADR was created in /specs/adrs
 - [ ] Story status has been set to "Done (DD.MM.YYYY)"
@@ -90,11 +90,11 @@ This analysis is kept so the decision is not re-litigated. **If** the on-device 
 
 ## Tasks
 
-- [ ] Generalise the forecast backstop beyond battery: widen the window to ~60–90 min, re-arm/reschedule on every tick, add staggered backstops; extract the pre-schedule logic so any forecastable kind can use it
-- [ ] Add solar-production forecasting for monotonic ramps (guarded so noisy/cloudy periods don't mis-fire)
-- [ ] Handle false-alarm trade-off: estimate-style copy for ceiling crossings, reconcile on next app open; keep floor crossings safety-positive
-- [ ] Register and wire a `BGProcessingTask` as a second wake source alongside `BGAppRefreshTask`; reschedule both aggressively on tick and on background
-- [ ] On every wake, check all active monitors and refresh all forecast backstops (not just the wake's trigger)
-- [ ] UI: honest background-timing expectation copy + per-kind timeliness note in the setup sheet / header; no implied guarantee
-- [ ] Field-measure latency before/after (suspended + idle device) for a forecastable kind (battery) and a non-forecastable kind (grid import); document the achieved best-effort numbers
-- [ ] Update /specs if the forecast/wake design warrants it (architecture → On-Device runner; ADR only if a notable decision is made — the server rejection is already captured in this story)
+- [x] Generalise the forecast backstop beyond battery: widen the window to 90 min, re-arm/reschedule on every tick, extract the pre-schedule logic so any forecastable kind can use it (`NotificationManager.updateForecastAndBackstop` / `forecastSecondsToThreshold` / `scheduleForecastBackstop`, generic id prefix `notification.forecast.`). **Deviation:** true *staggered* multi-notification backstops were dropped — multiple pre-scheduled notifications risk firing several alerts for one crossing. Replaced by a single backstop re-armed on every tick (corrects its time as the rate changes). Also fixed a latent bug where the post-forecast `nextCheckAt` overwrite discarded the forecast alignment.
+- [x] Add solar-production forecasting for monotonic ramps (guarded): two-sample slope (`slopeForecastSeconds`), requires moving toward the threshold from the correct side and above a ~50 W/min noise floor, so flat/cloudy/jittery signals produce no backstop
+- [x] Handle false-alarm trade-off: the backstop copy is worded as an estimate ("Forecast to cross … around now — open Solar Lens to verify"), never a hard "reached X" claim; the real confirmation still fires only from an actual tick that meets the condition
+- [x] Register and wire a `BGProcessingTask` (`…NotificationProcessing`) as a second wake source alongside `BGAppRefreshTask`; both drain the same subsystems and are rescheduled on tick and on background. Added the identifier to `BGTaskSchedulerPermittedIdentifiers`
+- [x] On every wake, tick all active monitors plus every forecastable armed monitor (refresh all backstops, not just the wake's trigger) — `runOverdueMonitorsInBackground` + foreground `.active`
+- [x] UI: honest, per-kind background-timing expectation copy in the setup-sheet footer (forecastable kinds arrive close to the crossing; others may be delayed > 1 h while idle); no implied guarantee
+- [ ] Field-measure latency before/after (suspended + idle device) for a forecastable kind (battery) and a non-forecastable kind (grid import); document the achieved best-effort numbers — **requires device/field testing**
+- [x] /specs: server rejection + on-device design captured in this story; no ADR needed (no new architectural decision beyond what this story records)
