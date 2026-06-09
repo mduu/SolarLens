@@ -162,6 +162,22 @@ Automation (e.g., "every 5 min run Solar Lens").
 - **No minute-accurate guarantee while suspended.** Documented in the setup
   sheet and the story. Mitigated by predictive stop logic and (future) Live
   Activity.
+  - **Notifying at a known time is reliable; *acting* at a known time is not.**
+    A pre-scheduled local notification (`UNCalendarNotificationTrigger`) fires
+    at an exact future moment regardless of app state — it is a reliable alarm.
+    But it can only *display* a message; it cannot run code or call an API.
+    So `AutomationAutoResetChargingMode` (whose reset time is known in advance)
+    can and does pre-schedule a reliable "reset is due" notification at
+    `resetAt`, yet the actual `setCarChargingMode` API call still depends on the
+    same opportunistic BG runtime — it happens on time only if a BG tick lands
+    near `resetAt` **or** the user opens the app (e.g. by tapping that
+    notification). The mode switch can therefore be late; the consequence is
+    bounded (the station stays on the active mode longer than intended) and the
+    notification nudges the user to open the app, which finishes the run
+    immediately. This is strictly better than the threshold-notification case
+    (story #5/#6), where the fire *time is unknown* — derived from a live value —
+    so not even the notification can be pre-scheduled (except via the
+    battery-only linear forecast backstop).
 - **BG visibility gap.** Until the Live Activity ships (deferred from story
   #3), the only running indicator outside the app is a tab badge. For the
   Battery → Car automation this is acceptable because the charging station itself
