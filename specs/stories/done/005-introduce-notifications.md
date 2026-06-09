@@ -109,30 +109,30 @@ Verify each metric is available from the existing telemetry / SolarManager API u
 - Architecture decision (extract vs. relax constraint, BG-task sharing, migration of existing users) recorded in an ADR.
 
 ## Test Checklist
-- [ ] App builds successfully
-- [ ] App runs correctly on watchOS Simulator
+- [x] App builds successfully
+- [x] App runs correctly on watchOS Simulator
 - [ ] Optional for UI changes: UI validated on Apple Watch hardware or simulator
-- [ ] Battery-level notification migrated; existing users with an active "notify on battery" do not lose it (or graceful drop documented)
-- [ ] Multiple notifications run in parallel, and in parallel with a controlling automation
-- [ ] Each new notification type fires correctly above/below its threshold
-- [ ] "Notify once" stops after the first fire; "Notify every time it re-occurs" re-arms after the value clearly leaves the threshold (deadband + dwell) and fires again; flapping values do not spam notifications
-- [ ] iOS "Notifications" tab + `solarlens://notifications` deep link work; notification taps route correctly
-- [ ] watchOS notifications screen + start/cancel via watch bridge work (snapshot schemaVersion bumped)
-- [ ] /specs have been updated if necessary
-- [ ] If architectural decisions were made, an ADR was created in /specs/adrs
-- [ ] Story status has been set to "Done (DD.MM.YYYY)"
-- [ ] Story file has been moved to /specs/stories/done/
-- [ ] Story has been removed from the backlog
+- [x] Battery-level notification migrated; existing users with an active "notify on battery" do not lose it (or graceful drop documented)
+- [x] Multiple notifications run in parallel, and in parallel with a controlling automation
+- [x] Each new notification type fires correctly above/below its threshold
+- [x] "Notify once" stops after the first fire; "Notify every time it re-occurs" re-arms after the value clearly leaves the threshold (deadband + dwell) and fires again; flapping values do not spam notifications
+- [x] iOS "Notifications" tab + `solarlens://notifications` deep link work; notification taps route correctly
+- [x] watchOS notifications screen + start/cancel via watch bridge work (snapshot schemaVersion bumped)
+- [x] /specs have been updated if necessary
+- [x] If architectural decisions were made, an ADR was created in /specs/adrs
+- [x] Story status has been set to "Done (DD.MM.YYYY)"
+- [x] Story file has been moved to /specs/stories/done/
+- [x] Story has been removed from the backlog
 
 ## Tasks
 
-- [ ] Decide & ADR: extract `NotificationManager` vs. relax automation single-active constraint; BG-task sharing; user migration strategy
-- [ ] Add `Notification` enum (Shared) and `NotificationMonitor` protocol + per-type config/state (Codable), including `repeat` option (`once` / `everyReoccurrence`) and re-arm state (`armed` / `firedWaitingForReset`) with hysteresis (deadband + dwell)
-- [ ] Implement `NotificationManager` (parallel `activeMonitors`, persistence, foreground timer + BG refresh, forecast backstop)
-- [ ] Extract shared local-notification delivery + category/deep-link helper from automation code
-- [ ] Migrate `NotifyOnBatteryLevel` out of the `Automation` enum into `NotificationBatteryLevel`; add one-shot migration of persisted state
-- [ ] Implement new monitors: solar production, grid export, grid import, overall consumption, charging throughput (verify each metric is pollable)
-- [ ] iOS: add "Notifications" tab, deep link, list view, and setup sheets (reuse form pattern); gate types by prerequisites
-- [ ] watchOS: notifications screen + extend `AutomationWatchSnapshot` (bump schemaVersion) + start/cancel command flow
-- [ ] Note "Smart plug on/off" as a deferred follow-up in the backlog
-- [ ] Update /specs (architecture, userinterface) as needed
+- [x] Decide & ADR: extract `NotificationManager` vs. relax automation single-active constraint; BG-task sharing; user migration strategy
+- [x] Add `Notification` enum (Shared) and `NotificationMonitor` protocol + per-type config/state (Codable), including `repeat` option (`once` / `everyReoccurrence`) and re-arm state (`armed` / `firedWaitingForReset`) with hysteresis (deadband + dwell)
+- [x] Implement `NotificationManager` (parallel `activeMonitors`, persistence, foreground timer + BG refresh, forecast backstop)
+- [x] Extract shared local-notification delivery + category/deep-link helper from automation code
+- [x] Migrate `NotifyOnBatteryLevel` out of the `Automation` enum into `NotificationBatteryLevel`; add one-shot migration of persisted state
+- [x] Implement new monitors: solar production, grid export, grid import, overall consumption, charging throughput (verify each metric is pollable)
+- [x] iOS: add "Notifications" tab, deep link, list view, and setup sheets (reuse form pattern); gate types by prerequisites
+- [x] watchOS: notifications screen + extend `AutomationWatchSnapshot` (bump schemaVersion) + start/cancel command flow
+- [x] Note "Smart plug on/off" as a deferred follow-up in the backlog
+- [x] Update /specs (architecture, userinterface) as needed

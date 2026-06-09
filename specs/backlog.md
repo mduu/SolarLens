@@ -3,19 +3,20 @@ Holds ideas for stories that we may do in the future. Refined stories can be fou
 
 ## Ideas
 
-### Notification: Improve battery-level notification timing
+### Notification: Improve notification timing
 - Customer feedback (v4.1): the battery-level notification often arrives much too late. Root cause analysis (v4.1 vs. v4.2 — mechanism unchanged): the 5-min poll only runs in background when iOS grants a BG refresh, which is opportunistic and often delayed by 15–60+ min. The 15-min linear forecast backstop only helps when (a) the app got a tick shortly before the threshold and (b) the extrapolated charge rate holds — it misses when charge/discharge fluctuates.
+- I faced the issue with 4.2 already with multiple of the notifications where they notified hours later when I next time picked up my iPhone. For example the battery-level = 100% notification: it reached 100% on 10:20 and Solar Lens notified on 15:22 when I picked up the iPhone. On the exact same time Solar Lens notified on other notification "Grid export". It looks like the app did not check for a long time. It the app is late for 1-15 mins. its not too bad but hours later make the entire notifications questable.
 - Improvement ideas, in ascending effort:
   1. Widen the forecast-backstop window (e.g. 60 min instead of 15) and re-adjust the pre-scheduled notification on every tick — cheapest lever, no new infrastructure.
   2. Staggered backstops (e.g. at forecasted −10 %, −5 %, and threshold) that replace each other as forecasts refresh.
   3. Server-side pushes via the existing Azure Functions backend — the only path to genuinely reliable timing since it is independent of iOS BG scheduling; requires push registration, server-side monitor state, and APNs setup.
-- Applies to all threshold notifications, but battery level is where customers notice latency (slow-moving value, user waits for it).
+- Applies to all threshold notifications.
 
 ### Notification: Smart plug on/off
 - Follow-up to story #5 (Notifications subsystem). Notify when a user-selected smart plug switches on or off.
 - Different shape from the current threshold-based notifications (boolean state, plug selection, no kW threshold) — slot into the existing `NotificationMonitor` model or branch the protocol if too divergent.
 
-### Notification: Live Activity for the Battery-Level monitor
+### Notification: Live Activity
 - Story #5 dropped Live Activity support when migrating Notify-on-Battery-Level out of Automations. The pre-scheduled "forecast backstop" notification still fires at the predicted moment, so users still get a heads-up — but they no longer get the live Dynamic Island / Lock Screen countdown.
 - If user feedback shows this matters, port the existing `NotifyOnBatteryLevelPayload` / `NotifyOnBatteryLevelCardBody` LA pattern back over the new `NotificationMonitor` model.
 
