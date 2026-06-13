@@ -312,6 +312,10 @@ Initialised to `1.0` (foreground assumption) when the automation starts.
 - **Background, mild gaps**: tick ≈ 5 min, 5 kW drain, 14 kWh battery → buffer ≈ 4–5 %. Stop is conservative but still uses most of the configured headroom.
 - **Background, long gaps**: tick ≈ 20 min → raw buffer ≈ 18 %, capped at 8 %. We accept the user *may* dip below floor by up to ~5–10 % (= drain during the gap minus our buffer) in pathological cases. That's strictly better than the naive "stop at floor" rule which always overshoots.
 
+#### Post-release refinement: glide path to the floor
+
+Field use showed the conservative buffer often stopping several % early (e.g. floor 8 %, stopped at 14 %): in the background the EWMA tick interval is large, so the buffer hit its ~6 % range while the drain was still at full amperage. Fix (`SoftFloor.glideClampedAmps`, applied in `retuneAmperage` after the grid/surplus controller): within `glideBandPct` (8 %) of headroom above the floor, ramp the car amperage linearly down toward `minAmps`. Because the safety buffer scales with the discharge rate, slowing the drain *collapses the buffer*, so the predictive stop lands close to the floor (≈ floor + 1–2 %) instead of several % early — and any blind-gap overshoot stays tiny because the rate is already low. The band is intentionally wider than `maxBufferPct`, otherwise the stop would trigger before the glide had slowed the drain at all. This supersedes the deferred "Optional: BG-aware ramp-down" note below (it generalises that idea to a proportional approach rather than a one-shot halving).
+
 #### Optional: BG-aware ramp-down (follow-up)
 
 If `smoothedTickIntervalMinutes > 5` we could *also* ramp the charging station down preemptively (e.g., halve `currentAmps`) so a long sleep can't drain as fast. Defer this for a follow-up story — the predictive stop above already gets us most of the way.

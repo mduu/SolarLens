@@ -426,7 +426,7 @@ final class AutomationBatteryToCar: AutomationTask {
                 / Double(liveState.currentAmps)
         }()
 
-        let newAmps = AmperageRamp.compute(
+        let controllerAmps = AmperageRamp.compute(
             .init(
                 currentAmps: liveState.currentAmps,
                 gridImportW: t.gridImportW,
@@ -441,6 +441,19 @@ final class AutomationBatteryToCar: AutomationTask {
             )
         )
 
+        // Glide path: within the last few % above the floor, ramp the draw
+        // down toward the minimum so the final approach is slow. This
+        // shrinks the predictive safety buffer (which scales with the
+        // discharge rate), letting the stop land close to the floor
+        // instead of several % early, while keeping any blind-gap
+        // overshoot tiny.
+        let newAmps = SoftFloor.glideClampedAmps(
+            candidate: controllerAmps,
+            currentBatteryLevel: t.currentBatteryLevel,
+            floorPct: params.minBatteryLevel,
+            minAmps: PowerToAmps.minAmps
+        )
+
         guard newAmps != liveState.currentAmps else { return }
 
         let throttling = AmperageRamp.backgroundThrottlingActive(
@@ -451,7 +464,13 @@ final class AutomationBatteryToCar: AutomationTask {
             format: "%.1f",
             liveState.smoothedTickIntervalMinutes
         )
-        if throttling && newAmps < liveState.currentAmps {
+        let gliding = newAmps < controllerAmps
+        if gliding {
+            host.logInfo(
+                message:
+                    "Battery to Car: ramp \(liveState.currentAmps) A → \(newAmps) A (gliding to floor — battery \(t.currentBatteryLevel)% approaching \(params.minBatteryLevel)%, slowing the drain)"
+            )
+        } else if throttling && newAmps < liveState.currentAmps {
             host.logInfo(
                 message:
                     "Battery to Car: ramp \(liveState.currentAmps) A → \(newAmps) A (BG-throttling slowdown — avg tick \(intervalMin) min, grid \(t.gridImportW) W)"
