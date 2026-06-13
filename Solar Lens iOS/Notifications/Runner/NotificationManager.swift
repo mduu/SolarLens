@@ -28,12 +28,21 @@ public final class NotificationManager {
     private let monitorsStorageKey = "SolarLens.notifications.monitors"
 
     /// How far ahead a forecast crossing may be and still get a
-    /// pre-scheduled backstop notification. Widened from the original
-    /// 15 min (story #6): a crossing predicted well ahead now still gets
-    /// a `UNCalendarNotificationTrigger` that fires on time while the app
-    /// is suspended — the fix for the "battery hit 100 % at 10:20,
-    /// notified at 15:22" field case.
-    static let forecastWindow: TimeInterval = 90 * 60
+    /// pre-scheduled backstop notification. Staggered per kind (story #6
+    /// follow-up): the battery's charge/discharge trajectory is the most
+    /// stable and most-complained-about, so it is planned far ahead (6 h)
+    /// — the device is most likely idle for hours precisely on those long
+    /// sunny-day charge cycles, and a crossing predicted 3–5 h out used to
+    /// get no backstop at all under the old 90 min cap. Solar is left
+    /// conservative (90 min) because cloud-driven swings make longer
+    /// horizons unreliable.
+    static func forecastWindow(for kind: SolarLensNotification) -> TimeInterval
+    {
+        switch kind {
+        case .BatteryLevel: return 6 * 60 * 60
+        default: return 90 * 60
+        }
+    }
 
     /// Pre-scheduled "threshold forecast" notification id prefix. Stable
     /// per monitor so it can be replaced / cancelled across ticks.
@@ -398,9 +407,22 @@ public final class NotificationManager {
         }
         guard let secondsToTarget = seconds,
               secondsToTarget > 0,
-              secondsToTarget <= Self.forecastWindow
+              secondsToTarget <= Self.forecastWindow(for: monitor.kind)
         else {
-            cancelForecastBackstop(monitor: monitor)
+            // No usable fresh forecast this tick. Crucially, do NOT delete
+            // a backstop we already scheduled just because this single
+            // sample was inconclusive (momentary idle rate, a passing
+            // cloud, or a crossing still beyond the window): a transient
+            // sample used to wipe a perfectly good pre-scheduled
+            // notification, and if iOS then never granted another tick the
+            // alert only fired hours later when the user picked the phone
+            // up. Keep the last good backstop and only cancel when the
+            // value is *clearly* moving away from the threshold, so the
+            // predicted crossing genuinely won't happen (story #6 fix).
+            if isHeadingAwayFromThreshold(monitor: monitor, overview: overview)
+            {
+                cancelForecastBackstop(monitor: monitor)
+            }
             return
         }
         let firesAt = Date().addingTimeInterval(secondsToTarget)
@@ -469,6 +491,48 @@ public final class NotificationManager {
 
         let secs = Double(monitor.threshold - cur) / slopePerSec
         return secs > 0 ? secs : nil
+    }
+
+    /// Whether the live value is *clearly* moving away from the threshold,
+    /// i.e. the predicted crossing this backstop was scheduled for will
+    /// not happen on the current trend. Used to decide when it is safe to
+    /// drop an already-scheduled backstop (a merely inconclusive tick must
+    /// not — see `updateForecastAndBackstop`). Deliberately conservative:
+    /// only a confident opposite trend, above the same noise floors the
+    /// forecasts use, returns `true`.
+    private func isHeadingAwayFromThreshold(
+        monitor: NotificationMonitor, overview: OverviewData
+    ) -> Bool {
+        switch monitor.kind {
+        case .BatteryLevel:
+            // Use the signed charge rate (same ±50 W "idle" band the
+            // battery forecast uses). When armed we are on the near side
+            // of the threshold, so "away" = flowing in the wrong
+            // direction.
+            guard let rateW = overview.currentBatteryChargeRate else {
+                return false
+            }
+            switch monitor.comparison {
+            case .equalOrAbove: return rateW < -50  // discharging, target higher
+            case .equalOrBelow: return rateW > 50   // charging, target lower
+            }
+        case .SolarProduction:
+            guard let cur = monitor.lastValue,
+                  let curAt = monitor.lastCheckAt,
+                  let prev = monitor.previousValue,
+                  let prevAt = monitor.previousCheckAt,
+                  curAt.timeIntervalSince(prevAt) > 0
+            else { return false }
+            let slopePerSec =
+                Double(cur - prev) / curAt.timeIntervalSince(prevAt)
+            let noiseFloor = 50.0 / 60.0  // 50 W per minute
+            switch monitor.comparison {
+            case .equalOrAbove: return slopePerSec < -noiseFloor
+            case .equalOrBelow: return slopePerSec > noiseFloor
+            }
+        default:
+            return false
+        }
     }
 
     private func scheduleForecastBackstop(
