@@ -118,7 +118,12 @@ class FakeEnergyManager: EnergyManager {
     func fetchChargingData() async throws -> CharingInfoData {
         return CharingInfoData(
             totalCharedToday: 32400,
-            currentCharging: 6540
+            currentCharging: 6540,
+            chargedTodayPerSensorId: [
+                "42": 18200,
+                "43": 9100,
+                "44": 5100,
+            ]
         )
     }
 

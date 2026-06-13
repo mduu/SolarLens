@@ -164,6 +164,7 @@ class SolarManager: EnergyManager {
 
         let chargingStationSensorIds = getCharingStationSensorIds()
         var total: Double? = nil
+        var perSensor: [String: Double] = [:]
 
         // Get todays charing amount from all charging stations
         for chargingStationSensorId in chargingStationSensorIds {
@@ -174,6 +175,7 @@ class SolarManager: EnergyManager {
 
             if let data = chargingStationSensorData {
                 total = (total ?? 0) + data.totalConsumption
+                perSensor[chargingStationSensorId] = data.totalConsumption
             }
         }
 
@@ -191,7 +193,11 @@ class SolarManager: EnergyManager {
             "Got charging data: 24h: \(String(describing: total)), current: \(String(describing: current))"
         )
 
-        return .init(totalCharedToday: total, currentCharging: current)
+        return .init(
+            totalCharedToday: total,
+            currentCharging: current,
+            chargedTodayPerSensorId: perSensor
+        )
     }
 
     func fetchCarChargingTotal(period: Period) async throws -> Double {

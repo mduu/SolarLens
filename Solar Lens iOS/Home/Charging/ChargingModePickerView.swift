@@ -170,17 +170,31 @@ struct ChargingModePickerView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "bolt")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        if station.currentPower > 0 {
-                            Text(String(format: "%.1f kW", Double(station.currentPower) / 1000))
-                                .font(.headline)
-                                .fontWeight(.bold)
-                        } else {
-                            Text("–")
+                    HStack(spacing: 12) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "bolt")
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
+                            if station.currentPower > 0 {
+                                Text(String(format: "%.1f kW", Double(station.currentPower) / 1000))
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                            } else {
+                                Text("–")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+
+                        if let chargedTodayKWh = chargedTodayKWh(for: station) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "calendar")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(String(format: String(localized: "%.1f kWh today"), chargedTodayKWh))
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
 
@@ -192,6 +206,16 @@ struct ChargingModePickerView: View {
                 Spacer()
             }
         }
+    }
+
+    /// Today's charged energy for a station, in kWh, or `nil` when no
+    /// per-station figure is available or it hasn't charged anything yet.
+    /// The fetched value is in Wh (see `CharingInfoData`).
+    private func chargedTodayKWh(for station: ChargingStation) -> Double? {
+        guard let wh = buildingState.chargingInfos?
+            .chargedTodayPerSensorId[station.id], wh > 0
+        else { return nil }
+        return wh / 1000.0
     }
 
     private func modePickerView(for station: ChargingStation) -> some View {
