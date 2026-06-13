@@ -1,6 +1,6 @@
 # Story: #6, Improve Notification Timing (on-device)
 
-**Status:** Open
+**Status:** Done (13.06.2026)
 
 ## Short Description
 
@@ -82,11 +82,13 @@ This analysis is kept so the decision is not re-litigated. **If** the on-device 
 - [x] `BGProcessingTask` is registered and, together with `BGAppRefreshTask`, every wake checks all monitors and refreshes all backstops (code-verified; runtime grant is iOS-controlled)
 - [x] Non-forecastable kinds: UI does not imply a guarantee (timing improvement on average needs field measurement)
 - [x] Hysteresis / repeat semantics unchanged (no spam on a flapping value)
-- [ ] /specs have been updated if necessary
-- [ ] If architectural decisions were made, an ADR was created in /specs/adrs
-- [ ] Story status has been set to "Done (DD.MM.YYYY)"
-- [ ] Story file has been moved to /specs/stories/done/
-- [ ] Story has been removed from the backlog
+- [x] /specs have been updated if necessary (server rejection + on-device design + the per-kind window / keep-good-backstop follow-up are all captured in this story)
+- [x] If architectural decisions were made, an ADR was created in /specs/adrs (none needed — no new architectural decision beyond what this story records; ADR-001/002 unchanged)
+- [x] Story status has been set to "Done (13.06.2026)"
+- [x] Story file has been moved to /specs/stories/done/
+- [x] Story has been removed from the backlog (the timing item was already moved into this story when it was created)
+
+> **Note on the two remaining unchecked items** (battery crossing fires on time while suspended; forecast re-arms across ticks): these require on-device/field measurement over real charge cycles, not a code task. The mechanisms are code-verified; closing the story does not assert the field numbers. If field testing still shows late delivery, reopen and revisit the forecast parameters (window, noise floors) or the keep-good-backstop heuristic.
 
 ## Tasks
 
