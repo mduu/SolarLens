@@ -29,7 +29,6 @@ final class CarPlayManager {
     private var chargingTemplate: CPListTemplate?
     private var devicesTemplate: CPListTemplate?
     private var refreshTimer: Timer?
-    private var hasLoadedInitialData = false
 
     private init() {}
 
@@ -58,7 +57,6 @@ final class CarPlayManager {
         overviewTemplate = nil
         chargingTemplate = nil
         devicesTemplate = nil
-        hasLoadedInitialData = false
     }
 
     /// Called when the CarPlay scene becomes active again — re-pull data so the
@@ -96,30 +94,21 @@ final class CarPlayManager {
         refreshTimer = nil
     }
 
-    /// Re-fetch and update every tab.
+    /// Re-fetch and update every tab in place.
     ///
     /// The tab bar is first built from the seeded cache (so CarPlay has a root
-    /// promptly), which can be stale — notably the charging list's current-mode
-    /// ordering/selection. CarPlay doesn't visually re-sort an already-built
-    /// list when its sections are updated, so on the **first** load we rebuild
-    /// the tab bar from fresh data (a one-time reset to the Energy tab, which is
-    /// where the user starts anyway). Subsequent refreshes update in place so
-    /// the selected tab is never disturbed.
+    /// promptly), which can be stale. Each tab then updates in place as fresh
+    /// data arrives — the charging list flags the active mode with a checkmark
+    /// rather than by row order, so an in-place section update is enough and the
+    /// selected tab is never disturbed (no jarring reset back to the Energy tab).
     private func refresh() async {
         guard buildingState.loginCredentialsExists else { return }
         await buildingState.fetchServerData(force: true)
         await buildingState.fetchSolarDetails()
 
-        if hasLoadedInitialData {
-            overviewTemplate?.items = overviewItems()
-            chargingTemplate?.updateSections(chargingSections())
-            devicesTemplate?.updateSections(deviceSections())
-        } else {
-            hasLoadedInitialData = true
-            interfaceController?.setRootTemplate(
-                makeTabBar(), animated: false, completion: nil
-            )
-        }
+        overviewTemplate?.items = overviewItems()
+        chargingTemplate?.updateSections(chargingSections())
+        devicesTemplate?.updateSections(deviceSections())
     }
 
     // MARK: - Root
@@ -265,7 +254,7 @@ final class CarPlayManager {
         let items = stations.map { station -> CPListItem in
             let item = CPListItem(
                 text: station.name,
-                detailText: String(localized: station.chargingMode.localizedTitle)
+                detailText: String(localized: station.chargingMode.localizedTitleLong)
             )
             item.accessoryType = .disclosureIndicator
             item.handler = { [weak self] _, completion in
@@ -285,12 +274,18 @@ final class CarPlayManager {
         interfaceController?.pushTemplate(template, animated: true, completion: nil)
     }
 
-    /// Lists the simple charging modes (those needing no extra configuration),
-    /// with the **current mode first** so CarPlay's default focus lands on it
-    /// (it reads as pre-selected) and named in the section header. No leading
-    /// icons: CarPlay renders list-item images as flat monochrome glyphs (they
-    /// come out black on the dashboard), so we use a name + description layout
-    /// instead. Every row has a subtitle, keeping the titles aligned.
+    /// Lists the simple charging modes (those needing no extra configuration)
+    /// in a **fixed canonical order**, with the active mode flagged by a
+    /// trailing checkmark (and named in the section header). Marking the
+    /// selection explicitly — rather than sorting the active mode to the top —
+    /// keeps the right row flagged even before the first data refresh and means
+    /// the list never visibly re-sorts when fresh data arrives.
+    ///
+    /// Full mode names are used (`localizedTitleLong`) since a CarPlay row has
+    /// the whole width available; the short `localizedTitle` would needlessly
+    /// abbreviate (e.g. "Solar & Tarifopt."). No leading icons: CarPlay renders
+    /// list-item images as flat monochrome glyphs (black on the dashboard), so
+    /// we use a name + description layout instead.
     ///
     /// Modes that require extra parameters (constant current, minimum quantity,
     /// target SoC) are intentionally omitted — CarPlay templates can't host
@@ -299,13 +294,16 @@ final class CarPlayManager {
     private func modeSections(for station: ChargingStation) -> [CPListSection] {
         let current = station.chargingMode
         let simple = ChargingMode.allCases.filter { $0.isSimpleChargingMode() }
-        // Current mode first (if it's a simple one), rest in canonical order.
-        let modes = simple.filter { $0 == current } + simple.filter { $0 != current }
 
-        let items = modes.map { mode -> CPListItem in
+        let items = simple.map { mode -> CPListItem in
             let item = CPListItem(
-                text: String(localized: mode.localizedTitle),
-                detailText: chargingModeDescription(mode)
+                text: String(localized: mode.localizedTitleLong),
+                detailText: chargingModeDescription(mode),
+                image: nil,
+                accessoryImage: mode == current
+                    ? UIImage(systemName: "checkmark")
+                    : nil,
+                accessoryType: .none
             )
             item.handler = { [weak self] _, completion in
                 self?.selectMode(mode, for: station)
@@ -315,7 +313,7 @@ final class CarPlayManager {
         }
 
         let header = String(
-            localized: "Current: \(String(localized: current.localizedTitle))"
+            localized: "Current: \(String(localized: current.localizedTitleLong))"
         )
         return [CPListSection(items: items, header: header, sectionIndexTitle: nil)]
     }
@@ -375,7 +373,7 @@ final class CarPlayManager {
             )
             item.accessoryType = .disclosureIndicator
             item.handler = { [weak self] _, completion in
-                self?.pushPriorityActions(for: device)
+                self?.presentPriorityActions(for: device)
                 completion()
             }
             return item
@@ -390,62 +388,78 @@ final class CarPlayManager {
         ]
     }
 
-    private func pushPriorityActions(for device: Device) {
-        let sorted = buildingState.overviewData.devices
-            .sorted(by: { $0.priority < $1.priority })
-        guard let index = sorted.firstIndex(where: { $0.id == device.id }) else {
-            return
-        }
-
-        var items: [CPListItem] = []
-
-        if index > 0 {
-            let up = CPListItem(
-                text: String(localized: "Move up"),
-                detailText: String(localized: "Higher priority")
-            )
-            up.handler = { [weak self] _, completion in
-                Task {
-                    await self?.move(device: device, up: true)
-                    completion()
-                }
-            }
-            items.append(up)
-        }
-
-        if index < sorted.count - 1 {
-            let down = CPListItem(
-                text: String(localized: "Move down"),
-                detailText: String(localized: "Lower priority")
-            )
-            down.handler = { [weak self] _, completion in
-                Task {
-                    await self?.move(device: device, up: false)
-                    completion()
-                }
-            }
-            items.append(down)
-        }
-
-        let template = CPListTemplate(
-            title: device.name,
-            sections: [CPListSection(items: items)]
-        )
-        interfaceController?.pushTemplate(template, animated: true, completion: nil)
-    }
-
-    /// Reorders by swapping the device with its neighbour and reassigning a
-    /// clean 1…N priority permutation — the same model the iOS
-    /// `DevicePrioritySheet` uses for drag-to-reorder.
-    private func move(device: Device, up: Bool) async {
-        var ordered = buildingState.overviewData.devices
+    /// Tapping a device opens an action sheet (`CPActionSheetTemplate`, one of
+    /// the templates the EV-charging entitlement permits) with move-up/down and
+    /// move-to-top/bottom. This is a single modal overlay instead of a pushed
+    /// second screen, and edge actions are hidden when the device is already at
+    /// the top or bottom. CarPlay has no drag-to-reorder in any template, so
+    /// reordering is necessarily expressed as discrete move actions.
+    private func presentPriorityActions(for device: Device) {
+        let ordered = buildingState.overviewData.devices
             .sorted(by: { $0.priority < $1.priority })
         guard let index = ordered.firstIndex(where: { $0.id == device.id })
         else { return }
 
-        let target = up ? index - 1 : index + 1
-        guard ordered.indices.contains(target) else { return }
-        ordered.swapAt(index, target)
+        let lastIndex = ordered.count - 1
+        var actions: [CPAlertAction] = []
+
+        if index > 0 {
+            actions.append(
+                CPAlertAction(title: String(localized: "Move to top"), style: .default) {
+                    [weak self] _ in
+                    Task { await self?.moveDevice(device, to: 0) }
+                }
+            )
+            actions.append(
+                CPAlertAction(title: String(localized: "Move up"), style: .default) {
+                    [weak self] _ in
+                    Task { await self?.moveDevice(device, to: index - 1) }
+                }
+            )
+        }
+
+        if index < lastIndex {
+            actions.append(
+                CPAlertAction(title: String(localized: "Move down"), style: .default) {
+                    [weak self] _ in
+                    Task { await self?.moveDevice(device, to: index + 1) }
+                }
+            )
+            actions.append(
+                CPAlertAction(title: String(localized: "Move to bottom"), style: .default) {
+                    [weak self] _ in
+                    Task { await self?.moveDevice(device, to: lastIndex) }
+                }
+            )
+        }
+
+        actions.append(
+            CPAlertAction(title: String(localized: "Cancel"), style: .cancel) { _ in }
+        )
+
+        let sheet = CPActionSheetTemplate(
+            title: device.name,
+            message: String(localized: "Priority \(index + 1) of \(ordered.count)"),
+            actions: actions
+        )
+        interfaceController?.presentTemplate(sheet, animated: true, completion: nil)
+    }
+
+    /// Moves `device` to `targetIndex` in the priority order and reassigns a
+    /// clean 1…N permutation — the same model the iOS `DevicePrioritySheet`
+    /// uses for drag-to-reorder. Handles adjacent moves and jumps to the
+    /// top/bottom uniformly. The action sheet dismisses itself on selection, so
+    /// there is no template to pop.
+    private func moveDevice(_ device: Device, to targetIndex: Int) async {
+        var ordered = buildingState.overviewData.devices
+            .sorted(by: { $0.priority < $1.priority })
+        guard let index = ordered.firstIndex(where: { $0.id == device.id }),
+            ordered.indices.contains(targetIndex),
+            index != targetIndex
+        else { return }
+
+        let moved = ordered.remove(at: index)
+        ordered.insert(moved, at: targetIndex)
 
         let updates: [(sensorId: String, priority: Int)] =
             ordered.enumerated().compactMap { idx, dev in
@@ -457,7 +471,6 @@ final class CarPlayManager {
 
         await buildingState.setSensorPriorities(updates)
         devicesTemplate?.updateSections(deviceSections())
-        interfaceController?.popTemplate(animated: true, completion: nil)
     }
 
 }

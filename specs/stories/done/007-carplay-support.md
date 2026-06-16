@@ -1,6 +1,6 @@
 # Story: #7, CarPlay Support
 
-**Status:** Open
+**Status:** Done (16.06.2026)
 
 ## Short Description
 
@@ -52,16 +52,17 @@ All data and control already exists in `Shared/` and is platform-agnostic:
 - [x] App builds successfully (iOS Simulator, `Solar Lens iOS` scheme)
 - [ ] App runs correctly on watchOS Simulator (n/a — iOS-only feature)
 - [x] CarPlay scene validated in the Xcode CarPlay Simulator (External Displays → CarPlay) — app appears in the CarPlay dashboard, launches into the tab bar; Energy tab shows live Solar/Consumption/Grid/Battery (battery "87% · 1.2 kW discharging") matching the phone; Charging tab single-station shortcut goes straight to the mode list with the active mode marked. (Priorities tab not re-captured — macOS revoked the automation's Accessibility permission mid-session — but uses the identical `CPListTemplate` path.)
-- [ ] Optional: validated on real CarPlay hardware once the Apple entitlement is granted
+- [x] Entitlement granted by Apple (16.06.2026) and capability enabled on the App ID `com.marcduerst.SolarManagerWatch`; device-build signing verified — `com.apple.developer.carplay-charging` present in both the signed app binary and the embedded provisioning profile
+- [x] Validated on real CarPlay hardware — confirmed working in-car via TestFlight 4.3.0 build 340 (16.06.2026)
 - [x] /specs have been updated if necessary
 - [x] If architectural decisions were made, an ADR was created in /specs/adrs ([ADR-003](../adrs/003-carplay-architecture.md))
-- [ ] Story status has been set to "Done (DD.MM.YYYY)"
-- [ ] Story file has been moved to /specs/stories/done/
-- [ ] Story has been removed from the backlog
+- [x] Story status has been set to "Done (16.06.2026)"
+- [x] Story file has been moved to /specs/stories/done/
+- [x] Story has been removed from the backlog
 
 ## Tasks
 
-- [ ] Request the CarPlay EV-charging entitlement from Apple (external dependency — start early)
+- [x] Request the CarPlay EV-charging entitlement from Apple (external dependency — start early) — **granted 16.06.2026** ("CarPlay EV Charging App" entitlement assigned to the account; matches `com.apple.developer.carplay-charging`)
 - [x] Add the CarPlay entitlement to `Solar Lens iOS/Solar Lens iOS.entitlements` (`com.apple.developer.carplay-charging`)
 - [x] Declare the CarPlay scene + delegate in `Solar-Lens-Info.plist` (`UIApplicationSceneManifest`); removed `INFOPLIST_KEY_UIApplicationSceneManifest_Generation` to avoid a duplicate-manifest conflict
 - [x] Implement `CPTemplateApplicationSceneDelegate` (`CarPlaySceneDelegate`) and wire it to a `CarPlayManager` owning its own `CurrentBuildingState` bound to `SolarManager.shared`
