@@ -25,7 +25,7 @@ final class CarPlayManager {
     )
 
     private var tabBarTemplate: CPTabBarTemplate?
-    private var overviewTemplate: CPInformationTemplate?
+    private var overviewTemplate: CPListTemplate?
     private var chargingTemplate: CPListTemplate?
     private var devicesTemplate: CPListTemplate?
     private var refreshTimer: Timer?
@@ -106,7 +106,7 @@ final class CarPlayManager {
         await buildingState.fetchServerData(force: true)
         await buildingState.fetchSolarDetails()
 
-        overviewTemplate?.items = overviewItems()
+        overviewTemplate?.updateSections(overviewSections())
         chargingTemplate?.updateSections(chargingSections())
         devicesTemplate?.updateSections(deviceSections())
     }
@@ -149,47 +149,84 @@ final class CarPlayManager {
 
     // MARK: - Overview screen
 
-    /// Compact two-column read-out of the current values. `CPInformationTemplate`
-    /// packs label/value pairs far denser than a row-per-value list and has no
-    /// per-row icons. No "refresh" action — the data auto-refreshes on a timer.
-    private func makeOverviewTemplate() -> CPInformationTemplate {
-        let template = CPInformationTemplate(
-            title: "",
-            layout: .twoColumn,
-            items: overviewItems(),
-            actions: []
-        )
+    /// Single-column list of the current values, each with a coloured leading
+    /// icon. A `CPListTemplate` is used rather than the denser two-column
+    /// `CPInformationTemplate` because only list rows can carry a per-row image.
+    /// Icons are pre-rendered as fully coloured images (`.alwaysOriginal`) so
+    /// CarPlay shows the colour instead of flattening them to a tinted glyph.
+    /// No "refresh" action — the data auto-refreshes on a timer.
+    private func makeOverviewTemplate() -> CPListTemplate {
+        let template = CPListTemplate(title: "", sections: overviewSections())
         template.tabTitle = String(localized: "Energy")
         template.tabImage = UIImage(systemName: "bolt.fill")
         overviewTemplate = template
         return template
     }
 
-    private func overviewItems() -> [CPInformationItem] {
+    /// A coloured SF Symbol rendered as a ready-to-display image. `.alwaysOriginal`
+    /// keeps CarPlay from re-tinting it to a flat colour.
+    ///
+    /// CarPlay scales the list-image to a fixed slot, so a tightly-cropped glyph
+    /// fills the whole slot and looks oversized. The glyph is therefore centred
+    /// in a transparent square canvas (occupying `glyphFraction` of it) so it
+    /// renders at a comfortable size rather than edge-to-edge.
+    private func icon(_ name: String, _ color: UIColor) -> UIImage? {
+        let glyphFraction: CGFloat = 0.55
+        let config = UIImage.SymbolConfiguration(pointSize: 28, weight: .semibold)
+        guard
+            let symbol = UIImage(systemName: name, withConfiguration: config)?
+                .withTintColor(color, renderingMode: .alwaysOriginal)
+        else { return nil }
+
+        let side = max(symbol.size.width, symbol.size.height) / glyphFraction
+        let canvas = CGSize(width: side, height: side)
+        let padded = UIGraphicsImageRenderer(size: canvas).image { _ in
+            symbol.draw(
+                in: CGRect(
+                    x: (side - symbol.size.width) / 2,
+                    y: (side - symbol.size.height) / 2,
+                    width: symbol.size.width,
+                    height: symbol.size.height
+                )
+            )
+        }
+        // The re-rendered composite is `.automatic` again — force original
+        // rendering so CarPlay shows our colours instead of tinting it black.
+        return padded.withRenderingMode(.alwaysOriginal)
+    }
+
+    private func overviewSections() -> [CPListSection] {
         let data = buildingState.overviewData
 
-        var items: [CPInformationItem] = [
-            CPInformationItem(
-                title: String(localized: "Solar"),
-                detail: data.currentSolarProduction
-                    .formatWattsAsKiloWatts(widthUnit: true)
+        func row(
+            _ title: LocalizedStringResource, _ detail: String, _ image: UIImage?
+        ) -> CPListItem {
+            CPListItem(text: String(localized: title), detailText: detail, image: image)
+        }
+
+        var items: [CPListItem] = [
+            row(
+                "Solar",
+                data.currentSolarProduction.formatWattsAsKiloWatts(widthUnit: true),
+                icon("sun.max.fill", .systemYellow)
             ),
-            CPInformationItem(
-                title: String(localized: "Consumption"),
-                detail: data.currentOverallConsumption
-                    .formatWattsAsKiloWatts(widthUnit: true)
+            row(
+                "Consumption",
+                data.currentOverallConsumption.formatWattsAsKiloWatts(widthUnit: true),
+                icon("house.fill", .systemTeal)
             ),
-            CPInformationItem(
-                title: String(localized: "Grid"),
-                detail: gridDetail(data)
-            ),
+            row("Grid", gridDetail(data), gridIcon(data)),
         ]
 
         if let level = data.currentBatteryLevel {
+            let rate = data.currentBatteryChargeRate ?? 0
+            let color: UIColor =
+                rate > 100 ? .systemGreen : rate < -100 ? .systemOrange : .systemGray
             items.append(
-                CPInformationItem(
-                    title: String(localized: "Battery"),
-                    detail: batteryDetail(level: level, rate: data.currentBatteryChargeRate)
+                row(
+                    "Battery",
+                    batteryDetail(level: level, rate: data.currentBatteryChargeRate),
+                    icon("minus.plus.batteryblock.fill", color)
                 )
             )
         }
@@ -206,14 +243,22 @@ final class CarPlayManager {
         for (title, expected) in forecasts {
             guard let expected else { continue }
             items.append(
-                CPInformationItem(
-                    title: String(localized: title),
-                    detail: String(format: "%.1f kWh", expected)
+                row(
+                    title, String(format: "%.1f kWh", expected),
+                    icon("sun.and.horizon.fill", .systemOrange)
                 )
             )
         }
 
-        return items
+        return [CPListSection(items: items)]
+    }
+
+    /// Grid icon coloured by flow direction: red when importing, green when
+    /// exporting, grey when idle.
+    private func gridIcon(_ data: OverviewData) -> UIImage? {
+        if data.isFlowGridToHouse() { return icon("powerplug.fill", .systemRed) }
+        if data.isFlowSolarToGrid() { return icon("powerplug.fill", .systemGreen) }
+        return icon("powerplug.fill", .systemGray)
     }
 
     private func gridDetail(_ data: OverviewData) -> String {
