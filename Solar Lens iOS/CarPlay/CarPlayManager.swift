@@ -116,17 +116,16 @@ final class CarPlayManager {
     private func makeTabBar() -> CPTabBarTemplate {
         let overview = makeOverviewTemplate()
 
-        let charging = CPListTemplate(
-            title: String(localized: "Charging"),
-            sections: chargingSections()
-        )
+        // Each tab keeps its label via `tabTitle`, but the on-screen nav-bar
+        // `title` is left empty so the name doesn't appear twice (once in the
+        // tab bar, once as a redundant header above the content).
+        let charging = CPListTemplate(title: "", sections: chargingSections())
+        charging.tabTitle = String(localized: "Charging")
         charging.tabImage = UIImage(systemName: "ev.charger")
         chargingTemplate = charging
 
-        let devices = CPListTemplate(
-            title: String(localized: "Priorities"),
-            sections: deviceSections()
-        )
+        let devices = CPListTemplate(title: "", sections: deviceSections())
+        devices.tabTitle = String(localized: "Priorities")
         devices.tabImage = UIImage(systemName: "arrow.up.arrow.down")
         devicesTemplate = devices
 
@@ -155,11 +154,12 @@ final class CarPlayManager {
     /// per-row icons. No "refresh" action — the data auto-refreshes on a timer.
     private func makeOverviewTemplate() -> CPInformationTemplate {
         let template = CPInformationTemplate(
-            title: String(localized: "Energy"),
+            title: "",
             layout: .twoColumn,
             items: overviewItems(),
             actions: []
         )
+        template.tabTitle = String(localized: "Energy")
         template.tabImage = UIImage(systemName: "bolt.fill")
         overviewTemplate = template
         return template
@@ -194,15 +194,21 @@ final class CarPlayManager {
             )
         }
 
-        if let today = buildingState.solarDetailsData?.forecastToday?.expected {
-            let tomorrow = buildingState.solarDetailsData?.forecastTomorrow?.expected
-            let detail = tomorrow != nil
-                ? String(format: "%.1f / %.1f kWh", today, tomorrow!)
-                : String(format: "%.1f kWh", today)
+        // Solar forecast, one labelled row per day (today / tomorrow / day
+        // after) so the values are self-explanatory — the previous single
+        // "0.1 / 58.3 kWh" slash line was hard to parse.
+        let solar = buildingState.solarDetailsData
+        let forecasts: [(LocalizedStringResource, Double?)] = [
+            ("Today", solar?.forecastToday?.expected),
+            ("Tomorrow", solar?.forecastTomorrow?.expected),
+            ("Day after tomorrow", solar?.forecastDayAfterTomorrow?.expected),
+        ]
+        for (title, expected) in forecasts {
+            guard let expected else { continue }
             items.append(
                 CPInformationItem(
-                    title: String(localized: "Forecast"),
-                    detail: detail
+                    title: String(localized: title),
+                    detail: String(format: "%.1f kWh", expected)
                 )
             )
         }
@@ -312,10 +318,8 @@ final class CarPlayManager {
             return item
         }
 
-        let header = String(
-            localized: "Current: \(String(localized: current.localizedTitleLong))"
-        )
-        return [CPListSection(items: items, header: header, sectionIndexTitle: nil)]
+        // No "Current: …" header — the checkmark already marks the active mode.
+        return [CPListSection(items: items)]
     }
 
     private func selectMode(_ mode: ChargingMode, for station: ChargingStation) {
@@ -366,90 +370,43 @@ final class CarPlayManager {
             return [CPListSection(items: [empty])]
         }
 
+        // One action per row, mirroring the watchOS DeviceRow: the top device
+        // moves *down*, every other device moves *up*. A CPListItem has only a
+        // single (whole-row) tap and can't host a separate button, but that
+        // matches watchOS's one-button-per-row model exactly — so the row tap
+        // *is* the move, with a trailing arrow showing the direction. No sheet
+        // or drill-down needed.
+        let lastIndex = devices.count - 1
         let items = devices.enumerated().map { index, device -> CPListItem in
+            let movesDown = index == 0
+            let target = movesDown ? min(index + 1, lastIndex) : index - 1
             let item = CPListItem(
                 text: device.name,
-                detailText: String(localized: "Priority \(index + 1)")
+                detailText: String(localized: "Priority \(index + 1)"),
+                image: nil,
+                accessoryImage: UIImage(
+                    systemName: movesDown ? "arrow.down.circle" : "arrow.up.circle"
+                ),
+                accessoryType: .none
             )
-            item.accessoryType = .disclosureIndicator
             item.handler = { [weak self] _, completion in
-                self?.presentPriorityActions(for: device)
-                completion()
+                Task {
+                    await self?.moveDevice(device, to: target)
+                    completion()
+                }
             }
             return item
         }
 
-        return [
-            CPListSection(
-                items: items,
-                header: String(localized: "Ordered by priority — highest first"),
-                sectionIndexTitle: nil
-            )
-        ]
-    }
-
-    /// Tapping a device opens an action sheet (`CPActionSheetTemplate`, one of
-    /// the templates the EV-charging entitlement permits) with move-up/down and
-    /// move-to-top/bottom. This is a single modal overlay instead of a pushed
-    /// second screen, and edge actions are hidden when the device is already at
-    /// the top or bottom. CarPlay has no drag-to-reorder in any template, so
-    /// reordering is necessarily expressed as discrete move actions.
-    private func presentPriorityActions(for device: Device) {
-        let ordered = buildingState.overviewData.devices
-            .sorted(by: { $0.priority < $1.priority })
-        guard let index = ordered.firstIndex(where: { $0.id == device.id })
-        else { return }
-
-        let lastIndex = ordered.count - 1
-        var actions: [CPAlertAction] = []
-
-        if index > 0 {
-            actions.append(
-                CPAlertAction(title: String(localized: "Move to top"), style: .default) {
-                    [weak self] _ in
-                    Task { await self?.moveDevice(device, to: 0) }
-                }
-            )
-            actions.append(
-                CPAlertAction(title: String(localized: "Move up"), style: .default) {
-                    [weak self] _ in
-                    Task { await self?.moveDevice(device, to: index - 1) }
-                }
-            )
-        }
-
-        if index < lastIndex {
-            actions.append(
-                CPAlertAction(title: String(localized: "Move down"), style: .default) {
-                    [weak self] _ in
-                    Task { await self?.moveDevice(device, to: index + 1) }
-                }
-            )
-            actions.append(
-                CPAlertAction(title: String(localized: "Move to bottom"), style: .default) {
-                    [weak self] _ in
-                    Task { await self?.moveDevice(device, to: lastIndex) }
-                }
-            )
-        }
-
-        actions.append(
-            CPAlertAction(title: String(localized: "Cancel"), style: .cancel) { _ in }
-        )
-
-        let sheet = CPActionSheetTemplate(
-            title: device.name,
-            message: String(localized: "Priority \(index + 1) of \(ordered.count)"),
-            actions: actions
-        )
-        interfaceController?.presentTemplate(sheet, animated: true, completion: nil)
+        // No header — the arrows already convey the per-row action, and the
+        // list is self-evidently ordered by priority.
+        return [CPListSection(items: items)]
     }
 
     /// Moves `device` to `targetIndex` in the priority order and reassigns a
     /// clean 1…N permutation — the same model the iOS `DevicePrioritySheet`
-    /// uses for drag-to-reorder. Handles adjacent moves and jumps to the
-    /// top/bottom uniformly. The action sheet dismisses itself on selection, so
-    /// there is no template to pop.
+    /// uses for drag-to-reorder. A no-op when the device is already there (e.g.
+    /// a single-device list). Updates the devices tab in place.
     private func moveDevice(_ device: Device, to targetIndex: Int) async {
         var ordered = buildingState.overviewData.devices
             .sorted(by: { $0.priority < $1.priority })
