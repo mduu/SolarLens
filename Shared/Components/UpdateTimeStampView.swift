@@ -16,6 +16,7 @@ struct UpdateTimeStampView: View {
     /// fetch) complete before the delay expires and therefore never
     /// show the label. Only real, slow fetches surface it.
     @State private var showLoadingLabel: Bool = false
+    @State private var loadingLabelTask: Task<Void, Never>?
     private static let loadingLabelDelay: TimeInterval = 0.6
 
     var updateTimer = Timer.publish(every: 1, on: .main, in: .common)
@@ -95,21 +96,30 @@ struct UpdateTimeStampView: View {
             UpdateSecondsElaped()
         }
         .onChange(of: isLoading) { _, newValue in
+            // Cancel any pending delay from a previous loading start.
+            loadingLabelTask?.cancel()
+
             if newValue {
-                // Only surface the "Updating" label if the fetch is
-                // still running after the delay; quick cached fetches
-                // (or spurious scene-phase flickers) never make it
-                // visible.
-                Task { @MainActor in
+                // Only surface the "Updating" label if the fetch is still
+                // running after the delay; quick cached fetches (or spurious
+                // scene-phase flickers) never make it visible. The task is
+                // cancelled the instant loading ends, so a fetch that finishes
+                // inside the delay window leaves the label hidden.
+                //
+                // We must NOT re-read `isLoading` inside the task to decide
+                // this: `isLoading` is an immutable value snapshot of this View
+                // struct, frozen at the `true` that triggered onChange, so the
+                // read is always `true` and used to latch "Updating" on
+                // permanently between fetches. Cancellation is the live signal.
+                loadingLabelTask = Task { @MainActor in
                     try? await Task.sleep(
                         nanoseconds: UInt64(
                             UpdateTimeStampView.loadingLabelDelay
                                 * Double(NSEC_PER_SEC)
                         )
                     )
-                    if isLoading {
-                        showLoadingLabel = true
-                    }
+                    guard !Task.isCancelled else { return }
+                    showLoadingLabel = true
                 }
             } else {
                 showLoadingLabel = false
