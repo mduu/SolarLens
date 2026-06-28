@@ -170,6 +170,16 @@ class SolarManagerApi: RestClient {
         return response
     }
 
+    func getV3DynamicTariff(solarManagerId smId: String) async throws
+        -> DynamicTariffResponse?
+    {
+        let response: DynamicTariffResponse? = try await get(
+            serviceUrl: "/v3/users/\(smId)/tariff/dynamic"
+        )
+
+        return response
+    }
+
     func getV3ForecastGateway(solarManagerId smId: String) async throws
         -> ForecastV3Response?
     {

@@ -24,6 +24,9 @@ class StatisticsViewModel {
     var customEndDate: Date = Date()
     var customResolution: CustomResolution = .day
     var customStats: [DayStatistic]?
+    /// Raw per-interval samples for the custom range when an hourly resolution
+    /// is selected — used for the high-resolution CSV/XLSX export.
+    var customIntervalData: [MainDataItem]?
 
     private let energyManager: EnergyManager
 
@@ -256,6 +259,24 @@ class StatisticsViewModel {
         let daysBetween = calendar.dateComponents([.day], from: start, to: end).day ?? 0
 
         switch customResolution {
+        case .hourly:
+            // Fetch raw hourly samples, chunked monthly to keep each request
+            // small (a full year is ~8,760 rows). Keep the raw items for the
+            // high-resolution export and aggregate to days for the chart.
+            let chunks = DateRangeChunker.monthlyChunks(from: start, to: end)
+            var items: [MainDataItem] = []
+            for chunk in chunks {
+                if let chunkData = try? await energyManager.fetchMainData(
+                    from: chunk.start, to: chunk.end, interval: 3600
+                ) {
+                    items.append(contentsOf: chunkData.data)
+                }
+            }
+            let sorted = items.sorted { $0.date < $1.date }
+            customIntervalData = sorted
+            customStats = aggregateDataPoints(sorted, by: .day)
+            computeBatteryTotals(from: sorted)
+
         case .day, .week:
             // Fetch raw data points and aggregate by day or week
             let interval = daysBetween <= 7 ? 300 : (daysBetween <= 90 ? 3600 : 86400)
@@ -271,6 +292,7 @@ class StatisticsViewModel {
                 )
                 computeBatteryTotals(from: mainData.data)
             }
+            customIntervalData = nil
 
         case .month, .year:
             // Fetch per-period statistics via the statistics endpoint
@@ -281,6 +303,7 @@ class StatisticsViewModel {
             )
             batteryCharged = 0
             batteryDischarged = 0
+            customIntervalData = nil
         }
 
         carCharged = nil
@@ -441,6 +464,7 @@ enum StatisticsPeriod: String, CaseIterable, Identifiable {
 }
 
 enum CustomResolution: String, CaseIterable, Identifiable {
+    case hourly = "Hourly"
     case day = "Day"
     case week = "Week"
     case month = "Month"
@@ -450,6 +474,7 @@ enum CustomResolution: String, CaseIterable, Identifiable {
 
     var localizedName: LocalizedStringKey {
         switch self {
+        case .hourly: "Hourly"
         case .day: "Day"
         case .week: "Week"
         case .month: "Month"
@@ -459,6 +484,7 @@ enum CustomResolution: String, CaseIterable, Identifiable {
 
     var calendarComponent: Calendar.Component {
         switch self {
+        case .hourly: .day  // hourly samples are aggregated to days for the chart
         case .day: .day
         case .week: .weekOfYear
         case .month: .month
@@ -468,6 +494,7 @@ enum CustomResolution: String, CaseIterable, Identifiable {
 
     var chartXUnit: Calendar.Component {
         switch self {
+        case .hourly: .day
         case .day: .day
         case .week: .weekOfYear
         case .month: .month
@@ -477,6 +504,7 @@ enum CustomResolution: String, CaseIterable, Identifiable {
 
     var chartXLabelFormat: XLabelFormat {
         switch self {
+        case .hourly: .dayOfMonth
         case .day: .dayOfMonth
         case .week: .isoWeekNumber
         case .month: .monthNarrow

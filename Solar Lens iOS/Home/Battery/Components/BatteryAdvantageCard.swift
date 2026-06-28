@@ -4,8 +4,9 @@ struct BatteryAdvantageCard: View {
     let mainData: MainData?
     let tariff: TariffV1Response?
     let tariffSettings: TariffSettingsV3Response?
-    let todayConsumption: Double
-    let todayProduction: Double
+    var dynamicTariff: DynamicTariff? = nil
+    let consumption: Double
+    let production: Double
     let autarkyWithBattery: Double
     let selfConsumptionWithBattery: Double
     let hasAnyBattery: Bool
@@ -14,21 +15,35 @@ struct BatteryAdvantageCard: View {
         let totalDischarged = mainData?.data.reduce(0.0) { $0 + $1.batteryDischargedWh } ?? 0
         let totalCharged = mainData?.data.reduce(0.0) { $0 + $1.batteryChargedWh } ?? 0
 
-        let autarkyWithout = todayConsumption > 0
-            ? max(autarkyWithBattery - (totalDischarged / todayConsumption * 100), 0)
+        let autarkyWithout = consumption > 0
+            ? max(autarkyWithBattery - (totalDischarged / consumption * 100), 0)
             : 0
         let autarkyImprovement = autarkyWithBattery - autarkyWithout
 
-        let selfConsumptionWithout = todayProduction > 0
-            ? max(selfConsumptionWithBattery - (totalCharged / todayProduction * 100), 0)
+        let selfConsumptionWithout = production > 0
+            ? max(selfConsumptionWithBattery - (totalCharged / production * 100), 0)
             : 0
         let selfConsumptionImprovement = selfConsumptionWithBattery - selfConsumptionWithout
 
-        let netSavings = TariffCalculator.batterySavings(
+        let avoidedImportValue = TariffCalculator.avoidedImportValue(
+            data: mainData?.data ?? [],
+            tariffSettings: tariffSettings,
+            fallbackTariff: tariff,
+            dynamicImport: dynamicTariff
+        )
+        let forgoneExportValue = TariffCalculator.forgoneExportRevenue(
             data: mainData?.data ?? [],
             tariffSettings: tariffSettings,
             fallbackTariff: tariff
         )
+        let netBenefit = avoidedImportValue - forgoneExportValue
+
+        // Effective (energy-weighted) rates actually applied, surfaced in the
+        // footnote so the basis is transparent and any mis-read is visible.
+        let dischargedKwh = totalDischarged / 1000
+        let chargedKwh = totalCharged / 1000
+        let effImportRate = dischargedKwh > 0 ? avoidedImportValue / dischargedKwh : 0
+        let effFeedRate = chargedKwh > 0 ? forgoneExportValue / chargedKwh : 0
 
         if hasAnyBattery {
             VStack(alignment: .leading, spacing: 12) {
@@ -41,37 +56,45 @@ struct BatteryAdvantageCard: View {
                         .foregroundStyle(.primary.opacity(0.7))
                 }
 
-                // Grid import avoided + savings
+                // Money the battery added (net = import avoided − feed-in forgone)
                 HStack(spacing: 12) {
                     ZStack {
                         Circle()
                             .fill(.green.opacity(0.12))
                             .frame(width: 40, height: 40)
-                        Image(systemName: "arrow.down.left.circle")
-                            .font(.body)
+                        Image(systemName: "francsign.circle.fill")
+                            .font(.title3)
                             .foregroundStyle(.green)
                     }
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Grid import avoided")
+                        Text("Money saved")
                             .font(.caption)
                             .foregroundStyle(.primary.opacity(0.7))
-                        HStack(alignment: .firstTextBaseline, spacing: 8) {
-                            Text(totalDischarged.formatWattHoursAsKiloWattsHours(widthUnit: true))
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-
-                            if netSavings != 0 {
-                                let currencyCode = CurrencyHelper.currencyCode
-                                Text(verbatim: "≈ \(netSavings.formatted(.currency(code: currencyCode)))")
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.green)
-                            }
-                        }
+                        Text(verbatim: netBenefit.formatted(.currency(code: CurrencyHelper.currencyCode)))
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.green)
                     }
 
                     Spacer()
+                }
+
+                // Breakdown: import you avoided buying + feed-in you forwent
+                HStack(alignment: .top, spacing: 0) {
+                    moneyBreakdown(
+                        title: "Grid import avoided",
+                        energyWh: totalDischarged,
+                        value: avoidedImportValue,
+                        positive: true
+                    )
+                    Spacer()
+                    moneyBreakdown(
+                        title: "Feed-in forgone",
+                        energyWh: totalCharged,
+                        value: forgoneExportValue,
+                        positive: false
+                    )
                 }
 
                 Divider()
@@ -142,6 +165,8 @@ struct BatteryAdvantageCard: View {
                         }
                     }
                 }
+
+                TariffRatesFootnote(importRate: effImportRate, feedInRate: effFeedRate)
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -149,6 +174,28 @@ struct BatteryAdvantageCard: View {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(.ultraThinMaterial)
             )
+        }
+    }
+
+    @ViewBuilder
+    private func moneyBreakdown(
+        title: LocalizedStringKey,
+        energyWh: Double,
+        value: Double,
+        positive: Bool
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(energyWh.formatWattHoursAsKiloWattsHours(widthUnit: true))
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(.primary.opacity(0.8))
+            Text(verbatim: "\(positive ? "+" : "−")\(value.formatted(.currency(code: CurrencyHelper.currencyCode)))")
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .foregroundStyle(positive ? .green : .secondary)
         }
     }
 }

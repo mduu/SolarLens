@@ -1,6 +1,6 @@
 # Story: #8, Should I Add a Battery to My House?
 
-**Status:** Open
+**Status:** Done (28.06.2026)
 
 ## Short Description
 
@@ -157,14 +157,20 @@ A full year is large; optimize and **chunk** SM `/data/range` requests:
 - The simulation result is clearly labelled an **estimate**.
 
 ## Test Checklist
-- [ ] App builds successfully
-- [ ] App runs correctly on watchOS Simulator
+- [x] App builds successfully (iOS via Xcode, watchOS via xcodebuild)
+- [ ] App runs correctly on watchOS Simulator (simulator runtime out of date locally; verify on-device)
 - [ ] Optional for UI changes: UI validated on Apple Watch hardware or simulator
-- [ ] /specs have been updated if necessary
-- [ ] If architectural decisions were made, an ADR was created in /specs/adrs
-- [ ] Story status has been set to "Done (DD.MM.YYYY)"
-- [ ] Story file has been moved to /specs/stories/done/
-- [ ] Story has been removed from the backlog
+- [x] /specs have been updated (userinterface.md, solarmanager_api.md)
+- [x] If architectural decisions were made, an ADR was created in /specs/adrs (ADR-004 simulation model, ADR-005 tester-build gating)
+- [x] Story status has been set to "Done (28.06.2026)"
+- [x] Story file has been moved to /specs/stories/done/
+- [x] Story has been removed from the backlog
+
+> **Follow-ups (tracked outside this story):**
+> - watchOS Part B (period selector on `WatchBatteryAdvantageView`) left as today-only.
+> - Translations (de/da/fr/it) for the ~36 new strings still pending (run `/translate`).
+> - Dynamic tariff valuation covers near-term only; historical periods fall back to the static tariff.
+> - Winter/summer tariff window uses the Oct–Mar convention (SM config carries no boundaries).
 
 ## Tasks
 

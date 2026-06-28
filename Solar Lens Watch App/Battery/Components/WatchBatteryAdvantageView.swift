@@ -23,7 +23,7 @@ struct WatchBatteryAdvantageView: View {
             : 0
         let selfConsumptionImprovement = selfConsumptionWithBattery - selfConsumptionWithout
 
-        let netSavings = TariffCalculator.batterySavings(
+        let netBenefit = TariffCalculator.batteryNetBenefit(
             data: mainData?.data ?? [],
             tariffSettings: tariffSettings,
             fallbackTariff: tariff
@@ -32,10 +32,10 @@ struct WatchBatteryAdvantageView: View {
 
         HStack(spacing: 0) {
             // Savings
-            if netSavings != 0 {
+            if netBenefit != 0 {
                 VStack(spacing: 2) {
                     HStack(alignment: .firstTextBaseline, spacing: 1) {
-                        Text(netSavings, format: .number.precision(.fractionLength(2)))
+                        Text(netBenefit, format: .number.precision(.fractionLength(2)))
                             .font(.caption)
                             .fontWeight(.bold)
                             .foregroundStyle(.green)

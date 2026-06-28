@@ -9,6 +9,18 @@ struct GridWeekCard: View {
     var body: some View {
         let currencyCode = CurrencyHelper.currencyCode
 
+        // Week aggregate effective (energy-weighted) rates, for transparency.
+        let weekTotals = weekData.reduce(into: (importWh: 0.0, exportWh: 0.0, importCost: 0.0, exportRevenue: 0.0)) { acc, day in
+            acc.importWh += day.totalImportWh
+            acc.exportWh += day.totalExportWh
+            acc.importCost += TariffCalculator.gridImportCost(
+                data: day.data, tariffSettings: tariffSettings, fallbackTariff: fallbackTariff)
+            acc.exportRevenue += TariffCalculator.gridExportRevenue(
+                data: day.data, tariffSettings: tariffSettings, fallbackTariff: fallbackTariff)
+        }
+        let effImportRate = weekTotals.importWh > 0 ? weekTotals.importCost / (weekTotals.importWh / 1000) : 0
+        let effExportRate = weekTotals.exportWh > 0 ? weekTotals.exportRevenue / (weekTotals.exportWh / 1000) : 0
+
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 4) {
                 Image(systemName: "calendar")
@@ -90,6 +102,8 @@ struct GridWeekCard: View {
                     }
                 }
             }
+
+            TariffRatesFootnote(importRate: effImportRate, feedInRate: effExportRate)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)

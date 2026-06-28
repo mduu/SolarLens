@@ -46,6 +46,14 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 | GET    | `/v3/users/{smId}/data/stream`      | Dashboard device power status                                 | —                                                                                      |
 | GET    | `/v3/users/{smId}/data/range`       | Detailed energy data, production/consumption graphs           | —                                                                                      |
 
+### Tariffs – Read
+
+| Method | Endpoint                            | Features                                                                                   | Deprecated? |
+| ------ | ----------------------------------- | ------------------------------------------------------------------------------------------ | ----------- |
+| GET    | `/v1/tariff/gateways/{smId}`        | V1 tariff fallback (single / high-low / direct-marketing) for cost & savings calculations  | —           |
+| GET    | `/v3/users/{smId}/tariffs`          | Detailed import (purchase) & feed-in tariffs incl. time-of-use schedules                    | —           |
+| GET    | `/v3/users/{smId}/tariff/dynamic`   | Dynamic / spot import prices (time-series, CHF/kWh) — Story #8 battery savings & what-if    | —           |
+
 ### Control – Write
 
 | Method | Endpoint | Features | Deprecated? |
@@ -144,6 +152,20 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 ---
 
 ## Changelog
+
+### Solar Lens integration update (2026-06-28)
+
+No API version change. Solar Lens started consuming additional tariff endpoints
+for Story #8 ("Should I add a battery to my house?"):
+
+**Newly consumed endpoints:**
+- `GET /v3/users/{smId}/tariffs` — detailed import/feed-in tariffs (time-of-use) — `fetchDetailedTariffs()`
+- `GET /v3/users/{smId}/tariff/dynamic` — dynamic/spot import prices — `fetchDynamicTariff()` (new `DynamicTariffResponse` DTO + `getV3DynamicTariff` client call)
+- `GET /v1/tariff/gateways/{smId}` — V1 tariff fallback — `fetchTariff()`
+
+**Notes / gotchas:**
+- Dynamic tariff prices are in **main currency units per kWh** (e.g. `0.2976` CHF/kWh), **not** Rappen/cents — unlike the V1/V3 static tariffs which are in Rappen and divided by 100. `TariffCalculator.importRateCHF` handles both.
+- The dynamic endpoint returns near-term prices only; historical valuations (year-back what-if, older battery-advantage periods) fall back to the static tariff when a timestamp isn't covered.
 
 ### v1.79.13 (2026-03-23)
 

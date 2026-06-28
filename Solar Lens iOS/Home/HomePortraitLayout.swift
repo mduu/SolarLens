@@ -6,6 +6,8 @@ struct HomePortraitLayout: View {
     let solarDetailsData: SolarDetailsData?
     let onRefresh: () -> Void
 
+    @State private var showEfficiencySheet = false
+
     var body: some View {
         VStack(spacing: 10) {
             HeaderView(onRefresh: onRefresh, showError: $showError)
@@ -38,6 +40,7 @@ struct HomePortraitLayout: View {
                     todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
                 )
                 .cardStyle()
+                .onTapGesture { showEfficiencySheet = true }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
@@ -46,6 +49,9 @@ struct HomePortraitLayout: View {
         }
         .transaction { transaction in
             transaction.animation = nil
+        }
+        .sheet(isPresented: $showEfficiencySheet) {
+            EfficiencySheet(hasAnyBattery: buildingState.overviewData.hasAnyBattery)
         }
     }
 }

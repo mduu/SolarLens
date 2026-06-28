@@ -193,6 +193,36 @@ Solar Lens fully supports dark mode on all platforms.
 - Half-sheet modals (`.presentationDetents([.medium])`) for secondary actions
 - Tab-based primary navigation
 
+#### Efficiency sheet (iOS)
+
+Tapping the **Efficiency card** on the home dashboard opens the Efficiency
+sheet (`EfficiencySheet`), available to all users. A segmented **period
+selector** (Today / 7d / 30d / 365d) drives the two headline
+numbers — **autarky** (purple) and **self-consumption** (indigo) — for the
+selected period, consolidating figures otherwise spread across the Statistics
+tabs. The selected period is persisted (`AppStorage` `efficiency.selectedPeriod`).
+
+Non-battery owners (and tester builds, via `TesterBuild.isActive`) additionally
+see the **"What if I had a battery?"** simulator on this sheet: a year picker,
+a custom capacity plus a preset size sweep, adjustable max power / round-trip
+efficiency, a progress bar during the chunked yearly fetch, and a result
+showing estimated CHF saved plus before/after autarky and self-consumption.
+The result is explicitly labelled an estimate and a conservative lower bound.
+
+#### Battery advantage period selector (iOS)
+
+The battery sheet's advantage report (`BatteryAdvantageSection`) carries a
+period selector (Today / 7d / 30d / 365d, persisted via
+`battery.advantage.period`) so owners see savings, added autarky, and added
+self-consumption over a chosen period rather than only today.
+
+#### High-resolution export (iOS)
+
+The Statistics → Custom range adds an **Hourly** resolution. When selected, the
+export produces one timestamped row per interval (`DateTime` column) including
+battery charge/discharge columns, fetched in monthly chunks so a full year
+exports without overloading the Solar Manager server.
+
 ### tvOS (BigScreen)
 
 - Large spacing — 30pt padding and corner radius (`BorderBox`)

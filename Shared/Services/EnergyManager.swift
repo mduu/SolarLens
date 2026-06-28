@@ -48,6 +48,10 @@ protocol EnergyManager {
 
     func fetchDetailedTariffs() async throws -> TariffSettingsV3Response?
 
+    /// Dynamic / spot tariff time-series (e.g. for users on a dynamic import
+    /// tariff). Returns nil when the user has no dynamic tariff.
+    func fetchDynamicTariff() async throws -> DynamicTariffResponse?
+
     func fetchServerInfo() async throws -> ServerInfo
 
     func fetchEnergyOverview() async throws -> EnergyOverview
@@ -73,5 +77,9 @@ protocol EnergyManager {
 extension EnergyManager {
     func fetchMainData(from: Date, to: Date, interval: Int = 300) async throws -> MainData {
         return try await self.fetchMainData(from: from, to: to, interval: interval)
+    }
+
+    func fetchDynamicTariff() async throws -> DynamicTariffResponse? {
+        return nil
     }
 }

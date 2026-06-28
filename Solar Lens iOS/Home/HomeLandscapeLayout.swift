@@ -5,6 +5,8 @@ struct HomeLandscapeLayout: View {
     let solarDetailsData: SolarDetailsData?
     let onRefresh: () -> Void
 
+    @State private var showEfficiencySheet = false
+
     private let columnSpacing: CGFloat = 12
     private let compactButtonSize: CGFloat = 32
 
@@ -55,8 +57,12 @@ struct HomeLandscapeLayout: View {
                     compact: true
                 )
                 .cardStyle()
+                .onTapGesture { showEfficiencySheet = true }
             }
             .frame(width: 190)
+        }
+        .sheet(isPresented: $showEfficiencySheet) {
+            EfficiencySheet(hasAnyBattery: buildingState.overviewData.hasAnyBattery)
         }
     }
 

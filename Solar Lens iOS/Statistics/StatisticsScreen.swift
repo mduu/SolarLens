@@ -251,13 +251,22 @@ struct StatisticsScreen: View {
     }
 
     private func exportStatistics(format: ExportFormat) {
-        guard let data = exportableData, !data.isEmpty else { return }
         do {
-            let url = try StatisticsExporter.export(
-                data: data,
-                periodLabel: viewModel.selectedPeriod.rawValue,
-                format: format
-            )
+            let url: URL
+            // High-resolution export: one timestamped row per interval.
+            if viewModel.selectedPeriod == .custom,
+               viewModel.customResolution == .hourly,
+               let intervals = viewModel.customIntervalData, !intervals.isEmpty
+            {
+                url = try StatisticsExporter.exportIntervals(data: intervals, format: format)
+            } else {
+                guard let data = exportableData, !data.isEmpty else { return }
+                url = try StatisticsExporter.export(
+                    data: data,
+                    periodLabel: viewModel.selectedPeriod.rawValue,
+                    format: format
+                )
+            }
             shareURLs = [url]
             showShareSheet = true
         } catch {

@@ -28,6 +28,10 @@ struct GridTodayCard: View {
         let netBalance = exportRevenue - importCost
         let currencyCode = CurrencyHelper.currencyCode
 
+        // Effective (energy-weighted) rates actually applied, for transparency.
+        let effImportRate = totalImport > 0 ? importCost / (totalImport / 1000) : 0
+        let effExportRate = totalExport > 0 ? exportRevenue / (totalExport / 1000) : 0
+
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 4) {
                 Image(systemName: "chart.xyaxis.line")
@@ -141,6 +145,8 @@ struct GridTodayCard: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 160)
             }
+
+            TariffRatesFootnote(importRate: effImportRate, feedInRate: effExportRate)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -148,5 +154,26 @@ struct GridTodayCard: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(.ultraThinMaterial)
         )
+    }
+}
+
+/// A small caption explaining the tariff basis and showing the effective
+/// per-kWh rates actually applied. Shared by the grid and battery cards so the
+/// pricing is transparent and any mis-read is visible at a glance.
+struct TariffRatesFootnote: View {
+    var importRate: Double?
+    var feedInRate: Double?
+
+    var body: some View {
+        let cc = CurrencyHelper.currencyCode
+        let fmt = FloatingPointFormatStyle<Double>.Currency(code: cc).precision(.fractionLength(3))
+        VStack(alignment: .leading, spacing: 2) {
+            Divider()
+            Text(
+                "Based on your current Solar Manager tariff — import ≈ \((importRate ?? 0).formatted(fmt))/kWh (energy + grid fees + taxes), feed-in ≈ \((feedInRate ?? 0).formatted(fmt))/kWh. Earlier periods may have used different rates."
+            )
+        }
+        .font(.caption2)
+        .foregroundStyle(.secondary)
     }
 }

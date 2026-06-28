@@ -333,6 +333,16 @@ class SolarManager: EnergyManager {
         return try await solarManagerApi.getV3Tariffs(solarManagerId: smId)
     }
 
+    func fetchDynamicTariff() async throws -> DynamicTariffResponse? {
+        try await ensureSmId()
+
+        guard let smId = systemInformation?.sm_id else {
+            return nil
+        }
+
+        return try await solarManagerApi.getV3DynamicTariff(solarManagerId: smId)
+    }
+
     func fetchTodaysBatteryHistory() async throws -> [BatteryHistory] {
         try await ensureSensorInfosAreCurrent()
 
