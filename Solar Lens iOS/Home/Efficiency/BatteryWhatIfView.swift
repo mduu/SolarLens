@@ -178,9 +178,9 @@ struct BatteryWhatIfView: View {
                 Text(verbatim: formatSavings(custom.netSavings))
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundStyle(.green)
+                    .foregroundStyle(custom.netSavings >= 0 ? .green : .red)
 
-                Text("estimated savings (rounded)")
+                Text("estimated savings")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -215,7 +215,7 @@ struct BatteryWhatIfView: View {
                             Text(verbatim: formatSavings(sweep.netSavings))
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(.green)
+                                .foregroundStyle(sweep.netSavings >= 0 ? .green : .red)
                         }
                     }
                 }
@@ -230,11 +230,11 @@ struct BatteryWhatIfView: View {
         }
     }
 
-    /// Savings rounded to the nearest 100 currency units (it is an estimate),
-    /// formatted with no fraction digits.
+    /// Savings rounded to whole currency units (it is an estimate). Keeps the
+    /// sign so small negative results are still shown (rounding to 100 hid
+    /// modest amounts as "0").
     private func formatSavings(_ value: Double) -> String {
-        let rounded = (value / 100).rounded() * 100
-        return rounded.formatted(
+        value.formatted(
             .currency(code: CurrencyHelper.currencyCode).precision(.fractionLength(0))
         )
     }
