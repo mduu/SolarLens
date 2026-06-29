@@ -8,49 +8,61 @@ struct BatteryWhatIfView: View {
     @State private var viewModel = BatteryWhatIfViewModel()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            header
+        ScrollViewReader { proxy in
+            VStack(alignment: .leading, spacing: 16) {
+                header
 
-            inputs
+                inputs
 
-            Button(action: { Task { await viewModel.run() } }) {
-                HStack {
-                    Spacer()
-                    if viewModel.isRunning {
-                        Text("Simulating…")
-                    } else {
-                        Image(systemName: "play.fill")
-                        Text("Run simulation")
+                Button(action: { Task { await viewModel.run() } }) {
+                    HStack {
+                        Spacer()
+                        if viewModel.isRunning {
+                            Text("Simulating…")
+                        } else {
+                            Image(systemName: "play.fill")
+                            Text("Run simulation")
+                        }
+                        Spacer()
                     }
-                    Spacer()
+                    .padding(.vertical, 6)
                 }
-                .padding(.vertical, 6)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.green)
-            .disabled(viewModel.isRunning)
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+                .disabled(viewModel.isRunning)
 
-            if viewModel.isRunning {
-                progressView
-            }
+                if viewModel.isRunning {
+                    progressView
+                }
 
-            if let error = viewModel.errorMessage {
-                Text(error)
-                    .font(.footnote)
-                    .foregroundStyle(.red)
-            }
+                if let error = viewModel.errorMessage {
+                    Text(error)
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                }
 
-            if viewModel.hasRun, let result = viewModel.customResult {
-                resultsView(custom: result)
+                if viewModel.hasRun, let result = viewModel.customResult {
+                    resultsView(custom: result)
+                        .id(Self.resultsAnchorID)
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.ultraThinMaterial)
+            )
+            // Scroll the finished result into view (new result → new id).
+            .onChange(of: viewModel.customResult?.id) { _, newValue in
+                guard newValue != nil else { return }
+                withAnimation {
+                    proxy.scrollTo(Self.resultsAnchorID, anchor: .top)
+                }
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.ultraThinMaterial)
-        )
     }
+
+    private static let resultsAnchorID = "whatIfResults"
 
     // MARK: - Header
 
@@ -186,16 +198,16 @@ struct BatteryWhatIfView: View {
             }
 
             HStack(spacing: 0) {
-                improvement("Autarky", custom.autarkyWithout, custom.autarkyWith, color: .purple)
-                Spacer()
                 improvement("Self-consumption", custom.selfConsumptionWithout, custom.selfConsumptionWith, color: .indigo)
+                Spacer()
+                improvement("Autarky", custom.autarkyWithout, custom.autarkyWith, color: .purple)
             }
 
             // Reduced grid interaction thanks to the battery.
             HStack(spacing: 0) {
-                gridFigure("Grid import avoided", custom.avoidedImportWh, color: .red)
+                gridFigure("Grid import avoided", custom.avoidedImportWh, color: .green)
                 Spacer()
-                gridFigure("Grid export kept", custom.reducedExportWh, color: .green)
+                gridFigure("Grid export kept", custom.reducedExportWh, color: .blue)
             }
 
             // Size comparison sweep.
