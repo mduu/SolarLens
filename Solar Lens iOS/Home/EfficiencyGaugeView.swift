@@ -103,7 +103,7 @@ struct EfficiencyGaugeView: View {
 
 // MARK: - Gauge Arc Shape
 
-private struct GaugeArc: View {
+struct GaugeArc: View {
     let percentage: Double
     let color: Color
 
@@ -123,7 +123,7 @@ private struct GaugeArc: View {
     }
 }
 
-private struct ArcShape: Shape {
+struct ArcShape: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
             let radius = min(rect.width / 2, rect.height) - 4

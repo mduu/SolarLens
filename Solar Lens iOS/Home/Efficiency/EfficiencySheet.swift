@@ -13,6 +13,12 @@ struct EfficiencySheet: View {
     @State private var viewModel = EfficiencyViewModel()
     @AppStorage("efficiency.selectedPeriod") private var storedPeriod: String = EfficiencyPeriod.today.rawValue
 
+    // Lifetime "trees saved" figure — shares the cached overall production and
+    // formula with the home Efficiency card for consistency.
+    @AppStorage("cachedOverallProduction") private var cachedOverallProduction: Double = 0
+    private let co2PerWhInKg: Double = 0.00013
+    private let boundCo2PerTreePerYearInKg: Double = 20
+
     private var showWhatIf: Bool { !hasAnyBattery || TesterBuild.isActive }
 
     var body: some View {
@@ -77,16 +83,16 @@ struct EfficiencySheet: View {
             } else {
                 HStack(spacing: 12) {
                     EfficiencyMetricTile(
-                        title: "Autarky",
-                        value: viewModel.autarkyPercent,
-                        color: .purple,
-                        systemImage: "house.fill"
-                    )
-                    EfficiencyMetricTile(
                         title: "Self-consumption",
                         value: viewModel.selfConsumptionPercent,
                         color: .indigo,
                         systemImage: "bolt.fill"
+                    )
+                    EfficiencyMetricTile(
+                        title: "Autarky",
+                        value: viewModel.autarkyPercent,
+                        color: .purple,
+                        systemImage: "house.fill"
                     )
                 }
 
@@ -105,15 +111,40 @@ struct EfficiencySheet: View {
         VStack(spacing: 8) {
             Divider()
             HStack {
-                figure("Production", viewModel.productionWh, color: .yellow)
-                Spacer()
                 figure("Consumption", viewModel.consumptionWh, color: .teal)
-            }
-            HStack {
-                figure("Grid import", viewModel.gridImportWh, color: .red)
                 Spacer()
-                figure("Grid export", viewModel.gridExportWh, color: .green)
+                figure("Production", viewModel.productionWh, color: .yellow)
             }
+
+            HStack {
+                figure("Grid export", viewModel.gridExportWh, color: .green)
+                Spacer()
+                figure("Grid import", viewModel.gridImportWh, color: .red)
+            }
+
+            treesEquivalentView
+        }
+    }
+
+    @ViewBuilder
+    private var treesEquivalentView: some View {
+        if cachedOverallProduction > 0 {
+            let co2Avoided = cachedOverallProduction / 10 * co2PerWhInKg
+            let treesEquivalent = max(1, co2Avoided / boundCo2PerTreePerYearInKg)
+            HStack(spacing: 5) {
+                Image(systemName: "leaf.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.green)
+                Text("\(treesEquivalent, specifier: "%.0f") trees saved")
+                    .font(.caption2)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.primary)
+                Text("(\(co2Avoided, specifier: "%.1f") kg CO₂)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.top, 2)
         }
     }
 
@@ -130,7 +161,8 @@ struct EfficiencySheet: View {
     }
 }
 
-/// A single big efficiency percentage with a capsule progress bar.
+/// A single efficiency metric shown with the same 180° gauge arc as the home
+/// Efficiency card, for visual consistency and recognition.
 private struct EfficiencyMetricTile: View {
     let title: LocalizedStringKey
     let value: Double?
@@ -138,7 +170,7 @@ private struct EfficiencyMetricTile: View {
     let systemImage: String
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
             HStack(spacing: 4) {
                 Image(systemName: systemImage)
                     .font(.caption2)
@@ -148,21 +180,14 @@ private struct EfficiencyMetricTile: View {
                     .foregroundStyle(.primary.opacity(0.8))
             }
 
+            GaugeArc(percentage: value ?? 0, color: color)
+                .frame(width: 84, height: 48)
+
             Text((value ?? 0).formatIntoPercentage())
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
                 .foregroundStyle(color)
                 .contentTransition(.numericText())
-
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(color.opacity(0.15))
-                    Capsule()
-                        .fill(color)
-                        .frame(width: geo.size.width * CGFloat(min((value ?? 0) / 100, 1)))
-                }
-            }
-            .frame(height: 6)
         }
         .frame(maxWidth: .infinity)
     }
