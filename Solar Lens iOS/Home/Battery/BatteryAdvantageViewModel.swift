@@ -68,7 +68,11 @@ class BatteryAdvantageViewModel {
         let selfConsumption = stats?.selfConsumption ?? 0
         productionWh = production
         consumptionWh = consumption
-        autarkyPercent = EnergyEfficiency.autarky(consumption: consumption, selfConsumption: selfConsumption)
-        selfConsumptionPercent = EnergyEfficiency.selfConsumptionRate(production: production, selfConsumption: selfConsumption)
+        // Prefer the server-provided rates; the raw selfConsumption field isn't
+        // reliable for aggregated (week/month/year) periods.
+        autarkyPercent = stats?.autarchyDegree
+            ?? EnergyEfficiency.autarky(consumption: consumption, selfConsumption: selfConsumption)
+        selfConsumptionPercent = stats?.selfConsumptionRate
+            ?? EnergyEfficiency.selfConsumptionRate(production: production, selfConsumption: selfConsumption)
     }
 }

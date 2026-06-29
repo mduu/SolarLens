@@ -83,7 +83,12 @@ class EfficiencyViewModel {
         consumptionWh = consumption
         gridImportWh = max(0, consumption - selfConsumption)
         gridExportWh = max(0, production - selfConsumption)
-        autarkyPercent = EnergyEfficiency.autarky(consumption: consumption, selfConsumption: selfConsumption)
-        selfConsumptionPercent = EnergyEfficiency.selfConsumptionRate(production: production, selfConsumption: selfConsumption)
+        // Prefer the server-provided rates (consistent with the Statistics
+        // screen); only compute from energy totals when they're missing —
+        // the raw selfConsumption field isn't reliable for aggregated periods.
+        autarkyPercent = stats.autarchyDegree
+            ?? EnergyEfficiency.autarky(consumption: consumption, selfConsumption: selfConsumption)
+        selfConsumptionPercent = stats.selfConsumptionRate
+            ?? EnergyEfficiency.selfConsumptionRate(production: production, selfConsumption: selfConsumption)
     }
 }
