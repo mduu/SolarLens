@@ -23,17 +23,37 @@ struct EfficiencySheet: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    periodPicker
+            GeometryReader { geo in
+                let isLandscape = geo.size.width > geo.size.height
 
-                    efficiencyCard
+                if isLandscape && showWhatIf {
+                    // Landscape with the simulator: spread the metrics and the
+                    // simulator across two independently scrolling columns.
+                    HStack(alignment: .top, spacing: 0) {
+                        ScrollView {
+                            metricsColumn
+                                .padding()
+                        }
+                        .frame(width: geo.size.width / 2)
 
-                    if showWhatIf {
-                        BatteryWhatIfView()
+                        ScrollView {
+                            BatteryWhatIfView()
+                                .padding()
+                        }
+                    }
+                } else {
+                    // Portrait, or no simulator: a single column is enough.
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            metricsColumn
+
+                            if showWhatIf {
+                                BatteryWhatIfView()
+                            }
+                        }
+                        .padding()
                     }
                 }
-                .padding()
             }
             .navigationTitle("Efficiency")
             .navigationBarTitleDisplayMode(.inline)
@@ -59,6 +79,17 @@ struct EfficiencySheet: View {
             Task { await viewModel.fetch() }
         }
         .task { await viewModel.fetch() }
+    }
+
+    // MARK: - Metrics column
+
+    /// Period selector plus the efficiency card. Used as the left column in the
+    /// landscape two-column layout and as the top block in the single column.
+    private var metricsColumn: some View {
+        VStack(spacing: 16) {
+            periodPicker
+            efficiencyCard
+        }
     }
 
     // MARK: - Period selector
