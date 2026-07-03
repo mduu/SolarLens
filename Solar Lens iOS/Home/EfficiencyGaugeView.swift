@@ -11,9 +11,6 @@ struct EfficiencyGaugeView: View {
     @AppStorage("cachedOverallProduction") private var cachedOverallProduction: Double = 0
     @AppStorage("cachedOverallProductionFetchDate") private var cachedFetchDate: Double = 0
 
-    private let co2PerWhInKg: Double = 0.00013
-    private let boundCo2PerTreePerYearInKg: Double = 20
-
     var body: some View {
         let selfConsumption = todaySelfConsumptionRate ?? 0
         let autarky = todayAutarchyDegree ?? 0
@@ -67,20 +64,25 @@ struct EfficiencyGaugeView: View {
             }
 
             if cachedOverallProduction > 0 {
-                let co2Avoided = cachedOverallProduction / 10 * co2PerWhInKg
-                let treesEquivalent = max(1, co2Avoided / boundCo2PerTreePerYearInKg)
+                let impact = EcoImpact(totalProductionWh: cachedOverallProduction)
 
                 HStack(spacing: 5) {
                     Image(systemName: "leaf.fill")
                         .font(.caption2)
                         .foregroundStyle(.green)
-                    Text("\(treesEquivalent, specifier: "%.0f") trees")
+                    Text("\(impact.equivalentTrees, specifier: "%.0f") trees")
                         .font(.caption2)
                         .fontWeight(.medium)
                         .foregroundStyle(.primary)
-                    Text("(\(co2Avoided, specifier: "%.1f") kg CO₂)")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    Group {
+                        if impact.showsCo2InTonnes {
+                            Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") t CO₂)")
+                        } else {
+                            Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") kg CO₂)")
+                        }
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
                 }
             }
         }

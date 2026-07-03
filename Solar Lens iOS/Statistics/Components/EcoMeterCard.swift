@@ -3,15 +3,8 @@ import SwiftUI
 struct EcoMeterCard: View {
     var totalProduction: Double
 
-    private let co2PerWhInKg: Double = 0.00013
-    private let boundCo2PerTreePerYearInKg: Double = 20
-
-    private var avoidedCo2: Double {
-        totalProduction / 10 * co2PerWhInKg
-    }
-
-    private var savedTrees: Double {
-        max(1, avoidedCo2 / boundCo2PerTreePerYearInKg)
+    private var impact: EcoImpact {
+        EcoImpact(totalProductionWh: totalProduction)
     }
 
     var body: some View {
@@ -21,13 +14,19 @@ struct EcoMeterCard: View {
                 .foregroundStyle(.green)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(savedTrees, specifier: "%.0f") Trees Saved")
+                Text("\(impact.equivalentTrees, specifier: "%.0f") Trees Saved")
                     .font(.title3)
                     .fontWeight(.semibold)
 
-                Text("\(avoidedCo2, specifier: "%.1f") kg CO₂ avoided")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Group {
+                    if impact.showsCo2InTonnes {
+                        Text("\(impact.avoidedCo2DisplayValue, specifier: "%.1f") t CO₂ avoided")
+                    } else {
+                        Text("\(impact.avoidedCo2DisplayValue, specifier: "%.1f") kg CO₂ avoided")
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
         }
         .frame(maxWidth: .infinity)

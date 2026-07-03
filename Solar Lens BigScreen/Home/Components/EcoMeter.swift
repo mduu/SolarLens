@@ -3,15 +3,8 @@ import SwiftUI
 struct EcoMeter: View {
     var totalSolarProduction: Double
 
-    private let co2PerWhInKg: Double = 0.00013
-    private let boundCo2PerTreePerYearInKg: Double = 20
-
-    private var avoidedCo2: Double {
-        return totalSolarProduction / 10 * co2PerWhInKg
-    }
-
     private var safedTrees: Double {
-        return max(1, avoidedCo2 / boundCo2PerTreePerYearInKg)
+        EcoImpact(totalProductionWh: totalSolarProduction).equivalentTrees
     }
 
     var body: some View {

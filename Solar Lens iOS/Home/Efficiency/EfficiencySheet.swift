@@ -16,8 +16,6 @@ struct EfficiencySheet: View {
     // Lifetime "trees saved" figure — shares the cached overall production and
     // formula with the home Efficiency card for consistency.
     @AppStorage("cachedOverallProduction") private var cachedOverallProduction: Double = 0
-    private let co2PerWhInKg: Double = 0.00013
-    private let boundCo2PerTreePerYearInKg: Double = 20
 
     private var showWhatIf: Bool { !hasAnyBattery || TesterBuild.isActive }
 
@@ -160,19 +158,24 @@ struct EfficiencySheet: View {
     @ViewBuilder
     private var treesEquivalentView: some View {
         if cachedOverallProduction > 0 {
-            let co2Avoided = cachedOverallProduction / 10 * co2PerWhInKg
-            let treesEquivalent = max(1, co2Avoided / boundCo2PerTreePerYearInKg)
+            let impact = EcoImpact(totalProductionWh: cachedOverallProduction)
             HStack(spacing: 5) {
                 Image(systemName: "leaf.fill")
                     .font(.caption2)
                     .foregroundStyle(.green)
-                Text("\(treesEquivalent, specifier: "%.0f") trees saved")
+                Text("\(impact.equivalentTrees, specifier: "%.0f") trees saved")
                     .font(.caption2)
                     .fontWeight(.medium)
                     .foregroundStyle(.primary)
-                Text("(\(co2Avoided, specifier: "%.1f") kg CO₂)")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                Group {
+                    if impact.showsCo2InTonnes {
+                        Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") t CO₂)")
+                    } else {
+                        Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") kg CO₂)")
+                    }
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity)
             .padding(.top, 2)

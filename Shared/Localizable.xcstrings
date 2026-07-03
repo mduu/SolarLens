@@ -233,6 +233,34 @@
         }
       }
     },
+    "(%.1f t CO₂)" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(%.1f t CO₂)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(%.1f t CO₂)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(%.1f t CO₂)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(%.1f t CO₂)"
+          }
+        }
+      }
+    },
     "/" : {
       "localizations" : {
         "da" : {
@@ -454,6 +482,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%.1f kg CO₂ evitati"
+          }
+        }
+      }
+    },
+    "%.1f t CO₂ avoided" : {
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f t CO₂ undgået"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f t CO₂ vermieden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f t CO₂ évités"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f t CO₂ evitati"
           }
         }
       }
