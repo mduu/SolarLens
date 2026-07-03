@@ -1,4 +1,5 @@
 internal import Foundation
+import Combine
 import SwiftUI
 
 class PinnedDevicesConfiguration: ObservableObject {
