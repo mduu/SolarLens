@@ -525,6 +525,33 @@ class CurrentBuildingState {
         resetError()
     }
 
+    /// Full factory reset. Clears the stored login (including the iCloud
+    /// Keychain, which survives a delete+reinstall), the on-disk overview
+    /// cache, and all user-facing app settings, then drops in-memory data.
+    /// `updateCredentialsExists()` flips `loginCredentialsExists` to false so
+    /// `ContentView` returns to the login screen automatically. Used as the
+    /// escape hatch when a stale/wrong stored password leaves the app unable
+    /// to reach the server (and thus unable to log out the normal way).
+    @MainActor
+    func resetApp() {
+        KeychainHelper.deleteCredentials()
+        OverviewDataCache.clear()
+
+        // Reset user-facing settings to their defaults. Clearing the
+        // onboarding flag makes the intro show again after the next login.
+        var settings = AppSettings()
+        settings.appearanceUseWarmBackground = nil
+        settings.showOnboarding = true
+
+        // Drop in-memory data so nothing from the old account lingers.
+        overviewData = OverviewData()
+        solarDetailsData = nil
+        chargingInfos = nil
+
+        updateCredentialsExists()
+        resetError()
+    }
+
     @MainActor
     func checkForCredentions() {
         updateCredentialsExists()

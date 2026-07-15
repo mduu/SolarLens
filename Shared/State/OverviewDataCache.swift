@@ -56,6 +56,12 @@ enum OverviewDataCache {
         }
     }
 
+    /// Remove the persisted cache. Used by the app reset so a fresh login
+    /// never seeds the UI with the previous account's last-known values.
+    static func clear() {
+        UserDefaults.standard.removeObject(forKey: key)
+    }
+
     static func save(_ overview: OverviewData) {
         let payload = PersistedOverview(
             currentSolarProduction: overview.currentSolarProduction,

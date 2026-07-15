@@ -11,7 +11,9 @@ struct SettingsScreen: View {
 
     @State private var isLoading = false
     @State private var serverInfo: ServerInfo?
+    @State private var serverInfoLoadFailed = false
     @State private var showLogoutConfirmation = false
+    @State private var showResetConfirmation = false
 
     private var isLandscape: Bool { verticalSizeClass == .compact }
 
@@ -42,22 +44,30 @@ struct SettingsScreen: View {
             }
         }
         .onAppear {
-            isLoading = true
-            Task {
-                defer {
-                    isLoading = false
-                }
+            loadServerInfo()
+        }
+    }
 
-                do {
-                    serverInfo = try await energyManager.fetchServerInfo()
-                } catch {
-                    var _ = Alert(
-                        title: Text("Connection error"),
-                        message: Text(
-                            "Something went wrong! Please try again later."
-                        )
-                    )
+    /// Load the server info behind a timeout so a hanging request (e.g. a
+    /// stale/wrong stored password that never authenticates) surfaces a
+    /// retryable failure state instead of spinning the "Solar Manager" tile
+    /// forever.
+    private func loadServerInfo() {
+        isLoading = true
+        serverInfoLoadFailed = false
+        Task {
+            defer {
+                isLoading = false
+            }
+
+            do {
+                serverInfo = try await withFetchTimeout(
+                    CurrentBuildingState.fetchTimeoutSeconds
+                ) { [energyManager] in
+                    try await energyManager.fetchServerInfo()
                 }
+            } catch {
+                serverInfoLoadFailed = true
             }
         }
     }
@@ -136,7 +146,9 @@ struct SettingsScreen: View {
     @ViewBuilder
     private var serverSectionContent: some View {
         ConnectionInfoView(
-            serverInfo: serverInfo
+            serverInfo: serverInfo,
+            loadFailed: serverInfoLoadFailed,
+            onRetry: { loadServerInfo() }
         )
         .listRowSeparator(
             .hidden,
@@ -164,7 +176,6 @@ struct SettingsScreen: View {
             }
         }
         .buttonStyle(.plain)
-        .disabled(serverInfo == nil || !(serverInfo?.signal ?? false))
         .listRowBackground(Color.clear)
         .alert(
             "Are you sure to logout?",
@@ -172,10 +183,39 @@ struct SettingsScreen: View {
         ) {
             Button("Logout", role: .destructive) {
                 buildingState.logout()
+                dismiss()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("You will need to sign in again to use Solar Lens.")
+        }
+
+        Button {
+            showResetConfirmation = true
+        } label: {
+            HStack {
+                SettingsItemCaption(
+                    imageName: "arrow.counterclockwise",
+                    text: "Reset app",
+                    color: .red
+                )
+            }
+        }
+        .buttonStyle(.plain)
+        .listRowBackground(Color.clear)
+        .alert(
+            "Reset Solar Lens?",
+            isPresented: $showResetConfirmation
+        ) {
+            Button("Reset", role: .destructive) {
+                buildingState.resetApp()
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text(
+                "This removes your saved login and resets all settings to their defaults. Use this if the app is stuck and you need to sign in again."
+            )
         }
     }
 

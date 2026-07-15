@@ -3,13 +3,15 @@ import UIKit
 
 struct ConnectionInfoView: View {
     var serverInfo: ServerInfo?
+    var loadFailed: Bool = false
+    var onRetry: (() -> Void)? = nil
 
     @State private var showConfirmation = false
 
     private var isConnected: Bool { serverInfo?.signal ?? false }
 
     private var stateColor: Color {
-        if serverInfo == nil { return .gray }
+        if serverInfo == nil { return loadFailed ? .red : .gray }
         return isConnected ? .green : .red
     }
 
@@ -50,6 +52,18 @@ struct ConnectionInfoView: View {
                         Text(serverInfo?.email ?? "-")
                     }
                 }
+            } else if loadFailed {
+                VStack(spacing: 8) {
+                    Text("Connection failed")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    if let onRetry {
+                        Button("Retry", action: onRetry)
+                            .buttonStyle(.bordered)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
             } else {
                 ProgressView()
                     .frame(maxWidth: .infinity)
