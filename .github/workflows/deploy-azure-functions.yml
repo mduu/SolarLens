@@ -45,7 +45,7 @@ jobs:
           sudo apt-get install azure-functions-core-tools-4
 
       - name: Login to Azure
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
