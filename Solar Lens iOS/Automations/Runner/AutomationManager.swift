@@ -713,22 +713,39 @@ public final class AutomationManager: AutomationHost {
         }
         AutomationSharedStore.externalOutcome = nil
 
+        // Each variant is its own message rather than one with an
+        // interpolated clause: a clause built in Swift would stay English in
+        // every language.
         switch outcome.kind {
         case .applied:
-            logInfo(
-                message:
-                    "Automation finished in the background via push notification\(outcome.detail.map { " — charging station switched to \($0)" } ?? "")"
-            )
+            if let detail = outcome.detail {
+                logInfo(
+                    message:
+                        "Automation finished in the background via push notification — charging station switched to \(detail)"
+                )
+            } else {
+                logInfo(
+                    message:
+                        "Automation finished in the background via push notification"
+                )
+            }
         case .userOverride:
             logInfo(
                 message:
                     "Automation stopped in the background via push notification — charging mode had been changed manually"
             )
         case .failed:
-            logError(
-                message:
-                    "Automation failed in the background via push notification\(outcome.detail.map { ": \($0)" } ?? "")"
-            )
+            if let detail = outcome.detail {
+                logError(
+                    message:
+                        "Automation failed in the background via push notification: \(detail)"
+                )
+            } else {
+                logError(
+                    message:
+                        "Automation failed in the background via push notification"
+                )
+            }
         }
 
         let snapshot = activeState
