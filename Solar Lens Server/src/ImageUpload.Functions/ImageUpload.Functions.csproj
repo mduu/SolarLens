@@ -7,7 +7,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Data.Tables" Version="12.12.0" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.27.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="2.52.0" />
+    <!--
+      Pinned: 5.5.5 pulls Microsoft.Extensions.* 10.x into the generated
+      host-side extension bundle, which the Functions host (shipping 9.x)
+      cannot load — it fails at startup with "Could not load file or assembly
+      'Microsoft.Extensions.Options, Version=10.0.0.0'". 5.5.0 resolves the
+      classic, host-compatible graph. Re-test locally before bumping.
+    -->
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.5.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.1.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.29.2" />
