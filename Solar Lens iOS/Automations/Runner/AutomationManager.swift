@@ -46,6 +46,14 @@ public final class AutomationManager: AutomationHost {
         activeState?.automation
     }
 
+    /// True while an automation is running that actually has something to do
+    /// between now and its end — i.e. one the server should nudge us about
+    /// (story #9 slice 4). `AutoResetChargingMode` is excluded on purpose: it
+    /// idles until its reset time, which the visible deadline push covers.
+    public var needsSilentWakeWindow: Bool {
+        activeState?.automation == .BatteryToCar
+    }
+
     public var activeStateSnapshot: AutomationState? { activeState }
     public var activeParametersSnapshot: AutomationParameters? {
         activeTaskParameters
@@ -205,6 +213,7 @@ public final class AutomationManager: AutomationHost {
         // if this fails the run still finishes via BG tasks and the local
         // fallback notification, exactly as before.
         registerWakeSchedule(automation: automation, parameters: parameters)
+        WakeWindowCoordinator.shared.refresh()
 
         Task {
             await runActiveAutomation()
@@ -591,6 +600,36 @@ public final class AutomationManager: AutomationHost {
         await terminateAutomation(reason: .failed)
     }
 
+    /// Drains both subsystems after a silent push woke the app (story #9).
+    ///
+    /// Same work as a background-task tick: run the active automation, check
+    /// any due monitors, then re-arm the BG tasks. The push is an *extra* wake
+    /// source, so it must leave the on-device schedule exactly as a BG wake
+    /// would.
+    public func handleRemoteWake() async {
+        let hasAutomation = activeState?.automation?.getAutomationTask() != nil
+        let hasNotifications = NotificationManager.shared.hasActiveMonitors
+        guard hasAutomation || hasNotifications else {
+            logDebug(message: "Push woke us but nothing to drain — skipping")
+            return
+        }
+
+        logInfo(message: "Woken by a push notification")
+        lastBackgroundFireAt = Date()
+
+        if hasAutomation { await runActiveAutomation() }
+        if hasNotifications {
+            await NotificationManager.shared.runOverdueMonitorsInBackground()
+        }
+
+        if activeState?.automation != nil
+            || NotificationManager.shared.hasActiveMonitors
+        {
+            scheduleNextBackgroundCall()
+        }
+        WakeWindowCoordinator.shared.refresh()
+    }
+
     // MARK: - Server wake schedule (story #9)
 
     /// Registers the end time of a time-bound automation with the Solar Lens
@@ -721,6 +760,7 @@ public final class AutomationManager: AutomationHost {
         activeTaskParameters = nil
         persistState()
         WakeScheduleClient.activeScheduleId = nil
+        WakeWindowCoordinator.shared.refresh()
 
         var userInfo: [AnyHashable: Any] = [:]
         if let stationId = outcome.chargingStationId,
@@ -821,6 +861,7 @@ public final class AutomationManager: AutomationHost {
 
         // The scheduled push is pointless now — the run is over.
         Task { await WakeScheduleClient.cancelActive() }
+        WakeWindowCoordinator.shared.refresh()
 
         // Tell whoever's interested that an automation just ended so the
         // app can refetch overview data — the charging station mode visible in the

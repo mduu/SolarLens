@@ -58,7 +58,34 @@ final class PushRegistrar: NSObject, UIApplicationDelegate {
             Task { await WakeScheduleClient.forgetDevice() }
         }
         WakeScheduleClient.deviceToken = token
+        Task { @MainActor in
+            // The previous registrations died with the old token.
+            WakeWindowCoordinator.shared.invalidate()
+            WakeWindowCoordinator.shared.refresh()
+        }
         onTokenChanged?(token)
+    }
+
+    /// Silent wake push (story #9 slice 4): the server nudges us on a coarse
+    /// cadence while a Battery → Car run or a threshold monitor is active.
+    ///
+    /// iOS gives us a few seconds here and holds the completion handler
+    /// against our background budget, so we drain and return promptly.
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler:
+            @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        let parsed = AutomationPushPayload.parse(userInfo: userInfo)
+        guard parsed.kind == .wake else {
+            completionHandler(.noData)
+            return
+        }
+        Task { @MainActor in
+            await AutomationManager.shared.handleRemoteWake()
+            completionHandler(.newData)
+        }
     }
 
     func application(

@@ -283,9 +283,24 @@ row. Not yet exercised *from the app*, because starting an automation needs a
 Solar Manager login — that happens in the device test together with the push.
 
 ### Slice 4 — Silent-push wake window for Battery → Car and Notifications
-- [ ] Register/extend/cancel wake windows from `AutomationManager` (Battery → Car) and `NotificationManager` (active monitors)
-- [ ] Handle `didReceiveRemoteNotification` → shared drain routine (both managers), re-arm BG tasks + forecast backstops
-- [ ] Server: cadence-based silent push sending until `until`; stop when window deleted
+- [x] Register/extend/cancel wake windows from `AutomationManager` (Battery → Car) and `NotificationManager` (active monitors) — one shared window per device (`WakeWindowCoordinator`), 15-min cadence, 6 h validity, renewed while work is running. Deliberately **not** registered for `AutoResetChargingMode`, which idles until its reset time and is covered by the visible deadline push
+- [x] Handle `didReceiveRemoteNotification` → shared drain routine (`AutomationManager.handleRemoteWake()` runs the active automation, checks due monitors) and re-arms the BG tasks, so a push leaves the on-device schedule exactly as a BG wake would
+- [x] Server: cadence-based silent push sending until `until`; stops when the window is deleted or expires
+- [x] `WakeScheduleClient.registerWindow` + window bookkeeping persisted across launches
+
+**Verified against Azurite** (11 checks): registration produces a silent
+schedule due one cadence later; renewal keeps a single row, extends `until`
+and — the important one — does **not** postpone the pending push; the cadence
+skips slots the device slept through; cancelling and expiry both stop the
+pushes; a too-aggressive cadence is clamped server-side.
+
+Two defects found and fixed while testing:
+- Renewal recomputed the next fire time, so every cold start (and every
+  renewal) pushed the next silent wake 15 minutes further out — on a phone the
+  user opens regularly, the silent pushes would effectively never fire. The
+  server now keeps a pending fire time and only extends the window.
+- The coordinator kept its "registered until" state in memory only, which made
+  every launch look like a fresh registration; it is persisted now.
 
 ### Slice 5 — Fallbacks, docs, measurement
 - [ ] NSE timeout / notifications-disabled / server-down paths verified on device

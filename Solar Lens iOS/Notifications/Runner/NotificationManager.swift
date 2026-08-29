@@ -648,6 +648,10 @@ public final class NotificationManager {
     // MARK: - Persistence
 
     private func persistState() {
+        // Keep the server's silent wake window in step with the monitors we
+        // actually have running (story #9 slice 4).
+        WakeWindowCoordinator.shared.refresh()
+
         let defaults = UserDefaults.standard
         if activeMonitors.isEmpty {
             defaults.removeObject(forKey: monitorsStorageKey)

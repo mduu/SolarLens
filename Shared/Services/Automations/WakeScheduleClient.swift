@@ -150,6 +150,57 @@ enum WakeScheduleClient {
         }
     }
 
+    /// Registers (or extends) a repeating **silent** wake window.
+    ///
+    /// Used for work with no fixed end time — a running Battery → Car
+    /// automation, active threshold monitors — where the server cannot know
+    /// when something interesting happens and simply nudges the app on a
+    /// coarse cadence.
+    ///
+    /// This is explicitly an *extra* wake source next to `BGAppRefreshTask`
+    /// and `BGProcessingTask`, not a replacement: iOS throttles silent pushes,
+    /// gives no delivery feedback, needs Background App Refresh, and stops
+    /// delivering them entirely after a force quit (ADR-006).
+    ///
+    /// The window is short-lived on purpose and renewed while work is active,
+    /// so an app that stops running automations stops generating traffic
+    /// instead of pushing until some far-off expiry.
+    @discardableResult
+    static func registerWindow(
+        scheduleId: String,
+        cadenceMinutes: Int,
+        until: Date
+    ) async -> Result {
+        guard isEnabled else {
+            return .skipped(reason: "server-assisted timing is turned off")
+        }
+        guard let token = deviceToken else {
+            return .skipped(reason: "no APNs device token yet")
+        }
+
+        let payload: [String: Any] = [
+            "environment": environment,
+            "kind": "window",
+            "pushKind": "silent",
+            "cadenceMinutes": cadenceMinutes,
+            "until": ISO8601DateFormatter().string(from: until),
+            "installSecret": KeychainHelper.installSecret,
+        ]
+
+        var request = URLRequest(
+            url: URL(string: "\(baseUrl)/\(token)/\(scheduleId)")!
+        )
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
+        request.timeoutInterval = 15
+
+        switch await send(request) {
+        case .success: return .registered
+        case .failure(let reason): return .failed(reason: reason)
+        }
+    }
+
     /// Cancels one schedule. Safe to call when nothing is registered.
     @discardableResult
     static func cancel(scheduleId: String) async -> Result {

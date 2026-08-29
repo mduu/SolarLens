@@ -165,9 +165,25 @@ public class WakeScheduleService
                 return (false, "until must be in the future");
             entity.Until = until;
 
-            entity.NextFireAt = request.FireAt is { } fireAt && fireAt > now
-                ? fireAt
-                : now.AddMinutes(cadence);
+            // Renewing a window must not postpone its next push. The app
+            // renews while work is running (and again after every cold start),
+            // so recomputing "now + cadence" each time would starve the
+            // silent pushes entirely on a device the user opens often.
+            // Extending `Until` is the point of a renewal; the schedule itself
+            // keeps ticking.
+            var existingNext = existing?.NextFireAt;
+            if (existing?.Kind == WakeKinds.Window
+                && existing.CadenceMinutes == cadence
+                && existingNext > now)
+            {
+                entity.NextFireAt = existingNext;
+            }
+            else
+            {
+                entity.NextFireAt = request.FireAt is { } fireAt && fireAt > now
+                    ? fireAt
+                    : now.AddMinutes(cadence);
+            }
         }
 
         await table.UpsertEntityAsync(entity, TableUpdateMode.Replace);
