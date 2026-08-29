@@ -3,11 +3,16 @@ internal import Foundation
 final class AutomationLogManager {
     static let shared = AutomationLogManager()
 
+    /// File name of the automation log, in the App Group container so the
+    /// Notification Service Extension can append to the same log the user
+    /// sees in `AutomationLogView` (ADR-006).
+    static let fileName = "automation-logs.json"
+
     private let fileURL: URL = {
-        let dir = FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)
-            .first!
-        return dir.appendingPathComponent("automation-logs.json")
+        AutomationSharedStore.migrateFileIfNeeded(
+            AutomationLogManager.fileName
+        )
+        return AutomationSharedStore.fileURL(AutomationLogManager.fileName)
     }()
 
     // Append a new entry

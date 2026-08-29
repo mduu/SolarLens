@@ -183,46 +183,49 @@ final class AutomationAutoResetChargingMode: AutomationTask {
         state: AutomationState,
         liveState: AutomationAutoResetChargingModeState
     ) async -> AutomationState {
-        let postName = String(
-            localized: params.afterResetChargingMode.localizedTitle
+        // The actual work lives in `AutomationDeadlineRunner` (Shared) so the
+        // Notification Service Extension executes byte-identical logic when a
+        // scheduled push arrives while the app is suspended or force-quit.
+        // See story #9 / ADR-006.
+        let outcome = await AutomationDeadlineRunner.runAutoResetDeadline(
+            parameters: params,
+            energyManager: host.energyManager,
+            log: { message in
+                host.logDebug(message: "\(message)")
+            }
         )
 
-        // Before applying the after-reset mode, check whether the user
-        // already changed the charging mode manually away from the one
-        // we set at start. If so, respect that — terminate without
-        // overwriting the user's choice. Failure to fetch is treated as
-        // "no override detected" so a transient network issue never
-        // prevents the normal reset path.
-        let currentMode: ChargingMode? = await {
-            do {
-                let overview = try await host.energyManager
-                    .fetchOverviewData(lastOverviewData: nil)
-                return overview.chargingStations
-                    .first { $0.id == params.chargingDeviceId }?
-                    .chargingMode
-            } catch {
-                host.logDebug(
-                    message:
-                        "Auto-reset Charging Mode: pre-reset overview fetch failed (\(error.localizedDescription)) — skipping user-override check"
-                )
-                return nil
-            }
-        }()
-
-        if let currentMode,
-           currentMode != params.activeChargingMode {
-            let currentName = String(
-                localized: currentMode.localizedTitle
-            )
-            host.logInfo(
-                message:
-                    "Auto-reset Charging Mode: user override detected — charging station is on \(currentName), expected the active mode. Leaving station as configured by the user, NOT applying \(postName)."
+        switch outcome {
+        case .notDue(let resetAt):
+            // Defensive: `run` only calls us past the deadline.
+            return AutomationState(
+                automation: state.automation!,
+                status: .running,
+                nextTaskRun: resetAt,
+                autoResetChargingMode: liveState
             )
 
+        case .userOverride:
             var stopped = liveState
             stopped.stopReason = .userOverride
             host.logSuccess()
+            return AutomationState(
+                automation: state.automation!,
+                status: .finishedSuccessful,
+                nextTaskRun: nil,
+                autoResetChargingMode: stopped
+            )
 
+        case .failed:
+            // We still terminate; the user gets a "failed" notification path.
+            host.logFailure()
+            return state.failed()
+
+        case .applied:
+            var stopped = liveState
+            stopped.appliedAfterResetModeAt = Date()
+            stopped.stopReason = .resetCompleted
+            host.logSuccess()
             return AutomationState(
                 automation: state.automation!,
                 status: .finishedSuccessful,
@@ -230,45 +233,6 @@ final class AutomationAutoResetChargingMode: AutomationTask {
                 autoResetChargingMode: stopped
             )
         }
-
-        host.logDebug(
-            message:
-                "Auto-reset Charging Mode: reset time reached — switching charging station to \(postName)"
-        )
-
-        do {
-            _ = try await host.energyManager.setCarChargingMode(
-                sensorId: params.chargingDeviceId,
-                carCharging: ControlCarChargingRequest(
-                    chargingMode: params.afterResetChargingMode
-                )
-            )
-        } catch {
-            host.logError(
-                message:
-                    "Auto-reset Charging Mode: failed to switch charging station to \(postName): \(error.localizedDescription) — charging station may stay on the active mode. Please check the Solar Manager app."
-            )
-            // We still terminate; the user gets a "failed" notification path.
-            host.logFailure()
-            return state.failed()
-        }
-
-        var stopped = liveState
-        stopped.appliedAfterResetModeAt = Date()
-        stopped.stopReason = .resetCompleted
-
-        host.logInfo(
-            message:
-                "Auto-reset Charging Mode: reset completed — charging station switched to \(postName)"
-        )
-        host.logSuccess()
-
-        return AutomationState(
-            automation: state.automation!,
-            status: .finishedSuccessful,
-            nextTaskRun: nil,
-            autoResetChargingMode: stopped
-        )
     }
 
     private func formatted(_ date: Date) -> String {

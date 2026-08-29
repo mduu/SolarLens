@@ -680,7 +680,10 @@ public final class AutomationManager: AutomationHost {
     // MARK: - Persistence
 
     private func persistState() {
-        let defaults = UserDefaults.standard
+        // Shared with the Notification Service Extension (ADR-006) so a
+        // push-triggered run and the app see the same state. Falls back to
+        // `UserDefaults.standard` while the App Group is unavailable.
+        let defaults = AutomationSharedStore.defaults
         if let activeState {
             if let data = try? JSONEncoder().encode(activeState) {
                 defaults.set(data, forKey: stateStorageKey)
@@ -698,7 +701,13 @@ public final class AutomationManager: AutomationHost {
     }
 
     private func restorePersistedState() {
-        let defaults = UserDefaults.standard
+        // One-shot move of pre-story-#9 state into the App Group. Runs before
+        // the first read so an automation that was started by an older build
+        // survives the upgrade.
+        AutomationSharedStore.migrateDefaultsKeyIfNeeded(stateStorageKey)
+        AutomationSharedStore.migrateDefaultsKeyIfNeeded(parametersStorageKey)
+
+        let defaults = AutomationSharedStore.defaults
         if let data = defaults.data(forKey: stateStorageKey),
            let state = try? JSONDecoder().decode(
             AutomationState.self, from: data
