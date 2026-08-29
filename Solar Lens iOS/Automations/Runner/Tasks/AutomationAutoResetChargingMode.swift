@@ -190,8 +190,14 @@ final class AutomationAutoResetChargingMode: AutomationTask {
         let outcome = await AutomationDeadlineRunner.runAutoResetDeadline(
             parameters: params,
             energyManager: host.energyManager,
-            log: { message in
-                host.logDebug(message: "\(message)")
+            log: { message, level in
+                switch level {
+                case .Info: host.logInfo(message: message)
+                case .Error: host.logError(message: message)
+                case .Failure: host.logFailure()
+                case .Success: host.logSuccess()
+                case .Debug: host.logDebug(message: message)
+                }
             }
         )
 

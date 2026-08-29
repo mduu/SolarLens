@@ -10,7 +10,8 @@ internal import Foundation
 /// call into here, so the decision logic exists exactly once.
 ///
 /// Everything the runner touches is process-agnostic: parameters/state passed
-/// in, the Solar Manager API through `EnergyManager`, and a plain log sink.
+/// in, the Solar Manager API through `EnergyManager`, and a log sink that
+/// carries the same localized messages and levels the app has always written.
 /// No `UserNotifications`, no ActivityKit, no `@MainActor` — the NSE has none
 /// of those (or must not block on them).
 enum AutomationDeadlineRunner {
@@ -46,7 +47,8 @@ enum AutomationDeadlineRunner {
         parameters params: AutomationAutoResetChargingModeParameters,
         energyManager: any EnergyManager,
         now: Date = Date(),
-        log: (String) -> Void = { _ in }
+        log: (LocalizedStringResource, AutomationLogMessageLevel) -> Void =
+            { _, _ in }
     ) async -> Outcome {
         guard now >= params.resetAt else {
             return .notDue(resetAt: params.resetAt)
@@ -65,20 +67,24 @@ enum AutomationDeadlineRunner {
                     .first { $0.id == params.chargingDeviceId }?
                     .chargingMode
             } catch {
-                log(
+                let message: LocalizedStringResource =
                     "Auto-reset Charging Mode: pre-reset overview fetch failed (\(error.localizedDescription)) — skipping user-override check"
-                )
+                log(message, .Debug)
                 return nil
             }
         }()
 
         if let currentMode, currentMode != params.activeChargingMode {
             let currentName = String(localized: currentMode.localizedTitle)
-            log(
+            let message: LocalizedStringResource =
                 "Auto-reset Charging Mode: user override detected — charging station is on \(currentName), expected the active mode. Leaving station as configured by the user, NOT applying \(postName)."
-            )
+            log(message, .Info)
             return .userOverride(currentModeTitle: currentName)
         }
+
+        let switching: LocalizedStringResource =
+            "Auto-reset Charging Mode: reset time reached — switching charging station to \(postName)"
+        log(switching, .Debug)
 
         do {
             _ = try await energyManager.setCarChargingMode(
@@ -88,15 +94,15 @@ enum AutomationDeadlineRunner {
                 )
             )
         } catch {
-            log(
+            let message: LocalizedStringResource =
                 "Auto-reset Charging Mode: failed to switch charging station to \(postName): \(error.localizedDescription) — charging station may stay on the active mode. Please check the Solar Manager app."
-            )
+            log(message, .Error)
             return .failed(message: error.localizedDescription)
         }
 
-        log(
+        let completed: LocalizedStringResource =
             "Auto-reset Charging Mode: reset completed — charging station switched to \(postName)"
-        )
+        log(completed, .Info)
         return .applied(modeTitle: postName)
     }
 }

@@ -41,14 +41,12 @@ enum AutomationLogWriter {
         return message
     }
 
-    /// Convenience for callers outside the app that only have a plain string
-    /// (the extension builds its messages at runtime).
-    static func append(_ message: String, level: AutomationLogMessageLevel) {
-        append(
-            AutomationLogMessage(
-                message: LocalizedStringResource(stringLiteral: message),
-                level: level
-            )
-        )
+    /// Convenience for callers outside the app (the extension), so a log line
+    /// keeps its localization and its level.
+    static func append(
+        _ message: LocalizedStringResource,
+        level: AutomationLogMessageLevel
+    ) {
+        append(AutomationLogMessage(message: message, level: level))
     }
 }

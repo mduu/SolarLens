@@ -104,8 +104,8 @@ final class NotificationService: UNNotificationServiceExtension {
         let outcome = await AutomationDeadlineRunner.runAutoResetDeadline(
             parameters: params,
             energyManager: SolarManager.shared,
-            log: { message in
-                AutomationLogWriter.append(message, level: .Debug)
+            log: { message, level in
+                AutomationLogWriter.append(message, level: level)
             }
         )
 
