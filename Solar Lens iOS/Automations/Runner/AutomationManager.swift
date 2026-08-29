@@ -201,6 +201,11 @@ public final class AutomationManager: AutomationHost {
             parameters: parameters
         )
 
+        // Ask the server to wake us at the end time (story #9). Best effort:
+        // if this fails the run still finishes via BG tasks and the local
+        // fallback notification, exactly as before.
+        registerWakeSchedule(automation: automation, parameters: parameters)
+
         Task {
             await runActiveAutomation()
         }
@@ -586,6 +591,73 @@ public final class AutomationManager: AutomationHost {
         await terminateAutomation(reason: .failed)
     }
 
+    // MARK: - Server wake schedule (story #9)
+
+    /// Registers the end time of a time-bound automation with the Solar Lens
+    /// server, so a push can wake the Notification Service Extension at that
+    /// moment even if the app has been force-quit.
+    ///
+    /// Only the timestamp and the notification's fallback text leave the
+    /// device — the text is localized here, because the server does not know
+    /// the user's language (ADR-006).
+    private func registerWakeSchedule(
+        automation: Automation,
+        parameters: AutomationParameters
+    ) {
+        guard automation == .AutoResetChargingMode,
+            let params = parameters.autoResetChargingMode
+        else { return }
+
+        let scheduleId = UUID().uuidString
+        let postName = String(
+            localized: params.afterResetChargingMode.localizedTitle
+        )
+        let title = String(localized: "Auto-reset Charging Mode")
+        let body = String(
+            localized: "Reset time reached — applying \(postName)…"
+        )
+
+        Task {
+            let result = await WakeScheduleClient.registerDeadline(
+                scheduleId: scheduleId,
+                automation: automation,
+                fireAt: params.resetAt,
+                title: title,
+                body: body,
+                deepLink: "solarlens://automations"
+            )
+            switch result {
+            case .registered:
+                self.logDebug(
+                    message:
+                        "Scheduled a server wake-up for the reset time"
+                )
+            case .skipped(let reason):
+                self.logDebug(
+                    message: "No server wake-up scheduled: \(reason)"
+                )
+            case .failed(let reason):
+                self.logDebug(
+                    message:
+                        "Could not schedule the server wake-up (\(reason)) — falling back to background execution"
+                )
+            case .cancelled:
+                break
+            }
+        }
+    }
+
+    /// Re-registers the active automation's wake-up. Called when the app comes
+    /// to the foreground and when the APNs token changes, so a rotated token,
+    /// a reinstall or a server-side data loss cannot leave a running
+    /// automation without its push.
+    func resyncWakeSchedule() {
+        guard let automation = activeState?.automation,
+            let parameters = activeTaskParameters
+        else { return }
+        registerWakeSchedule(automation: automation, parameters: parameters)
+    }
+
     // MARK: - External completion (Notification Service Extension)
 
     /// Picks up a run that the Notification Service Extension executed while
@@ -648,6 +720,7 @@ public final class AutomationManager: AutomationHost {
         activeState = nil
         activeTaskParameters = nil
         persistState()
+        WakeScheduleClient.activeScheduleId = nil
 
         var userInfo: [AnyHashable: Any] = [:]
         if let stationId = outcome.chargingStationId,
@@ -745,6 +818,9 @@ public final class AutomationManager: AutomationHost {
         activeState = nil
         activeTaskParameters = nil
         persistState()
+
+        // The scheduled push is pointless now — the run is over.
+        Task { await WakeScheduleClient.cancelActive() }
 
         // Tell whoever's interested that an automation just ended so the
         // app can refetch overview data — the charging station mode visible in the

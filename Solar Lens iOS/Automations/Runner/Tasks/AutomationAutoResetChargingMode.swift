@@ -29,6 +29,12 @@ final class AutomationAutoResetChargingMode: AutomationTask {
     static let resetDueNotificationId =
         "automation.autoResetChargingMode.due"
 
+    /// How long after the reset time the local fallback notification fires.
+    /// Long enough for a push + extension run (~30 s worst case) to have
+    /// happened and cancelled it, short enough that the user is not left
+    /// wondering when everything else failed.
+    static let fallbackNotificationDelay: TimeInterval = 120
+
     func run(
         host: any AutomationHost,
         parameters: AutomationParameters,
@@ -109,14 +115,20 @@ final class AutomationAutoResetChargingMode: AutomationTask {
                 "Auto-reset Charging Mode: started — charging station set to \(activeName), will reset to \(postName) at \(formatted(params.resetAt))"
         )
 
-        // Schedule a local notification at the reset time. Without this,
-        // iOS may not give us BG runtime around `resetAt` and the user
-        // would see the LA countdown reach 0 with the charging station still on
-        // the active mode. The notification reliably fires at the
-        // user-chosen moment; tapping it brings the app to foreground,
-        // which immediately runs a tick that finishes the run.
+        // Local fallback notification, deliberately a couple of minutes
+        // *after* the reset time (story #9).
+        //
+        // The primary path is now a server push that wakes the Notification
+        // Service Extension at `resetAt`; the extension does the work and
+        // removes this pending request, so the user never sees both. This one
+        // only fires when that path is unavailable — no push (server down,
+        // notifications off, no token), or the extension could not finish —
+        // and then it does what it always did: tell the user to open the app
+        // so a tick can complete the run.
         scheduleResetDueNotification(
-            at: params.resetAt,
+            at: params.resetAt.addingTimeInterval(
+                Self.fallbackNotificationDelay
+            ),
             afterModeName: postName
         )
 

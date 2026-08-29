@@ -269,11 +269,18 @@ Everything below is manual configuration outside the code and must be done once 
 
 ### Slice 3 — App-side registration & sync
 - [ ] One-time setup per section "One-time setup" — walked through step by step together with Claude when this slice starts (manual clicks in the Apple Developer portal / Azure Portal; Claude prepares CLI commands, checks entitlements/plist/app settings and verifies with a test push): APNs .p8 key (stored in password manager), App ID capabilities, App Group, NSE App ID, Xcode capabilities/background mode, Azure app settings, App Insights alert, App Store privacy label
-- [ ] Push capability + `remote-notification` background mode; token registration and refresh handling; `environment` sandbox/production per build configuration
-- [ ] `WakeScheduleClient` in `Shared/`: upsert/delete deadline on automation start/change/cancel/finish; re-sync on launch and on token rotation
-- [ ] Move existing local reset-due notification to `resetAt + 2 min` as fallback; wording unchanged
-- [ ] Settings toggle "Server-assisted timing" with privacy explanation; off → delete server schedules
-- [ ] Setup-sheet copy: precise execution requires notifications enabled
+- [x] Push capability + `remote-notification` background mode; token registration and refresh handling (`PushRegistrar`, registers only once notifications are actually authorized); `environment` sandbox/production per build configuration
+- [x] `WakeScheduleClient` in `Shared/`: upsert on automation start, cancel on finish/cancel/external completion, `forgetDevice` for the opt-out; re-sync on foreground and on token rotation. Per-install secret generated into the keychain (`KeychainHelper.installSecret`). Debug builds can point at a local Functions host via the `SolarLens.wakeApiBaseUrl` user default
+- [x] Move existing local reset-due notification to `resetAt + 2 min` as fallback; wording unchanged
+- [x] Settings toggle "Server-assisted timing" (default on) with a privacy explanation; off → `forgetDevice` removes everything this device has on the server
+- [x] Setup-sheet copy: the reset now happens on time via a notification, and notifications must stay enabled
+
+**Verified against the local Functions host**: the exact payload the client
+builds is accepted (`PUT` → 204), `GET` returns the row with the automation
+echoed back, `DELETE` with the `X-Install-Secret` header works and is
+idempotent, and the device-wide delete behind the Settings toggle clears every
+row. Not yet exercised *from the app*, because starting an automation needs a
+Solar Manager login — that happens in the device test together with the push.
 
 ### Slice 4 — Silent-push wake window for Battery → Car and Notifications
 - [ ] Register/extend/cancel wake windows from `AutomationManager` (Battery → Car) and `NotificationManager` (active monitors)

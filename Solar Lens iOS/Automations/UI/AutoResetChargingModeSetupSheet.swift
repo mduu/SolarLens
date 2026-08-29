@@ -89,7 +89,7 @@ struct AutoResetChargingModeSetupSheet: View {
                         Text("Reset at")
                     } footer: {
                         Text(
-                            "iOS may delay the reset by a few minutes if the device is asleep at that time. Keep Solar Lens running for the most precise reset."
+                            "Solar Lens gets a notification at the reset time and applies the change right then — even if the app is closed. Keep notifications enabled for Solar Lens; without them iOS may delay the reset by a few minutes while the device is asleep."
                         )
                     }
 

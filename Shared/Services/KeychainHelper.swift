@@ -11,6 +11,7 @@ class KeychainHelper {
     static let accessTokenKey = "accessToken"
     static let refreshTokenKey = "refreshToken"
     static let isSynchronizedKey = "isSynchronized"
+    static let installSecretKey = "wakeScheduleInstallSecret"
 
     static var accessToken: String? {
         get { getKeychain()[accessTokenKey] }
@@ -31,6 +32,31 @@ class KeychainHelper {
                 : false
         }
         set { getKeychain()[isSynchronizedKey] = String(newValue) }
+    }
+
+    /// Per-install secret for the Solar Lens wake-schedule API (story #9).
+    ///
+    /// The API is anonymous — it has no accounts and stores nothing but device
+    /// tokens and timestamps. Without a shared secret, anyone who learned a
+    /// device token could cancel or spam that device's scheduled pushes, so
+    /// every request carries this value and the server compares its hash.
+    ///
+    /// Generated once, then kept in the same keychain the app already uses.
+    /// Deliberately **not** synchronizable: it belongs to this install, and a
+    /// restored backup gets a new APNs token anyway.
+    static var installSecret: String {
+        let keychain = getKeychain()
+        if let existing = keychain[installSecretKey], !existing.isEmpty {
+            return existing
+        }
+        var bytes = [UInt8](repeating: 0, count: 32)
+        let status = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
+        let secret =
+            status == errSecSuccess
+            ? bytes.map { String(format: "%02x", $0) }.joined()
+            : UUID().uuidString + UUID().uuidString
+        keychain[installSecretKey] = secret
+        return secret
     }
 
     static func saveCredentials(username: String, password: String) {
