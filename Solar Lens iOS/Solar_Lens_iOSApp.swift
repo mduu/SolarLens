@@ -42,7 +42,7 @@ struct Solar_Lens_iOSApp: App {
 
         // A rotated APNs token invalidates whatever the server has for this
         // device, so re-register the running automation under the new one.
-        PushRegistrar.shared.onTokenChanged = { _ in
+        PushRegistrar.onTokenChanged = { _ in
             Task { @MainActor in
                 AutomationManager.shared.resyncWakeSchedule()
             }
@@ -69,7 +69,7 @@ struct Solar_Lens_iOSApp: App {
                         // the last launch; ask for the token again (no-op if
                         // we already have one) and make sure the server still
                         // knows about a running automation.
-                        PushRegistrar.shared.registerIfAuthorized()
+                        PushRegistrar.registerIfAuthorized()
                         AutomationManager.shared.resyncWakeSchedule()
 
                         Task {

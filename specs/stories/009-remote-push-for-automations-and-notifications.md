@@ -279,8 +279,34 @@ Everything below is manual configuration outside the code and must be done once 
 builds is accepted (`PUT` → 204), `GET` returns the row with the automation
 echoed back, `DELETE` with the `X-Install-Secret` header works and is
 idempotent, and the device-wide delete behind the Settings toggle clears every
-row. Not yet exercised *from the app*, because starting an automation needs a
-Solar Manager login — that happens in the device test together with the push.
+row.
+
+**Verified in the simulator with a real Solar Manager login and a real
+Auto-reset run** (29.08.2026): the automation started, applied the active
+charging mode, and at its reset time the shared `AutomationDeadlineRunner` —
+the very code the extension calls — switched the charging station to the
+after-reset mode against the live API and finished the run. The registration
+path also executed and logged the honest skip, "No server wake-up scheduled:
+no APNs device token yet".
+
+**The simulator cannot issue an APNs device token.** `apsd` enables the app's
+topic locally (so `simctl push` can deliver) but no token is ever handed to the
+app: `registerForRemoteNotifications()` is called, and neither
+`didRegisterForRemoteNotificationsWithDeviceToken` nor the failure callback
+fires. Together with the `simctl push` limitation above, this means **every
+push-dependent part of this story can only be verified on a device**. What the
+simulator does prove: the App Group, the shared state, the deadline logic
+against the real API, and that the registration path degrades honestly when
+there is no token.
+
+One bug found by that run: `@UIApplicationDelegateAdaptor` instantiates its
+*own* delegate object, so the app configured `PushRegistrar.shared` while the
+system delivered the token callback to a different instance — the token would
+never have been forwarded. The delegate's state is static now.
+
+*Tip for the next simulator session:* set user defaults with
+`xcrun simctl spawn <device> defaults write <bundle id> <key> <value>` —
+writing the preferences plist directly is silently discarded by `cfprefsd`.
 
 ### Slice 4 — Silent-push wake window for Battery → Car and Notifications
 - [x] Register/extend/cancel wake windows from `AutomationManager` (Battery → Car) and `NotificationManager` (active monitors) — one shared window per device (`WakeWindowCoordinator`), 15-min cadence, 6 h validity, renewed while work is running. Deliberately **not** registered for `AutoResetChargingMode`, which idles until its reset time and is covered by the visible deadline push

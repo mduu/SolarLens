@@ -11,28 +11,31 @@ internal import UserNotifications
 /// Tokens rotate (restore from backup, reinstall, occasionally on OS update),
 /// so whenever a new one arrives we re-register the active automation's
 /// deadline under it and drop the stale registration.
+/// Everything here is static on purpose: `@UIApplicationDelegateAdaptor`
+/// creates its *own* instance of this class, so an instance-level singleton
+/// would receive the app's configuration while the system delivered the
+/// callbacks to a different object — the token would silently never be
+/// forwarded.
 final class PushRegistrar: NSObject, UIApplicationDelegate {
-
-    static let shared = PushRegistrar()
 
     /// Set by the app so a token change can re-register whatever is running.
     /// Kept as a closure to avoid a dependency from `Shared/` back into the
     /// app's automation runner.
-    var onTokenChanged: ((String) -> Void)?
+    static var onTokenChanged: ((String) -> Void)?
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions:
             [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        registerIfAuthorized()
+        Self.registerIfAuthorized()
         return true
     }
 
     /// Registers for remote notifications, but only once the user has actually
     /// allowed notifications — asking earlier would either fail silently or
     /// (worse) prompt out of context.
-    func registerIfAuthorized() {
+    static func registerIfAuthorized() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             guard settings.authorizationStatus == .authorized
                 || settings.authorizationStatus == .provisional
@@ -63,7 +66,7 @@ final class PushRegistrar: NSObject, UIApplicationDelegate {
             WakeWindowCoordinator.shared.invalidate()
             WakeWindowCoordinator.shared.refresh()
         }
-        onTokenChanged?(token)
+        Self.onTokenChanged?(token)
     }
 
     /// Silent wake push (story #9 slice 4): the server nudges us on a coarse

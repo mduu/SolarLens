@@ -265,7 +265,7 @@ struct SettingsScreen: View {
             set: { newValue in
                 settings.serverAssistedTimingWithDefault.wrappedValue = newValue
                 if newValue {
-                    PushRegistrar.shared.registerIfAuthorized()
+                    PushRegistrar.registerIfAuthorized()
                     AutomationManager.shared.resyncWakeSchedule()
                 } else {
                     Task { await WakeScheduleClient.forgetDevice() }
