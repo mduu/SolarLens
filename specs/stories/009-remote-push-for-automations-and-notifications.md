@@ -209,7 +209,7 @@ Everything below is manual configuration outside the code and must be done once 
 - Users can disable server-assisted timing in Settings; the server receives nothing from installs that have no active automation/monitor.
 
 ## Test Checklist
-- [x] App builds successfully (iOS, watchOS, tvOS) — *NSE target not yet created, so not covered by this*
+- [x] App builds successfully (iOS incl. the new NSE target, watchOS, tvOS; also verified from Xcode itself)
 - [ ] App runs correctly on watchOS Simulator
 - [ ] Optional for UI changes: UI validated on Apple Watch hardware or simulator
 - [ ] Simulator: `xcrun simctl push` with a `mutable-content` payload launches the NSE, which executes a due Auto-reset tick and rewrites the notification text
@@ -240,13 +240,14 @@ Everything below is manual configuration outside the code and must be done once 
 ### Slice 1 — NSE executes a time-bound automation from a manual test push
 - [x] Write ADR-006 (server as privacy-neutral alarm clock; visible push + NSE for deadlines; silent push as additive wake source; rejected alternatives)
 - [x] Migrate `AutomationManager` state/parameters and `AutomationLogManager` storage to the App Group with one-shot migration (`AutomationSharedStore`, `AutomationLogWriter`) — falls back to the app-local locations while the entitlement is missing
-- [ ] Add the App Group entitlement to the iOS app (+ widget/LA extensions if needed) — **needs Xcode/portal**
-- [ ] Add `Solar Lens iOS NotificationService` target with Keychain access group + App Group; keep dependencies to `Shared/` only — **needs Xcode**; sources, `Info.plist` and `.entitlements` are written and waiting in `Solar Lens iOS NotificationService/`
+- [x] Add the App Group entitlement to the iOS app; Push Notifications capability (`aps-environment`) added at the same time — **note:** the next *device* build needs App Groups and Push enabled on the App ID `com.marcduerst.SolarManagerWatch` (automatic signing usually adds them on first build, otherwise enable them in the portal)
+- [x] Add `Solar Lens iOS NotificationService` target with Keychain access group + App Group; dependencies kept to a curated `Shared/` subset (services and models only — no UI folders, no `State/`, and no `LocationManager` / `AppStoreReviewManager` / `SolarWeatherService` / `BatterySimulator` / `FakeEnergyManager`)
 - [x] Extract a UI-free deadline path from `AutomationAutoResetChargingMode` / `AutomationManager` reusable by the NSE (`AutomationDeadlineRunner`); shared-store lease added on both sides to avoid double execution
 - [x] NSE: load token + state, run tick, persist outcome + log, rewrite notification content, cancel pending local fallback notification; honest default payload text (`NotificationService.swift`, `AutomationPushPayload`, `AutomationExternalOutcome`)
 - [x] App reconciles a run finished by the extension: `AutomationManager.adoptExternalCompletionIfNeeded()` ends the Live Activity, refreshes the UI and posts no duplicate notification
 - [x] iOS, watchOS and tvOS targets build with the new shared code (new files excluded from the tvOS and watch-widget targets, which do not compile the automations folder)
-- [ ] Verify with `xcrun simctl push` (simulator) and a manual APNs push (device, incl. force-quit) — **blocked on the target**
+- [x] App Group verified end to end in the simulator: the app writes `automation-logs.json` into the shared container, and the extension's simulated entitlements carry the app group plus the Shared keychain group
+- [ ] Verify push-triggered execution — **`xcrun simctl push` cannot do this**: on the iOS 26.5 simulator it delivers the payload through `CoreSimulatorBridge` as a *local* notification request (visible in the device log as "Adding notification request"), which ignores `mutable-content` and never launches the extension. Needs a real device with a real APNs push (i.e. the `.p8` key from the one-time setup), including the force-quit case
 
 ### Slice 2 — Server scheduler (extend Solar Lens .NET Azure Functions)
 - [x] Add `Azure.Data.Tables`, `Azure.Storage.Queues`, `Extensions.Storage.Queues`, `Extensions.Timer` packages; Azurite table/queue for local dev
