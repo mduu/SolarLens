@@ -37,8 +37,10 @@ public final class AutomationManager: AutomationHost {
     private let processingIdentifier =
         "com.marcduerst.SolarManagerWatch.NotificationProcessing"
     static private let foregroundTimerInterval: TimeInterval = 60
-    private let stateStorageKey = "SolarLens.activeAutomationState"
-    private let parametersStorageKey = "SolarLens.activeAutomationParameters"
+    // Shared with the Notification Service Extension (story #9 / ADR-006).
+    private let stateStorageKey = AutomationSharedStore.activeStateKey
+    private let parametersStorageKey =
+        AutomationSharedStore.activeParametersKey
 
     public var activeAutomation: Automation? {
         activeState?.automation
@@ -93,6 +95,12 @@ public final class AutomationManager: AutomationHost {
     ) {
         switch newPhase {
         case .active:
+            // The Notification Service Extension may have executed a
+            // scheduled automation while we were suspended (story #9).
+            // Reconcile before anything else, so we don't tick a run that
+            // already finished in the other process.
+            Task { await self.adoptExternalCompletionIfNeeded() }
+
             if activeState?.automation != nil {
                 logDebug(message: "App became active (foreground)")
                 // Force a tick when the user surfaces the app, unless
@@ -519,6 +527,20 @@ public final class AutomationManager: AutomationHost {
     // MARK: - Run loop
 
     private func runActiveAutomation() async {
+        await adoptExternalCompletionIfNeeded()
+
+        // Another process (the Notification Service Extension) may be
+        // applying the same automation right now. Skip this tick rather than
+        // issuing a second charging-mode call; the next tick picks it up.
+        guard AutomationSharedStore.acquireTickLease() else {
+            logDebug(
+                message:
+                    "Skipping tick — the notification extension is running this automation"
+            )
+            return
+        }
+        defer { AutomationSharedStore.releaseTickLease() }
+
         guard let activeTask = activeState?.automation?.getAutomationTask(),
               let currentState = activeState,
               let activeTaskParameters else {
@@ -562,6 +584,83 @@ public final class AutomationManager: AutomationHost {
 
         logError(message: "Automation tick: all retries exhausted")
         await terminateAutomation(reason: .failed)
+    }
+
+    // MARK: - External completion (Notification Service Extension)
+
+    /// Picks up a run that the Notification Service Extension executed while
+    /// the app was suspended or force-quit (story #9 / ADR-006).
+    ///
+    /// The extension has already applied the charging mode, written the log
+    /// entry and shown the user a notification with the real outcome. What is
+    /// left for us is local teardown: end the Live Activity, drop the
+    /// in-memory run, and tell the UI to refresh. Deliberately **no** second
+    /// user notification.
+    func adoptExternalCompletionIfNeeded() async {
+        guard let outcome = AutomationSharedStore.externalOutcome else {
+            return
+        }
+        AutomationSharedStore.externalOutcome = nil
+
+        switch outcome.kind {
+        case .applied:
+            logInfo(
+                message:
+                    "Automation finished in the background via push notification\(outcome.detail.map { " — charging station switched to \($0)" } ?? "")"
+            )
+        case .userOverride:
+            logInfo(
+                message:
+                    "Automation stopped in the background via push notification — charging mode had been changed manually"
+            )
+        case .failed:
+            logError(
+                message:
+                    "Automation failed in the background via push notification\(outcome.detail.map { ": \($0)" } ?? "")"
+            )
+        }
+
+        let snapshot = activeState
+        let snapshotParams = activeTaskParameters
+
+        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
+        stopTimer()
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(
+                withIdentifiers: [
+                    AutomationAutoResetChargingMode.resetDueNotificationId,
+                    AutomationBatteryToCar.softFloorDueNotificationId,
+                ]
+            )
+
+        if let snapshot, let snapshotParams {
+            await AutomationLiveActivityCoordinator.shared.end(
+                state: snapshot,
+                parameters: snapshotParams
+            )
+        } else {
+            await AutomationLiveActivityCoordinator.shared
+                .dismissAllStaleActivities(
+                    reason: "automation completed by notification extension"
+                )
+        }
+
+        activeState = nil
+        activeTaskParameters = nil
+        persistState()
+
+        var userInfo: [AnyHashable: Any] = [:]
+        if let stationId = outcome.chargingStationId,
+            let modeRaw = outcome.chargingModeRaw
+        {
+            userInfo[Self.terminatedChargingStationIdKey] = stationId
+            userInfo[Self.terminatedChargingModeRawKey] = modeRaw
+        }
+        NotificationCenter.default.post(
+            name: Self.automationTerminatedNotification,
+            object: nil,
+            userInfo: userInfo
+        )
     }
 
     // MARK: - Termination

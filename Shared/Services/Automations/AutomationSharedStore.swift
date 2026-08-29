@@ -163,3 +163,50 @@ extension AutomationSharedStore {
         defaults.removeObject(forKey: leaseKey)
     }
 }
+
+// MARK: - Well-known names & active automation
+
+extension AutomationSharedStore {
+
+    /// File name of the automation log inside the shared container.
+    static let logFileName = "automation-logs.json"
+
+    /// `UserDefaults` keys the app's `AutomationManager` persists under.
+    /// Named here because the Notification Service Extension reads and clears
+    /// the same records.
+    static let activeStateKey = "SolarLens.activeAutomationState"
+    static let activeParametersKey = "SolarLens.activeAutomationParameters"
+
+    /// Identifier of the local "reset is due" notification the app schedules
+    /// as a fallback. The extension removes it once it has done the work for
+    /// real, so the user never sees both.
+    static let resetDueFallbackNotificationId =
+        "automation.autoResetChargingMode.due"
+
+    /// The automation the app currently has running, as persisted. `nil` when
+    /// nothing is running (or the run already finished).
+    static var activeState: AutomationState? {
+        guard let data = defaults.data(forKey: activeStateKey) else {
+            return nil
+        }
+        return try? JSONDecoder().decode(AutomationState.self, from: data)
+    }
+
+    static var activeParameters: AutomationParameters? {
+        guard let data = defaults.data(forKey: activeParametersKey) else {
+            return nil
+        }
+        return try? JSONDecoder().decode(
+            AutomationParameters.self,
+            from: data
+        )
+    }
+
+    /// Clears the persisted run. Used by the extension after it executed a
+    /// deadline, so the app does not run the same automation again.
+    static func clearActiveAutomation() {
+        let store = defaults
+        store.removeObject(forKey: activeStateKey)
+        store.removeObject(forKey: activeParametersKey)
+    }
+}
