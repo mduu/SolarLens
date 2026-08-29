@@ -329,7 +329,10 @@ Two defects found and fixed while testing:
   every launch look like a fresh registration; it is persisted now.
 
 ### Slice 5 — Fallbacks, docs, measurement
-- [ ] NSE timeout / notifications-disabled / server-down paths verified on device
-- [ ] Optional on-device telemetry (local only, shown in the automation log): push received vs. fallback fired, to judge real-world delivery rate
-- [ ] Update `architecture.md`, `risks.md`, `userinterface.md`, privacy policy / App Store privacy label
-- [ ] Translations for new strings (`/translate`)
+- [ ] NSE timeout / notifications-disabled / server-down paths verified on device — **needs a device**
+- [x] On-device measurement (local only, in the automation log): every reset logs how many seconds after the scheduled time it actually ran, and the log line differs by path ("reset completed" from the app, "reset completed via push" from the extension). Together that answers "did the push arrive, and how late were we" without any telemetry leaving the device
+- [x] Update `architecture.md` (runner table now covers force-quit and push wakes; new "Scheduled Automations via Remote Push" section; App Group persistence; Infrastructure now describes both server jobs; principle about credentials never leaving the device)
+- [x] Update `risks.md` (server outage now degrades timing rather than breaking anything; new APNs key / device-token risk entry with its blast radius and mitigations; credential section notes the wake scheduler never receives credentials)
+- [x] `userinterface.md` — **no change needed**: it documents the design system (colours, typography, components), not individual screens; the Settings toggle introduces no new component
+- [ ] Privacy: the App Store privacy label needs "Device ID → App Functionality, not linked to the user, not used for tracking" — part of the one-time setup. The repo has no privacy-policy page; the landing pages claim "no tracking, no data collection, your data stays with you", which stays accurate (the APNs token is neither tracking nor energy data), but it is worth a conscious owner decision before release
+- [ ] Translations for the 23 new strings (de/da/fr/it) — list prepared, awaiting go-ahead

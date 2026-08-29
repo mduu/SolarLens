@@ -15,6 +15,8 @@ Solar Lens is a set of native Apple apps serving as an alternative client for [S
 * Native SwiftUI on all platforms — no cross-platform frameworks
 * Shared code in `Shared/` — platform-specific UI per target
 * Minimal external dependencies (only KeychainAccess)
+* Credentials and measurements never leave the device — the server may only
+  learn *when* to wake a device, never what it does (ADR-006)
 * Optimistic UI updates for responsive user experience
 * Async/await for all networking
 * Clarity over complexity — favor simple, glanceable UI over technical dashboards
@@ -181,25 +183,66 @@ Response → Model → State update → SwiftUI re-render
 
 ### On-Device Automation Runner (iOS only)
 
-Long-running automations (story #3 onward) execute entirely on-device — no
-server, no APNs, no cloud worker. The runner stitches together three iOS
-mechanisms to approximate continuous monitoring:
+Automation **decisions and API calls** always happen on-device — the server
+never sees a Solar Manager credential, token or measurement. Since story #9 it
+may act as an alarm clock that wakes the device (see below); everything it can
+trigger is still executed locally.
 
 | App state | Mechanism | Cadence |
 |---|---|---|
 | Foreground | `Timer.scheduledTimer` (60 s) | Precise |
-| Background | `BGAppRefreshTask` (`BGTaskScheduler`) | OS-decided, typically 15–60 min |
-| Terminated | none — state restored from `UserDefaults` snapshot on next launch | n/a |
+| Background | `BGAppRefreshTask` + `BGProcessingTask` | OS-decided, typically 15–60 min |
+| Background | Silent push wake window (story #9) | ~15 min while work is active, throttled by iOS |
+| Terminated / force-quit | Visible push → Notification Service Extension (story #9) | At the scheduled second |
+| Terminated, no push | none — state restored from the App Group snapshot on next launch | n/a |
 
 `AutomationManager` (`@Observable @MainActor`) owns at most one active
 automation at a time. Each automation persists `activeState` +
-`activeTaskParameters` after every tick under `SolarLens.activeAutomationState`,
-so the run survives an OS-induced restart. Stop conditions are **predictive**
+`activeTaskParameters` after every tick under `SolarLens.activeAutomationState`
+in the **App Group** `group.com.marcduerst.SolarManagerWatch`, so the run
+survives an OS-induced restart *and* is visible to the Notification Service
+Extension (`AutomationSharedStore`). Stop conditions are **predictive**
 (e.g. soft battery floor uses an EWMA of observed tick intervals × safety
 factor) so the runner can absorb opaque BG-throttling without overshooting
 user-set limits.
 
 Decision recorded in [ADR-001](adrs/001-on-device-automation-runner.md).
+
+### Scheduled Automations via Remote Push (iOS, story #9)
+
+A local notification fires on time but cannot run code, and after a force quit
+nothing on-device runs at all. So for automations with a **known end time**
+(today `AutoResetChargingMode`) the Solar Lens server sends a *visible* alert
+push with `mutable-content: 1` at that moment. iOS launches the
+**Notification Service Extension**, which:
+
+1. reads the run from the App Group and the Solar Manager token from the shared
+   keychain group,
+2. executes the same `AutomationDeadlineRunner` the app uses,
+3. records the outcome for the app to reconcile
+   (`AutomationExternalOutcome` → `AutomationManager.adoptExternalCompletionIfNeeded`),
+4. rewrites the notification text to what actually happened.
+
+Display therefore equals execution — the user can no longer be told "done"
+when nothing ran. Extensions execute after a force quit and are not subject to
+the silent-push budget, which is why this path is the reliable one.
+
+For work **without** an end time (Battery → Car, threshold monitors) the server
+sends *silent* pushes on a coarse cadence (`WakeWindowCoordinator`, 15 min
+while active). That is an additional best-effort wake source next to the BG
+tasks, never a guarantee: iOS throttles silent pushes, gives no delivery
+feedback and stops them entirely after a force quit.
+
+Everything degrades to the previous behaviour when the push path is
+unavailable — no token, notifications disabled, opt-out, or server down: BG
+tasks plus a local fallback notification at `resetAt + 2 min`, which the
+extension removes when it did the work itself.
+
+What the server stores per schedule: APNs device token, environment,
+timestamp/cadence and the notification's fallback text (localized on the
+device). Nothing else — see
+[ADR-006](adrs/006-server-as-push-alarm-clock.md) and
+[story #9](stories/009-remote-push-for-automations-and-notifications.md).
 
 ### Notifications Subsystem (iOS only, watchOS thin client)
 
@@ -294,10 +337,16 @@ No CocoaPods, no Carthage — Swift Package Manager only.
 
 ### Solar Lens Server (Azure Functions)
 
-Used exclusively by the tvOS app for custom background image uploads.
+Two unrelated jobs, in one Consumption-plan Function app:
 
-- **Runtime:** .NET / C# Azure Functions
-- **Purpose:** Image upload and storage for tvOS backgrounds
+- **Image upload** for the tvOS app's custom backgrounds (HTTP + Blob storage).
+- **Wake scheduler** (story #9): stores "device token X wants a push at time T"
+  in an Azure Table, enqueues one message per due push every minute, and sends
+  it to APNs from a queue-triggered function. It holds **no** Solar Manager
+  credentials, calls **no** Solar Manager API and knows **no** automation
+  rules; rows are deleted once they have fired or expired.
+
+- **Runtime:** .NET / C# Azure Functions (isolated worker)
 - **Details:** See [Solar Lens Server/README.md](../Solar%20Lens%20Server/README.md)
 
 ### Build & Distribution

@@ -58,6 +58,16 @@ enum AutomationDeadlineRunner {
             localized: params.afterResetChargingMode.localizedTitle
         )
 
+        // How late are we? This is the story #9 measurement: a run finished by
+        // the push extension shows a few seconds, one that waited for a
+        // background task or the user opening the app shows minutes to hours.
+        // Local only — it lives in the automation log the user can read, and
+        // is never sent anywhere.
+        let lateness = Int(now.timeIntervalSince(params.resetAt))
+        let latenessMessage: LocalizedStringResource =
+            "Auto-reset Charging Mode: running \(lateness)s after the scheduled reset time"
+        log(latenessMessage, .Debug)
+
         let currentMode: ChargingMode? = await {
             do {
                 let overview = try await energyManager.fetchOverviewData(
