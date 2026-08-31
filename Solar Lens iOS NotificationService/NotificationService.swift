@@ -1,23 +1,16 @@
 import UserNotifications
 internal import Foundation
 
-/// Notification Service Extension — the piece that makes a *scheduled*
-/// automation actually happen (story #9 / ADR-006).
+/// Runs a scheduled automation when its push arrives, and rewrites the
+/// notification to say what actually happened.
 ///
-/// The Solar Lens server sends a visible alert push with `mutable-content: 1`
-/// at the automation's end time. iOS launches this extension **even when the
-/// app was force-quit**, gives it ~30 s, and shows whatever content we hand
-/// back. So we:
+/// iOS launches this even after a force quit and gives it ~30 s. We read the run
+/// from the App Group, execute it on-device (Solar Manager token from the shared
+/// keychain — nothing about the automation reaches our server), record the
+/// outcome for the app, and hand back the new content.
 ///
-/// 1. read the automation state the app persisted into the App Group,
-/// 2. run the deadline logic on-device (Solar Manager token from the shared
-///    Keychain — nothing about the automation ever reaches our server),
-/// 3. leave an outcome record for the app to reconcile, and
-/// 4. rewrite the notification text so what the user reads is what happened.
-///
-/// If anything goes wrong or takes too long, iOS falls back to the server's
-/// default payload text — which is worded to stay truthful in that case
-/// ("reset time reached…"), never claiming success.
+/// If we run out of time iOS shows the server's default text, which is worded to
+/// stay truthful ("reset time reached…") and never claims success.
 final class NotificationService: UNNotificationServiceExtension {
 
     private var contentHandler: ((UNNotificationContent) -> Void)?
@@ -101,7 +94,7 @@ final class NotificationService: UNNotificationServiceExtension {
         }
         defer { AutomationSharedStore.releaseTickLease() }
 
-        let outcome = await AutomationDeadlineRunner.runAutoResetDeadline(
+        let outcome = await AutoResetCompletion.complete(
             parameters: params,
             energyManager: SolarManager.shared,
             log: { message, level in
@@ -177,9 +170,8 @@ final class NotificationService: UNNotificationServiceExtension {
         }
     }
 
-    /// Clears the shared active state and records what happened, so the app
-    /// tears down the Live Activity and refreshes its UI on next launch
-    /// instead of running the automation a second time.
+    /// Clears the run and records the outcome, so the app tears down the Live
+    /// Activity on its next launch instead of executing the automation again.
     private func finish(
         state: AutomationState,
         kind: AutomationExternalOutcome.Kind,

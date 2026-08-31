@@ -1,14 +1,11 @@
 internal import Foundation
 
-/// Result of an automation run that was executed **outside the app process** —
-/// today only by the Notification Service Extension when the server's
-/// scheduled push arrives (story #9 / ADR-006).
+/// Result of a run the Notification Service Extension executed while the app was
+/// suspended or force-quit.
 ///
-/// The extension cannot touch the Live Activity, the in-app log views or the
-/// observable `AutomationManager`. So it does three things: apply the change,
-/// clear the shared active state, and leave this record behind. The app picks
-/// it up the next time it runs (`AutomationManager.adoptExternalCompletion`),
-/// finishes the local teardown, and drops the record.
+/// The extension cannot touch the Live Activity or the observable manager, so it
+/// leaves this behind; the app finishes the teardown on its next run
+/// (`AutomationManager.adoptExternalCompletionIfNeeded`).
 struct AutomationExternalOutcome: Codable, Sendable, Equatable {
 
     enum Kind: String, Codable, Sendable {

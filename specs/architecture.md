@@ -218,7 +218,7 @@ push with `mutable-content: 1` at that moment. iOS launches the
 
 1. reads the run from the App Group and the Solar Manager token from the shared
    keychain group,
-2. executes the same `AutomationDeadlineRunner` the app uses,
+2. executes the same `AutoResetCompletion` the app uses,
 3. records the outcome for the app to reconcile
    (`AutomationExternalOutcome` → `AutomationManager.adoptExternalCompletionIfNeeded`),
 4. rewrites the notification text to what actually happened.

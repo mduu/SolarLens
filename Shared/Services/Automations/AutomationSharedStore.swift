@@ -1,22 +1,11 @@
 internal import Foundation
 
-/// Shared storage for everything the iOS app and the Notification Service
-/// Extension both need to see: the active automation's state/parameters and
-/// the automation log.
+/// State the app and the Notification Service Extension both need: the active
+/// automation, its parameters and the automation log.
 ///
-/// Background (story #9 / ADR-006): the NSE is a **separate process**. It
-/// cannot read `UserDefaults.standard` or the app's Documents directory, so
-/// automation state has to live in an App Group container that both processes
-/// are entitled to.
-///
-/// The store degrades gracefully: as long as the App Group entitlement is not
-/// present (older builds, or before the capability is configured), everything
-/// falls back to the app-local locations that were used before, so no
-/// behaviour changes and nothing is lost. `isShared` reports which mode is
-/// active.
-///
-/// This type lives in `Shared/` and is therefore compiled for iOS, watchOS and
-/// tvOS — it must stay dependency-free (Foundation only).
+/// They are separate processes, so this lives in an App Group container. Without
+/// the entitlement everything falls back to the app-local locations used before
+/// story #9, so nothing breaks — `isShared` tells which mode is active.
 enum AutomationSharedStore {
 
     /// App Group shared by the iOS app, the Notification Service Extension and
@@ -26,10 +15,9 @@ enum AutomationSharedStore {
 
     // MARK: - Availability
 
-    /// Container URL of the App Group, or `nil` when the entitlement is not
-    /// granted to this target/build. `FileManager` is the honest probe here —
-    /// `UserDefaults(suiteName:)` may hand back an object that silently fails
-    /// to persist.
+    /// `nil` when the entitlement is missing. `FileManager` is the honest probe —
+    /// `UserDefaults(suiteName:)` can hand back an object that silently fails to
+    /// persist.
     static var containerURL: URL? {
         FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: appGroupIdentifier
@@ -86,15 +74,10 @@ enum AutomationSharedStore {
     /// the *shared* defaults so both processes agree.
     private static let migrationFlagPrefix = "SolarLens.migratedToAppGroup."
 
-    /// Moves a `UserDefaults` value from `.standard` into the shared suite,
-    /// once. No-op when the App Group is unavailable (the fallback *is*
-    /// `.standard`), when the migration already ran, or when there is nothing
-    /// to move.
+    /// Copies a pre-story-#9 value into the shared suite, once.
     ///
-    /// The legacy value is intentionally **left in place**: if the user
-    /// downgrades to an older build, their running automation still restores.
-    /// Once the new build has written state at least once, the shared copy is
-    /// authoritative.
+    /// The legacy value stays behind on purpose: after a downgrade the old build
+    /// still finds its running automation.
     static func migrateDefaultsKeyIfNeeded(_ key: String) {
         guard isShared else { return }
         let flag = migrationFlagPrefix + key
@@ -133,20 +116,15 @@ extension AutomationSharedStore {
 
     private static let leaseKey = "SolarLens.automationTickLease"
 
-    /// Cooperative lease so the app process and the Notification Service
-    /// Extension never execute the same automation tick concurrently — that
-    /// would fire the charging-mode API call twice.
+    /// Cooperative lease so the app and the extension never run the same tick at
+    /// once and call the charging-mode API twice.
     ///
-    /// Deliberately simple: a timestamp in shared `UserDefaults`. There is no
-    /// cross-process atomic compare-and-swap available here, and the race
-    /// window (two writers within microseconds) is far narrower than the real
-    /// case we defend against (the app foregrounded while a push arrives).
-    /// The API call itself is idempotent in effect — setting the same charging
-    /// mode twice is harmless — so a best-effort lease is the right trade.
+    /// A timestamp is enough: there is no cross-process compare-and-swap here, the
+    /// real race (app foregrounded while a push arrives) is far wider than the
+    /// microseconds this misses, and setting the same mode twice is harmless.
     ///
-    /// - Parameter duration: how long the lease is held before it is
-    ///   considered abandoned (a crashed NSE must not block the app forever).
-    /// - Returns: `true` when the caller may run the tick.
+    /// - Parameter duration: after this the lease is treated as abandoned, so a
+    ///   crashed extension cannot block the app forever.
     static func acquireTickLease(
         for duration: TimeInterval = 45
     ) -> Bool {

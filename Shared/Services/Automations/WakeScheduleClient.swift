@@ -1,28 +1,20 @@
 internal import Foundation
 
-/// Talks to the Solar Lens wake-schedule API (story #9 / ADR-006).
+/// Registers wake-ups with the Solar Lens server.
 ///
-/// This is the *only* thing the app ever tells our server: an APNs device
-/// token and when it wants to be woken. No Solar Manager credentials, no
-/// tokens, no rules, no measurements — see the server README for the full
-/// record shape.
+/// All the server ever learns: an APNs device token and when to wake it — no
+/// Solar Manager credentials, no rules, no measurements (ADR-006).
 ///
-/// Every call is best effort. If the server is unreachable the automation
-/// still runs exactly as it does today (foreground timer, BG tasks, and the
-/// local fallback notification); a failed registration therefore logs and
-/// returns rather than surfacing an error to the user.
+/// Every call is best effort. A failure only logs, because the automation still
+/// runs via BG tasks and the local fallback notification.
 enum WakeScheduleClient {
 
     // MARK: - Configuration
 
-    /// Always the production server, even for debug builds: pushes must go
-    /// through Apple, and which APNs environment applies is decided by
-    /// `environment` below — not by which server we talk to. Pointing debug
-    /// builds at localhost would mean no pushes at all on a device.
-    ///
-    /// A debug build can still be aimed at a locally running Functions host by
-    /// setting the `SolarLens.wakeApiBaseUrl` user default, which is how the
-    /// registration flow is exercised without deploying.
+    /// Always the production server: pushes go through Apple either way, and the
+    /// APNs environment is decided by `environment`, not by the host. Debug builds
+    /// can be pointed at a local Functions host with the `SolarLens.wakeApiBaseUrl`
+    /// user default.
     private static var baseUrl: String {
         #if DEBUG
             if let override = UserDefaults.standard.string(
@@ -34,9 +26,8 @@ enum WakeScheduleClient {
         return "https://solarlens-upload-func.azurewebsites.net/api/wake"
     }
 
-    /// A debug build's device token is an APNs *sandbox* token; TestFlight and
-    /// App Store builds produce production tokens. The server picks the
-    /// matching APNs host per schedule.
+    /// Debug builds get sandbox tokens, TestFlight and App Store builds production
+    /// ones; the server picks the matching APNs host per schedule.
     static var environment: String {
         #if DEBUG
             "sandbox"
@@ -96,15 +87,14 @@ enum WakeScheduleClient {
         case failed(reason: String)
     }
 
-    /// Registers (or updates) the wake-up for a time-bound automation.
+    /// Registers or updates the wake-up for a time-bound automation.
     ///
     /// - Parameters:
-    ///   - scheduleId: stable id for this run, so a changed reset time updates
-    ///     the same row instead of creating a second push.
-    ///   - title/body: the fallback notification text, **already localized on
-    ///     this device**. The server has no idea what language the user
-    ///     speaks, and the extension overwrites this text with the real
-    ///     outcome anyway — it only shows if the extension cannot finish.
+    ///   - scheduleId: stable per run, so a changed reset time updates the same row
+    ///     instead of adding a second push.
+    ///   - title/body: fallback notification text, localized **here** — the server
+    ///     does not know the user's language, and the extension overwrites it with
+    ///     the real outcome anyway.
     @discardableResult
     static func registerDeadline(
         scheduleId: String,
@@ -150,21 +140,13 @@ enum WakeScheduleClient {
         }
     }
 
-    /// Registers (or extends) a repeating **silent** wake window.
+    /// Registers or extends the repeating silent wake window for work with no fixed
+    /// end time — a Battery → Car run, active monitors.
     ///
-    /// Used for work with no fixed end time — a running Battery → Car
-    /// automation, active threshold monitors — where the server cannot know
-    /// when something interesting happens and simply nudges the app on a
-    /// coarse cadence.
-    ///
-    /// This is explicitly an *extra* wake source next to `BGAppRefreshTask`
-    /// and `BGProcessingTask`, not a replacement: iOS throttles silent pushes,
-    /// gives no delivery feedback, needs Background App Refresh, and stops
-    /// delivering them entirely after a force quit (ADR-006).
-    ///
-    /// The window is short-lived on purpose and renewed while work is active,
-    /// so an app that stops running automations stops generating traffic
-    /// instead of pushing until some far-off expiry.
+    /// An *extra* wake source next to the BG tasks, never a replacement: iOS
+    /// throttles silent pushes, acknowledges nothing and stops them after a force
+    /// quit. The window is short and renewed while work runs, so an app that stops
+    /// automating stops generating traffic.
     @discardableResult
     static func registerWindow(
         scheduleId: String,

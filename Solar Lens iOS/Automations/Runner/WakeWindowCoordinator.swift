@@ -1,20 +1,13 @@
 internal import Foundation
 
-/// Keeps the server's silent-push wake window in sync with what the app
-/// actually has running (story #9 slice 4 / ADR-006).
+/// Keeps the server's silent-push wake window in step with what is running.
 ///
-/// One window covers both subsystems — a Battery → Car automation and any
-/// active threshold monitors — because the push only says "wake up and check";
-/// the device decides what that means. A second window would double the push
-/// volume for no extra information.
+/// One window covers both subsystems: the push only says "wake up and check",
+/// and the device decides what that means. `AutoResetChargingMode` is excluded —
+/// it idles until its reset time, which the visible deadline push covers.
 ///
-/// Deliberately *not* registered for `AutoResetChargingMode`: that automation
-/// does nothing at all between start and its reset time, and the reset itself
-/// is covered by the far more reliable visible-push path.
-///
-/// Everything here is best effort. Silent pushes are throttled by iOS, give no
-/// delivery feedback, need Background App Refresh, and stop entirely after a
-/// force quit — they improve the average, they do not bound it.
+/// Best effort by nature: iOS throttles silent pushes, acknowledges nothing, and
+/// stops them entirely after a force quit.
 @MainActor
 final class WakeWindowCoordinator {
 
@@ -24,14 +17,12 @@ final class WakeWindowCoordinator {
     /// registration instead of piling up rows.
     private static let scheduleId = "wake-window"
 
-    /// How often the server should nudge us. Kept coarse — iOS budgets silent
-    /// pushes anyway, and a tighter cadence would burn that budget (and our
-    /// execution count) without landing more wakes.
+    /// Coarse on purpose: iOS budgets silent pushes anyway, so a tighter cadence
+    /// burns that budget without landing more wakes.
     private static let cadenceMinutes = 15
 
-    /// How long a registration stays valid without renewal. Short enough that
-    /// an app which stops running automations stops receiving pushes soon
-    /// after, long enough to survive a device being offline for a while.
+    /// Short enough that an app which stops running automations stops receiving
+    /// pushes soon after, long enough to survive a while offline.
     private static let windowDuration: TimeInterval = 6 * 60 * 60
 
     /// Don't re-register on every 60 s tick; renew when the window is half

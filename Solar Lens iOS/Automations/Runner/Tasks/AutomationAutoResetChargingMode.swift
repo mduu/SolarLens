@@ -195,11 +195,9 @@ final class AutomationAutoResetChargingMode: AutomationTask {
         state: AutomationState,
         liveState: AutomationAutoResetChargingModeState
     ) async -> AutomationState {
-        // The actual work lives in `AutomationDeadlineRunner` (Shared) so the
-        // Notification Service Extension executes byte-identical logic when a
-        // scheduled push arrives while the app is suspended or force-quit.
-        // See story #9 / ADR-006.
-        let outcome = await AutomationDeadlineRunner.runAutoResetDeadline(
+        // Shared with the Notification Service Extension, which runs the
+        // same code when the scheduled push arrives (ADR-006).
+        let outcome = await AutoResetCompletion.complete(
             parameters: params,
             energyManager: host.energyManager,
             log: { message, level in

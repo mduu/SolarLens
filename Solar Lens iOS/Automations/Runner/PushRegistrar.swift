@@ -1,26 +1,18 @@
 import UIKit
 internal import UserNotifications
 
-/// Owns the app's APNs registration (story #9 / ADR-006).
+/// Owns the app's APNs registration.
 ///
-/// The token is the only identifier our server ever sees. We ask for it as
-/// soon as the user has granted notification permission — never before, so the
-/// system permission prompt stays tied to the moment the user starts an
-/// automation or a monitor, exactly as it is today.
+/// The token is the only identifier our server sees. We ask for it once
+/// notifications are granted — never before, so the system prompt stays tied to
+/// the moment the user starts an automation.
 ///
-/// Tokens rotate (restore from backup, reinstall, occasionally on OS update),
-/// so whenever a new one arrives we re-register the active automation's
-/// deadline under it and drop the stale registration.
-/// Everything here is static on purpose: `@UIApplicationDelegateAdaptor`
-/// creates its *own* instance of this class, so an instance-level singleton
-/// would receive the app's configuration while the system delivered the
-/// callbacks to a different object — the token would silently never be
-/// forwarded.
+/// State is static because `@UIApplicationDelegateAdaptor` instantiates its own
+/// delegate — instance state would be set on one object and delivered to another.
 final class PushRegistrar: NSObject, UIApplicationDelegate {
 
-    /// Set by the app so a token change can re-register whatever is running.
-    /// Kept as a closure to avoid a dependency from `Shared/` back into the
-    /// app's automation runner.
+    /// Lets a token change re-register whatever is running, without a dependency
+    /// from `Shared/` back into the automation runner.
     static var onTokenChanged: ((String) -> Void)?
 
     func application(
@@ -32,9 +24,8 @@ final class PushRegistrar: NSObject, UIApplicationDelegate {
         return true
     }
 
-    /// Registers for remote notifications, but only once the user has actually
-    /// allowed notifications — asking earlier would either fail silently or
-    /// (worse) prompt out of context.
+    /// No-op until the user has actually allowed notifications — asking earlier
+    /// fails silently or prompts out of context.
     static func registerIfAuthorized() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             guard settings.authorizationStatus == .authorized
@@ -69,11 +60,9 @@ final class PushRegistrar: NSObject, UIApplicationDelegate {
         Self.onTokenChanged?(token)
     }
 
-    /// Silent wake push (story #9 slice 4): the server nudges us on a coarse
-    /// cadence while a Battery → Car run or a threshold monitor is active.
-    ///
-    /// iOS gives us a few seconds here and holds the completion handler
-    /// against our background budget, so we drain and return promptly.
+    /// Silent wake push: the server nudges us while a Battery → Car run or a
+    /// monitor is active. iOS holds the completion handler against our background
+    /// budget, so drain and return promptly.
     func application(
         _ application: UIApplication,
         didReceiveRemoteNotification userInfo: [AnyHashable: Any],

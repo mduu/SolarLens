@@ -1,27 +1,16 @@
 internal import Foundation
 
-/// Contract between the Solar Lens server's wake scheduler and the app /
-/// Notification Service Extension (story #9).
+/// Payload contract between the server's wake scheduler and the device.
 ///
-/// The server never knows *what* an automation does — it only echoes back the
-/// opaque values the app registered with the schedule. Everything here is
-/// therefore either a routing hint (`kind`) or a value the device itself
-/// provided (`automation`, `scheduleId`).
+/// The server only echoes back what the app registered — it never knows what an
+/// automation does.
 ///
-/// Example alert payload (deadline):
 /// ```json
 /// {
-///   "aps": {
-///     "alert": { "title": "…", "body": "…" },
-///     "mutable-content": 1,
-///     "sound": "default",
-///     "interruption-level": "time-sensitive"
-///   },
-///   "solarlens": {
-///     "kind": "automation-deadline",
-///     "automation": "AutoResetChargingMode",
-///     "scheduleId": "9F2C…"
-///   },
+///   "aps": { "alert": { … }, "mutable-content": 1 },
+///   "solarlens": { "kind": "automation-deadline",
+///                  "automation": "AutoResetChargingMode",
+///                  "scheduleId": "9F2C…" },
 ///   "deepLink": "solarlens://automations"
 /// }
 /// ```
@@ -37,8 +26,8 @@ enum AutomationPushPayload {
         static let scheduleId = "scheduleId"
     }
 
-    /// What the push is for. Anything unknown must be delivered unchanged —
-    /// a future server version may send kinds this build does not handle.
+    /// Unknown kinds must be delivered untouched — a newer server may send kinds
+    /// this build does not know.
     enum Kind: String, Sendable {
         /// Visible alert push at a time-bound automation's end time. The
         /// Notification Service Extension executes the automation and rewrites

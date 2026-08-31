@@ -244,7 +244,7 @@ Everything below is manual configuration outside the code and must be done once 
 - [x] Migrate `AutomationManager` state/parameters and `AutomationLogManager` storage to the App Group with one-shot migration (`AutomationSharedStore`, `AutomationLogWriter`) — falls back to the app-local locations while the entitlement is missing
 - [x] Add the App Group entitlement to the iOS app; Push Notifications capability (`aps-environment`) added at the same time — **note:** the next *device* build needs App Groups and Push enabled on the App ID `com.marcduerst.SolarManagerWatch` (automatic signing usually adds them on first build, otherwise enable them in the portal)
 - [x] Add `Solar Lens iOS NotificationService` target with Keychain access group + App Group; dependencies kept to a curated `Shared/` subset (services and models only — no UI folders, no `State/`, and no `LocationManager` / `AppStoreReviewManager` / `SolarWeatherService` / `BatterySimulator` / `FakeEnergyManager`)
-- [x] Extract a UI-free deadline path from `AutomationAutoResetChargingMode` / `AutomationManager` reusable by the NSE (`AutomationDeadlineRunner`); shared-store lease added on both sides to avoid double execution
+- [x] Extract a UI-free deadline path from `AutomationAutoResetChargingMode` / `AutomationManager` reusable by the NSE (`AutoResetCompletion`); shared-store lease added on both sides to avoid double execution
 - [x] NSE: load token + state, run tick, persist outcome + log, rewrite notification content, cancel pending local fallback notification; honest default payload text (`NotificationService.swift`, `AutomationPushPayload`, `AutomationExternalOutcome`)
 - [x] App reconciles a run finished by the extension: `AutomationManager.adoptExternalCompletionIfNeeded()` ends the Live Activity, refreshes the UI and posts no duplicate notification
 - [x] iOS, watchOS and tvOS targets build with the new shared code (new files excluded from the tvOS and watch-widget targets, which do not compile the automations folder)
@@ -285,7 +285,7 @@ row.
 
 **Verified in the simulator with a real Solar Manager login and a real
 Auto-reset run** (29.08.2026): the automation started, applied the active
-charging mode, and at its reset time the shared `AutomationDeadlineRunner` —
+charging mode, and at its reset time the shared `AutoResetCompletion` —
 the very code the extension calls — switched the charging station to the
 after-reset mode against the live API and finished the run. The registration
 path also executed and logged the honest skip, "No server wake-up scheduled:
