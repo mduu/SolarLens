@@ -42,6 +42,14 @@ final class PushRegistrar: NSObject, UIApplicationDelegate {
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
+
+        #if DEBUG
+            // Needed to send a test push by hand (Push Notifications Console).
+            // Before the unchanged-guard, so it shows on every launch, and
+            // never in a release build.
+            print("[SolarLens] APNs device token: \(token)")
+        #endif
+
         let previous = WakeScheduleClient.deviceToken
         guard token != previous else { return }
 
