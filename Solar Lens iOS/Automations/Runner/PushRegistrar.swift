@@ -98,7 +98,7 @@ final class PushRegistrar: NSObject, UIApplicationDelegate {
             .init(
                 message:
                     "Push registration failed (\(error.localizedDescription)) — scheduled automations fall back to background execution",
-                level: .Debug
+                level: .Info
             )
         )
     }

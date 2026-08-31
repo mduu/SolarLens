@@ -63,6 +63,24 @@ enum WakeScheduleClient {
         }
     }
 
+    /// When the active deadline was last accepted by the server, so a re-sync
+    /// can skip the call when nothing has changed.
+    static var lastRegistrationAt: Date? {
+        get {
+            AutomationSharedStore.defaults.object(
+                forKey: "SolarLens.wakeLastRegistrationAt"
+            ) as? Date
+        }
+        set {
+            let store = AutomationSharedStore.defaults
+            guard let newValue else {
+                store.removeObject(forKey: "SolarLens.wakeLastRegistrationAt")
+                return
+            }
+            store.set(newValue, forKey: "SolarLens.wakeLastRegistrationAt")
+        }
+    }
+
     /// Schedule id of the deadline currently registered for the active
     /// automation, so we can cancel exactly that one later.
     static var activeScheduleId: String? {
@@ -134,6 +152,7 @@ enum WakeScheduleClient {
         switch await send(request) {
         case .success:
             activeScheduleId = scheduleId
+            lastRegistrationAt = Date()
             return .registered
         case .failure(let reason):
             return .failed(reason: reason)
@@ -200,7 +219,10 @@ enum WakeScheduleClient {
         request.timeoutInterval = 15
 
         let result = await send(request)
-        if scheduleId == activeScheduleId { activeScheduleId = nil }
+        if scheduleId == activeScheduleId {
+            activeScheduleId = nil
+            lastRegistrationAt = nil
+        }
         switch result {
         case .success: return .cancelled
         case .failure(let reason): return .failed(reason: reason)

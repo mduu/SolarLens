@@ -22,19 +22,24 @@ struct LockScreenCard: View {
 
     private let cornerRadius: CGFloat = 20
 
+    /// The Lock Screen gives an activity roughly 160 pt of height and clips
+    /// what does not fit — which is how this card lost its top and bottom
+    /// border on device. Keep the content comfortably below that.
+
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
+        HStack(alignment: .top, spacing: 12) {
             Image(systemName: context.state.iconSystemName)
-                .font(.system(size: 48, weight: .regular))
+                .font(.system(size: 36, weight: .regular))
                 .foregroundStyle(.orange)
                 .symbolRenderingMode(.hierarchical)
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .top, spacing: 12) {
                     Text(automationTitle)
                         .font(.headline)
-                        .lineLimit(2)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     cancelButton
                 }
@@ -42,9 +47,12 @@ struct LockScreenCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(16)
+        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .overlay(LockScreenBorder(cornerRadius: cornerRadius))
+        // Inset by a point: the system clips the activity to its own rounded
+        // container, and a stroke sitting exactly on the bounds loses its top
+        // and bottom edges.
+        .overlay(LockScreenBorder(cornerRadius: cornerRadius).padding(1))
     }
 
     private var cancelButton: some View {

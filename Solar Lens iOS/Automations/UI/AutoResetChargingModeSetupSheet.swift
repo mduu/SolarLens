@@ -162,21 +162,16 @@ struct AutoResetChargingModeSetupSheet: View {
     private func startAutomation() {
         guard let station = selectedStation else { return }
 
-        // The DatePicker hides seconds (`displayedComponents:
-        // [.date, .hourAndMinute]`), so the user-picked value lands on
-        // the *start* of their chosen minute. The user expects "14:30"
-        // to mean the 14:30 minute as a whole — i.e. the reset should
-        // fire after that minute completes (14:31:00) rather than at
-        // its very start. We snap to the start of the chosen minute and
-        // add 60 s so the charging station is guaranteed to stay on the active
-        // mode for the full picked minute and never switch even a
-        // fraction of a second early.
+        // Fire at the start of the picked minute: the sheet says "Reset at",
+        // and the Live Activity counts down to that moment. Snapping drops the
+        // seconds the DatePicker keeps from its initial value but never shows
+        // (`displayedComponents: [.date, .hourAndMinute]`), so "14:30" means
+        // 14:30:00.
         let calendar = Calendar.current
         let comps = calendar.dateComponents(
             [.year, .month, .day, .hour, .minute], from: resetAt
         )
-        let startOfMinute = calendar.date(from: comps) ?? resetAt
-        let effectiveResetAt = startOfMinute.addingTimeInterval(60)
+        let effectiveResetAt = calendar.date(from: comps) ?? resetAt
 
         let params = AutomationAutoResetChargingModeParameters(
             chargingDeviceId: station.id,
