@@ -123,7 +123,7 @@ final class NotificationService: UNNotificationServiceExtension {
                 "Auto-reset Charging Mode: reset completed via push — charging station switched to \(modeTitle)",
                 level: .Success
             )
-            setTitle(String(localized: "Auto-reset Charging Mode finished"))
+            setTitle(String(localized: "Auto-reset Charging Mode"))
             setBody(
                 String(localized: "Charging mode reset to \(modeTitle).")
             )
@@ -140,7 +140,7 @@ final class NotificationService: UNNotificationServiceExtension {
                 "Auto-reset Charging Mode: user override detected via push — charging station left on \(currentModeTitle)",
                 level: .Info
             )
-            setTitle(String(localized: "Auto-reset Charging Mode cancelled"))
+            setTitle(String(localized: "Auto-reset Charging Mode"))
             setBody(
                 String(
                     localized:
@@ -160,7 +160,7 @@ final class NotificationService: UNNotificationServiceExtension {
                 "Auto-reset Charging Mode: reset via push failed — \(message)",
                 level: .Error
             )
-            setTitle(String(localized: "Auto-reset Charging Mode stopped"))
+            setTitle(String(localized: "Auto-reset Charging Mode"))
             setBody(
                 String(
                     localized:

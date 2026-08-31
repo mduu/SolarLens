@@ -1053,6 +1053,9 @@ public final class AutomationManager: AutomationHost {
         }
     }
 
+    /// The title is the automation's name, not "… finished/cancelled/stopped":
+    /// those read as truncated ("Lademodus Auto-Reset abgesch…") in a banner
+    /// in every language, and repeated what the body already says.
     private func populateAutoResetChargingMode(
         content: UNMutableNotificationContent,
         reason: TerminationReason,
@@ -1066,7 +1069,7 @@ public final class AutomationManager: AutomationHost {
         switch reason {
         case .resetCompleted:
             content.title = String(
-                localized: "Auto-reset Charging Mode finished"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized:
@@ -1074,7 +1077,7 @@ public final class AutomationManager: AutomationHost {
             )
         case .cancelled:
             content.title = String(
-                localized: "Auto-reset Charging Mode cancelled"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized:
@@ -1082,7 +1085,7 @@ public final class AutomationManager: AutomationHost {
             )
         case .failed:
             content.title = String(
-                localized: "Auto-reset Charging Mode stopped"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized:
@@ -1090,7 +1093,7 @@ public final class AutomationManager: AutomationHost {
             )
         case .userOverride:
             content.title = String(
-                localized: "Auto-reset Charging Mode cancelled"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized:
@@ -1101,7 +1104,7 @@ public final class AutomationManager: AutomationHost {
             // Not applicable to Auto-reset, but compiler requires
             // exhaustiveness. Use the generic "stopped" wording.
             content.title = String(
-                localized: "Auto-reset Charging Mode stopped"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized: "Charging station should now be on \(modeName)."
