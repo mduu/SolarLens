@@ -44,7 +44,9 @@ struct Solar_Lens_iOSApp: App {
         // device, so re-register the running automation under the new one.
         PushRegistrar.onTokenChanged = { _ in
             Task { @MainActor in
-                AutomationManager.shared.resyncWakeSchedule()
+                // Forced: the old token is dead, so the standing registration
+                // must be replaced even if it is recent.
+                AutomationManager.shared.resyncWakeSchedule(force: true)
             }
         }
     }

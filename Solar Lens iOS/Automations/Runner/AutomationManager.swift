@@ -37,6 +37,9 @@ public final class AutomationManager: AutomationHost {
     private let processingIdentifier =
         "com.marcduerst.SolarManagerWatch.NotificationProcessing"
     static private let foregroundTimerInterval: TimeInterval = 60
+    /// How long a successful wake registration is trusted before a foreground
+    /// re-sync bothers the server again.
+    static private let wakeResyncInterval: TimeInterval = 12 * 60 * 60
     // Shared with the Notification Service Extension (story #9 / ADR-006).
     private let stateStorageKey = AutomationSharedStore.activeStateKey
     private let parametersStorageKey =
@@ -212,7 +215,11 @@ public final class AutomationManager: AutomationHost {
         // Ask the server to wake us at the end time (story #9). Best effort:
         // if this fails the run still finishes via BG tasks and the local
         // fallback notification, exactly as before.
-        registerWakeSchedule(automation: automation, parameters: parameters)
+        registerWakeSchedule(
+            automation: automation,
+            parameters: parameters,
+            scheduleId: UUID().uuidString
+        )
         WakeWindowCoordinator.shared.refresh()
 
         Task {
@@ -639,15 +646,19 @@ public final class AutomationManager: AutomationHost {
     /// Only the timestamp and the notification's fallback text leave the
     /// device — the text is localized here, because the server does not know
     /// the user's language (ADR-006).
+    /// - Parameter scheduleId: **one id per run**. Re-registering under the
+    ///   same id updates that row; minting a new one on every call would leave
+    ///   the previous row on the server and the device would be pushed once
+    ///   per registration.
     private func registerWakeSchedule(
         automation: Automation,
-        parameters: AutomationParameters
+        parameters: AutomationParameters,
+        scheduleId: String
     ) {
         guard automation == .AutoResetChargingMode,
             let params = parameters.autoResetChargingMode
         else { return }
 
-        let scheduleId = UUID().uuidString
         let postName = String(
             localized: params.afterResetChargingMode.localizedTitle
         )
@@ -690,11 +701,28 @@ public final class AutomationManager: AutomationHost {
     /// to the foreground and when the APNs token changes, so a rotated token,
     /// a reinstall or a server-side data loss cannot leave a running
     /// automation without its push.
-    func resyncWakeSchedule() {
+    ///
+    /// Reuses the run's existing schedule id, so this updates the one row
+    /// instead of adding another push per app launch — and skips the call
+    /// entirely while a recent registration still stands, because this runs on
+    /// every foreground and each call is a server execution we pay for.
+    func resyncWakeSchedule(force: Bool = false) {
         guard let automation = activeState?.automation,
             let parameters = activeTaskParameters
         else { return }
-        registerWakeSchedule(automation: automation, parameters: parameters)
+
+        if !force, WakeScheduleClient.activeScheduleId != nil,
+            let last = WakeScheduleClient.lastRegistrationAt,
+            Date().timeIntervalSince(last) < Self.wakeResyncInterval
+        {
+            return
+        }
+        registerWakeSchedule(
+            automation: automation,
+            parameters: parameters,
+            scheduleId: WakeScheduleClient.activeScheduleId
+                ?? UUID().uuidString
+        )
     }
 
     // MARK: - External completion (Notification Service Extension)
