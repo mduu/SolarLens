@@ -123,29 +123,63 @@ iOS app ──PUT/DELETE /api/wake──▶ [HTTP Functions] ──▶ Azure Tab
 
 ### Feasibility & running-cost estimate
 
-Assumptions: ~300 installs; realistically ~50–100 with an automation or monitor active at any time; a `window` cadence of 15 min; deadlines ~1–2/day per active automation user. Prices are Azure Consumption / Standard LRS list prices (westeurope, order-of-magnitude — verify in the Azure calculator before go-live).
+**The app runs on Flex Consumption, not the classic Consumption plan.** Checked
+31.08.2026: `solarlens-upload-func` (resource group `solarlens_prod`, West
+Europe) sits on plan `ASP-solarlensprod-75d6`, SKU **FC1 / FlexConsumption**,
+`instanceMemoryMB: 2048`, `alwaysReady: []`. That matters, because Flex bills
+differently from the plan the first version of this estimate assumed.
 
-| Item | Volume / month (realistic) | Worst case (all 300 users, 15-min windows 24×7) | Cost |
-|---|---|---|---|
-| Timer executions (1/min) | 43,200 | 43,200 | free (1 M executions/month grant) |
-| Queue executions (1 per push) | ~150k (100 users × 96 silent/day × 30 + deadlines) | ~865k | free up to 1 M; then ~$0.20 per million |
-| Compute (GB-s, 128 MB, ~0.2 s) | ~5k GB-s | ~25k GB-s | free (400k GB-s grant) |
-| Table transactions | ~50k (timer reads + API writes) | ~1 M | ≈ $0.04 per million → < $0.05 |
-| Queue transactions (put/get/delete + host polling at 5 s) | ~1 M | ~3.5 M | ≈ $0.004 per 10k → $0.05–0.15 |
-| Storage (table + queue data) | < 1 MB | < 10 MB | ≈ $0 |
-| Egress to APNs | < 100 MB | < 1 GB | free (100 GB grant) |
-| Application Insights | ~100–500 MB (with timer logs at `Warning`) | ~1–2 GB | free (5 GB/month grant); mind the 90-day retention default |
-| APNs | — | — | free (Apple Developer Program) |
-| **Total incremental** | | | **≈ $0.1–0.5/month realistic, ≈ $1–3/month worst case** |
+Flex Consumption, pay-as-you-go: a monthly free grant of **250,000 executions
+and 100,000 GB-s per subscription**, then $0.40 per million executions and
+$0.000026/GB-s. GB-s is *instance memory × active time*, so at 2 GB every
+second of execution costs 2 GB-s. Enabling **Always Ready instances would
+remove the free grant entirely** — it is currently off and should stay off.
 
-Notes and risks:
+Assumptions: ~300 installs; realistically 50–100 with a monitor or a
+Battery → Car run active (a threshold monitor stays enabled for days, so its
+window is effectively 24×7); `window` cadence 15 min ⇒ 96 pushes/day per active
+device; deadlines 1–2/day per user who schedules one.
 
-- The classic Consumption plan has **no fixed monthly fee**; the existing storage account already carries the Functions host's own bookkeeping transactions (a few cents/month) — that does not increase. Microsoft is steering new apps to **Flex Consumption**; the classic plan remains supported, but if the app is ever migrated, the free grants differ (Flex bills per-instance memory with a smaller free tier) — re-check costs then.
-- Cost drivers are executions and queue polling, both linear in **active silent-push windows**. Keep the 15-min cadence as the floor, cancel windows promptly when runs/monitors stop, and let `until` expire — an idle install must generate zero server traffic. If usage ever approaches the 1 M free executions, batching several *silent* pushes into one queue message would be the lever (alert/deadline pushes should stay one-per-message for clean retry/poison-queue semantics) — deliberately not done now, see above.
-- Keep App Insights sampling on and log the timer function at `Warning` level, otherwise 43k invocations/month of `Information` logs become the largest cost line.
-- Timer precision on Consumption is "the minute, plus cold-start jitter"; combined with queue polling this yields ≈ ±1 min, which matches the story's goal. A hard sub-minute guarantee would need a Premium/App Service plan (≈ $150+/month) and is explicitly **not** worth it.
-- Single region, no redundancy: acceptable, because the client always keeps the local-notification + BGTask fallback (see above). Server downtime degrades to today's behaviour, it does not break anything.
-- APNs key rotation and the Apple Developer account become new operational secrets; document in the server README.
+| Item | Realistic (~100 active) | Worst case (300 active) |
+|---|---|---|
+| Timer executions (1/min) | 43,200 | 43,200 |
+| Queue executions (1 per push) | ~290,000 | ~865,000 |
+| **Executions total vs. 250k free** | ~330k → ~80k billable ⇒ **≈ $0.03** | ~910k → ~660k billable ⇒ **≈ $0.26** |
+| GB-s (2 GB × active time; the timer alone dominates) | tens of thousands — a large share of the 100k grant | likely over the grant ⇒ single-digit $ |
+| Table + queue transactions | < $0.20 | < $0.60 |
+| Storage, egress to APNs, APNs itself | ≈ $0 | ≈ $0 |
+| Application Insights | free (5 GB grant) with timer logs at `Warning` | free |
+| **Total incremental** | **≈ $0.5–2/month** | **≈ $2–6/month** |
+
+Still small money, but — unlike the earlier estimate — **not automatically
+inside the free grant**. The two levers, in order of effect:
+
+1. **Instance memory.** Flex allows smaller instances; going from 2048 MB to
+   512 MB cuts every GB-s by 4×. The image-upload function handles 8 MB files,
+   so it is plausibly enough, but this affects the existing tvOS feature too —
+   measure before changing.
+2. **Timer cadence.** Every two minutes instead of every minute halves 43k
+   executions and their GB-s, at the price of up to 2 min accuracy on a
+   deadline. Alternatively schedule deadline pushes directly with a queue
+   `visibilityTimeout` (see the refinement above) and let the timer serve only
+   the silent windows.
+3. **Silent-window cadence** is the linear driver of the queue executions:
+   30 min instead of 15 halves them. Windows must keep being cancelled when
+   work ends — an idle install must generate zero traffic.
+
+Other notes:
+
+- Keep App Insights sampling on and the timer function at `Warning`, otherwise
+  43k invocations/month of `Information` logs become the largest line.
+- Timer precision is "the minute, plus cold-start jitter" ⇒ ≈ ±1 min end to
+  end, which matches the goal. A sub-minute guarantee would need a
+  Premium/App Service plan (≈ $150+/month) and is explicitly not worth it.
+- Single region, no redundancy: acceptable, because the client keeps the
+  local-notification + BG-task fallback. Downtime degrades timing, nothing else.
+- APNs key rotation and the Apple Developer account become new operational
+  secrets; documented in the server README.
+- Set a subscription budget alert (e.g. CHF 5/month) as a tripwire — cheaper
+  than being surprised.
 
 ### One-time setup: Apple Developer, Xcode, Azure
 
