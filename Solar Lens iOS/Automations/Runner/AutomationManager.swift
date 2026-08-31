@@ -682,12 +682,14 @@ public final class AutomationManager: AutomationHost {
                     message:
                         "Scheduled a server wake-up for the reset time"
                 )
+            // Info, not Debug: the log hides Debug by default, and these two
+            // are exactly what explains a scheduled automation running late.
             case .skipped(let reason):
-                self.logDebug(
+                self.logInfo(
                     message: "No server wake-up scheduled: \(reason)"
                 )
             case .failed(let reason):
-                self.logDebug(
+                self.logInfo(
                     message:
                         "Could not schedule the server wake-up (\(reason)) — falling back to background execution"
                 )
