@@ -554,6 +554,136 @@ az group delete \
   --no-wait
 ```
 
+## Wake Scheduler (push notifications for automations)
+
+Second service in this Function App, added by
+[story #9](../specs/stories/009-remote-push-for-automations-and-notifications.md)
+and [ADR-006](../specs/adrs/006-server-as-push-alarm-clock.md). It is a **dumb
+alarm clock**: devices register *when* they want to be woken, and at that moment
+the server sends an APNs push. It never learns what an automation does, never
+sees Solar Manager credentials, and never calls the Solar Manager API.
+
+```
+iOS app ──PUT/DELETE /api/wake──▶ [WakeUpsert/WakeDelete] ──▶ Azure Table "WakeSchedules"
+                                                                    ▲
+                                              [WakeScheduler, every minute]
+                                                selects due rows, enqueues
+                                                                    │
+                                                                    ▼
+                                                     Queue "apns-push" (1 msg = 1 push)
+                                                                    │
+                                                      [ApnsSender] ──HTTP/2──▶ APNs
+```
+
+### Stored per schedule
+
+Device token, environment (sandbox/production), kind (deadline/window), push
+kind (alert/silent), next fire time, cadence + end for windows, the notification
+category/deep link/fallback text the **device** supplied (already localized on
+the device), and a SHA-256 hash of the install secret. Nothing else.
+
+Rows are deleted as soon as they have served their purpose: a deadline after
+its push is accepted, a window when it passes `until`.
+
+### API
+
+| Method | Route | Purpose |
+|---|---|---|
+| `PUT` | `/api/wake/{deviceToken}/{scheduleId}` | Create or update a schedule |
+| `DELETE` | `/api/wake/{deviceToken}/{scheduleId}` | Cancel one schedule |
+| `DELETE` | `/api/wake/{deviceToken}` | Forget this device (Settings toggle, logout) |
+| `GET` | `/api/wake/{deviceToken}` | Re-sync / debugging |
+
+Anonymous like the upload API, rate limited per IP, and additionally guarded by
+a per-install secret (`X-Install-Secret` header or `?installSecret=`) that the
+app generates once and keeps in its Keychain — otherwise knowing a device token
+would be enough to cancel or spam someone else's schedules.
+
+Example:
+
+```bash
+curl -X PUT "https://<app>.azurewebsites.net/api/wake/$TOKEN/$SCHEDULE_ID" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "environment": "sandbox",
+    "kind": "deadline",
+    "pushKind": "alert",
+    "fireAt": "2026-08-29T17:30:00Z",
+    "automation": "AutoResetChargingMode",
+    "defaultTitle": "Auto-reset Charging Mode",
+    "defaultBody": "Reset time reached — applying charging mode…",
+    "installSecret": "<per-install secret>"
+  }'
+```
+
+Server-side clamping: silent-push windows are forced to a cadence of at least
+10 minutes and expire after at most 7 days (the app renews them while a run is
+active), and a deadline more than 15 minutes in the past is rejected.
+
+### APNs configuration
+
+Token-based auth with a `.p8` key — no certificates, no yearly expiry. Set as
+app settings (or Key Vault references):
+
+| Setting | Value |
+|---|---|
+| `Apns__TeamId` | `UYT5K989XD` |
+| `Apns__KeyId` | Key ID of the APNs key (10 chars) |
+| `Apns__BundleId` | `com.marcduerst.SolarManagerWatch` |
+| `Apns__P8` | The `.p8` file contents, raw PEM or base64 |
+
+```bash
+az functionapp config appsettings set \
+  --name func-solarlens-upload --resource-group rg-solarlens \
+  --settings "Apns__TeamId=UYT5K989XD" "Apns__KeyId=<KEY_ID>" \
+             "Apns__BundleId=com.marcduerst.SolarManagerWatch" \
+             "Apns__P8=$(base64 -i AuthKey_<KEY_ID>.p8)"
+```
+
+The `.p8` can only be downloaded once — keep it in the password manager. The
+provider JWT is cached per worker process for ~50 minutes (Apple requires
+20–60) and is only re-minted after a rejection once it is old enough, otherwise
+APNs answers `TooManyProviderTokenUpdates`.
+
+### Error handling — three classes, one poison queue
+
+| Situation | Handling |
+|---|---|
+| `410 Unregistered`, `400 BadDeviceToken` | The token is dead: delete **all** schedules of that device, complete the message. No retry. |
+| `429`, `5xx`, network | Re-queued by the function itself with a 45 s delay until `fireAt + 10 min`, then dropped with a warning. A late deadline push is worse than none — the device's own fallback notification has already fired. |
+| Anything unexpected (bad key, wrong topic, payload bug) | The function throws; after `maxDequeueCount` (5) the runtime parks the message in the **poison queue** `apns-push-poison`. |
+
+The poison queue is a **diagnostic inbox, not a replay source** — by the time
+anyone reacts, its messages are stale. `WakeScheduler` therefore logs its depth
+once a day at `Warning` (alert on this in Application Insights); inspect the
+messages in the Portal storage browser, fix the cause, then purge.
+
+**No batching.** One queue message is one push: a batch containing one dead
+token would retry the whole batch and duplicate pushes to the healthy devices.
+
+### Local development
+
+The queue and table clients pin their storage service version so Azurite keeps
+working when the SDK moves ahead. If a future SDK bump outruns your Azurite,
+either update Azurite or start it with `--skipApiVersionCheck`.
+
+`Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues` is pinned to
+**5.5.0** on purpose: 5.5.5 drags `Microsoft.Extensions.*` 10.x into the
+generated host-side extension bundle, which the Functions host (shipping 9.x)
+cannot load — it refuses to start with *"Could not load file or assembly
+'Microsoft.Extensions.Options, Version=10.0.0.0'"*. Test locally before bumping.
+
+```bash
+# terminal 1
+azurite --silent --location ./azurite --debug ./azurite/debug.log
+# terminal 2
+cd "Solar Lens Server/src/ImageUpload.Functions"
+func start
+```
+
+Table `WakeSchedules` and queue `apns-push` are created on first use; the
+poison queue is created by the runtime on demand.
+
 ## API Documentation
 
 ### POST /api/upload

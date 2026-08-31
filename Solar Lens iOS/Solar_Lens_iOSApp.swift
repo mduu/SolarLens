@@ -3,6 +3,9 @@ internal import UserNotifications
 
 @main
 struct Solar_Lens_iOSApp: App {
+    /// Receives the APNs device token for the server wake schedule (story #9).
+    @UIApplicationDelegateAdaptor(PushRegistrar.self) private var pushRegistrar
+
     @State var currentBuildingState = CurrentBuildingState(
         energyManagerClient: SolarManager.shared)
     @Environment(\.scenePhase) private var scenePhase
@@ -36,6 +39,14 @@ struct Solar_Lens_iOSApp: App {
         // delegate is set before iOS delivers any queued transferUserInfo
         // commands from the watch.
         AutomationWatchBridge.shared.start()
+
+        // A rotated APNs token invalidates whatever the server has for this
+        // device, so re-register the running automation under the new one.
+        PushRegistrar.onTokenChanged = { _ in
+            Task { @MainActor in
+                AutomationManager.shared.resyncWakeSchedule()
+            }
+        }
     }
 
     var body: some Scene {
@@ -54,6 +65,13 @@ struct Solar_Lens_iOSApp: App {
                     // inside CurrentBuildingState absorbs scene-phase
                     // flickers (.inactive ↔ .active blink during transitions).
                     if newPhase == .active {
+                        // Notification permission may have been granted since
+                        // the last launch; ask for the token again (no-op if
+                        // we already have one) and make sure the server still
+                        // knows about a running automation.
+                        PushRegistrar.registerIfAuthorized()
+                        AutomationManager.shared.resyncWakeSchedule()
+
                         Task {
                             await currentBuildingState.fetchServerData()
                         }

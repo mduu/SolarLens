@@ -21,6 +21,8 @@
 		495B2E202CB2AE520089AD1B /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 495B2E1F2CB2AE520089AD1B /* KeychainAccess */; };
 		49892CF32D2442FA00478C91 /* Solar Lens Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 494882B52CA8443300C59146 /* Solar Lens Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		49892CF82D24431700478C91 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 49892CF72D24431700478C91 /* KeychainAccess */; };
+		49BB000100000000000000AE /* Solar Lens iOS NotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 49BB000100000000000000A5 /* Solar Lens iOS NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		49BB000100000000000000B0 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 49BB000100000000000000AF /* KeychainAccess */; };
 		49F243A62CF1CF39009D0E2A /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 49F243A52CF1CF39009D0E2A /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
@@ -53,6 +55,13 @@
 			remoteGlobalIDString = 494882B42CA8443300C59146;
 			remoteInfo = "Solar Lens Watch App";
 		};
+		49BB000100000000000000AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 494882A92CA8443300C59146 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 49BB000100000000000000A1;
+			remoteInfo = "Solar Lens iOS NotificationService";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -64,6 +73,7 @@
 			files = (
 				490F19FE2FAD1B540013F46C /* Solar Lens iOS LiveActivitiesExtension.appex in Embed Foundation Extensions */,
 				493AADAA2D58F9DC00591E73 /* Solar Lens iOS WidgetsExtension.appex in Embed Foundation Extensions */,
+				49BB000100000000000000AE /* Solar Lens iOS NotificationService.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -103,6 +113,7 @@
 		495539B62CECF51A00D2FE19 /* Solar Lens WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49892CE42D243FF100478C91 /* Solar Lens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solar Lens.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49892EB92D2D906600478C91 /* Solar-Lens-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Solar-Lens-Info.plist"; sourceTree = "<group>"; };
+		49BB000100000000000000A5 /* Solar Lens iOS NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Solar Lens iOS NotificationService.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EDF1372CF58548003C1176 /* Solar Lens Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Solar Lens Watch App.entitlements"; sourceTree = "<group>"; };
 		49EDF1382CF58559003C1176 /* Solar Lens WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Solar Lens WidgetsExtension.entitlements"; sourceTree = "<group>"; };
 		49EED1A82CC0389C00A89445 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -335,13 +346,20 @@
 				Features/Consumption/ConsumptionTodayInfoView.swift,
 				Services/Automations/AutomationAutoResetChargingModeParameters.swift,
 				Services/Automations/AutomationBatteryToCarParameters.swift,
+				Services/Automations/AutoResetCompletion.swift,
+				Services/Automations/AutomationExternalOutcome.swift,
+				Services/Automations/AutomationLogMessage.swift,
+				Services/Automations/AutomationLogWriter.swift,
 				Services/Automations/AutomationParameters.swift,
+				Services/Automations/AutomationPushPayload.swift,
+				Services/Automations/AutomationSharedStore.swift,
 				Services/Automations/AutomationState.swift,
 				Services/Automations/AutomationStatus.swift,
 				Services/Automations/AutomationWatchSnapshot.swift,
 				Services/Automations/AutoResetChargingModeOptions.swift,
 				Services/Automations/BatteryRateFormatter.swift,
 				Services/Automations/ChargingStationPhases.swift,
+				Services/Automations/WakeScheduleClient.swift,
 				Services/LocationManager.swift,
 				Services/SolarWeatherService.swift,
 				Widgets/BatteryWidgets/BatteryAppIntent.swift,
@@ -417,18 +435,130 @@
 				Layouts/FlowLayout.swift,
 				Services/Automations/AutomationAutoResetChargingModeParameters.swift,
 				Services/Automations/AutomationBatteryToCarParameters.swift,
+				Services/Automations/AutoResetCompletion.swift,
+				Services/Automations/AutomationExternalOutcome.swift,
+				Services/Automations/AutomationLogMessage.swift,
+				Services/Automations/AutomationLogWriter.swift,
 				Services/Automations/AutomationParameters.swift,
+				Services/Automations/AutomationPushPayload.swift,
+				Services/Automations/AutomationSharedStore.swift,
 				Services/Automations/AutomationState.swift,
 				Services/Automations/AutomationStatus.swift,
 				Services/Automations/AutomationWatchSnapshot.swift,
 				Services/Automations/AutoResetChargingModeOptions.swift,
 				Services/Automations/BatteryRateFormatter.swift,
 				Services/Automations/ChargingStationPhases.swift,
+				Services/Automations/WakeScheduleClient.swift,
 				Services/LocationManager.swift,
 				Services/SolarWeatherService.swift,
 				State/CurrentBuildingState.swift,
 			);
 			target = 495539B52CECF51A00D2FE19 /* Solar Lens WidgetsExtension */;
+		};
+		49BB000100000000000000AA /* Exceptions for "Solar Lens iOS NotificationService" folder in "Solar Lens iOS NotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 49BB000100000000000000A1 /* Solar Lens iOS NotificationService */;
+		};
+		49BB000100000000000000AB /* Exceptions for "Shared" folder in "Solar Lens iOS NotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppSettings/AppSettings.swift,
+				AppSettings/PinnedDevicesConfiguration.swift,
+				Extensions/ColorExtensions.swift,
+				Extensions/DateExtensions.swift,
+				Extensions/DoubleExtensions.swift,
+				Extensions/IntExtensions.swift,
+				Extensions/SimpleXLSXWriter.swift,
+				Extensions/TimeIntervalExtensions.swift,
+				Localizable.xcstrings,
+				Services/Automation.swift,
+				Services/AutomationLiveActivityAttributes.swift,
+				Services/Automations/AutomationAutoResetChargingModeParameters.swift,
+				Services/Automations/AutomationBatteryToCarParameters.swift,
+				Services/Automations/AutoResetCompletion.swift,
+				Services/Automations/AutomationExternalOutcome.swift,
+				Services/Automations/AutomationLogMessage.swift,
+				Services/Automations/AutomationLogWriter.swift,
+				Services/Automations/AutomationParameters.swift,
+				Services/Automations/AutomationPushPayload.swift,
+				Services/Automations/AutomationSharedStore.swift,
+				Services/Automations/AutomationState.swift,
+				Services/Automations/AutomationStatus.swift,
+				Services/Automations/AutomationWatchSnapshot.swift,
+				Services/Automations/AutoResetChargingModeOptions.swift,
+				Services/Automations/BatteryRateFormatter.swift,
+				Services/Automations/ChargingStationPhases.swift,
+				Services/AutoResetChargingModePayload.swift,
+				Services/BatteryToCarPayload.swift,
+				Services/CurrencyHelper.swift,
+				Services/DateRangeChunker.swift,
+				Services/EnergyEfficiency.swift,
+				Services/EnergyManager.swift,
+				Services/EnergyManagerClientError.swift,
+				Services/KeychainHelper.swift,
+				Services/Model/BatteryForecast.swift,
+				Services/Model/BatteryHistory.swift,
+				Services/Model/BatteryInfo.swift,
+				Services/Model/Car.swift,
+				Services/Model/ChargingInfoData.swift,
+				Services/Model/ChargingStation.swift,
+				Services/Model/DayStatistic.swift,
+				Services/Model/Device.swift,
+				Services/Model/EcoImpact.swift,
+				Services/Model/EnergyOverview.swift,
+				Services/Model/MainData.swift,
+				Services/Model/OverviewData.swift,
+				Services/Model/OverviewDataExtensions.swift,
+				Services/Model/ServerInfo.swift,
+				Services/Model/SolarDetailsData.swift,
+				Services/Model/Statistics.swift,
+				Services/Model/StatisticsOverview.swift,
+				Services/Notifications/NotificationMonitor.swift,
+				Services/Notifications/SolarLensNotification.swift,
+				Services/Rest/DateHelper.swift,
+				Services/Rest/NoRequestBody.swift,
+				Services/Rest/RestClient.swift,
+				Services/Rest/RestError.swift,
+				Services/SolarManager.swift,
+				Services/SolarManagerApi/DTOs/Accuracy.swift,
+				Services/SolarManagerApi/DTOs/ChargingMode.swift,
+				"Services/SolarManagerApi/DTOs/ChargingMode+LocalizedTitle.swift",
+				Services/SolarManagerApi/DTOs/ControlBatteryV2Request.swift,
+				Services/SolarManagerApi/DTOs/ControlCarChargingRequest.swift,
+				Services/SolarManagerApi/DTOs/DataDeviceV3Schema.swift,
+				Services/SolarManagerApi/DTOs/DataMainV3Schema.swift,
+				Services/SolarManagerApi/DTOs/DataStreamV3Response.swift,
+				Services/SolarManagerApi/DTOs/ErrorCode.swift,
+				Services/SolarManagerApi/DTOs/ForecastItemV3Response.swift,
+				Services/SolarManagerApi/DTOs/GatewayIntervalConsumption.swift,
+				Services/SolarManagerApi/DTOs/GetV1ChartResponse.swift,
+				Services/SolarManagerApi/DTOs/GetV1UsersResponse.swift,
+				Services/SolarManagerApi/DTOs/LoginRequest.swift,
+				Services/SolarManagerApi/DTOs/LoginResponse.swift,
+				Services/SolarManagerApi/DTOs/NoContentResponse.swift,
+				Services/SolarManagerApi/DTOs/OverviewV1Response.swift,
+				Services/SolarManagerApi/DTOs/Period.swift,
+				Services/SolarManagerApi/DTOs/PutSensorPriorityRequest.swift,
+				Services/SolarManagerApi/DTOs/RefreshRequest.swift,
+				Services/SolarManagerApi/DTOs/RefreshResponse.swift,
+				Services/SolarManagerApi/DTOs/SensorConnectionStatus.swift,
+				Services/SolarManagerApi/DTOs/SensorConsumptionV1Response.swift,
+				Services/SolarManagerApi/DTOs/SensorInfosV1Response.swift,
+				Services/SolarManagerApi/DTOs/SensorType.swift,
+				Services/SolarManagerApi/DTOs/StatisticsV1Response.swift,
+				Services/SolarManagerApi/DTOs/StreamSensorsV1Response.swift,
+				Services/SolarManagerApi/DTOs/TariffV1Response.swift,
+				Services/SolarManagerApi/DTOs/TariffV3Response.swift,
+				Services/SolarManagerApi/SolarManagerApiClient.swift,
+				Services/SolarManagerApi/SolarManagerApiClientError.swift,
+				Services/Stopwatch.swift,
+				Services/TariffCalculator.swift,
+				Services/TesterBuild.swift,
+			);
+			target = 49BB000100000000000000A1 /* Solar Lens iOS NotificationService */;
 		};
 		49F243A42CF1CE5E009D0E2A /* Exceptions for "Solar Lens Watch App" folder in "Solar Lens WidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -464,6 +594,7 @@
 				493AADB42D59254B00591E73 /* Exceptions for "Shared" folder in "Solar Lens iOS WidgetsExtension" target */,
 				494F21D02E505AFE00647150 /* Exceptions for "Shared" folder in "Solar Lens BigScreen" target */,
 				490F1A032FAD1B540013F46C /* Exceptions for "Shared" folder in "Solar Lens iOS LiveActivitiesExtension" target */,
+				49BB000100000000000000AB /* Exceptions for "Shared" folder in "Solar Lens iOS NotificationService" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -503,6 +634,14 @@
 		49892CE52D243FF100478C91 /* Solar Lens iOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Solar Lens iOS";
+			sourceTree = "<group>";
+		};
+		49BB000100000000000000A9 /* Solar Lens iOS NotificationService */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				49BB000100000000000000AA /* Exceptions for "Solar Lens iOS NotificationService" folder in "Solar Lens iOS NotificationService" target */,
+			);
+			path = "Solar Lens iOS NotificationService";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -561,6 +700,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		49BB000100000000000000A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				49BB000100000000000000B0 /* KeychainAccess in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -578,6 +725,7 @@
 				493AAD9A2D58F9DB00591E73 /* Solar Lens iOS Widgets */,
 				494F1A922E4BB61C00647150 /* Solar Lens BigScreen */,
 				490F19EE2FAD1B520013F46C /* Solar Lens iOS LiveActivities */,
+				49BB000100000000000000A9 /* Solar Lens iOS NotificationService */,
 				49EED1A72CC0389C00A89445 /* Frameworks */,
 				494882B02CA8443300C59146 /* Products */,
 			);
@@ -592,6 +740,7 @@
 				493AAD972D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension.appex */,
 				494F1A912E4BB61B00647150 /* Solar Lens BigScreen.app */,
 				490F19EB2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension.appex */,
+				49BB000100000000000000A5 /* Solar Lens iOS NotificationService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -745,6 +894,7 @@
 				49892CF52D2442FA00478C91 /* PBXTargetDependency */,
 				493AADA92D58F9DC00591E73 /* PBXTargetDependency */,
 				490F19FD2FAD1B540013F46C /* PBXTargetDependency */,
+				49BB000100000000000000AC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				4917325C2D1FE4A800CA9EDF /* Shared */,
@@ -757,6 +907,29 @@
 			productName = "Solar Lens iOS";
 			productReference = 49892CE42D243FF100478C91 /* Solar Lens.app */;
 			productType = "com.apple.product-type.application";
+		};
+		49BB000100000000000000A1 /* Solar Lens iOS NotificationService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 49BB000100000000000000A6 /* Build configuration list for PBXNativeTarget "Solar Lens iOS NotificationService" */;
+			buildPhases = (
+				49BB000100000000000000A2 /* Sources */,
+				49BB000100000000000000A3 /* Frameworks */,
+				49BB000100000000000000A4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				49BB000100000000000000A9 /* Solar Lens iOS NotificationService */,
+			);
+			name = "Solar Lens iOS NotificationService";
+			packageProductDependencies = (
+				49BB000100000000000000AF /* KeychainAccess */,
+			);
+			productName = "Solar Lens iOS NotificationService";
+			productReference = 49BB000100000000000000A5 /* Solar Lens iOS NotificationService.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -815,6 +988,7 @@
 				493AAD962D58F9DB00591E73 /* Solar Lens iOS WidgetsExtension */,
 				494F1A902E4BB61B00647150 /* Solar Lens BigScreen */,
 				490F19EA2FAD1B510013F46C /* Solar Lens iOS LiveActivitiesExtension */,
+				49BB000100000000000000A1 /* Solar Lens iOS NotificationService */,
 			);
 		};
 /* End PBXProject section */
@@ -856,6 +1030,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		49892CE22D243FF100478C91 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		49BB000100000000000000A4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -907,6 +1088,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		49BB000100000000000000A2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -929,6 +1117,11 @@
 			isa = PBXTargetDependency;
 			target = 494882B42CA8443300C59146 /* Solar Lens Watch App */;
 			targetProxy = 49892CF42D2442FA00478C91 /* PBXContainerItemProxy */;
+		};
+		49BB000100000000000000AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 49BB000100000000000000A1 /* Solar Lens iOS NotificationService */;
+			targetProxy = 49BB000100000000000000AD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1545,6 +1738,67 @@
 			};
 			name = Release;
 		};
+		49BB000100000000000000A7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS NotificationService/Solar Lens iOS NotificationService.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UYT5K989XD;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Solar Lens iOS NotificationService/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Notifications";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 4.4.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.NotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		49BB000100000000000000A8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Solar Lens iOS NotificationService/Solar Lens iOS NotificationService.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION_BUILDNO)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UYT5K989XD;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Solar Lens iOS NotificationService/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Solar Lens Notifications";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 4.4.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marcduerst.SolarManagerWatch.NotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1611,6 +1865,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		49BB000100000000000000A6 /* Build configuration list for PBXNativeTarget "Solar Lens iOS NotificationService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				49BB000100000000000000A7 /* Debug */,
+				49BB000100000000000000A8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -1641,6 +1904,11 @@
 			productName = KeychainAccess;
 		};
 		49892CF72D24431700478C91 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		49BB000100000000000000AF /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 495B2E1E2CB2AE520089AD1B /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;

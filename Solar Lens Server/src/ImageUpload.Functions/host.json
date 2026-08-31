@@ -4,7 +4,8 @@
     "logLevel": {
       "default": "Information",
       "Function": "Information",
-      "Host.Results": "Information"
+      "Host.Results": "Information",
+      "Function.WakeScheduler": "Warning"
     },
     "applicationInsights": {
       "samplingSettings": {
@@ -18,6 +19,12 @@
     "version": "[4.*, 5.0.0)"
   },
   "extensions": {
+    "queues": {
+      "maxPollingInterval": "00:00:05",
+      "maxDequeueCount": 5,
+      "batchSize": 16,
+      "visibilityTimeout": "00:00:30"
+    },
     "http": {
       "routePrefix": "api",
       "maxOutstandingRequests": 200,

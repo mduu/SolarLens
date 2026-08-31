@@ -70,7 +70,8 @@ Two endpoints actively used by Solar Lens are deprecated with a hard removal dat
 | | Credentials stored in Keychain (not UserDefaults or plaintext) |
 | | OAuth tokens with refresh flow — short-lived access tokens |
 | | Credentials cleared on logout |
-| | No credentials logged or transmitted to Solar Lens infrastructure |
+| | No credentials logged or transmitted to Solar Lens infrastructure — including the wake scheduler, which only ever receives a device token and a timestamp (ADR-006) |
+| | The Notification Service Extension reads the token from the shared keychain group on-device; it is never part of a push payload |
 
 ## Solar Lens Server (Azure Functions)
 
@@ -78,11 +79,25 @@ Two endpoints actively used by Solar Lens are deprecated with a hard removal dat
 
 | Aspect | Details |
 |--------|---------|
-| **Likelihood** | Low — minimal usage (tvOS image upload only) |
-| **Impact** | Low — only affects tvOS custom backgrounds; core app functionality unaffected |
+| **Likelihood** | Low — tvOS image upload plus the wake scheduler (story #9) |
+| **Impact** | Low — tvOS custom backgrounds stop working, and scheduled automations fall back to background execution plus a local notification, exactly as before story #9 |
 | **Mitigations** | |
-| | Azure Functions consumption plan — costs scale to zero when unused |
-| | Server is optional — all core features work without it |
+| | Azure Functions consumption plan — a timer firing once a minute plus a handful of pushes stays inside the free grant (estimate in story #9) |
+| | Server is optional by design — every push path has an on-device fallback, so an outage degrades timing, never correctness |
+| | Silent-push windows expire on their own and are cancelled when work ends, so an idle install generates no traffic |
+
+**Risk: APNs key or device-token handling**
+
+| Aspect | Details |
+|--------|---------|
+| **Likelihood** | Low |
+| **Impact** | Medium — a leaked APNs key would let someone send notifications *to our app's users*; it grants no access to their Solar Manager accounts or data |
+| **Mitigations** | |
+| | The `.p8` key lives only in Function App settings (optionally Key Vault), never in the repo |
+| | Token-based APNs auth: the key can be revoked and replaced in the developer portal without an app update |
+| | The server stores only device tokens, timestamps and cadence — a full database dump would reveal *when* someone scheduled something, never what or with whose account |
+| | Per-install secret guards the anonymous API, so knowing a device token is not enough to cancel or spam someone's schedules |
+| | Rows are deleted once fired or expired; `410 Unregistered` from APNs purges a device |
 
 ## Data Accuracy
 

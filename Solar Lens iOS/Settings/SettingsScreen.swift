@@ -88,6 +88,10 @@ struct SettingsScreen: View {
                 integrationsSectionContent
             }
 
+            Section(header: Text("Automations")) {
+                automationsSectionContent
+            }
+
             Section(header: Text("Diagnostics")) {
                 diagnosticsSectionContent
             }
@@ -112,6 +116,10 @@ struct SettingsScreen: View {
 
                 Section(header: Text("Integrations")) {
                     integrationsSectionContent
+                }
+
+                Section(header: Text("Automations")) {
+                    automationsSectionContent
                 }
 
                 Section(header: Text("Diagnostics")) {
@@ -226,6 +234,43 @@ struct SettingsScreen: View {
             text: "Background effects",
             color: .orange,
             isOn: settings.appearanceUseWarmBackgroundWithDefault
+        )
+    }
+
+    @ViewBuilder
+    private var automationsSectionContent: some View {
+        SettingsToggleItem(
+            imageName: "clock.badge.checkmark",
+            text: "Server-assisted timing",
+            color: .blue,
+            isOn: serverAssistedTimingBinding
+        )
+
+        SettingsItemCaption(
+            imageName: "hand.raised.fill",
+            text:
+                "Lets Solar Lens run automations with a fixed end time exactly on time, even when the app is closed. Only a notification token and the end time are sent to the Solar Lens server — never your Solar Manager login, your devices or any measurements.",
+            color: .secondary
+        )
+        .font(.footnote)
+        .foregroundStyle(.secondary)
+    }
+
+    /// Wraps the stored setting so turning it off also removes whatever this
+    /// device has registered on the server, instead of leaving rows behind
+    /// that would keep pushing.
+    private var serverAssistedTimingBinding: Binding<Bool> {
+        Binding<Bool>(
+            get: { settings.serverAssistedTimingWithDefault.wrappedValue },
+            set: { newValue in
+                settings.serverAssistedTimingWithDefault.wrappedValue = newValue
+                if newValue {
+                    PushRegistrar.registerIfAuthorized()
+                    AutomationManager.shared.resyncWakeSchedule()
+                } else {
+                    Task { await WakeScheduleClient.forgetDevice() }
+                }
+            }
         )
     }
 

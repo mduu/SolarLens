@@ -37,11 +37,21 @@ public final class AutomationManager: AutomationHost {
     private let processingIdentifier =
         "com.marcduerst.SolarManagerWatch.NotificationProcessing"
     static private let foregroundTimerInterval: TimeInterval = 60
-    private let stateStorageKey = "SolarLens.activeAutomationState"
-    private let parametersStorageKey = "SolarLens.activeAutomationParameters"
+    // Shared with the Notification Service Extension (story #9 / ADR-006).
+    private let stateStorageKey = AutomationSharedStore.activeStateKey
+    private let parametersStorageKey =
+        AutomationSharedStore.activeParametersKey
 
     public var activeAutomation: Automation? {
         activeState?.automation
+    }
+
+    /// True while an automation is running that actually has something to do
+    /// between now and its end — i.e. one the server should nudge us about
+    /// (story #9 slice 4). `AutoResetChargingMode` is excluded on purpose: it
+    /// idles until its reset time, which the visible deadline push covers.
+    public var needsSilentWakeWindow: Bool {
+        activeState?.automation == .BatteryToCar
     }
 
     public var activeStateSnapshot: AutomationState? { activeState }
@@ -93,6 +103,12 @@ public final class AutomationManager: AutomationHost {
     ) {
         switch newPhase {
         case .active:
+            // The Notification Service Extension may have executed a
+            // scheduled automation while we were suspended (story #9).
+            // Reconcile before anything else, so we don't tick a run that
+            // already finished in the other process.
+            Task { await self.adoptExternalCompletionIfNeeded() }
+
             if activeState?.automation != nil {
                 logDebug(message: "App became active (foreground)")
                 // Force a tick when the user surfaces the app, unless
@@ -192,6 +208,12 @@ public final class AutomationManager: AutomationHost {
             state: initialState,
             parameters: parameters
         )
+
+        // Ask the server to wake us at the end time (story #9). Best effort:
+        // if this fails the run still finishes via BG tasks and the local
+        // fallback notification, exactly as before.
+        registerWakeSchedule(automation: automation, parameters: parameters)
+        WakeWindowCoordinator.shared.refresh()
 
         Task {
             await runActiveAutomation()
@@ -519,6 +541,20 @@ public final class AutomationManager: AutomationHost {
     // MARK: - Run loop
 
     private func runActiveAutomation() async {
+        await adoptExternalCompletionIfNeeded()
+
+        // Another process (the Notification Service Extension) may be
+        // applying the same automation right now. Skip this tick rather than
+        // issuing a second charging-mode call; the next tick picks it up.
+        guard AutomationSharedStore.acquireTickLease() else {
+            logDebug(
+                message:
+                    "Skipping tick — the notification extension is running this automation"
+            )
+            return
+        }
+        defer { AutomationSharedStore.releaseTickLease() }
+
         guard let activeTask = activeState?.automation?.getAutomationTask(),
               let currentState = activeState,
               let activeTaskParameters else {
@@ -562,6 +598,199 @@ public final class AutomationManager: AutomationHost {
 
         logError(message: "Automation tick: all retries exhausted")
         await terminateAutomation(reason: .failed)
+    }
+
+    /// Drains both subsystems after a silent push woke the app (story #9).
+    ///
+    /// Same work as a background-task tick: run the active automation, check
+    /// any due monitors, then re-arm the BG tasks. The push is an *extra* wake
+    /// source, so it must leave the on-device schedule exactly as a BG wake
+    /// would.
+    public func handleRemoteWake() async {
+        let hasAutomation = activeState?.automation?.getAutomationTask() != nil
+        let hasNotifications = NotificationManager.shared.hasActiveMonitors
+        guard hasAutomation || hasNotifications else {
+            logDebug(message: "Push woke us but nothing to drain — skipping")
+            return
+        }
+
+        logInfo(message: "Woken by a push notification")
+        lastBackgroundFireAt = Date()
+
+        if hasAutomation { await runActiveAutomation() }
+        if hasNotifications {
+            await NotificationManager.shared.runOverdueMonitorsInBackground()
+        }
+
+        if activeState?.automation != nil
+            || NotificationManager.shared.hasActiveMonitors
+        {
+            scheduleNextBackgroundCall()
+        }
+        WakeWindowCoordinator.shared.refresh()
+    }
+
+    // MARK: - Server wake schedule (story #9)
+
+    /// Registers the end time of a time-bound automation with the Solar Lens
+    /// server, so a push can wake the Notification Service Extension at that
+    /// moment even if the app has been force-quit.
+    ///
+    /// Only the timestamp and the notification's fallback text leave the
+    /// device — the text is localized here, because the server does not know
+    /// the user's language (ADR-006).
+    private func registerWakeSchedule(
+        automation: Automation,
+        parameters: AutomationParameters
+    ) {
+        guard automation == .AutoResetChargingMode,
+            let params = parameters.autoResetChargingMode
+        else { return }
+
+        let scheduleId = UUID().uuidString
+        let postName = String(
+            localized: params.afterResetChargingMode.localizedTitle
+        )
+        let title = String(localized: "Auto-reset Charging Mode")
+        let body = String(
+            localized: "Reset time reached — applying \(postName)…"
+        )
+
+        Task {
+            let result = await WakeScheduleClient.registerDeadline(
+                scheduleId: scheduleId,
+                automation: automation,
+                fireAt: params.resetAt,
+                title: title,
+                body: body,
+                deepLink: "solarlens://automations"
+            )
+            switch result {
+            case .registered:
+                self.logDebug(
+                    message:
+                        "Scheduled a server wake-up for the reset time"
+                )
+            case .skipped(let reason):
+                self.logDebug(
+                    message: "No server wake-up scheduled: \(reason)"
+                )
+            case .failed(let reason):
+                self.logDebug(
+                    message:
+                        "Could not schedule the server wake-up (\(reason)) — falling back to background execution"
+                )
+            case .cancelled:
+                break
+            }
+        }
+    }
+
+    /// Re-registers the active automation's wake-up. Called when the app comes
+    /// to the foreground and when the APNs token changes, so a rotated token,
+    /// a reinstall or a server-side data loss cannot leave a running
+    /// automation without its push.
+    func resyncWakeSchedule() {
+        guard let automation = activeState?.automation,
+            let parameters = activeTaskParameters
+        else { return }
+        registerWakeSchedule(automation: automation, parameters: parameters)
+    }
+
+    // MARK: - External completion (Notification Service Extension)
+
+    /// Picks up a run that the Notification Service Extension executed while
+    /// the app was suspended or force-quit (story #9 / ADR-006).
+    ///
+    /// The extension has already applied the charging mode, written the log
+    /// entry and shown the user a notification with the real outcome. What is
+    /// left for us is local teardown: end the Live Activity, drop the
+    /// in-memory run, and tell the UI to refresh. Deliberately **no** second
+    /// user notification.
+    func adoptExternalCompletionIfNeeded() async {
+        guard let outcome = AutomationSharedStore.externalOutcome else {
+            return
+        }
+        AutomationSharedStore.externalOutcome = nil
+
+        // Each variant is its own message rather than one with an
+        // interpolated clause: a clause built in Swift would stay English in
+        // every language.
+        switch outcome.kind {
+        case .applied:
+            if let detail = outcome.detail {
+                logInfo(
+                    message:
+                        "Automation finished in the background via push notification — charging station switched to \(detail)"
+                )
+            } else {
+                logInfo(
+                    message:
+                        "Automation finished in the background via push notification"
+                )
+            }
+        case .userOverride:
+            logInfo(
+                message:
+                    "Automation stopped in the background via push notification — charging mode had been changed manually"
+            )
+        case .failed:
+            if let detail = outcome.detail {
+                logError(
+                    message:
+                        "Automation failed in the background via push notification: \(detail)"
+                )
+            } else {
+                logError(
+                    message:
+                        "Automation failed in the background via push notification"
+                )
+            }
+        }
+
+        let snapshot = activeState
+        let snapshotParams = activeTaskParameters
+
+        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
+        stopTimer()
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(
+                withIdentifiers: [
+                    AutomationAutoResetChargingMode.resetDueNotificationId,
+                    AutomationBatteryToCar.softFloorDueNotificationId,
+                ]
+            )
+
+        if let snapshot, let snapshotParams {
+            await AutomationLiveActivityCoordinator.shared.end(
+                state: snapshot,
+                parameters: snapshotParams
+            )
+        } else {
+            await AutomationLiveActivityCoordinator.shared
+                .dismissAllStaleActivities(
+                    reason: "automation completed by notification extension"
+                )
+        }
+
+        activeState = nil
+        activeTaskParameters = nil
+        persistState()
+        WakeScheduleClient.activeScheduleId = nil
+        WakeWindowCoordinator.shared.refresh()
+
+        var userInfo: [AnyHashable: Any] = [:]
+        if let stationId = outcome.chargingStationId,
+            let modeRaw = outcome.chargingModeRaw
+        {
+            userInfo[Self.terminatedChargingStationIdKey] = stationId
+            userInfo[Self.terminatedChargingModeRawKey] = modeRaw
+        }
+        NotificationCenter.default.post(
+            name: Self.automationTerminatedNotification,
+            object: nil,
+            userInfo: userInfo
+        )
     }
 
     // MARK: - Termination
@@ -647,6 +876,10 @@ public final class AutomationManager: AutomationHost {
         activeTaskParameters = nil
         persistState()
 
+        // The scheduled push is pointless now — the run is over.
+        Task { await WakeScheduleClient.cancelActive() }
+        WakeWindowCoordinator.shared.refresh()
+
         // Tell whoever's interested that an automation just ended so the
         // app can refetch overview data — the charging station mode visible in the
         // in-app UI is otherwise still the pre-termination value.
@@ -680,7 +913,10 @@ public final class AutomationManager: AutomationHost {
     // MARK: - Persistence
 
     private func persistState() {
-        let defaults = UserDefaults.standard
+        // Shared with the Notification Service Extension (ADR-006) so a
+        // push-triggered run and the app see the same state. Falls back to
+        // `UserDefaults.standard` while the App Group is unavailable.
+        let defaults = AutomationSharedStore.defaults
         if let activeState {
             if let data = try? JSONEncoder().encode(activeState) {
                 defaults.set(data, forKey: stateStorageKey)
@@ -698,7 +934,13 @@ public final class AutomationManager: AutomationHost {
     }
 
     private func restorePersistedState() {
-        let defaults = UserDefaults.standard
+        // One-shot move of pre-story-#9 state into the App Group. Runs before
+        // the first read so an automation that was started by an older build
+        // survives the upgrade.
+        AutomationSharedStore.migrateDefaultsKeyIfNeeded(stateStorageKey)
+        AutomationSharedStore.migrateDefaultsKeyIfNeeded(parametersStorageKey)
+
+        let defaults = AutomationSharedStore.defaults
         if let data = defaults.data(forKey: stateStorageKey),
            let state = try? JSONDecoder().decode(
             AutomationState.self, from: data
@@ -811,6 +1053,9 @@ public final class AutomationManager: AutomationHost {
         }
     }
 
+    /// The title is the automation's name, not "… finished/cancelled/stopped":
+    /// those read as truncated ("Lademodus Auto-Reset abgesch…") in a banner
+    /// in every language, and repeated what the body already says.
     private func populateAutoResetChargingMode(
         content: UNMutableNotificationContent,
         reason: TerminationReason,
@@ -824,7 +1069,7 @@ public final class AutomationManager: AutomationHost {
         switch reason {
         case .resetCompleted:
             content.title = String(
-                localized: "Auto-reset Charging Mode finished"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized:
@@ -832,7 +1077,7 @@ public final class AutomationManager: AutomationHost {
             )
         case .cancelled:
             content.title = String(
-                localized: "Auto-reset Charging Mode cancelled"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized:
@@ -840,7 +1085,7 @@ public final class AutomationManager: AutomationHost {
             )
         case .failed:
             content.title = String(
-                localized: "Auto-reset Charging Mode stopped"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized:
@@ -848,7 +1093,7 @@ public final class AutomationManager: AutomationHost {
             )
         case .userOverride:
             content.title = String(
-                localized: "Auto-reset Charging Mode cancelled"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized:
@@ -859,7 +1104,7 @@ public final class AutomationManager: AutomationHost {
             // Not applicable to Auto-reset, but compiler requires
             // exhaustiveness. Use the generic "stopped" wording.
             content.title = String(
-                localized: "Auto-reset Charging Mode stopped"
+                localized: "Auto-reset Charging Mode"
             )
             content.body = String(
                 localized: "Charging station should now be on \(modeName)."

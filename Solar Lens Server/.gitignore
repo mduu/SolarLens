@@ -55,3 +55,8 @@ _ReSharper*/
 # Environment files
 .env
 .env.local
+
+# APNs auth keys — never commit. The .p8 belongs in the password manager and,
+# base64-encoded, in the Function App settings (story #9 / ADR-006).
+*.p8
+AuthKey_*.p8
