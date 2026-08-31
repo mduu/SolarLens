@@ -153,7 +153,7 @@ Everything below is manual configuration outside the code and must be done once 
 
 **A. Apple Developer portal (developer.apple.com → Certificates, Identifiers & Profiles)**
 
-1. **APNs auth key (.p8)** — *Keys → "+" → name e.g. "Solar Lens APNs" → tick "Apple Push Notifications service (APNs)" → Register → Download.* The `.p8` can only be downloaded **once**; store it in the password manager. Note the **Key ID** (10 chars) and the **Team ID** (`UYT5K989XD`). One key works for sandbox *and* production and for all app IDs of the team — no per-app certificates, no yearly expiry (only revoke/rotate deliberately). Free with the Developer Program.
+1. **APNs auth key (.p8)** — developer.apple.com → *Certificates, Identifiers & Profiles* → **Keys** → "+" → name it (e.g. "Solar Lens APNs") → tick **Apple Push Notifications service (APNs)** → Continue → Register → **Download**. The `.p8` can be downloaded **only once**; store it in the password manager. Note the **Key ID** (10 chars, shown on the confirmation page) and the **Team ID** (`UYT5K989XD`). One key covers sandbox *and* production and every app ID of the team — no per-app certificates and no yearly expiry (Apple allows at most **two active APNs keys** per account, so keep one spare slot for rotation).
 2. **App ID `com.marcduerst.SolarManagerWatch`** — *Identifiers → App ID → Capabilities:* enable **Push Notifications** (no certificate needed with token auth) and **App Groups**. (Keychain Sharing is already enabled — access group `…SolarManagerWatch.Shared`.)
 3. **App Group** — *Identifiers → "+" → App Groups →* e.g. `group.com.marcduerst.SolarManagerWatch` → then assign it in the App IDs of the iOS app, the new NSE, and (if they should read automation state) `…Solar-Lens-iOS-Widgets` / `…Solar-Lens-iOS-LiveActivities`.
 4. **New App ID for the NSE** — `com.marcduerst.SolarManagerWatch.NotificationService` (must be prefixed by the app's bundle id) with capabilities **App Groups** + **Keychain Sharing**. Extensions do not need Push Notifications themselves.
@@ -177,14 +177,16 @@ Everything below is manual configuration outside the code and must be done once 
 
 **D. Testing without the server**
 
-- **Simulator**: `xcrun simctl push booted com.marcduerst.SolarManagerWatch payload.apns` with an `.apns` file containing `"aps": { "alert": {…}, "mutable-content": 1, "category": "…" }` — launches the NSE on the simulator (Xcode 11.4+). Silent pushes (`content-available`) also work via `simctl push`.
-- **Device, sandbox**: any small APNs CLI/GUI tool that supports .p8 token auth (e.g. Apple's *Push Notifications Console* in App Store Connect → *Push Notifications* → send test to a sandbox/production token; or a local script) — useful for slice 1 before the server exists.
+- **Simulator: not usable for this.** Verified on 29.08.2026 with an iOS 26.5 simulator: `xcrun simctl push` delivers the payload through `CoreSimulatorBridge` as a *local* notification request, so `mutable-content` is ignored and the extension never launches. The simulator also never hands the app an APNs device token — `registerForRemoteNotifications()` is called and neither delegate callback fires. Everything push-related therefore needs a device.
+- **Device, without our server**: Apple's **Push Notifications Console** at <https://icloud.developer.apple.com/dashboard/notification> (sign in with the developer account; also reachable from developer.apple.com → iCloud dashboards). Paste the device token, choose *Development* (a debug build's token is a sandbox token), paste the payload, send. It keeps a 30-day delivery history, which is the fastest way to tell "APNs accepted it" from "the device dropped it".
+- The device token is logged by the app: watch for it in the Xcode console after granting notification permission, or read `SolarLens.apnsDeviceToken` from the App Group.
 - Attach Xcode to the NSE process (*Debug → Attach to Process by PID or Name → "Solar Lens iOS NotificationService"*) to debug it; `os_log` lines show in Console.app.
 
 **E. App Store Connect / privacy**
 
-- App Privacy: add **Device ID → used for App Functionality, not linked to the user, not used for tracking** (the APNs token). Update the privacy policy text in the app/landing page accordingly.
-- No new App Review questionnaire is triggered by push/NSE/app groups; TestFlight internal builds are enough to validate production-APNs delivery.
+- App Privacy (App Store Connect → the app → *App Privacy*): add **Device ID → App Functionality, not linked to the user's identity, not used for tracking** (the APNs token). Privacy answers can be updated **without submitting a new build**, so this can be done before or after the release build.
+- No new App Review questionnaire is triggered by push / NSE / app groups; TestFlight internal builds are enough to validate production-APNs delivery.
+- **Privacy manifest:** the project has **no `PrivacyInfo.xcprivacy`** today. That predates this story, but 2026 App Store submissions are being checked for it, and the app uses required-reason APIs (`UserDefaults`, file timestamps). Worth adding before the next release — a separate, small piece of work, not part of this story.
 
 ### App-side plumbing
 
