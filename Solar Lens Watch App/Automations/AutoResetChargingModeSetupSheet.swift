@@ -11,6 +11,17 @@ struct AutoResetChargingModeSetupSheet: View {
         .withSolarPower
     @State private var resetAt: Date = Date().addingTimeInterval(60 * 60)
 
+    /// The picked moment without the seconds the DatePicker carries over from
+    /// its initial value but never shows, so "14:30" means 14:30:00 — the same
+    /// as on iPhone.
+    private var startOfPickedMinute: Date {
+        let calendar = Calendar.current
+        let comps = calendar.dateComponents(
+            [.year, .month, .day, .hour, .minute], from: resetAt
+        )
+        return calendar.date(from: comps) ?? resetAt
+    }
+
     private var stations: [ChargingStation] {
         buildingState.overviewData.chargingStations
     }
@@ -94,7 +105,7 @@ struct AutoResetChargingModeSetupSheet: View {
                                 activeChargingMode: activeChargingMode,
                                 afterResetChargingMode:
                                     afterResetChargingMode,
-                                resetAt: resetAt
+                                resetAt: startOfPickedMinute
                             )
                         )
                         AutomationWatchSession.shared.startAutomation(
