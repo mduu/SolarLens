@@ -24,7 +24,13 @@ public class BlobStorageService
             ? size
             : 8_388_608; // Default 8MB
 
-        var blobServiceClient = new BlobServiceClient(connectionString);
+        // Pin the service version rather than taking the SDK's newest: Azurite
+        // rejects API versions it does not know, which silently broke local
+        // development of the image upload. Azure Storage keeps older versions
+        // supported, so bump this deliberately, not via an SDK update.
+        var blobServiceClient = new BlobServiceClient(
+            connectionString,
+            new BlobClientOptions(BlobClientOptions.ServiceVersion.V2025_11_05));
         containerClient = blobServiceClient.GetBlobContainerClient(containerName);
     }
 
