@@ -564,16 +564,32 @@ the server sends an APNs push. It never learns what an automation does, never
 sees Solar Manager credentials, and never calls the Solar Manager API.
 
 ```
-iOS app ──PUT/DELETE /api/wake──▶ [WakeUpsert/WakeDelete] ──▶ Azure Table "WakeSchedules"
-                                                                    ▲
-                                              [WakeScheduler, every minute]
-                                                selects due rows, enqueues
-                                                                    │
-                                                                    ▼
-                                                     Queue "apns-push" (1 msg = 1 push)
-                                                                    │
-                                                      [ApnsSender] ──HTTP/2──▶ APNs
+iOS app ──PUT/DELETE /api/wake──▶ [WakeUpsert/WakeDelete] ──▶ Table "WakeSchedules"
+                                             │                        ▲
+                        queued with visibilityTimeout                 │ still wanted?
+                        = fireAt − now  (the queue IS the schedule)   │ still this time?
+                                             ▼                        │
+                                   Queue "apns-push" ──▶ [ApnsSender] ┘
+                                                              │
+                                                              ├─HTTP/2──▶ APNs
+                                                              └─ window? queue the next one
 ```
+
+**There is no polling timer.** The message is invisible until the push is due,
+so it surfaces at the second rather than at the next minute boundary. Windows
+keep themselves going by queueing their next occurrence after each send.
+
+Azure Storage caps invisibility at seven days, so a wake-up further out is
+queued in hops: the message surfaces after six days, the sender sees the row is
+not due yet, and re-queues for the remainder.
+
+Dropping the once-a-minute function also removed the host's per-minute
+singleton-lease traffic, which produced roughly 1,300 benign
+`409 container already exists` warnings a day and a large share of the
+Application Insights ingest.
+
+A once-a-day `DailyHousekeeping` function deletes unfetched images and any wake
+row that outlived its window.
 
 ### Stored per schedule
 
@@ -653,10 +669,12 @@ APNs answers `TooManyProviderTokenUpdates`.
 | `429`, `5xx`, network | Re-queued by the function itself with a 45 s delay until `fireAt + 10 min`, then dropped with a warning. A late deadline push is worse than none — the device's own fallback notification has already fired. |
 | Anything unexpected (bad key, wrong topic, payload bug) | The function throws; after `maxDequeueCount` (5) the runtime parks the message in the **poison queue** `apns-push-poison`. |
 
-The poison queue is a **diagnostic inbox, not a replay source** — by the time
-anyone reacts, its messages are stale. `WakeScheduler` therefore logs its depth
-once a day at `Warning` (alert on this in Application Insights); inspect the
-messages in the Portal storage browser, fix the cause, then purge.
+A message that reaches the poison queue is reported **immediately**: the
+`ApnsPoison` function triggers on that queue, logs the failure at `Error` with
+the schedule id and a redacted device token, and consumes the message. Its
+diagnostic value is the log entry — searchable and retained — not a message
+sitting in a queue waiting for someone to go looking. Poisoned pushes are never
+replayed: by the time anyone reacts, they are stale.
 
 **No batching.** One queue message is one push: a batch containing one dead
 token would retry the whole batch and duplicate pushes to the healthy devices.

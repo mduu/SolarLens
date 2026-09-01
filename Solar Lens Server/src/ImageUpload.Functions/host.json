@@ -5,7 +5,7 @@
       "default": "Information",
       "Function": "Information",
       "Host.Results": "Information",
-      "Function.WakeScheduler": "Warning"
+      "Function.DailyHousekeeping": "Warning"
     },
     "applicationInsights": {
       "samplingSettings": {

@@ -57,9 +57,9 @@ public class ApnsSenderFunction
             ?? throw new InvalidOperationException(
                 "Unreadable APNs queue message");
 
-        // The device may have cancelled the automation between scheduling and
-        // sending. For deadlines the row is parked (not deleted) exactly so we
-        // can notice that here; for windows the row still exists.
+        // The queue message is the schedule: it becomes visible when the push
+        // is due. The row is still the source of truth for whether it is
+        // wanted and when.
         var schedule = await schedules.GetAsync(
             message.DeviceToken, message.ScheduleId);
         if (schedule is null)
@@ -67,6 +67,25 @@ public class ApnsSenderFunction
             logger.LogInformation(
                 "Skipping push for cancelled schedule {ScheduleId}",
                 message.ScheduleId);
+            return;
+        }
+
+        // Re-registered since this message was queued: a newer message carries
+        // the current time, so this one is stale.
+        if (schedule.NextFireAt != message.FireAt)
+        {
+            logger.LogInformation(
+                "Skipping superseded push for schedule {ScheduleId}",
+                message.ScheduleId);
+            return;
+        }
+
+        // Not due yet — either a wake-up further out than a message may stay
+        // invisible, or clock skew. Re-queue for what is left.
+        var now = DateTimeOffset.UtcNow;
+        if (schedule.NextFireAt > now + WakeScheduleService.DueTolerance)
+        {
+            await schedules.EnqueueAsync(schedule, now);
             return;
         }
 
@@ -79,6 +98,12 @@ public class ApnsSenderFunction
                 {
                     await schedules.CompleteDeadlineAsync(
                         message.DeviceToken, message.ScheduleId);
+                }
+                else
+                {
+                    // A window keeps itself going: queue its next occurrence,
+                    // or let it end once it has passed `until`.
+                    await schedules.AdvanceWindowAsync(schedule, now);
                 }
                 logger.LogInformation(
                     "Push delivered to {Device} ({PushKind})",
