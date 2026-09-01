@@ -341,8 +341,9 @@ Two unrelated jobs, in one Consumption-plan Function app:
 
 - **Image upload** for the tvOS app's custom backgrounds (HTTP + Blob storage).
 - **Wake scheduler** (story #9): stores "device token X wants a push at time T"
-  in an Azure Table, enqueues one message per due push every minute, and sends
-  it to APNs from a queue-triggered function. It holds **no** Solar Manager
+  in an Azure Table and queues the push with a visibility timeout, so the
+  message surfaces at the second it is due — no polling timer. A queue-triggered
+  function sends it to APNs. It holds **no** Solar Manager
   credentials, calls **no** Solar Manager API and knows **no** automation
   rules; rows are deleted once they have fired or expired.
 

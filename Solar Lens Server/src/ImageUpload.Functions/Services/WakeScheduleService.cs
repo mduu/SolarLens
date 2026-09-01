@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Security.Cryptography;
 using System.Text;
 using Azure;
@@ -27,12 +28,25 @@ public class WakeScheduleService
     /// </summary>
     public static readonly TimeSpan CatchUpWindow = TimeSpan.FromMinutes(15);
 
+    /// Azure Storage caps a message's invisibility at seven days, so a wake-up
+    /// further out is enqueued in hops: the message surfaces early, the sender
+    /// sees the row is not due yet and re-enqueues for the remainder.
+    public static readonly TimeSpan MaxVisibility = TimeSpan.FromDays(6);
+
+    /// A message may surface a moment before its time; anything inside this is
+    /// treated as due rather than re-queued.
+    public static readonly TimeSpan DueTolerance = TimeSpan.FromSeconds(5);
+
     private readonly TableClient table;
+    private readonly ApnsQueueProvider queues;
     private readonly ILogger<WakeScheduleService> logger;
     private bool initialized;
 
-    public WakeScheduleService(ILogger<WakeScheduleService> logger)
+    public WakeScheduleService(
+        ApnsQueueProvider queues,
+        ILogger<WakeScheduleService> logger)
     {
+        this.queues = queues;
         this.logger = logger;
 
         var connectionString =
@@ -187,6 +201,7 @@ public class WakeScheduleService
         }
 
         await table.UpsertEntityAsync(entity, TableUpdateMode.Replace);
+        await EnqueueAsync(entity, now);
         logger.LogInformation(
             "Wake schedule upserted: device {Device}, kind {Kind}, next {Next}",
             Redact(deviceToken), entity.Kind, entity.NextFireAt);
@@ -244,44 +259,45 @@ public class WakeScheduleService
         return rows.Count;
     }
 
-    /// <summary>Rows whose push is due now (including the catch-up window).</summary>
-    public async Task<List<WakeScheduleEntity>> GetDueAsync(DateTimeOffset now)
+    /// <summary>
+    /// Puts the push on the queue so that it becomes visible exactly when the
+    /// row is due. There is no polling timer: the queue is the schedule.
+    /// </summary>
+    public async Task EnqueueAsync(WakeScheduleEntity entity, DateTimeOffset now)
     {
-        await EnsureTableAsync();
-        var from = now - CatchUpWindow;
-        var due = new List<WakeScheduleEntity>();
+        if (entity.NextFireAt is not { } fireAt) return;
 
-        // Hand-written OData rather than a LINQ expression: the expression
-        // translator does not turn `Nullable<DateTimeOffset>` comparisons into
-        // a working filter, and the failure mode is an empty result set rather
-        // than an error — i.e. pushes silently never sent. Rows whose
-        // NextFireAt is null (a parked deadline) simply have no such property
-        // in Table storage and never match.
-        var filter = TableClient.CreateQueryFilter(
-            $"NextFireAt le {now} and NextFireAt gt {from}");
-        var query = table.QueryAsync<WakeScheduleEntity>(filter);
-        await foreach (var entity in query) due.Add(entity);
-        return due;
+        var delay = fireAt - now;
+        if (delay < TimeSpan.Zero) delay = TimeSpan.Zero;
+        if (delay > MaxVisibility) delay = MaxVisibility;
+
+        var message = new ApnsPushMessage
+        {
+            DeviceToken = entity.PartitionKey,
+            Environment = entity.Environment,
+            ScheduleId = entity.RowKey,
+            PushKind = entity.PushKind,
+            Automation = entity.Automation,
+            Category = entity.Category,
+            DeepLink = entity.DeepLink,
+            Title = entity.DefaultTitle,
+            Body = entity.DefaultBody,
+            FireAt = fireAt,
+            Attempt = 0
+        };
+
+        await queues.Queue.SendMessageAsync(
+            JsonSerializer.Serialize(message), visibilityTimeout: delay);
     }
 
     /// <summary>
-    /// Marks a row as handed over to the queue. Deadlines are parked
-    /// (<c>NextFireAt = null</c>) rather than deleted, so the sender can still
-    /// see whether the schedule was cancelled in the meantime; windows move to
-    /// their next occurrence, skipping any the device was asleep for.
+    /// Moves a window to its next occurrence and re-queues it, or deletes it
+    /// once it has passed `Until`. Returns false when the window is over.
     /// </summary>
-    public async Task AdvanceAsync(
+    public async Task<bool> AdvanceWindowAsync(
         WakeScheduleEntity entity, DateTimeOffset now)
     {
         await EnsureTableAsync();
-
-        if (entity.Kind == WakeKinds.Deadline)
-        {
-            entity.NextFireAt = null;
-            entity.UpdatedAt = now;
-            await table.UpdateEntityAsync(entity, ETag.All, TableUpdateMode.Replace);
-            return;
-        }
 
         var cadence = TimeSpan.FromMinutes(
             entity.CadenceMinutes ?? MinCadenceMinutes);
@@ -291,12 +307,14 @@ public class WakeScheduleService
         if (entity.Until is { } until && next > until)
         {
             await table.DeleteEntityAsync(entity.PartitionKey, entity.RowKey);
-            return;
+            return false;
         }
 
         entity.NextFireAt = next;
         entity.UpdatedAt = now;
         await table.UpdateEntityAsync(entity, ETag.All, TableUpdateMode.Replace);
+        await EnqueueAsync(entity, now);
+        return true;
     }
 
     /// <summary>Deletes a deadline row after its push was accepted by APNs.</summary>

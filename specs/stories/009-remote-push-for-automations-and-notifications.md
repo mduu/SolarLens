@@ -99,10 +99,23 @@ iOS app ──PUT/DELETE /api/wake──▶ [HTTP Functions] ──▶ Azure Tab
 - Retention: `deadline` rows are deleted once enqueued; `window` rows are advanced (`nextFireAt += cadence`) until `until`, then deleted. A daily cleanup in the same timer removes anything past `until + 1 day` (defensive).
 - Same storage account as the blobs (Azurite locally — Tables and Queues are already emulated).
 
-**3. Timer Function (every minute)**
+**3. No scheduler timer — the queue is the schedule**
 
-- `[TimerTrigger("0 * * * * *")]`: query due rows, enqueue **one queue message per push** (`{ deviceToken, environment, scheduleId, pushKind, category, deepLink, fireAt }`), then delete/advance the rows. Idempotency: the queue consumer re-reads the row (deadline rows are gone once enqueued, window rows carry `nextFireAt` in the future) and drops messages whose schedule no longer exists — this also makes cancellation race-free.
-- Consumption-plan note: timer triggers are honoured on Consumption (the scale controller wakes the host); a cold start after idle adds ~2–10 s for .NET isolated. Because the timer fires every minute the host is effectively always warm — a side benefit for the image-upload cold starts. Timer uses the host's own storage account for its singleton lease (already in place).
+The push is queued when the row is written, with
+`visibilityTimeout = fireAt − now`, so it surfaces at the second it is due.
+Windows re-queue their next occurrence after each send. Azure Storage caps
+invisibility at seven days, so anything further out is queued in hops: the
+message surfaces after six days, the sender sees the row is not due yet and
+re-queues for the remainder.
+
+This replaced a once-a-minute timer. It is both cheaper and *more* precise:
+43k executions a month gone, delivery accurate to seconds rather than to the
+next minute boundary, and the host no longer takes a singleton lease every
+minute — which had been producing ~1,300 benign `409 container already exists`
+warnings a day and a large share of the App Insights ingest.
+
+Once-a-day `DailyHousekeeping` deletes unfetched tvOS images and wake rows that
+outlived their window.
 
 **4. Queue-triggered sender (`Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues`)**
 
@@ -298,8 +311,8 @@ Everything below is manual configuration outside the code and must be done once 
 - [x] HTTP functions `PUT/DELETE/GET /api/wake/…` with `RateLimitService`
 - [x] Timer function (`0 * * * * *`): select due rows (with 15-min catch-up), enqueue one message per push, park deadlines / advance windows, daily defensive cleanup
 - [x] Queue function: `ApnsClient` (HTTP/2, ES256 JWT cache, sandbox/production hosts, headers incl. `apns-expiration`/`collapse-id`), row re-check for idempotency; invalid token → delete device rows, no retry; transient → self re-enqueue with `visibilityTimeout` until `fireAt + 10 min`, then drop with `Warning`; unexpected → throw → poison queue; one message = one push (no batching)
-- [x] Timer function logs `apns-push-poison` depth at `Warning` when > 0; README section "what to do when the poison queue is not empty"
-- [ ] Application Insights alert rule on that warning — **needs Azure Portal** (part of "One-time setup")
+- [x] Poisoned pushes are reported the moment they land, by a queue trigger on `apns-push-poison` that logs at `Error` — not by a once-a-day depth check
+- [x] Application Insights alert created (01.09.2026): action group `solarlens-alerts` → `marc@marcduerst.ch`, log-search rule `solarlens-push-pipeline`, hourly, fires on any exception in `ApnsSender` / `WakeUpsert` / `DailyHousekeeping` or on a poisoned push. The query was run against live telemetry first, so it is known to parse and to return 0 while healthy
 - [x] `host.json`: `queues.maxPollingInterval` 5 s, `maxDequeueCount` 5, timer function log level `Warning`; App Insights sampling kept on
 - [x] Secrets read from Function App settings; `local.settings.json` template; server README (architecture, API, APNs key handling, error classes, local dev)
 - [ ] Set the real `Apns__*` app settings in Azure — **needs the .p8 key** (part of "One-time setup")

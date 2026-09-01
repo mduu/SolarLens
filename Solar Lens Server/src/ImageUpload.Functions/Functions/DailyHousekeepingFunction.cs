@@ -5,7 +5,8 @@ using Microsoft.Extensions.Logging;
 namespace ImageUpload.Functions.Functions;
 
 /// <summary>
-/// Deletes uploaded images that were never fetched.
+/// Once-a-day housekeeping: deletes uploaded images that were never fetched,
+/// and any wake schedule that outlived its window.
 ///
 /// The normal path deletes an image the moment the Apple TV downloads it
 /// (<see cref="DownloadFunction"/>), so this only ever catches uploads whose
@@ -16,7 +17,7 @@ namespace ImageUpload.Functions.Functions;
 /// only as long as it takes to service the transfer is what makes this a
 /// transfer rather than data collection.
 /// </summary>
-public class ImageCleanupFunction
+public class DailyHousekeepingFunction
 {
     /// <summary>
     /// How long an unfetched image may wait for its TV. Generous enough to
@@ -26,21 +27,34 @@ public class ImageCleanupFunction
     private static readonly TimeSpan MaxAge = TimeSpan.FromHours(24);
 
     private readonly BlobStorageService blobStorage;
-    private readonly ILogger<ImageCleanupFunction> logger;
+    private readonly WakeScheduleService schedules;
+    private readonly ILogger<DailyHousekeepingFunction> logger;
 
-    public ImageCleanupFunction(
+    public DailyHousekeepingFunction(
         BlobStorageService blobStorage,
-        ILogger<ImageCleanupFunction> logger)
+        WakeScheduleService schedules,
+        ILogger<DailyHousekeepingFunction> logger)
     {
         this.blobStorage = blobStorage;
+        this.schedules = schedules;
         this.logger = logger;
     }
 
-    [Function("ImageCleanup")]
+    [Function("DailyHousekeeping")]
     public async Task Run([TimerTrigger("0 0 3 * * *")] TimerInfo timer)
     {
         logger.LogInformation(
             "Cleaning up images older than {Hours} h", MaxAge.TotalHours);
         await blobStorage.CleanupExpiredImagesAsync(MaxAge);
+
+        // Defensive: a wake schedule normally removes itself when it fires or
+        // when the device cancels it. This catches rows that outlived their
+        // window anyway.
+        var removed = await schedules.CleanupExpiredAsync(DateTimeOffset.UtcNow);
+        if (removed > 0)
+        {
+            logger.LogInformation(
+                "Removed {Count} expired wake schedules", removed);
+        }
     }
 }
