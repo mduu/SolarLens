@@ -5,7 +5,9 @@
       "default": "Information",
       "Function": "Information",
       "Host.Results": "Information",
-      "Function.WakeScheduler": "Warning"
+      "Function.WakeScheduler": "Warning",
+      "Azure.Core": "Error",
+      "Azure.Storage": "Error"
     },
     "applicationInsights": {
       "samplingSettings": {
