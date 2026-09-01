@@ -17,6 +17,13 @@ enum AutoResetCompletion {
         case notDue(resetAt: Date)
     }
 
+    /// A push may arrive a moment before its time — the server rounds queue
+    /// visibility to whole seconds, and the device's clock is not the server's.
+    /// Treat that as due: a reset a few seconds early is unnoticeable, while
+    /// one that does not happen is the failure this whole path exists to fix.
+    /// Anything earlier than this is a stale schedule and must not fire.
+    static let dueTolerance: TimeInterval = 5
+
     static func complete(
         parameters params: AutomationAutoResetChargingModeParameters,
         energyManager: any EnergyManager,
@@ -24,7 +31,7 @@ enum AutoResetCompletion {
         log: (LocalizedStringResource, AutomationLogMessageLevel) -> Void =
             { _, _ in }
     ) async -> Outcome {
-        guard now >= params.resetAt else {
+        guard now >= params.resetAt.addingTimeInterval(-dueTolerance) else {
             return .notDue(resetAt: params.resetAt)
         }
 
@@ -35,7 +42,9 @@ enum AutoResetCompletion {
         // Seconds late is how we tell a push-driven finish (a few seconds)
         // from one that waited for a background task (minutes to hours).
         // Local only — it goes into the log the user can read.
-        let secondsLate = Int(now.timeIntervalSince(params.resetAt))
+        // Clamped: within the tolerance we can be a moment early, and "-1s
+        // late" is not a measurement anyone wants to read.
+        let secondsLate = max(0, Int(now.timeIntervalSince(params.resetAt)))
         let lateness: LocalizedStringResource =
             "Auto-reset Charging Mode: running \(secondsLate)s after the scheduled reset time"
         log(lateness, .Debug)
