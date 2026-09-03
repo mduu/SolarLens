@@ -195,7 +195,21 @@ public final class NotificationManager {
     /// Called by `AutomationManager.handleBackgroundTask` so a single BG
     /// wake services both subsystems. Returns when all overdue monitors
     /// have ticked once.
+    /// Two wake sources can overlap — a duplicate silent push, or a push
+    /// arriving while a BG task drains. Without this guard both runs read a
+    /// monitor as `armed` before either persists the fired state (they
+    /// interleave at the network fetch), and the user gets the same
+    /// notification twice, logged twice.
+    private var isDrainingMonitors = false
+
     public func runOverdueMonitorsInBackground() async {
+        guard !isDrainingMonitors else {
+            log(info: "Skipping monitor check — one is already running")
+            return
+        }
+        isDrainingMonitors = true
+        defer { isDrainingMonitors = false }
+
         let now = Date()
         // Tick a monitor when it is due OR when it is a forecastable
         // armed monitor — the latter so every rare BG wake refreshes its
