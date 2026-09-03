@@ -15,6 +15,19 @@ struct OverviewChart: View {
     var useAlternativeColors: Bool = false
     var showLegend: Bool? = nil  // nil = use default (isSmall-based)
 
+    /// Set by the iOS app to make the chart scroll back through time. watchOS,
+    /// tvOS and the widgets leave it nil and keep their fixed single window.
+    var scrollConfig: ChartTimeScrollConfig? = nil
+
+    /// Upper bound of the y axis. The scrolling callers pass the peak of the
+    /// visible window so a quiet day is not flattened by a sunny neighbour;
+    /// everyone else lets the chart derive it from all of its data.
+    var yMaxOverride: Double? = nil
+
+    /// The part of the visible window that is still ahead, shaded so today's
+    /// empty evening does not read as missing data.
+    var futureShading: ChartFutureShading? = nil
+
     var anyBatteryLevel: Bool {
         consumption.data.isEmpty == false && consumption.data.contains(where: { $0.batteryLevel != nil })
     }
@@ -97,6 +110,8 @@ struct OverviewChart: View {
             }
 
             .chartYScale(domain: 0...getYMax())
+            .chartFutureShading(futureShading)
+            .chartTimeScroll(scrollConfig)
             .chartXAxis {
                 AxisMarks { value in
                     AxisGridLine()
@@ -181,6 +196,8 @@ struct OverviewChart: View {
     }
 
     private func getYMax() -> Double {
+        if let yMaxOverride { return yMaxOverride }
+
         let maxkW: Double? = consumption.data
             .map { Double(max($0.productionWatts, $0.consumptionWatts)) / 1000 }
             .max()

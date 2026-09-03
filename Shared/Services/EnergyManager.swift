@@ -38,9 +38,29 @@ protocol EnergyManager {
     /// configured.
     func fetchBoilerTotal(period: Period) async throws -> Double
 
+    /// Consumption of every car charging station over an arbitrary range.
+    ///
+    /// The `period:` variants above are pinned to "day / week / month ending
+    /// now" by the Solar Manager API, which is useless once the iOS charts let
+    /// the user scroll back in time. These derive the same figure from the
+    /// per-device data endpoint, which does take a range. Returns `nil` when
+    /// the range is too long to sample at a sensible resolution.
+    func fetchCarChargingTotal(from: Date, to: Date) async throws -> Double?
+
+    /// Heat-pump consumption over an arbitrary range. See
+    /// `fetchCarChargingTotal(from:to:)`.
+    func fetchHeatpumpTotal(from: Date, to: Date) async throws -> Double?
+
+    /// Boiler / water-heater consumption over an arbitrary range. See
+    /// `fetchCarChargingTotal(from:to:)`.
+    func fetchBoilerTotal(from: Date, to: Date) async throws -> Double?
+
     func fetchSolarDetails() async throws -> SolarDetailsData
-    
+
     func fetchMainData(from: Date, to: Date, interval: Int) async throws -> MainData
+
+    /// Per-battery power history over an arbitrary range.
+    func fetchBatteryHistory(from: Date, to: Date) async throws -> [BatteryHistory]
 
     func fetchTodaysBatteryHistory() async throws -> [BatteryHistory]
 
@@ -75,11 +95,21 @@ protocol EnergyManager {
 }
 
 extension EnergyManager {
+    /// Default-argument shim for the `interval:` requirement. Every conformer
+    /// must implement `fetchMainData(from:to:interval:)` itself — this
+    /// overload would otherwise become its own witness and recurse forever.
     func fetchMainData(from: Date, to: Date, interval: Int = 300) async throws -> MainData {
         return try await self.fetchMainData(from: from, to: to, interval: interval)
     }
 
     func fetchDynamicTariff() async throws -> DynamicTariffResponse? {
         return nil
+    }
+
+    func fetchTodaysBatteryHistory() async throws -> [BatteryHistory] {
+        try await fetchBatteryHistory(
+            from: Date.todayStartOfDay(),
+            to: Date.todayEndOfDay()
+        )
     }
 }
