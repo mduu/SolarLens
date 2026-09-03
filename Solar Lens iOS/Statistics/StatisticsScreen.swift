@@ -7,6 +7,16 @@ struct StatisticsScreen: View {
     @State private var shareURLs: [URL] = []
     @State private var showShareSheet = false
     @State private var showExportFormatPicker = false
+    @State private var isExporting = false
+
+    /// The marks the charts draw. Refreshed only after a load, so a render
+    /// triggered by anything else does not hand Swift Charts a freshly built
+    /// series to lay out again.
+    @State private var intradayData = MainData(data: [])
+    @State private var intradayBatteries: [BatteryHistory] = []
+    @State private var barMarks: [DayStatistic] = []
+    @State private var visibleBars: [DayStatistic] = []
+    @State private var futureShading: ChartFutureShading?
 
     // Persisted series visibility per period
     @AppStorage("stats.week.showProduction") private var weekShowProduction = true
@@ -78,14 +88,7 @@ struct StatisticsScreen: View {
 
                                 Spacer()
 
-                                if exportableData != nil {
-                                    Button {
-                                        showExportFormatPicker = true
-                                    } label: {
-                                        Image(systemName: "square.and.arrow.up")
-                                    }
-                                    .tint(.primary)
-                                }
+                                exportButton
                             }
 
                             // Row 2: resolution picker
@@ -99,19 +102,14 @@ struct StatisticsScreen: View {
                         .padding(.horizontal)
                     }
 
-                    // Export button for non-custom periods
-                    if viewModel.selectedPeriod != .custom, exportableData != nil {
-                        HStack {
-                            Spacer()
-                            Button {
-                                showExportFormatPicker = true
-                            } label: {
-                                Image(systemName: "square.and.arrow.up")
-                            }
-                            .tint(.primary)
+                    // Time navigation + export for the fixed periods
+                    HStack(spacing: 12) {
+                        timeNavigation
+                        if viewModel.selectedPeriod != .custom {
+                            exportButton
                         }
-                        .padding(.horizontal)
                     }
+                    .padding(.horizontal)
                 }
                 .padding(.top, 8)
                 .padding(.bottom, 8)
@@ -119,45 +117,9 @@ struct StatisticsScreen: View {
                 // Scrollable content
                 ScrollView {
                     VStack(spacing: 16) {
-                        if viewModel.isLoading {
-                            ProgressView()
-                                .padding(.top, 40)
-                        } else {
-                            statisticsContent
-                        }
+                        statisticsContent
                     }
                 }
-                .simultaneousGesture(
-                    DragGesture(minimumDistance: 50, coordinateSpace: .local)
-                        .onEnded { value in
-                            let horizontal = value.translation.width
-                            let vertical = value.translation.height
-                            guard abs(horizontal) > abs(vertical) else { return }
-
-                            let periods = StatisticsPeriod.allCases
-                            guard let index = periods.firstIndex(of: viewModel.selectedPeriod) else { return }
-
-                            if horizontal < 0, index < periods.count - 1 {
-                                withAnimation { viewModel.selectedPeriod = periods[index + 1] }
-                            } else if horizontal > 0 {
-                                if index > 0 {
-                                    withAnimation { viewModel.selectedPeriod = periods[index - 1] }
-                                } else {
-                                    // At the today (first-period) boundary,
-                                    // the right-swipe leaves Statistics and
-                                    // jumps to the previous top-level tab
-                                    // per TopLevelTabOrder. Mirrors the
-                                    // swipe-back semantics of the other tabs.
-                                    let order = TopLevelTabOrder.tabs
-                                    if let i = order.firstIndex(of: .statistics), i > 0 {
-                                        withAnimation {
-                                            TabSelection.shared.selectedTab = order[i - 1]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                )
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showShareSheet) {
@@ -170,23 +132,135 @@ struct StatisticsScreen: View {
             }
         }
         .onChange(of: viewModel.selectedPeriod) {
-            Task { await viewModel.fetch() }
+            viewModel.periodChanged()
         }
-        .onChange(of: viewModel.customStartDate) {
-            guard viewModel.selectedPeriod == .custom else { return }
-            Task { await viewModel.fetch() }
+        .task(id: windowIdentity) {
+            // Scrolling walks through windows quickly; settle first so a flick
+            // does not fire a request per window passed.
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            await viewModel.loadWindow()
+            refreshChartData()
+            guard !Task.isCancelled else { return }
+            await viewModel.loadTotals()
         }
-        .onChange(of: viewModel.customEndDate) {
-            guard viewModel.selectedPeriod == .custom else { return }
-            Task { await viewModel.fetch() }
-        }
-        .onChange(of: viewModel.customResolution) {
-            guard viewModel.selectedPeriod == .custom else { return }
-            Task { await viewModel.fetch() }
+        .task(id: viewModel.selectedPeriod) {
+            guard viewModel.selectedPeriod == .overall else { return }
+            await viewModel.loadLifetimeStatistics()
         }
         .task {
-            await viewModel.fetch()
+            await viewModel.loadEarliestDate()
         }
+    }
+
+    private func refreshChartData() {
+        intradayData.data = viewModel.intraday.marks(around: viewModel.window, paddingDays: 0)
+        intradayBatteries = viewModel.intraday.batteryMarks(around: viewModel.window, paddingDays: 0)
+        barMarks = viewModel.visibleBuckets
+        visibleBars = viewModel.visibleBuckets
+        futureShading = ChartFutureShading(window: viewModel.window)
+    }
+
+    /// Changes to this restart the loading task: the window moved, or the
+    /// buckets it is cut into changed.
+    private var windowIdentity: String {
+        let window = viewModel.window
+        return "\(viewModel.selectedPeriod.rawValue)|\(window.lowerBound.timeIntervalSince1970)|\(window.upperBound.timeIntervalSince1970)|\(viewModel.customResolution.rawValue)"
+    }
+
+    // MARK: - Time navigation
+
+    @ViewBuilder
+    private var timeNavigation: some View {
+        if let navigator = viewModel.navigator {
+            ChartTimeHeader(
+                navigator: navigator,
+                isLoading: viewModel.isLoading || viewModel.isLoadingTotals
+            )
+        } else {
+            // Custom range: the pickers set how long the window is, these
+            // buttons move it — one whole range per tap.
+            HStack(spacing: 8) {
+                Button {
+                    withAnimation(.snappy) { viewModel.stepCustomRange(by: -1) }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.title3)
+                        .frame(width: 30, height: 30)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
+                .disabled(!viewModel.canStepCustomBack)
+                .foregroundStyle(
+                    viewModel.canStepCustomBack ? Color.primary : Color.secondary.opacity(0.35)
+                )
+                .accessibilityLabel("Previous period")
+
+                HStack(spacing: 6) {
+                    Text(viewModel.windowLabel)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+
+                    if viewModel.isLoading || viewModel.isLoadingTotals {
+                        ProgressView()
+                            .controlSize(.mini)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+
+                Button {
+                    withAnimation(.snappy) { viewModel.stepCustomRange(by: 1) }
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.title3)
+                        .frame(width: 30, height: 30)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
+                .disabled(!viewModel.canStepCustomForward)
+                .foregroundStyle(
+                    viewModel.canStepCustomForward ? Color.primary : Color.secondary.opacity(0.35)
+                )
+                .accessibilityLabel("Next period")
+            }
+        }
+    }
+
+    /// Left/right swipe switches the period. Bound to a minimum distance well
+    /// above the chart's own scrolling so the two do not fight.
+    private var periodSwipeGesture: some Gesture {
+        DragGesture(minimumDistance: 50, coordinateSpace: .local)
+            .onEnded { value in
+                let horizontal = value.translation.width
+                let vertical = value.translation.height
+                guard abs(horizontal) > abs(vertical) else { return }
+
+                let periods = StatisticsPeriod.allCases
+                guard let index = periods.firstIndex(of: viewModel.selectedPeriod) else { return }
+
+                if horizontal < 0, index < periods.count - 1 {
+                    withAnimation { viewModel.selectedPeriod = periods[index + 1] }
+                } else if horizontal > 0 {
+                    if index > 0 {
+                        withAnimation { viewModel.selectedPeriod = periods[index - 1] }
+                    } else {
+                        // At the today (first-period) boundary,
+                        // the right-swipe leaves Statistics and
+                        // jumps to the previous top-level tab
+                        // per TopLevelTabOrder. Mirrors the
+                        // swipe-back semantics of the other tabs.
+                        let order = TopLevelTabOrder.tabs
+                        if let i = order.firstIndex(of: .statistics), i > 0 {
+                            withAnimation {
+                                TabSelection.shared.selectedTab = order[i - 1]
+                            }
+                        }
+                    }
+                }
+            }
     }
 
     // MARK: - Current period series toggles
@@ -234,43 +308,45 @@ struct StatisticsScreen: View {
 
     // MARK: - Export
 
-    /// Returns the exportable data for the current period, if any.
-    private var exportableData: [DayStatistic]? {
-        switch viewModel.selectedPeriod {
-        case .week, .month:
-            return viewModel.dailyStats
-        case .custom:
-            return viewModel.customStats
-        case .year:
-            return viewModel.monthlyStats
-        case .overall:
-            return viewModel.yearlyStats
-        case .today:
-            return nil
+    @ViewBuilder
+    private var exportButton: some View {
+        if viewModel.exportableData != nil {
+            Button {
+                showExportFormatPicker = true
+            } label: {
+                if isExporting {
+                    ProgressView().controlSize(.mini)
+                } else {
+                    Image(systemName: "square.and.arrow.up")
+                }
+            }
+            .tint(.primary)
+            .disabled(isExporting)
         }
     }
 
     private func exportStatistics(format: ExportFormat) {
-        do {
-            let url: URL
-            // High-resolution export: one timestamped row per interval.
-            if viewModel.selectedPeriod == .custom,
-               viewModel.customResolution == .hourly,
-               let intervals = viewModel.customIntervalData, !intervals.isEmpty
-            {
-                url = try StatisticsExporter.exportIntervals(data: intervals, format: format)
-            } else {
-                guard let data = exportableData, !data.isEmpty else { return }
-                url = try StatisticsExporter.export(
-                    data: data,
-                    periodLabel: viewModel.selectedPeriod.rawValue,
-                    format: format
-                )
+        isExporting = true
+        Task {
+            defer { isExporting = false }
+            do {
+                let url: URL
+                // High-resolution export: one timestamped row per interval.
+                if let intervals = await viewModel.intervalDataForExport() {
+                    url = try StatisticsExporter.exportIntervals(data: intervals, format: format)
+                } else {
+                    guard let data = viewModel.exportableData, !data.isEmpty else { return }
+                    url = try StatisticsExporter.export(
+                        data: data,
+                        periodLabel: viewModel.selectedPeriod.rawValue,
+                        format: format
+                    )
+                }
+                shareURLs = [url]
+                showShareSheet = true
+            } catch {
+                // Silently fail — file write errors are unlikely for temp directory
             }
-            shareURLs = [url]
-            showShareSheet = true
-        } catch {
-            // Silently fail — file write errors are unlikely for temp directory
         }
     }
 
@@ -278,81 +354,25 @@ struct StatisticsScreen: View {
 
     @ViewBuilder
     private var statisticsContent: some View {
-        // Today: area chart + pie charts stacked vertically
+        // Today: intraday area chart, scrollable day by day
         if viewModel.selectedPeriod == .today {
             todayContent
         }
 
-        // Week / Month: daily bar chart with toggles
-        if let dailyStats = viewModel.dailyStats,
-           [.week, .month].contains(viewModel.selectedPeriod)
-        {
+        // Every other period: a bar chart of the buckets in the window
+        if let bucket = viewModel.bucket {
             VStack(spacing: 8) {
                 FilterableBarChart(
-                    data: dailyStats,
-                    xUnit: .day,
-                    xLabelFormat: viewModel.selectedPeriod == .week ? .weekday : .dayOfMonth,
+                    data: barMarks,
+                    xUnit: bucket.calendarComponent,
+                    xLabelFormat: xLabelFormat,
                     showProduction: showProduction,
                     showConsumption: showConsumption,
                     showImport: showImport,
                     showExport: showExport,
-                    chartHeight: 200
-                )
-            }
-            .padding(.horizontal)
-        }
-
-        // Custom: bar chart with user-selected resolution
-        if let customStats = viewModel.customStats,
-           viewModel.selectedPeriod == .custom
-        {
-            VStack(spacing: 8) {
-                FilterableBarChart(
-                    data: customStats,
-                    xUnit: viewModel.customResolution.chartXUnit,
-                    xLabelFormat: viewModel.customResolution.chartXLabelFormat,
-                    showProduction: showProduction,
-                    showConsumption: showConsumption,
-                    showImport: showImport,
-                    showExport: showExport,
-                    chartHeight: 200
-                )
-            }
-            .padding(.horizontal)
-        }
-
-        // Year: monthly bar chart with toggles
-        if let monthlyStats = viewModel.monthlyStats,
-           viewModel.selectedPeriod == .year
-        {
-            VStack(spacing: 8) {
-                FilterableBarChart(
-                    data: monthlyStats,
-                    xUnit: .month,
-                    xLabelFormat: .monthNarrow,
-                    showProduction: showProduction,
-                    showConsumption: showConsumption,
-                    showImport: showImport,
-                    showExport: showExport
-                )
-            }
-            .padding(.horizontal)
-        }
-
-        // Overall: yearly bar chart
-        if let yearlyStats = viewModel.yearlyStats,
-           viewModel.selectedPeriod == .overall
-        {
-            VStack(spacing: 8) {
-                FilterableBarChart(
-                    data: yearlyStats,
-                    xUnit: .year,
-                    xLabelFormat: .year,
-                    showProduction: showProduction,
-                    showConsumption: showConsumption,
-                    showImport: showImport,
-                    showExport: showExport,
-                    chartHeight: 200
+                    chartHeight: 200,
+                    visibleData: visibleBars,
+                    scrollConfig: barChartScrollConfig
                 )
             }
             .padding(.horizontal)
@@ -360,86 +380,101 @@ struct StatisticsScreen: View {
 
         // Overall: lifetime stats with eco meter
         if viewModel.selectedPeriod == .overall,
-           let stats = viewModel.overallStatistics
+           let stats = viewModel.lifetimeStatistics
         {
             EcoMeterCard(totalProduction: stats.production ?? 0)
                 .padding(.horizontal)
         }
 
-        // Energy cards (not on today — today uses live overview data)
-        if viewModel.selectedPeriod != .today,
-           let stats = viewModel.selectedPeriod == .overall
-            ? viewModel.overallStatistics
-            : viewModel.statistics
-        {
-            StatisticsEnergyCards(
-                statistics: stats,
-                batteryCharged: viewModel.batteryCharged,
-                batteryDischarged: viewModel.batteryDischarged,
-                carCharged: viewModel.carCharged,
-                heatpumpConsumed: viewModel.heatpumpConsumed,
-                boilerConsumed: viewModel.boilerConsumed,
-                isCurrentlyCharging: viewModel.isCurrentlyCharging,
-                hasBattery: buildingState.overviewData.hasAnyBattery,
-                hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation
-            )
-        }
-    }
-
-    @ViewBuilder
-    private var todayContent: some View {
-        if let todayData = viewModel.todayData {
-            VStack(spacing: 8) {
-                OverviewChart(
-                    consumption: todayData,
-                    batteries: viewModel.batteryHistory ?? [],
-                    isSmall: true,
-                    showProduction: todayShowProduction,
-                    showConsumption: todayShowConsumption,
-                    showBatteryCharge: todayShowBatteryCharge,
-                    showBatteryDischange: todayShowBatteryDischarge,
-                    showBatteryPercentage: todayShowBatteryLevel
-                )
-                .frame(height: 200)
-
-                VStack(spacing: 4) {
-                    HStack(spacing: 6) {
-                        SeriesToggle(label: "Production", color: .yellow, isOn: $todayShowProduction)
-                        SeriesToggle(label: "Consumption", color: .teal, isOn: $todayShowConsumption)
-                    }
-                    HStack(spacing: 6) {
-                        SeriesToggle(label: "Battery %", color: .green, isOn: $todayShowBatteryLevel)
-                        SeriesToggle(label: "Charged", color: .purple, isOn: $todayShowBatteryCharge)
-                        SeriesToggle(label: "Discharged", color: .indigo, isOn: $todayShowBatteryDischarge)
-                    }
-                }
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 8)
-        }
-
-        let overview = buildingState.overviewData
-        let todayStats = Statistics(
-            consumption: overview.todayConsumption,
-            production: overview.todayProduction,
-            selfConsumption: overview.todaySelfConsumption,
-            selfConsumptionRate: overview.todaySelfConsumptionRate,
-            autarchyDegree: overview.todayAutarchyDegree
-        )
-
         StatisticsEnergyCards(
-            statistics: todayStats,
+            statistics: viewModel.windowStatistics,
             batteryCharged: viewModel.batteryCharged,
             batteryDischarged: viewModel.batteryDischarged,
             carCharged: viewModel.carCharged,
             heatpumpConsumed: viewModel.heatpumpConsumed,
             boilerConsumed: viewModel.boilerConsumed,
             isCurrentlyCharging: viewModel.isCurrentlyCharging,
-            hasBattery: buildingState.overviewData.hasAnyBattery,
-            hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation
+            hasBattery: buildingState.overviewData.hasAnyBattery
+                && viewModel.batteryFiguresAvailable,
+            hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation,
+            gridImportOverride: viewModel.measuredGrid?.imported,
+            gridExportOverride: viewModel.measuredGrid?.exported
         )
+        // The charts own horizontal drags now, so period switching only
+        // listens below them.
+        .simultaneousGesture(periodSwipeGesture)
+
+        if viewModel.auxTotalsUnavailable {
+            Text(
+                "Solar Manager reports car charging, heat pump and boiler consumption per device only — for ranges up to one year."
+            )
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal)
+        }
     }
 
+    /// The bar charts plot raw dates, so their scroll domain needs no
+    /// time-zone shift — unlike the intraday chart below.
+    private var barChartScrollConfig: ChartTimeScrollConfig? {
+        viewModel.navigator?.scrollConfig()
+    }
+
+    private var xLabelFormat: XLabelFormat {
+        switch viewModel.selectedPeriod {
+        case .week: .weekday
+        case .month: .dayOfMonth
+        case .year: .monthNarrow
+        case .overall: .year
+        case .custom: viewModel.customResolution.chartXLabelFormat
+        case .today: .dayOfMonth
+        }
+    }
+
+    @ViewBuilder
+    private var todayContent: some View {
+        VStack(spacing: 8) {
+            OverviewChart(
+                consumption: intradayData,
+                batteries: intradayBatteries,
+                isSmall: true,
+                showProduction: todayShowProduction,
+                showConsumption: todayShowConsumption,
+                showBatteryCharge: todayShowBatteryCharge,
+                showBatteryDischange: todayShowBatteryDischarge,
+                showBatteryPercentage: todayShowBatteryLevel,
+                scrollConfig: viewModel.navigator?.scrollConfig(),
+                yMaxOverride: todayYMax,
+                futureShading: futureShading
+            )
+            .frame(height: 200)
+
+            VStack(spacing: 4) {
+                HStack(spacing: 6) {
+                    SeriesToggle(label: "Production", color: .yellow, isOn: $todayShowProduction)
+                    SeriesToggle(label: "Consumption", color: .teal, isOn: $todayShowConsumption)
+                }
+                HStack(spacing: 6) {
+                    SeriesToggle(label: "Battery %", color: .green, isOn: $todayShowBatteryLevel)
+                    SeriesToggle(label: "Charged", color: .purple, isOn: $todayShowBatteryCharge)
+                    SeriesToggle(label: "Discharged", color: .indigo, isOn: $todayShowBatteryDischarge)
+                }
+            }
+        }
+        .padding(.horizontal)
+        .padding(.bottom, 8)
+    }
+
+    /// Peak of the visible day, so scrolling onto an overcast day does not
+    /// squash its curve against a sunny neighbour's axis.
+    private var todayYMax: Double? {
+        let peak = viewModel.intraday.items(in: viewModel.window)
+            .map { max($0.productionWatts, $0.consumptionWatts) / 1000 }
+            .max()
+        guard let peak, peak > 0.005 else { return nil }
+        return peak * 1.1
+    }
 
 }
 

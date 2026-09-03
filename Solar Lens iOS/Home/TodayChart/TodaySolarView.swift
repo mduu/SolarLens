@@ -2,7 +2,8 @@ import SwiftUI
 
 struct TodaySolarView: View {
     var peakProductionInW: Double
-    var currentSolarProductionInW: Int
+    /// `nil` for a day in the past, where "current" has no meaning.
+    var currentSolarProductionInW: Int?
     var todaySolarProductionInWh: Double
 
     var body: some View {
@@ -12,17 +13,19 @@ struct TodaySolarView: View {
                 .fontWeight(.bold)
 
             Grid(alignment: .leadingFirstTextBaseline, verticalSpacing: 4) {
-                GridRow {
-                    Text("Current:")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                if let currentSolarProductionInW {
+                    GridRow {
+                        Text("Current:")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
 
-                    Text(
-                        currentSolarProductionInW
-                            .formatWattsAsKiloWatts(widthUnit: true)
-                    )
-                    .font(.caption)
-                    .fontWeight(.bold)
+                        Text(
+                            currentSolarProductionInW
+                                .formatWattsAsKiloWatts(widthUnit: true)
+                        )
+                        .font(.caption)
+                        .fontWeight(.bold)
+                    }
                 }
 
                 GridRow {

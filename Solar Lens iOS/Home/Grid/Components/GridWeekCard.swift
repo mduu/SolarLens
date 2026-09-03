@@ -6,6 +6,10 @@ struct GridWeekCard: View {
     let tariffSettings: TariffSettingsV3Response?
     let fallbackTariff: TariffV1Response?
 
+    /// Last day of the seven shown. `nil` while the card covers the week
+    /// ending today, which keeps the familiar "last 7 days" wording.
+    var endDate: Date?
+
     var body: some View {
         let currencyCode = CurrencyHelper.currencyCode
 
@@ -26,9 +30,17 @@ struct GridWeekCard: View {
                 Image(systemName: "calendar")
                     .font(.caption)
                     .foregroundStyle(.primary.opacity(0.7))
-                Text("Electricity costs last 7 days")
-                    .font(.caption)
-                    .foregroundStyle(.primary.opacity(0.7))
+                Group {
+                    if let endDate {
+                        Text(
+                            "Electricity costs, 7 days to \(endDate.formatted(.dateTime.day().month(.abbreviated)))"
+                        )
+                    } else {
+                        Text("Electricity costs last 7 days")
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.primary.opacity(0.7))
             }
 
             VStack(spacing: 0) {

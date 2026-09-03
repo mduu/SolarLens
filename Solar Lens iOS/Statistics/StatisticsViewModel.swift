@@ -3,391 +3,351 @@ import SwiftUI
 
 @Observable
 class StatisticsViewModel {
-    var todayData: MainData?
-    var batteryHistory: [BatteryHistory]?
-    var dailyStats: [DayStatistic]?
-    var monthlyStats: [DayStatistic]?
-    var yearlyStats: [DayStatistic]?
-    var statistics: Statistics?
-    var overallStatistics: Statistics?
-    var isLoading = false
-    var errorMessage: String?
-    var batteryCharged: Double = 0
-    var batteryDischarged: Double = 0
-    var carCharged: Double? = nil
-    var heatpumpConsumed: Double? = nil
-    var boilerConsumed: Double? = nil
-    var isCurrentlyCharging: Bool = false
+
+    // MARK: - Selection
 
     var selectedPeriod: StatisticsPeriod = .today
     var customStartDate: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
     var customEndDate: Date = Date()
     var customResolution: CustomResolution = .day
-    var customStats: [DayStatistic]?
-    /// Raw per-interval samples for the custom range when an hourly resolution
-    /// is selected — used for the high-resolution CSV/XLSX export.
-    var customIntervalData: [MainDataItem]?
+
+    // MARK: - Time navigation
+
+    /// Drives the visible window of the scrollable chart. Replaced whenever
+    /// the period changes, because each period scrolls in its own unit.
+    /// `nil` for the custom range, where the date pickers are the control and
+    /// `stepCustomRange(by:)` does the paging.
+    private(set) var navigator: ChartTimeNavigator?
+
+    /// Registration date of the Solar Manager installation — nothing exists
+    /// before it, so the chart stops scrolling there.
+    private(set) var earliestDate: Date?
+
+    // MARK: - Data
+
+    let intraday: IntradayChartStore
+    let buckets: BucketStatisticsStore
+
+    /// Rates for the visible window: self-consumption and autarky can only
+    /// come from the statistics endpoint, they are not derivable from the
+    /// per-interval samples.
+    var windowRates: Statistics?
+
+    var carCharged: Double?
+    var heatpumpConsumed: Double?
+    var boilerConsumed: Double?
+
+    /// Set when the visible window is too long to sample the per-device
+    /// endpoint — car charging, heat pump and boiler have no aggregate API
+    /// for an arbitrary range, so their cards stay hidden.
+    var auxTotalsUnavailable = false
+
+    var isCurrentlyCharging = false
+    var isLoadingTotals = false
+
+    /// Lifetime production, for the eco meter on the Overall page. Deliberately
+    /// independent of the visible window — "trees saved" is a whole-installation
+    /// figure, not a per-window one.
+    var lifetimeStatistics: Statistics?
 
     private let energyManager: EnergyManager
+    private let calendar = Calendar.current
 
     init(energyManager: EnergyManager = SolarManager.shared) {
         self.energyManager = energyManager
+        self.intraday = IntradayChartStore(energyManager: energyManager)
+        self.buckets = BucketStatisticsStore(energyManager: energyManager)
+        self.navigator = Self.makeNavigator(for: .today, earliest: nil)
     }
 
-    @MainActor
-    func fetch() async {
-        if isLoading { return }
-
-        isLoading = true
-        errorMessage = nil
-
-        switch selectedPeriod {
-        case .today:
-            await fetchToday()
-        case .week:
-            await fetchWeek()
-        case .month:
-            await fetchMonth()
-        case .year:
-            await fetchYear()
-        case .overall:
-            await fetchOverall()
-        case .custom:
-            await fetchCustomRange()
-        }
-
-        isLoading = false
+    var isLoading: Bool {
+        intraday.isLoading || buckets.isLoading
     }
 
-    @MainActor
-    private func fetchToday() async {
-        todayData = try? await energyManager.fetchMainData(
-            from: Date.todayStartOfDay(),
-            to: Date.todayEndOfDay()
-        )
-        batteryHistory = try? await energyManager.fetchTodaysBatteryHistory()
-        statistics = try? await energyManager.fetchStatistics(
-            from: Date.todayStartOfDay(),
-            to: Date.todayEndOfDay(),
-            accuracy: .high
-        )
-        computeBatteryTotals(from: todayData?.data ?? [])
-        await fetchAuxiliaryConsumers(period: .day)
-        dailyStats = nil
-        monthlyStats = nil
-        customStats = nil
+    // MARK: - Window
+
+    /// The range the chart currently shows.
+    var window: Range<Date> {
+        if let navigator { return navigator.window }
+        return customWindow
     }
 
-    @MainActor
-    private func fetchWeek() async {
-        let calendar = Calendar.current
-        let start = calendar.date(byAdding: .day, value: -7, to: Date.todayStartOfDay())!
-
-        let mainData = try? await energyManager.fetchMainData(
-            from: start,
-            to: Date.todayEndOfDay(),
-            interval: 300
-        )
-        if let mainData {
-            dailyStats = calculateDailyStatistics(dataPoints: mainData.data)
-            computeBatteryTotals(from: mainData.data)
-        }
-        await fetchAuxiliaryConsumers(period: .week)
-        statistics = try? await energyManager.fetchStatistics(
-            from: start,
-            to: Date(),
-            accuracy: .medium
-        )
-        todayData = nil
-        monthlyStats = nil
-        customStats = nil
-    }
-
-    @MainActor
-    private func fetchMonth() async {
-        let calendar = Calendar.current
-        let start = calendar.date(byAdding: .month, value: -1, to: Date.todayStartOfDay())!
-
-        let mainData = try? await energyManager.fetchMainData(
-            from: start,
-            to: Date.todayEndOfDay(),
-            interval: 300
-        )
-        if let mainData {
-            dailyStats = calculateDailyStatistics(dataPoints: mainData.data)
-            computeBatteryTotals(from: mainData.data)
-        }
-        await fetchAuxiliaryConsumers(period: .month)
-        statistics = try? await energyManager.fetchStatistics(
-            from: start,
-            to: Date(),
-            accuracy: .medium
-        )
-        todayData = nil
-        monthlyStats = nil
-        customStats = nil
-    }
-
-    @MainActor
-    private func fetchYear() async {
-        let calendar = Calendar.current
-        let start = calendar.date(byAdding: .year, value: -1, to: Date.todayStartOfDay())!
-
-        // Fetch monthly statistics by fetching each month individually
-        var months: [DayStatistic] = []
-        var monthStart = start
-        while monthStart < Date() {
-            let monthEnd = calendar.date(byAdding: .month, value: 1, to: monthStart)!
-            let end = min(monthEnd, Date())
-            let monthStats = try? await energyManager.fetchStatistics(
-                from: monthStart,
-                to: end,
-                accuracy: .low
-            )
-            if let monthStats {
-                let selfConsumption = monthStats.selfConsumption ?? 0
-                let production = monthStats.production ?? 0
-                let consumption = monthStats.consumption ?? 0
-                months.append(DayStatistic(
-                    day: monthStart,
-                    consumption: consumption,
-                    production: production,
-                    imported: max(0, consumption - selfConsumption),
-                    exported: max(0, production - selfConsumption)
-                ))
-            }
-            monthStart = monthEnd
-        }
-        monthlyStats = months
-
-        statistics = try? await energyManager.fetchStatistics(
-            from: start,
-            to: Date(),
-            accuracy: .low
-        )
-
-        // Fetch battery data for the year (daily intervals)
-        let mainData = try? await energyManager.fetchMainData(
-            from: start,
-            to: Date.todayEndOfDay(),
-            interval: 86400
-        )
-        computeBatteryTotals(from: mainData?.data ?? [])
-
-        // Per-sensor consumption API only supports day/week/month — no
-        // yearly data available for car charging / heat pump / boiler.
-        carCharged = nil
-        heatpumpConsumed = nil
-        boilerConsumed = nil
-
-        todayData = nil
-        dailyStats = nil
-        customStats = nil
-    }
-
-    @MainActor
-    private func fetchOverall() async {
-        overallStatistics = try? await energyManager.fetchStatistics(
-            from: nil,
-            to: Date(),
-            accuracy: .low
-        )
-
-        // Fetch per-year statistics going back up to 10 years
-        let calendar = Calendar.current
-        let currentYear = calendar.component(.year, from: Date())
-        var years: [DayStatistic] = []
-
-        for year in (currentYear - 10)...currentYear {
-            var startComponents = DateComponents()
-            startComponents.year = year
-            startComponents.month = 1
-            startComponents.day = 1
-            guard let yearStart = calendar.date(from: startComponents) else { continue }
-
-            var endComponents = DateComponents()
-            endComponents.year = year
-            endComponents.month = 12
-            endComponents.day = 31
-            endComponents.hour = 23
-            endComponents.minute = 59
-            endComponents.second = 59
-            let yearEnd = min(calendar.date(from: endComponents) ?? Date(), Date())
-
-            let yearStats = try? await energyManager.fetchStatistics(
-                from: yearStart,
-                to: yearEnd,
-                accuracy: .low
-            )
-            if let yearStats, (yearStats.production ?? 0) > 0 || (yearStats.consumption ?? 0) > 0 {
-                let selfConsumption = yearStats.selfConsumption ?? 0
-                let production = yearStats.production ?? 0
-                let consumption = yearStats.consumption ?? 0
-                years.append(DayStatistic(
-                    day: yearStart,
-                    consumption: consumption,
-                    production: production,
-                    imported: max(0, consumption - selfConsumption),
-                    exported: max(0, production - selfConsumption)
-                ))
-            }
-        }
-        yearlyStats = years
-
-        batteryCharged = 0
-        batteryDischarged = 0
-        carCharged = nil
-        heatpumpConsumed = nil
-        boilerConsumed = nil
-
-        todayData = nil
-        dailyStats = nil
-        monthlyStats = nil
-        customStats = nil
-        statistics = nil
-    }
-
-    @MainActor
-    private func fetchCustomRange() async {
-        let calendar = Calendar.current
+    var customWindow: Range<Date> {
         let start = calendar.startOfDay(for: customStartDate)
-        let end = calendar.date(
-            bySettingHour: 23, minute: 59, second: 59,
-            of: customEndDate
-        )!
+        let end =
+            calendar.date(
+                bySettingHour: 23, minute: 59, second: 59, of: customEndDate
+            ) ?? customEndDate
+        return start..<max(end, start.addingTimeInterval(60))
+    }
 
-        let daysBetween = calendar.dateComponents([.day], from: start, to: end).day ?? 0
+    /// Label describing the visible window, shown between the ‹ › buttons.
+    var windowLabel: String {
+        if let navigator { return navigator.windowLabel }
+        let from = customWindow.lowerBound.formatted(.dateTime.day().month(.abbreviated))
+        let to = customWindow.upperBound.formatted(.dateTime.day().month(.abbreviated).year())
+        return "\(from) – \(to)"
+    }
 
-        switch customResolution {
-        case .hourly:
-            // Fetch raw hourly samples, chunked monthly to keep each request
-            // small (a full year is ~8,760 rows). Keep the raw items for the
-            // high-resolution export and aggregate to days for the chart.
-            let chunks = DateRangeChunker.monthlyChunks(from: start, to: end)
-            var items: [MainDataItem] = []
-            for chunk in chunks {
-                if let chunkData = try? await energyManager.fetchMainData(
-                    from: chunk.start, to: chunk.end, interval: 3600
-                ) {
-                    items.append(contentsOf: chunkData.data)
-                }
-            }
-            let sorted = items.sorted { $0.date < $1.date }
-            customIntervalData = sorted
-            customStats = aggregateDataPoints(sorted, by: .day)
-            computeBatteryTotals(from: sorted)
-
-        case .day, .week:
-            // Fetch raw data points and aggregate by day or week
-            let interval = daysBetween <= 7 ? 300 : (daysBetween <= 90 ? 3600 : 86400)
-            let mainData = try? await energyManager.fetchMainData(
-                from: start,
-                to: end,
-                interval: interval
-            )
-            if let mainData {
-                customStats = aggregateDataPoints(
-                    mainData.data,
-                    by: customResolution.calendarComponent
-                )
-                computeBatteryTotals(from: mainData.data)
-            }
-            customIntervalData = nil
-
-        case .month, .year:
-            // Fetch per-period statistics via the statistics endpoint
-            customStats = await fetchAggregatedStatistics(
-                from: start,
-                to: end,
-                by: customResolution.calendarComponent
-            )
-            batteryCharged = 0
-            batteryDischarged = 0
-            customIntervalData = nil
+    /// What to have loaded: the visible window, plus head-room where head-room
+    /// is cheap. Day buckets arrive a calendar month at a time, so a page of
+    /// look-ahead costs almost nothing. Month and year buckets cost one
+    /// statistics request each, so those fetch only what is on screen and let
+    /// the next scroll pull the rest.
+    var loadRange: Range<Date> {
+        guard let navigator else { return customWindow }
+        switch selectedPeriod {
+        case .today, .week, .month:
+            return navigator.window(withHeadroom: 1)
+        case .year, .overall, .custom:
+            return navigator.window
         }
+    }
 
+    /// Which bucket size the bar chart draws, `nil` for the intraday chart.
+    var bucket: BucketStatisticsStore.Bucket? {
+        switch selectedPeriod {
+        case .today: nil
+        case .week, .month: .day
+        case .year: .month
+        case .overall: .year
+        case .custom: customResolution.bucket
+        }
+    }
+
+    // MARK: - Chart data
+
+    /// Buckets across the whole loaded range — the bar chart's marks.
+    var loadedBuckets: [DayStatistic] {
+        guard let bucket else { return [] }
+        return buckets.buckets(in: loadRange, bucket: bucket)
+    }
+
+    /// Buckets inside the visible window — axis density and the y scale.
+    var visibleBuckets: [DayStatistic] {
+        guard let bucket else { return [] }
+        return buckets.buckets(in: window, bucket: bucket)
+    }
+
+    // MARK: - Totals
+
+    /// The totals cards' figures, summed over the visible window. Production
+    /// and consumption come from the buckets or samples on hand; the rates
+    /// come from the statistics endpoint.
+    var windowStatistics: Statistics {
+        let sums = windowSums
+        return Statistics(
+            consumption: sums.consumption,
+            production: sums.production,
+            selfConsumption: windowRates?.selfConsumption
+                ?? max(0, sums.production - sums.exported),
+            selfConsumptionRate: windowRates?.selfConsumptionRate,
+            autarchyDegree: windowRates?.autarchyDegree
+        )
+    }
+
+    var batteryCharged: Double { windowSums.batteryCharged }
+    var batteryDischarged: Double { windowSums.batteryDischarged }
+
+    /// Whether battery throughput can be reported for the visible window at
+    /// all. Month- and year-sized buckets come from the statistics endpoint,
+    /// which does not carry it — showing "0.0 MWh" there would read as "the
+    /// battery did nothing all year".
+    var batteryFiguresAvailable: Bool {
+        guard let bucket else { return true }
+        return bucket.derivesFromSamples
+    }
+
+    /// Measured grid figures, available wherever the buckets come from raw
+    /// samples. Month- and year-sized buckets only have the statistics
+    /// endpoint's self-consumption to derive them from, so they return `nil`
+    /// and let the cards do that derivation.
+    var measuredGrid: (imported: Double, exported: Double)? {
+        if let bucket, !bucket.derivesFromSamples { return nil }
+        let sums = windowSums
+        return (sums.imported, sums.exported)
+    }
+
+    private var windowSums: DayStatistic {
+        if let bucket {
+            return buckets.total(in: window, bucket: bucket)
+        }
+        let samples = intraday.items(in: window)
+        return DayStatistic(
+            day: window.lowerBound,
+            consumption: samples.reduce(0) { $0 + $1.consumptionOverTimeWatthours },
+            production: samples.reduce(0) { $0 + $1.productionOverTimeWatthours },
+            imported: samples.reduce(0) { $0 + $1.importedOverTimeWhatthours },
+            exported: samples.reduce(0) { $0 + $1.exportedOverTimeWhatthours },
+            batteryCharged: samples.reduce(0) { $0 + $1.batteryChargedWh },
+            batteryDischarged: samples.reduce(0) { $0 + $1.batteryDischargedWh }
+        )
+    }
+
+    // MARK: - Period changes
+
+    func periodChanged() {
+        navigator =
+            selectedPeriod == .custom
+            ? nil
+            : Self.makeNavigator(for: selectedPeriod, earliest: earliestDate)
+        windowRates = nil
         carCharged = nil
         heatpumpConsumed = nil
         boilerConsumed = nil
+        auxTotalsUnavailable = false
+    }
 
-        let accuracy: Accuracy = daysBetween <= 7 ? .high : (daysBetween <= 90 ? .medium : .low)
-        statistics = try? await energyManager.fetchStatistics(
-            from: start,
-            to: end,
+    /// Moves the custom range by its own length. The date pickers stay the
+    /// control for *how long* the window is; this moves *where* it sits.
+    func stepCustomRange(by pages: Int) {
+        let length = customWindow.upperBound.timeIntervalSince(customWindow.lowerBound)
+        let shift = length * Double(pages)
+        let newStart = customStartDate.addingTimeInterval(shift)
+        let newEnd = customEndDate.addingTimeInterval(shift)
+        guard newEnd <= Date() || pages < 0 else { return }
+        if let earliestDate, newStart < earliestDate { return }
+        customStartDate = newStart
+        customEndDate = min(newEnd, Date())
+    }
+
+    var canStepCustomForward: Bool {
+        customWindow.upperBound < Date()
+    }
+
+    var canStepCustomBack: Bool {
+        guard let earliestDate else { return true }
+        return customWindow.lowerBound > earliestDate
+    }
+
+    private static func makeNavigator(
+        for period: StatisticsPeriod, earliest: Date?
+    ) -> ChartTimeNavigator {
+        switch period {
+        case .today:
+            return ChartTimeNavigator(page: .day, earliest: earliest)
+        case .week:
+            return ChartTimeNavigator(page: .week, earliest: earliest)
+        case .month:
+            return ChartTimeNavigator(page: .month, earliest: earliest)
+        case .year:
+            return ChartTimeNavigator(page: .year, earliest: earliest)
+        case .overall, .custom:
+            return ChartTimeNavigator(page: .decade, earliest: earliest)
+        }
+    }
+
+    // MARK: - Loading
+
+    @MainActor
+    func loadWindow() async {
+        if let bucket {
+            await buckets.ensureLoaded(loadRange, bucket: bucket)
+        } else {
+            await intraday.ensureLoaded(around: window)
+        }
+    }
+
+    /// The figures that cannot be derived from the chart data: the rates and
+    /// the per-device consumers. One pass per settled window.
+    @MainActor
+    func loadTotals() async {
+        let range = window
+        let end = min(range.upperBound, Date())
+        guard range.lowerBound < end else { return }
+
+        isLoadingTotals = true
+        defer { isLoadingTotals = false }
+
+        let days = calendar.dateComponents(
+            [.day], from: range.lowerBound, to: end
+        ).day ?? 0
+        let accuracy: Accuracy = days <= 7 ? .high : (days <= 90 ? .medium : .low)
+
+        // The window is in real time; the API reads its bounds one time-zone
+        // offset earlier — see `ChartPlotSpace`.
+        windowRates = try? await energyManager.fetchStatistics(
+            from: ChartPlotSpace.toApi(range.lowerBound),
+            to: ChartPlotSpace.toApi(end),
             accuracy: accuracy
         )
-        todayData = nil
-        dailyStats = nil
-        monthlyStats = nil
-    }
 
-    private func aggregateDataPoints(
-        _ dataPoints: [MainDataItem],
-        by component: Calendar.Component
-    ) -> [DayStatistic] {
-        let calendar = Calendar.current
-        var buckets: [Date: [MainDataItem]] = [:]
-
-        for point in dataPoints {
-            let bucketStart: Date
-            if component == .weekOfYear {
-                // Align to start of ISO week
-                let comps = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: point.date)
-                bucketStart = calendar.date(from: comps) ?? calendar.startOfDay(for: point.date)
-            } else {
-                let comps = calendar.dateComponents(
-                    component == .day ? [.year, .month, .day] : [.year, .month],
-                    from: point.date
-                )
-                bucketStart = calendar.date(from: comps) ?? calendar.startOfDay(for: point.date)
-            }
-            buckets[bucketStart, default: []].append(point)
+        if range.upperBound >= Date() {
+            let charging = try? await energyManager.fetchChargingData()
+            isCurrentlyCharging = (charging?.currentCharging ?? 0) > 0
+        } else {
+            isCurrentlyCharging = false
         }
 
-        return buckets.map { (bucketDate, items) in
-            DayStatistic(
-                day: bucketDate,
-                consumption: items.reduce(0.0) { $0 + $1.consumptionOverTimeWatthours },
-                production: items.reduce(0.0) { $0 + $1.productionOverTimeWatthours },
-                imported: items.reduce(0.0) { $0 + $1.importedOverTimeWhatthours },
-                exported: items.reduce(0.0) { $0 + $1.exportedOverTimeWhatthours }
-            )
-        }.sorted { $0.day < $1.day }
+        await loadAuxiliaryConsumers(from: range.lowerBound, to: end)
     }
 
-    private func fetchAggregatedStatistics(
-        from start: Date,
-        to end: Date,
-        by component: Calendar.Component
-    ) async -> [DayStatistic] {
-        let calendar = Calendar.current
-        var results: [DayStatistic] = []
-        var periodStart = start
+    /// Car charging, heat pump and boiler totals. `/v1/consumption/sensor`
+    /// only knows "day / week / month ending now", so these are summed from
+    /// the per-device data endpoint instead — which caps out at a year.
+    @MainActor
+    private func loadAuxiliaryConsumers(from: Date, to: Date) async {
+        let apiFrom = ChartPlotSpace.toApi(from)
+        let apiTo = ChartPlotSpace.toApi(to)
 
-        while periodStart < end {
-            let periodEnd = calendar.date(byAdding: component, value: 1, to: periodStart)!
-            let clampedEnd = min(periodEnd, end)
-            let stats = try? await energyManager.fetchStatistics(
-                from: periodStart,
-                to: clampedEnd,
-                accuracy: .low
-            )
-            if let stats {
-                let selfConsumption = stats.selfConsumption ?? 0
-                let production = stats.production ?? 0
-                let consumption = stats.consumption ?? 0
-                results.append(DayStatistic(
-                    day: periodStart,
-                    consumption: consumption,
-                    production: production,
-                    imported: max(0, consumption - selfConsumption),
-                    exported: max(0, production - selfConsumption)
-                ))
+        let car = try? await energyManager.fetchCarChargingTotal(from: apiFrom, to: apiTo)
+        let heatpump = try? await energyManager.fetchHeatpumpTotal(from: apiFrom, to: apiTo)
+        let boiler = try? await energyManager.fetchBoilerTotal(from: apiFrom, to: apiTo)
+
+        // A nil from the manager means "range too long to sample", which is a
+        // different thing from "no such device" (zero).
+        auxTotalsUnavailable = (car ?? nil) == nil
+        carCharged = car ?? nil
+        heatpumpConsumed = heatpump ?? nil
+        boilerConsumed = boiler ?? nil
+    }
+
+    @MainActor
+    func loadLifetimeStatistics() async {
+        guard lifetimeStatistics == nil else { return }
+        lifetimeStatistics = try? await energyManager.fetchStatistics(
+            from: nil, to: Date(), accuracy: .low
+        )
+    }
+
+    @MainActor
+    func loadEarliestDate() async {
+        guard earliestDate == nil,
+            let info = try? await energyManager.fetchServerInfo(),
+            let registered = info.registrationDate
+        else { return }
+        earliestDate = registered
+        navigator?.setEarliest(registered)
+    }
+
+    // MARK: - Export
+
+    /// Rows for the CSV / XLSX export: exactly the buckets the user is
+    /// looking at.
+    var exportableData: [DayStatistic]? {
+        guard bucket != nil else { return nil }
+        let visible = visibleBuckets
+        return visible.isEmpty ? nil : visible
+    }
+
+    /// High-resolution export for an hourly custom range — fetched on demand,
+    /// since the chart itself only needs daily buckets.
+    func intervalDataForExport() async -> [MainDataItem]? {
+        guard selectedPeriod == .custom, customResolution == .hourly else { return nil }
+
+        let range = customWindow
+        var items: [MainDataItem] = []
+        for chunk in DateRangeChunker.monthlyChunks(
+            from: ChartPlotSpace.toApi(range.lowerBound),
+            to: ChartPlotSpace.toApi(min(range.upperBound, Date()))
+        ) {
+            if let data = try? await energyManager.fetchMainData(
+                from: chunk.start, to: chunk.end, interval: 3600
+            ) {
+                items.append(contentsOf: data.data)
             }
-            periodStart = periodEnd
         }
-
-        return results
+        return items.isEmpty ? nil : items.sorted { $0.date < $1.date }
     }
 
     /// Derives grid import/export from overall Statistics (which only has selfConsumption)
@@ -399,45 +359,6 @@ class StatisticsViewModel {
             imported: max(0, consumption - selfConsumption),
             exported: max(0, production - selfConsumption)
         )
-    }
-
-    private func computeBatteryTotals(from dataPoints: [MainDataItem]) {
-        batteryCharged = dataPoints.reduce(0) { $0 + $1.batteryChargedWh }
-        batteryDischarged = dataPoints.reduce(0) { $0 + $1.batteryDischargedWh }
-    }
-
-    /// Fetches per-period totals for the auxiliary consumer cards on
-    /// the Statistics tab — car charging stations, heat pumps, and
-    /// boilers (water heaters). All three use the same per-sensor
-    /// consumption endpoint server-side, so we keep them in one
-    /// concurrent batch.
-    @MainActor
-    private func fetchAuxiliaryConsumers(period: Period) async {
-        let chargingData = try? await energyManager.fetchChargingData()
-        isCurrentlyCharging = (chargingData?.currentCharging ?? 0) > 0
-        carCharged = (try? await energyManager.fetchCarChargingTotal(period: period)) ?? 0
-        heatpumpConsumed = (try? await energyManager.fetchHeatpumpTotal(period: period)) ?? 0
-        boilerConsumed = (try? await energyManager.fetchBoilerTotal(period: period)) ?? 0
-    }
-
-    private func calculateDailyStatistics(dataPoints: [MainDataItem]) -> [DayStatistic] {
-        let calendar = Calendar.current
-        var dataPointsByDay: [Date: [MainDataItem]] = [:]
-
-        for dataPoint in dataPoints {
-            let dayStart = calendar.startOfDay(for: dataPoint.date)
-            dataPointsByDay[dayStart, default: []].append(dataPoint)
-        }
-
-        return dataPointsByDay.map { (day, items) in
-            DayStatistic(
-                day: day,
-                consumption: items.reduce(0.0) { $0 + $1.consumptionOverTimeWatthours },
-                production: items.reduce(0.0) { $0 + $1.productionOverTimeWatthours },
-                imported: items.reduce(0.0) { $0 + $1.importedOverTimeWhatthours },
-                exported: items.reduce(0.0) { $0 + $1.exportedOverTimeWhatthours }
-            )
-        }.sorted { $0.day < $1.day }
     }
 }
 
@@ -482,21 +403,12 @@ enum CustomResolution: String, CaseIterable, Identifiable {
         }
     }
 
-    var calendarComponent: Calendar.Component {
+    var bucket: BucketStatisticsStore.Bucket {
         switch self {
-        case .hourly: .day  // hourly samples are aggregated to days for the chart
-        case .day: .day
-        case .week: .weekOfYear
-        case .month: .month
-        case .year: .year
-        }
-    }
-
-    var chartXUnit: Calendar.Component {
-        switch self {
-        case .hourly: .day
-        case .day: .day
-        case .week: .weekOfYear
+        // Hourly samples are aggregated to days for the chart; the raw
+        // resolution only matters for the export.
+        case .hourly, .day: .day
+        case .week: .week
         case .month: .month
         case .year: .year
         }

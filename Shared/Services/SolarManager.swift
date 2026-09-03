@@ -218,6 +218,24 @@ class SolarManager: EnergyManager {
         )
     }
 
+    func fetchCarChargingTotal(from: Date, to: Date) async throws -> Double? {
+        try await fetchSensorTotalsBy(
+            ids: getCharingStationSensorIds(), from: from, to: to
+        )
+    }
+
+    func fetchHeatpumpTotal(from: Date, to: Date) async throws -> Double? {
+        try await fetchSensorTotalsBy(
+            ids: getHeatpumpSensorIds(), from: from, to: to
+        )
+    }
+
+    func fetchBoilerTotal(from: Date, to: Date) async throws -> Double? {
+        try await fetchSensorTotalsBy(
+            ids: getBoilerSensorIds(), from: from, to: to
+        )
+    }
+
     func fetchSolarDetails() async throws -> SolarDetailsData {
         try await ensureSmId()
 
@@ -343,7 +361,7 @@ class SolarManager: EnergyManager {
         return try await solarManagerApi.getV3DynamicTariff(solarManagerId: smId)
     }
 
-    func fetchTodaysBatteryHistory() async throws -> [BatteryHistory] {
+    func fetchBatteryHistory(from: Date, to: Date) async throws -> [BatteryHistory] {
         try await ensureSensorInfosAreCurrent()
 
         guard let sensorInfos = self.sensorInfos else {
@@ -359,15 +377,12 @@ class SolarManager: EnergyManager {
             return []
         }
 
-        let todayStart = Date.todayStartOfDay()
-        let todayEnd = Date.todayEndOfDay()
-
         var result: [BatteryHistory] = []  // Array to hold the results
         for batterySensorId in batterySensorIds {
             let response = try await solarManagerApi.getV3DeviceDataRange(
                 device: batterySensorId,
-                from: todayStart,
-                to: todayEnd
+                from: from,
+                to: to
             )
 
             let items: [BatteryHistoryItem] =
@@ -854,6 +869,41 @@ class SolarManager: EnergyManager {
             )
             if let data {
                 total += data.totalConsumption
+            }
+        }
+        return total
+    }
+
+    /// Same aggregate as `fetchSensorTotalsBy(ids:period:)` but for an
+    /// arbitrary range, summing the per-interval `iWh` of the device data
+    /// endpoint. `/v1/consumption/sensor` only knows "day / week / month
+    /// ending now", so this is the only way to put a number next to a chart
+    /// the user has scrolled back in time.
+    ///
+    /// Returns `nil` for ranges longer than a year: sampling those would mean
+    /// dozens of requests per device for a single figure.
+    private func fetchSensorTotalsBy(
+        ids: [String], from: Date, to: Date
+    ) async throws -> Double? {
+        guard !ids.isEmpty else { return 0 }
+        guard let plan = DeviceRangeSamplingPlan(from: from, to: to) else {
+            return nil
+        }
+
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        var total: Double = 0
+        for sensorId in ids {
+            for chunk in plan.chunks {
+                let data = try? await solarManagerApi.getV3DeviceDataRange(
+                    device: sensorId,
+                    from: chunk.start,
+                    to: chunk.end,
+                    interval: plan.interval
+                )
+                total += data?.data.reduce(0) { $0 + $1.iWh } ?? 0
             }
         }
         return total

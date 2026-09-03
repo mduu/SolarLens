@@ -2,11 +2,30 @@ import Charts
 import SwiftUI
 
 struct GridTodayCard: View {
+    /// Everything loaded so far — the marks come from here so the chart has
+    /// something to show on both sides of the visible window while scrolling.
     let mainData: MainData?
     let tariffSettings: TariffSettingsV3Response?
     let fallbackTariff: TariffV1Response?
 
+    /// The window on screen. Totals, costs and the y axis describe this, not
+    /// the whole loaded range.
+    var window: Range<Date>?
+    var windowLabel: String = String(localized: "Today")
+    var scrollConfig: ChartTimeScrollConfig?
+
+    /// The part of the visible window that is still ahead, shaded so today's
+    /// empty evening does not read as missing data.
+    var futureShading: ChartFutureShading?
+
     @Environment(\.locale) private var locale
+
+    // `window` is in real time, the sample dates are not — see `ChartPlotSpace`.
+    private var visibleSamples: [MainDataItem] {
+        let all = mainData?.data ?? []
+        guard let window else { return all }
+        return all.filter { window.contains(ChartPlotSpace.fromApi($0.date)) }
+    }
 
     private func localizedString(_ key: String) -> String {
         let bundle = Bundle.main
@@ -18,7 +37,7 @@ struct GridTodayCard: View {
     }
 
     var body: some View {
-        let data = mainData?.data ?? []
+        let data = visibleSamples
         let totalImport = data.reduce(0.0) { $0 + $1.importedOverTimeWhatthours }
         let totalExport = data.reduce(0.0) { $0 + $1.exportedOverTimeWhatthours }
         let importCost = TariffCalculator.gridImportCost(
@@ -37,7 +56,7 @@ struct GridTodayCard: View {
                 Image(systemName: "chart.xyaxis.line")
                     .font(.caption)
                     .foregroundStyle(.primary.opacity(0.7))
-                Text("Today")
+                Text(windowLabel)
                     .font(.caption)
                     .foregroundStyle(.primary.opacity(0.7))
             }
@@ -102,7 +121,7 @@ struct GridTodayCard: View {
 
             // Chart
             if let mainData, !mainData.data.isEmpty {
-                let maxKW = mainData.data.map {
+                let maxKW = data.map {
                     max(
                         $0.importedOverTimeWhatthours * 12 / 1000,
                         $0.exportedOverTimeWhatthours * 12 / 1000
@@ -118,6 +137,8 @@ struct GridTodayCard: View {
                     )
                 }
                 .chartYScale(domain: 0...max(maxKW * 1.1, 0.5))
+                .chartFutureShading(futureShading)
+                .chartTimeScroll(scrollConfig)
                 .chartYAxis {
                     AxisMarks(preset: .automatic) { _ in
                         AxisGridLine()

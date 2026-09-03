@@ -22,7 +22,7 @@ struct TodayChartSheet: View {
                 Spacer(minLength: 0)
             }
         }
-        .navigationTitle("Today")
+        .navigationTitle("Solar Production")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

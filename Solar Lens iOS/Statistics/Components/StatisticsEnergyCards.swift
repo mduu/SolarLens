@@ -11,11 +11,20 @@ struct StatisticsEnergyCards: View {
     var hasBattery: Bool = false
     var hasCarChargingStation: Bool = false
 
+    /// Measured grid figures, where the caller has them. Summed samples beat
+    /// deriving import/export from the self-consumption rate.
+    var gridImportOverride: Double?
+    var gridExportOverride: Double?
+
     private var consumption: Double { statistics.consumption ?? 0 }
     private var production: Double { statistics.production ?? 0 }
     private var selfConsumption: Double { statistics.selfConsumption ?? 0 }
-    private var gridImport: Double { max(0, consumption - selfConsumption) }
-    private var gridExport: Double { max(0, production - selfConsumption) }
+    private var gridImport: Double {
+        gridImportOverride ?? max(0, consumption - selfConsumption)
+    }
+    private var gridExport: Double {
+        gridExportOverride ?? max(0, production - selfConsumption)
+    }
     private var showCarCharging: Bool { hasCarChargingStation && carCharged != nil }
     private var showHeatpump: Bool { (heatpumpConsumed ?? 0) > 0 }
     private var showBoiler: Bool { (boilerConsumed ?? 0) > 0 }

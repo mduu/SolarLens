@@ -3193,6 +3193,35 @@
         }
       }
     },
+    "at end of day" : {
+      "comment" : "Qualifier next to the battery level when the sheet shows a past day.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ved dagens slutning"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "am Tagesende"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "en fin de journée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a fine giornata"
+          }
+        }
+      }
+    },
     "Autarky" : {
       "localizations" : {
         "da" : {
@@ -6580,6 +6609,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Livello della batteria della mia auto"
+          }
+        }
+      }
+    },
+    "Between %lld%% and %lld%% that day" : {
+      "comment" : "Range the battery level moved in on a past day; placeholders are the lowest and highest level.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den dag mellem %lld%% og %lld%%"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An dem Tag zwischen %lld%% und %lld%%"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce jour-là entre %lld%% et %lld%%"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quel giorno tra %lld%% e %lld%%"
           }
         }
       }
@@ -10835,6 +10893,35 @@
         }
       }
     },
+    "Electricity costs, 7 days to %@" : {
+      "comment" : "Title of the grid cost list when the user has scrolled back; the placeholder is the last day shown.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elomkostninger, 7 dage til %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stromkosten, 7 Tage bis %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coûts électricité, 7 jours au %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Costi elettricità, 7 giorni al %@"
+          }
+        }
+      }
+    },
     "Email" : {
       "localizations" : {
         "da" : {
@@ -13573,6 +13660,35 @@
         }
       }
     },
+    "Jump to now" : {
+      "comment" : "Accessibility label of the button that returns a scrolled chart to the current period.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gå til nu"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur Gegenwart springen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revenir à maintenant"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Torna ad adesso"
+          }
+        }
+      }
+    },
     "just now" : {
       "localizations" : {
         "da" : {
@@ -15302,6 +15418,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prossima elaborazione in background pianificata per %@"
+          }
+        }
+      }
+    },
+    "Next period" : {
+      "comment" : "Accessibility label of the button that scrolls a chart one period forward in time.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Næste periode"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster Zeitraum"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Période suivante"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Periodo successivo"
           }
         }
       }
@@ -17970,6 +18115,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Realizzato da:"
+          }
+        }
+      }
+    },
+    "Previous period" : {
+      "comment" : "Accessibility label of the button that scrolls a chart one period back in time.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forrige periode"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorheriger Zeitraum"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Période précédente"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Periodo precedente"
           }
         }
       }
@@ -21670,6 +21844,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ID Solar Manager:"
+          }
+        }
+      }
+    },
+    "Solar Manager reports car charging, heat pump and boiler consumption per device only — for ranges up to one year." : {
+      "comment" : "Explains why the car charging, heat pump and boiler cards are missing for a long statistics range.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Manager rapporterer forbrug for bilopladning, varmepumpe og vandvarmer kun pr. enhed – og kun for perioder op til ét år."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Manager liefert Verbrauchswerte für Autoladen, Wärmepumpe und Boiler nur pro Gerät – und nur für Zeiträume bis zu einem Jahr."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Manager ne fournit la consommation de la recharge, de la pompe à chaleur et du chauffe-eau que par appareil, et uniquement pour des périodes allant jusqu'à un an."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar Manager fornisce i consumi di ricarica auto, pompa di calore e boiler solo per dispositivo e solo per intervalli fino a un anno."
           }
         }
       }
@@ -25846,6 +26049,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sì, disconnetti"
+          }
+        }
+      }
+    },
+    "Yesterday" : {
+      "comment" : "Label above a chart when the visible day is the day before today.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I går"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ieri"
           }
         }
       }

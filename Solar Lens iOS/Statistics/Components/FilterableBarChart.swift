@@ -11,6 +11,8 @@ enum XLabelFormat {
 }
 
 struct FilterableBarChart: View {
+    /// Every bucket loaded so far. The marks come from here so scrolling
+    /// reveals history that is already on hand.
     var data: [DayStatistic]
     var xUnit: Calendar.Component
     var xLabelFormat: XLabelFormat
@@ -20,22 +22,35 @@ struct FilterableBarChart: View {
     @Binding var showExport: Bool
     var chartHeight: CGFloat = 200
 
+    /// The buckets inside the visible window. Axis density, the kWh/MWh
+    /// decision and the y scale follow this, so scrolling onto a quiet week
+    /// does not flatten it against a busy month's peak.
+    var visibleData: [DayStatistic]?
+    var scrollConfig: ChartTimeScrollConfig?
+
     private let productionColor: Color = .orange
     private let consumptionColor: Color = .blue.opacity(0.9)
     private let importColor: Color = Color(red: 1.0, green: 0.3, blue: 0.15)
     private let exportColor: Color = .purple.opacity(0.9)
 
-    /// Max Wh value across all data — drives kWh vs MWh decision
+    private var scaleReference: [DayStatistic] { visibleData ?? data }
+
+    /// Max Wh value across the visible buckets — drives kWh vs MWh decision
     private var maxWh: Double {
-        data.map { max($0.production, $0.consumption, $0.imported, $0.exported) }.max() ?? 0
+        scaleReference.map { max($0.production, $0.consumption, $0.imported, $0.exported) }
+            .max() ?? 0
     }
 
     private var useMWh: Bool { maxWh >= 1_000_000 }
     private var yDivisor: Double { useMWh ? 1_000_000 : 1000 }
 
+    /// Number of buckets on screen, which is what the axis has to stay
+    /// readable for.
+    private var visibleCount: Int { scaleReference.count }
+
     /// How many data points to skip between x-axis labels so they stay readable
     private var xAxisStride: Int {
-        let count = data.count
+        let count = visibleCount
         switch xLabelFormat {
         case .weekday:
             return 1
@@ -101,6 +116,8 @@ struct FilterableBarChart: View {
                         }
                     }
                 }
+                .chartYScale(domain: 0...yScaleMax)
+                .chartTimeScroll(scrollConfig)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: xUnit, count: xAxisStride)) { value in
                         if let date = value.as(Date.self) {
@@ -109,15 +126,15 @@ struct FilterableBarChart: View {
                                 case .weekday:
                                     Text(date, format: .dateTime.weekday(.abbreviated))
                                 case .dayOfMonth:
-                                    if data.count > 120 {
+                                    if visibleCount > 120 {
                                         Text(date, format: .dateTime.month(.abbreviated))
-                                    } else if data.count > 14 {
+                                    } else if visibleCount > 14 {
                                         Text(date, format: .dateTime.day(.twoDigits).month(.abbreviated))
                                     } else {
                                         Text(date, format: .dateTime.day())
                                     }
                                 case .isoWeekNumber:
-                                    if data.count > 5 {
+                                    if visibleCount > 5 {
                                         Text(date, format: .dateTime.month(.abbreviated))
                                     } else {
                                         Text("W\(Calendar(identifier: .iso8601).component(.weekOfYear, from: date))")
@@ -160,6 +177,26 @@ struct FilterableBarChart: View {
             // Toggle buttons
             seriesToggleBar
         }
+    }
+
+    /// Top of the y axis, derived from the enabled series in the visible
+    /// window. Swift Charts would otherwise scale to every loaded bucket,
+    /// which shrinks the window the user is actually reading.
+    private var yScaleMax: Double {
+        let peak =
+            scaleReference
+            .map { item in
+                var candidates: [Double] = []
+                if showProduction { candidates.append(item.production) }
+                if showConsumption { candidates.append(item.consumption) }
+                if showImport { candidates.append(item.imported) }
+                if showExport { candidates.append(item.exported) }
+                return candidates.max() ?? 0
+            }
+            .max() ?? 0
+
+        guard peak > 0 else { return 1 }
+        return peak / yDivisor * 1.1
     }
 
     private var seriesToggleBar: some View {

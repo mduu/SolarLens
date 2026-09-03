@@ -115,6 +115,18 @@ class FakeEnergyManager: EnergyManager {
         return 9100
     }
 
+    func fetchCarChargingTotal(from: Date, to: Date) async throws -> Double? {
+        return 32400
+    }
+
+    func fetchHeatpumpTotal(from: Date, to: Date) async throws -> Double? {
+        return 18750
+    }
+
+    func fetchBoilerTotal(from: Date, to: Date) async throws -> Double? {
+        return 9100
+    }
+
     func fetchChargingData() async throws -> CharingInfoData {
         return CharingInfoData(
             totalCharedToday: 32400,
@@ -140,7 +152,7 @@ class FakeEnergyManager: EnergyManager {
         )
     }
 
-    func fetchTodaysBatteryHistory() async throws -> [BatteryHistory] {
+    func fetchBatteryHistory(from: Date, to: Date) async throws -> [BatteryHistory] {
         return BatteryHistory.fakeHistory()
     }
 
@@ -179,7 +191,7 @@ class FakeEnergyManager: EnergyManager {
         )
     }
 
-    func fetchMainData(from: Date, to: Date) async throws -> MainData
+    func fetchMainData(from: Date, to: Date, interval: Int) async throws -> MainData
     {
         return MainData.fake()
     }

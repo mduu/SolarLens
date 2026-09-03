@@ -9,64 +9,81 @@ struct ChartView: View {
     @AppStorage("showBatteryDischarging") private var showBatteryDischarging: Bool = false
     @AppStorage("showBatteryPercentag") private var showBatteryPercentage: Bool = true
 
-    @State var viewModel = ChartViewModel()
+    @State private var navigator = ChartTimeNavigator(page: .day)
+    @State var store = IntradayChartStore()
     @State private var refreshTimer: Timer?
+
+    /// The marks the chart draws. Held as one long-lived object, refreshed
+    /// only after a load: handing Swift Charts a freshly built series on every
+    /// render makes it re-anchor its scroll offset.
+    @State private var chartData = MainData(data: [])
+    @State private var chartBatteries: [BatteryHistory] = []
+    @State private var futureShading: ChartFutureShading?
 
     private var isLandscape: Bool { verticalSizeClass == .compact }
 
+    /// The samples the visible day actually holds — everything below reads
+    /// from here, so the numbers always describe what is on screen.
+    private var visibleItems: [MainDataItem] {
+        store.items(in: navigator.window)
+    }
+
     var body: some View {
-        ZStack {
+        VStack(spacing: 8) {
+            ChartTimeHeader(navigator: navigator, isLoading: store.isLoading)
 
-            VStack {
-                if viewModel.error == nil && viewModel.errorMessage == nil {
-
-                    if viewModel.consumptionData != nil {
-
-                        if isLandscape {
-                            landscapeContent
-                        } else {
-                            portraitContent
-                        }
-
-                    } else if !viewModel.isLoading {
+            ZStack {
+                VStack {
+                    if visibleItems.isEmpty && !store.isLoading {
                         Spacer()
                         Text("No data")
                             .font(.footnote)
                         Spacer()
+                    } else if isLandscape {
+                        landscapeContent
+                    } else {
+                        portraitContent
                     }
+                }
+                .padding(8)
 
+                if store.isLoading && visibleItems.isEmpty {
+                    ProgressView()
+                        .tint(.accent)
+                        .frame(width: 50, height: 50)
+                        .padding()
                 }
             }
-            .padding(8)
-
-            if viewModel.isLoading {
-                ProgressView()
-                    .tint(.accent)
-                    .frame(width: 50, height: 50)
-                    .padding()
-            }
+        }
+        .task(id: navigator.windowStart) {
+            // Scrolling walks through days quickly; settle first so a flick
+            // across a week does not fire a request per day passed.
+            try? await Task.sleep(for: .milliseconds(250))
+            guard !Task.isCancelled else { return }
+            await store.ensureLoaded(around: navigator.window)
+            refreshChartData()
+        }
+        .task {
+            await applyEarliestDate()
         }
         .onAppear {
-            Task {
-                await viewModel.fetch()
-
-                if refreshTimer == nil {
-                    refreshTimer = Timer.scheduledTimer(
-                        withTimeInterval: 300,
-                        repeats: true
-                    ) { _ in
-                        Task {
-                            await viewModel.fetch()
-                        }
+            if refreshTimer == nil {
+                refreshTimer = Timer.scheduledTimer(
+                    withTimeInterval: 300,
+                    repeats: true
+                ) { _ in
+                    Task { @MainActor in
+                        guard navigator.isAtPresent else { return }
+                        store.invalidateToday()
+                        await store.ensureLoaded(around: navigator.window)
+                        refreshChartData()
                     }
                 }
             }
         }
         .onDisappear {
-            if refreshTimer != nil {
-                refreshTimer?.invalidate()
-                refreshTimer = nil
-            }
+            refreshTimer?.invalidate()
+            refreshTimer = nil
         }
     }
 
@@ -103,14 +120,17 @@ struct ChartView: View {
     private var chartWithToggles: some View {
         VStack(spacing: 12) {
             OverviewChart(
-                consumption: viewModel.consumptionData!,
-                batteries: viewModel.batteryHistory ?? [],
+                consumption: chartData,
+                batteries: chartBatteries,
                 showProduction: showProduction,
                 showConsumption: showConsumption,
                 showBatteryCharge: showBatteryCharging,
                 showBatteryDischange: showBatteryDischarging,
                 showBatteryPercentage: showBatteryPercentage,
-                showLegend: false
+                showLegend: false,
+                scrollConfig: navigator.scrollConfig(),
+                yMaxOverride: yMax,
+                futureShading: futureShading
             )
 
             VStack(spacing: 4) {
@@ -129,60 +149,69 @@ struct ChartView: View {
 
     @ViewBuilder
     private var infoCards: some View {
-        let solarPeak = getMaxProductionkW()
+        let isToday = navigator.isAtPresent
+
         TodaySolarView(
-            peakProductionInW: solarPeak,
-            currentSolarProductionInW: buildingModel
-                .overviewData.currentSolarProduction,
-            todaySolarProductionInWh: buildingModel
-                .overviewData.todayProduction ?? 0
+            peakProductionInW: getMaxProductionkW(),
+            currentSolarProductionInW: isToday
+                ? buildingModel.overviewData.currentSolarProduction : nil,
+            todaySolarProductionInWh: visibleItems.reduce(0) {
+                $0 + $1.productionOverTimeWatthours
+            }
         )
 
-        let consumptionPeak = getMaxConsumptionkW()
         TodayConsumptionView(
-            peakConsumptionInW: consumptionPeak,
-            currentConsumptionInW: buildingModel
-                .overviewData.currentOverallConsumption,
-            todayConsumptionInWh: buildingModel
-                .overviewData.todayConsumption ?? 0
+            peakConsumptionInW: getMaxConsumptionkW(),
+            currentConsumptionInW: isToday
+                ? buildingModel.overviewData.currentOverallConsumption : nil,
+            todayConsumptionInWh: visibleItems.reduce(0) {
+                $0 + $1.consumptionOverTimeWatthours
+            }
         )
     }
 
     // MARK: - Helpers
 
-    private func getMaxProductionkW() -> Double {
-        guard let consumptionData = viewModel.consumptionData else { return 0 }
-        guard consumptionData.data.isEmpty == false else { return 0 }
+    private func refreshChartData() {
+        chartData.data = store.marks(around: navigator.window)
+        chartBatteries = store.batteryMarks(around: navigator.window)
+        futureShading = ChartFutureShading(window: navigator.window)
+    }
 
-        let maxProduction: Double? = consumptionData.data
-            .map { Double($0.productionWatts) / 1000 }
+    /// Peak of the visible day, so scrolling onto an overcast day does not
+    /// squash its curve against the axis of a sunny neighbour.
+    private var yMax: Double? {
+        let peak = visibleItems
+            .map { max($0.productionWatts, $0.consumptionWatts) / 1000 }
             .max()
+        guard let peak, peak > 0.005 else { return nil }
+        return peak * 1.1
+    }
 
-        guard let maxProduction else { return 0 }
-        return maxProduction
+    private func getMaxProductionkW() -> Double {
+        visibleItems.map { $0.productionWatts / 1000 }.max() ?? 0
     }
 
     private func getMaxConsumptionkW() -> Double {
-        guard let consumptionData = viewModel.consumptionData else { return 0 }
-        guard consumptionData.data.isEmpty == false else { return 0 }
+        visibleItems.map { $0.consumptionWatts / 1000 }.max() ?? 0
+    }
 
-        let maxConsumption: Double? = consumptionData.data
-            .map { Double($0.consumptionWatts) / 1000 }
-            .max()
-
-        guard let maxConsumption else { return 0 }
-        return maxConsumption
+    /// Stops the user from scrolling back past the day the Solar Manager
+    /// installation was registered — there is no data before that.
+    private func applyEarliestDate() async {
+        guard let info = try? await SolarManager.shared.fetchServerInfo(),
+            let registered = info.registrationDate
+        else { return }
+        navigator.setEarliest(registered)
     }
 }
 
 #Preview {
-    ChartView(
-        viewModel: ChartViewModel.previewFake()
-    )
-    .frame(maxHeight: 350)
-    .environment(
-        CurrentBuildingState.fake(
-            overviewData: OverviewData.fake()
+    ChartView(store: IntradayChartStore(energyManager: FakeEnergyManager.instance()))
+        .frame(maxHeight: 350)
+        .environment(
+            CurrentBuildingState.fake(
+                overviewData: OverviewData.fake()
+            )
         )
-    )
 }
