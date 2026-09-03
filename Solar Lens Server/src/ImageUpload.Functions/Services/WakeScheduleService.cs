@@ -200,8 +200,22 @@ public class WakeScheduleService
             }
         }
 
+        // Queue a message only when the pending slot is new or has moved.
+        // A renewal that keeps NextFireAt must not enqueue: the message for
+        // that slot is already in the queue, and a second one would be sent
+        // too — both carry the row's exact fire time, so the sender's
+        // staleness check cannot tell them apart.
+        //
+        // Enqueue before writing the row: an orphaned message (row write
+        // fails) is dropped by the sender's row check, whereas a row without
+        // a message would never fire.
+        var pendingSlotUnchanged = existing is not null
+            && existing.NextFireAt == entity.NextFireAt;
+        if (!pendingSlotUnchanged)
+        {
+            await EnqueueAsync(entity, now);
+        }
         await table.UpsertEntityAsync(entity, TableUpdateMode.Replace);
-        await EnqueueAsync(entity, now);
         logger.LogInformation(
             "Wake schedule upserted: device {Device}, kind {Kind}, next {Next}",
             Redact(deviceToken), entity.Kind, entity.NextFireAt);
@@ -306,13 +320,38 @@ public class WakeScheduleService
 
         if (entity.Until is { } until && next > until)
         {
-            await table.DeleteEntityAsync(entity.PartitionKey, entity.RowKey);
+            try
+            {
+                await table.DeleteEntityAsync(
+                    entity.PartitionKey, entity.RowKey, entity.ETag);
+            }
+            catch (RequestFailedException ex) when (ex.Status == 412)
+            {
+                // Another worker touched the row first; leave it to them.
+                return true;
+            }
             return false;
         }
 
         entity.NextFireAt = next;
         entity.UpdatedAt = now;
-        await table.UpdateEntityAsync(entity, ETag.All, TableUpdateMode.Replace);
+        try
+        {
+            // The ETag is the duplicate killer: when the same slot is being
+            // processed twice in parallel (queue delivery is at-least-once),
+            // only one worker advances the row — the loser gets a 412 and
+            // must not queue the next occurrence, otherwise one duplicate
+            // becomes a duplicate of every slot that follows.
+            await table.UpdateEntityAsync(
+                entity, entity.ETag, TableUpdateMode.Replace);
+        }
+        catch (RequestFailedException ex) when (ex.Status == 412)
+        {
+            logger.LogInformation(
+                "Window {ScheduleId} was advanced by a parallel worker — not queueing a second occurrence",
+                entity.RowKey);
+            return true;
+        }
         await EnqueueAsync(entity, now);
         return true;
     }
@@ -330,6 +369,47 @@ public class WakeScheduleService
         {
             // Already cancelled by the device — nothing to do.
         }
+    }
+
+    /// <summary>
+    /// Heals schedules whose queue message went missing (lost, purged, or a
+    /// crash between enqueue and row write in an older version). Skipping the
+    /// enqueue on unchanged renewals makes such a row permanent otherwise: a
+    /// stale deadline is dropped, an overdue window is moved to its next
+    /// future slot and re-queued.
+    /// </summary>
+    public async Task<int> RepairOverdueAsync(DateTimeOffset now)
+    {
+        await EnsureTableAsync();
+        var cutoff = now - TimeSpan.FromHours(1);
+        var overdue = new List<WakeScheduleEntity>();
+        var filter = TableClient.CreateQueryFilter($"NextFireAt lt {cutoff}");
+        var query = table.QueryAsync<WakeScheduleEntity>(filter);
+        await foreach (var entity in query) overdue.Add(entity);
+
+        var repaired = 0;
+        foreach (var entity in overdue)
+        {
+            if (entity.Kind == WakeKinds.Deadline)
+            {
+                // An hour late is far past the device's own fallback; the
+                // push would only confuse.
+                await table.DeleteEntityAsync(
+                    entity.PartitionKey, entity.RowKey);
+            }
+            else
+            {
+                await AdvanceWindowAsync(entity, now);
+            }
+            repaired++;
+        }
+        if (repaired > 0)
+        {
+            logger.LogWarning(
+                "Repaired {Count} schedules whose queue message had gone missing",
+                repaired);
+        }
+        return repaired;
     }
 
     /// <summary>Removes rows that outlived their window (defensive; the normal path deletes them).</summary>

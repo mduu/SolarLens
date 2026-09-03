@@ -50,6 +50,7 @@ public class DailyHousekeepingFunction
         // Defensive: a wake schedule normally removes itself when it fires or
         // when the device cancels it. This catches rows that outlived their
         // window anyway.
+        await schedules.RepairOverdueAsync(DateTimeOffset.UtcNow);
         var removed = await schedules.CleanupExpiredAsync(DateTimeOffset.UtcNow);
         if (removed > 0)
         {
