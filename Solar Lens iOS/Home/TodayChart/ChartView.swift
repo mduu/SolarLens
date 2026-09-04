@@ -9,8 +9,11 @@ struct ChartView: View {
     @AppStorage("showBatteryDischarging") private var showBatteryDischarging: Bool = false
     @AppStorage("showBatteryPercentag") private var showBatteryPercentage: Bool = true
 
-    @State private var navigator = ChartTimeNavigator(page: .day)
-    @State var store = IntradayChartStore()
+    /// Both owned by the presenting sheet: the day switcher lives in its
+    /// navigation bar, so it needs the same navigator and loading state.
+    let navigator: ChartTimeNavigator
+    let store: IntradayChartStore
+
     @State private var refreshTimer: Timer?
 
     /// The marks the chart draws. Held as one long-lived object, refreshed
@@ -30,8 +33,6 @@ struct ChartView: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            ChartTimeHeader(navigator: navigator, isLoading: store.isLoading)
-
             ZStack {
                 VStack {
                     if visibleItems.isEmpty && !store.isLoading {
@@ -207,11 +208,14 @@ struct ChartView: View {
 }
 
 #Preview {
-    ChartView(store: IntradayChartStore(energyManager: FakeEnergyManager.instance()))
-        .frame(maxHeight: 350)
-        .environment(
-            CurrentBuildingState.fake(
-                overviewData: OverviewData.fake()
-            )
+    ChartView(
+        navigator: ChartTimeNavigator(page: .day),
+        store: IntradayChartStore(energyManager: FakeEnergyManager.instance())
+    )
+    .frame(maxHeight: 350)
+    .environment(
+        CurrentBuildingState.fake(
+            overviewData: OverviewData.fake()
         )
+    )
 }

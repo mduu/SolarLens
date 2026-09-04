@@ -42,7 +42,8 @@ struct GridSheet: View {
             guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
             day = next
         }
-        weekData = summaries
+        // Newest day on top, oldest at the bottom.
+        weekData = summaries.reversed()
     }
 
     var body: some View {
