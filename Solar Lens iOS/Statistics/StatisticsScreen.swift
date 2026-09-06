@@ -4,10 +4,7 @@ import SwiftUI
 struct StatisticsScreen: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @State private var viewModel = StatisticsViewModel()
-    @State private var shareURLs: [URL] = []
-    @State private var showShareSheet = false
-    @State private var showExportFormatPicker = false
-    @State private var isExporting = false
+    @State private var showValues = false
 
     /// The marks the charts draw. Refreshed only after a load, so a render
     /// triggered by anything else does not hand Swift Charts a freshly built
@@ -88,7 +85,7 @@ struct StatisticsScreen: View {
 
                                 Spacer()
 
-                                exportButton
+                                valuesButton
                             }
 
                             // Row 2: resolution picker
@@ -106,7 +103,7 @@ struct StatisticsScreen: View {
                     HStack(spacing: 12) {
                         timeNavigation
                         if viewModel.selectedPeriod != .custom {
-                            exportButton
+                            valuesButton
                         }
                     }
                     .padding(.horizontal)
@@ -122,14 +119,6 @@ struct StatisticsScreen: View {
                 }
             }
             .navigationBarHidden(true)
-            .sheet(isPresented: $showShareSheet) {
-                ShareSheet(activityItems: shareURLs)
-            }
-            .confirmationDialog("Export Format", isPresented: $showExportFormatPicker) {
-                Button("CSV") { exportStatistics(format: .csv) }
-                Button("Excel (.xlsx)") { exportStatistics(format: .xlsx) }
-                Button("Cancel", role: .cancel) {}
-            }
         }
         .onChange(of: viewModel.selectedPeriod) {
             viewModel.periodChanged()
@@ -306,47 +295,68 @@ struct StatisticsScreen: View {
         }
     }
 
-    // MARK: - Export
+    // MARK: - Values table
 
+    /// The series the chart is drawing right now — the table shows a column
+    /// per bar on screen and nothing else.
+    private var enabledSeries: [StatisticsSeries] {
+        var result: [StatisticsSeries] = []
+        if showProduction.wrappedValue { result.append(.production) }
+        if showConsumption.wrappedValue { result.append(.consumption) }
+        if showImport.wrappedValue { result.append(.imported) }
+        if showExport.wrappedValue { result.append(.exported) }
+        return result
+    }
+
+    /// Bars carry no tooltip on a touch screen, so the figures behind them get
+    /// a button of their own. Only the bar chart has them; the intraday chart
+    /// on the Today tab is a different shape of data.
     @ViewBuilder
-    private var exportButton: some View {
-        if viewModel.exportableData != nil {
+    private var valuesButton: some View {
+        if let bucket = viewModel.bucket {
             Button {
-                showExportFormatPicker = true
+                showValues = true
             } label: {
-                if isExporting {
-                    ProgressView().controlSize(.mini)
-                } else {
-                    Image(systemName: "square.and.arrow.up")
-                }
+                Image(systemName: "list.bullet.rectangle")
             }
             .tint(.primary)
-            .disabled(isExporting)
+            .accessibilityLabel("Values")
+            .popover(isPresented: $showValues) {
+                ChartValuesSheet(
+                    title: viewModel.windowLabel,
+                    rows: visibleBars,
+                    bucket: bucket.calendarComponent,
+                    series: enabledSeries,
+                    exportFile: exportFile
+                )
+                .presentationCompactAdaptation(.sheet)
+            }
         }
     }
 
-    private func exportStatistics(format: ExportFormat) {
-        isExporting = true
-        Task {
-            defer { isExporting = false }
-            do {
-                let url: URL
-                // High-resolution export: one timestamped row per interval.
-                if let intervals = await viewModel.intervalDataForExport() {
-                    url = try StatisticsExporter.exportIntervals(data: intervals, format: format)
-                } else {
-                    guard let data = viewModel.exportableData, !data.isEmpty else { return }
-                    url = try StatisticsExporter.export(
-                        data: data,
-                        periodLabel: viewModel.selectedPeriod.rawValue,
-                        format: format
-                    )
-                }
-                shareURLs = [url]
-                showShareSheet = true
-            } catch {
-                // Silently fail — file write errors are unlikely for temp directory
+    // MARK: - Export
+
+    /// Writes what the chart is showing to a file. Handed to the values sheet,
+    /// which is where exporting is offered from — the figures are on screen
+    /// there, so the file is described by what the user just read.
+    private func exportFile(format: ExportFormat) async -> URL? {
+        do {
+            // High-resolution export: one timestamped row per interval.
+            if let intervals = await viewModel.intervalDataForExport() {
+                return try StatisticsExporter.exportIntervals(
+                    data: intervals, format: format
+                )
             }
+
+            guard let data = viewModel.exportableData, !data.isEmpty else { return nil }
+            return try StatisticsExporter.export(
+                data: data,
+                periodLabel: viewModel.selectedPeriod.rawValue,
+                format: format
+            )
+        } catch {
+            // Silently fail — file write errors are unlikely for temp directory
+            return nil
         }
     }
 

@@ -38,10 +38,10 @@ struct FilterableBarChart: View {
     /// Where "now" falls in the window, while the window is still running.
     var futureShading: ChartFutureShading?
 
-    private let productionColor: Color = .orange
-    private let consumptionColor: Color = .blue.opacity(0.9)
-    private let importColor: Color = Color(red: 1.0, green: 0.3, blue: 0.15)
-    private let exportColor: Color = .purple.opacity(0.9)
+    private let productionColor = StatisticsSeries.production.color
+    private let consumptionColor = StatisticsSeries.consumption.color
+    private let importColor = StatisticsSeries.imported.color
+    private let exportColor = StatisticsSeries.exported.color
 
     private var scaleReference: [DayStatistic] { visibleData ?? data }
 
@@ -99,32 +99,32 @@ struct FilterableBarChart: View {
                                 x: .value("Period", item.day, unit: xUnit),
                                 y: .value("Energy", item.production / yDivisor)
                             )
-                            .foregroundStyle(by: .value("Type", "Solar"))
-                            .position(by: .value("Type", "Solar"))
+                            .foregroundStyle(by: .value("Type", StatisticsSeries.production.markKey))
+                            .position(by: .value("Type", StatisticsSeries.production.markKey))
                         }
                         if showConsumption {
                             BarMark(
                                 x: .value("Period", item.day, unit: xUnit),
                                 y: .value("Energy", item.consumption / yDivisor)
                             )
-                            .foregroundStyle(by: .value("Type", "Consumption"))
-                            .position(by: .value("Type", "Consumption"))
+                            .foregroundStyle(by: .value("Type", StatisticsSeries.consumption.markKey))
+                            .position(by: .value("Type", StatisticsSeries.consumption.markKey))
                         }
                         if showImport {
                             BarMark(
                                 x: .value("Period", item.day, unit: xUnit),
                                 y: .value("Energy", item.imported / yDivisor)
                             )
-                            .foregroundStyle(by: .value("Type", "Grid Import"))
-                            .position(by: .value("Type", "Grid Import"))
+                            .foregroundStyle(by: .value("Type", StatisticsSeries.imported.markKey))
+                            .position(by: .value("Type", StatisticsSeries.imported.markKey))
                         }
                         if showExport {
                             BarMark(
                                 x: .value("Period", item.day, unit: xUnit),
                                 y: .value("Energy", item.exported / yDivisor)
                             )
-                            .foregroundStyle(by: .value("Type", "Grid Export"))
-                            .position(by: .value("Type", "Grid Export"))
+                            .foregroundStyle(by: .value("Type", StatisticsSeries.exported.markKey))
+                            .position(by: .value("Type", StatisticsSeries.exported.markKey))
                         }
                     }
                 }
@@ -179,11 +179,13 @@ struct FilterableBarChart: View {
                         }
                     }
                 }
+                // A `KeyValuePairs` literal, not a Dictionary: Swift Charts
+                // takes the pairs in order and infers its scale from them.
                 .chartForegroundStyleScale([
-                    "Solar": productionColor,
-                    "Consumption": consumptionColor,
-                    "Grid Import": importColor,
-                    "Grid Export": exportColor,
+                    StatisticsSeries.production.markKey: StatisticsSeries.production.color,
+                    StatisticsSeries.consumption.markKey: StatisticsSeries.consumption.color,
+                    StatisticsSeries.imported.markKey: StatisticsSeries.imported.color,
+                    StatisticsSeries.exported.markKey: StatisticsSeries.exported.color,
                 ])
                 .chartLegend(.hidden)
                 .frame(height: chartHeight)
@@ -216,10 +218,26 @@ struct FilterableBarChart: View {
 
     private var seriesToggleBar: some View {
         HStack(spacing: 6) {
-            SeriesToggle(label: "Solar", color: productionColor, isOn: $showProduction)
-            SeriesToggle(label: "Consumption", color: consumptionColor, isOn: $showConsumption)
-            SeriesToggle(label: "Import", color: importColor, isOn: $showImport)
-            SeriesToggle(label: "Export", color: exportColor, isOn: $showExport)
+            SeriesToggle(
+                label: StatisticsSeries.production.label,
+                color: StatisticsSeries.production.color,
+                isOn: $showProduction
+            )
+            SeriesToggle(
+                label: StatisticsSeries.consumption.label,
+                color: StatisticsSeries.consumption.color,
+                isOn: $showConsumption
+            )
+            SeriesToggle(
+                label: StatisticsSeries.imported.label,
+                color: StatisticsSeries.imported.color,
+                isOn: $showImport
+            )
+            SeriesToggle(
+                label: StatisticsSeries.exported.label,
+                color: StatisticsSeries.exported.color,
+                isOn: $showExport
+            )
         }
     }
 }
