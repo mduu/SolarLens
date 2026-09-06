@@ -106,9 +106,11 @@ public class ApnsSenderFunction
                     await schedules.AdvanceWindowAsync(schedule, now);
                 }
                 logger.LogInformation(
-                    "Push delivered to {Device} ({PushKind})",
-                    WakeScheduleService.Redact(message.DeviceToken),
-                    message.PushKind);
+                    "wake_push result=delivered push={PushKind} kind={Kind} env={Environment} device={Device}",
+                    message.PushKind,
+                    schedule.Kind,
+                    schedule.Environment,
+                    WakeScheduleService.Redact(message.DeviceToken));
                 return;
 
             case ApnsResultKind.InvalidDevice:
@@ -146,11 +148,12 @@ public class ApnsSenderFunction
             // A deadline push this late is worse than none — the device's own
             // fallback notification has already fired.
             logger.LogWarning(
-                "Dropping push for schedule {ScheduleId} after {Minutes} min of APNs trouble ({Status} {Reason})",
-                message.ScheduleId,
-                (int)age.TotalMinutes,
+                "wake_push result=dropped push={PushKind} status={Status} reason={Reason} after={Minutes}min schedule={ScheduleId}",
+                message.PushKind,
                 result.StatusCode,
-                result.Reason);
+                result.Reason,
+                (int)age.TotalMinutes,
+                message.ScheduleId);
 
             // A window, though, has to be moved on by hand. Only the delivered
             // path advances it, so giving up here used to leave `NextFireAt` in

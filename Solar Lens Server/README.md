@@ -650,6 +650,54 @@ Server-side clamping: silent-push windows are forced to a cadence of at least
 10 minutes and expire after at most 7 days (the app renews them while a run is
 active), and a deadline more than 15 minutes in the past is rejected.
 
+### Monitoring volume and cost
+
+There are no custom App Insights metrics — adding the SDK would mean touching a
+package graph this project has already been bitten by (see the pin note in the
+`.csproj`). Two structured log lines carry the numbers instead, and the queries
+below turn them into the volume behind the bill.
+
+**How many devices use the feature, and what it will cost.** `DailyHousekeeping`
+writes one `wake_usage` line a day at `Warning`, which is the level that
+function is filtered to, so it always survives:
+
+```kusto
+traces
+| where message startswith "wake_usage"
+| parse message with * "devices=" devices:int " windows=" windows:int
+    " deadlines=" deadlines:int " cadence=" cadence:int
+    " projected_pushes_per_day=" projected:int
+| project timestamp, devices, windows, deadlines, projected
+| order by timestamp desc
+```
+
+`projected` is `windows × (1440 / cadence)` — the silent pushes a day, which is
+the linear cost driver because the sender runs one queue execution per push.
+Multiply by 30 for the month and compare against Flex Consumption's **250,000
+free executions**: at the default 15-minute cadence that is 96 pushes per device
+per day, so the free grant covers roughly **85 devices** with a window open
+around the clock. Past that it is $0.40 per million, i.e. cents.
+
+**What actually went out.** `ApnsSender` writes one `wake_push` line per
+outcome:
+
+```kusto
+traces
+| where message startswith "wake_push"
+| parse message with * "result=" result:string " push=" push:string " " *
+| summarize Pushes = sum(itemCount) by bin(timestamp, 1d), result, push
+| order by timestamp desc
+```
+
+`sum(itemCount)` rather than `count()` because traces are sampled and each
+retained item carries the weight of the ones it stands for. `result` is
+`delivered` or `dropped`; a rising `dropped` count is APNs trouble that outlived
+the ten-minute retry budget.
+
+The Functions host also emits `ApnsSender Count` as a pre-aggregated custom
+metric. It is not sampled and needs no parsing, so it is the better source for a
+plain total — but it has no dimensions, which is why the lines above exist.
+
 ### APNs configuration
 
 Token-based auth with a `.p8` key — no certificates, no yearly expiry. Set as

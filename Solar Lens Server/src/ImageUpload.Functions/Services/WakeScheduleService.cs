@@ -437,6 +437,41 @@ public class WakeScheduleService
         return stale.Count;
     }
 
+    /// <summary>
+    /// How many devices use the feature, and for what. Emitted once a day so
+    /// the volume behind the Azure bill is visible without reading the table
+    /// by hand — silent windows are the linear cost driver, one queue
+    /// execution per push, and their count follows the device count.
+    /// </summary>
+    public async Task<WakeUsage> UsageSnapshotAsync()
+    {
+        await EnsureTableAsync();
+        var devices = new HashSet<string>(StringComparer.Ordinal);
+        var windows = 0;
+        var deadlines = 0;
+        var cadenceSum = 0;
+
+        await foreach (var entity in table.QueryAsync<WakeScheduleEntity>())
+        {
+            devices.Add(entity.PartitionKey);
+            if (entity.Kind == WakeKinds.Window)
+            {
+                windows++;
+                cadenceSum += entity.CadenceMinutes ?? 0;
+            }
+            else
+            {
+                deadlines++;
+            }
+        }
+
+        return new WakeUsage(
+            devices.Count,
+            windows,
+            deadlines,
+            windows == 0 ? 0 : cadenceSum / windows);
+    }
+
     /// <summary>Device tokens are personal data — never log them in full.</summary>
     public static string Redact(string deviceToken) =>
         deviceToken.Length <= 8

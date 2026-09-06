@@ -129,3 +129,10 @@ public class ApnsPushMessage
     /// <summary>Incremented by our own transient-retry loop (not the queue's dequeue count).</summary>
     public int Attempt { get; set; }
 }
+
+/// <summary>A day's usage of the wake scheduler, for the cost/volume metric.</summary>
+public record WakeUsage(
+    int Devices,
+    int Windows,
+    int Deadlines,
+    int AverageCadenceMinutes);

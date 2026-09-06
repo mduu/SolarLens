@@ -57,5 +57,21 @@ public class DailyHousekeepingFunction
             logger.LogInformation(
                 "Removed {Count} expired wake schedules", removed);
         }
+
+        // Usage snapshot. Logged at Warning on purpose: this function is
+        // filtered to Warning in host.json, and one line a day is what makes
+        // the Azure bill predictable — silent windows drive one queue
+        // execution per push, so devices × (1440 / cadence) is the month's
+        // volume before it happens.
+        var usage = await schedules.UsageSnapshotAsync();
+        logger.LogWarning(
+            "wake_usage devices={Devices} windows={Windows} deadlines={Deadlines} cadence={Cadence} projected_pushes_per_day={Projected}",
+            usage.Devices,
+            usage.Windows,
+            usage.Deadlines,
+            usage.AverageCadenceMinutes,
+            usage.AverageCadenceMinutes == 0
+                ? 0
+                : usage.Windows * (1440 / usage.AverageCadenceMinutes));
     }
 }
