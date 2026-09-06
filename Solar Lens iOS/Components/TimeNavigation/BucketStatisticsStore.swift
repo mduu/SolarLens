@@ -15,7 +15,7 @@ import SwiftUI
 @Observable
 final class BucketStatisticsStore {
 
-    enum Bucket: Equatable {
+    enum Bucket: Hashable {
         case day
         case week
         case month
@@ -50,9 +50,15 @@ final class BucketStatisticsStore {
     /// Calendar months whose raw samples have been fetched, and when.
     private var loadedMonths: [Date: Date] = [:]
 
-    /// Month- and year-sized buckets, keyed by bucket start.
-    private var periods: [Date: DayStatistic] = [:]
-    private var loadedPeriods: [Date: Date] = [:]
+    /// Month- and year-sized buckets, kept apart by bucket size.
+    ///
+    /// One dictionary keyed only by date would confuse the two: a month bucket
+    /// and a year bucket both start on 1 January, so they would overwrite each
+    /// other, and a query for years would additionally hand back every month
+    /// of the years it covers — extra rows in the chart, and each of those
+    /// years counted twice in the totals.
+    private var periods: [Bucket: [Date: DayStatistic]] = [:]
+    private var loadedPeriods: [Bucket: [Date: Date]] = [:]
 
     init(energyManager: EnergyManager = SolarManager.shared) {
         self.energyManager = energyManager
@@ -72,7 +78,7 @@ final class BucketStatisticsStore {
         case .week:
             return weekBuckets(in: range)
         case .month, .year:
-            return periods
+            return (periods[bucket] ?? [:])
                 .filter { range.contains($0.key) }
                 .values
                 .sorted { $0.day < $1.day }
@@ -113,10 +119,7 @@ final class BucketStatisticsStore {
         if bucket.derivesFromSamples {
             await loadSamples(from: range.lowerBound, to: upper)
         } else {
-            await loadPeriods(
-                from: range.lowerBound, to: upper,
-                component: bucket.calendarComponent
-            )
+            await loadPeriods(from: range.lowerBound, to: upper, bucket: bucket)
         }
     }
 
@@ -235,8 +238,9 @@ final class BucketStatisticsStore {
 
     @MainActor
     private func loadPeriods(
-        from start: Date, to end: Date, component: Calendar.Component
+        from start: Date, to end: Date, bucket: Bucket
     ) async {
+        let component = bucket.calendarComponent
         var bucketStart = align(start, to: component)
         while bucketStart < end {
             // The caller restarts this task on every scroll; stop as soon as a
@@ -250,7 +254,9 @@ final class BucketStatisticsStore {
             }
             let fullEnd =
                 calendar.date(byAdding: component, value: 1, to: bucketStart) ?? end
-            guard needsFetch(bucketStart, end: fullEnd, in: loadedPeriods) else { continue }
+            guard
+                needsFetch(bucketStart, end: fullEnd, in: loadedPeriods[bucket] ?? [:])
+            else { continue }
 
             let bucketEnd = min(fullEnd, Date())
             guard bucketStart < bucketEnd else { continue }
@@ -263,7 +269,7 @@ final class BucketStatisticsStore {
                 )
             else { continue }
 
-            loadedPeriods[bucketStart] = Date()
+            loadedPeriods[bucket, default: [:]][bucketStart] = Date()
 
             let selfConsumption = stats.selfConsumption ?? 0
             let production = stats.production ?? 0
@@ -273,7 +279,7 @@ final class BucketStatisticsStore {
             // Leave it out rather than drawing a row of zero-height bars.
             guard production > 0 || consumption > 0 else { continue }
 
-            periods[bucketStart] = DayStatistic(
+            periods[bucket, default: [:]][bucketStart] = DayStatistic(
                 day: bucketStart,
                 consumption: consumption,
                 production: production,
