@@ -73,6 +73,11 @@ struct Solar_Lens_iOSApp: App {
                         // knows about a running automation.
                         PushRegistrar.registerIfAuthorized()
                         AutomationManager.shared.resyncWakeSchedule()
+                        // Monitors ride the silent window, and that window is
+                        // not an automation — without this a device coming back
+                        // from a long force quit only renewed on the next
+                        // monitor tick, which can be hours away.
+                        WakeWindowCoordinator.shared.refresh()
 
                         Task {
                             await currentBuildingState.fetchServerData()

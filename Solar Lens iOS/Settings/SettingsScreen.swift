@@ -267,7 +267,15 @@ struct SettingsScreen: View {
                 if newValue {
                     PushRegistrar.registerIfAuthorized()
                     AutomationManager.shared.resyncWakeSchedule()
+                    // `resyncWakeSchedule` only covers automations. A device
+                    // whose only reason for a window is a notification monitor
+                    // would otherwise stay unregistered until the next tick.
+                    WakeWindowCoordinator.shared.refresh(force: true)
                 } else {
+                    // Drop the local record first: `forgetDevice` clears the
+                    // server, and a coordinator still believing it is
+                    // registered would decline to register again.
+                    WakeWindowCoordinator.shared.invalidate()
                     Task { await WakeScheduleClient.forgetDevice() }
                 }
             }
