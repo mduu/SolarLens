@@ -6,35 +6,34 @@ struct PinnedDeviceRow: View {
     @ObservedObject var pinnedConfig: PinnedDevicesConfiguration
 
     var body: some View {
-        HStack(spacing: 12) {
-            DeviceIconView(device: device)
-                .frame(width: 28)
+        Button { isDeviceSheetShown = true } label: {
+            HStack(spacing: 12) {
+                DeviceIconView(device: device)
+                    .frame(width: 28)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(device.name)
-                    .font(.caption)
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-
-                if device.hasPower() {
-                    Text(device.currentPowerInWatts.formatWattsAsWattsKiloWatts(widthUnit: true))
-                        .font(.subheadline)
-                        .fontWeight(.bold)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(device.name)
+                        .font(.caption)
                         .foregroundStyle(.primary)
-                } else {
-                    Text(verbatim: "-")
-                        .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.6))
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+                        .lineLimit(1)
 
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                    if device.hasPower() {
+                        Text(device.currentPowerInWatts.formatWattsAsWattsKiloWatts(widthUnit: true))
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.primary)
+                    } else {
+                        Text(verbatim: "-")
+                            .font(.subheadline)
+                            .foregroundStyle(.primary.opacity(0.6))
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                DisclosureChevron()
+            }
         }
-        .contentShape(Rectangle())
-        .onTapGesture { isDeviceSheetShown = true }
+        .buttonStyle(CardButtonStyle())
         .sheet(isPresented: $isDeviceSheetShown) {
             NavigationView {
                 DevicePrioritySheet(pinnedConfig: pinnedConfig)

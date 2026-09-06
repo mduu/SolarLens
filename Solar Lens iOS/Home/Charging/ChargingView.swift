@@ -34,51 +34,53 @@ struct ChargingStationCard: View {
     @State private var showChargingModeSelection = false
 
     var body: some View {
-        HStack(spacing: 12) {
-            ZStack(alignment: .bottomTrailing) {
-                Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
-                    .font(.title3)
-                    .foregroundStyle(.blue)
-                    .symbolEffect(
-                        .pulse.wholeSymbol,
-                        options: .repeat(.continuous),
-                        isActive: station.currentPower > 0
-                    )
+        Button { showChargingModeSelection = true } label: {
+            HStack(spacing: 12) {
+                ZStack(alignment: .bottomTrailing) {
+                    Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
+                        .font(.title3)
+                        .foregroundStyle(.blue)
+                        .symbolEffect(
+                            .pulse.wholeSymbol,
+                            options: .repeat(.continuous),
+                            isActive: station.currentPower > 0
+                        )
 
-                chargingModeIcon(for: station.chargingMode)
-                    .font(.system(size: 16))
-                    .foregroundStyle(chargingModeColor(for: station.chargingMode))
-                    .offset(x: 8, y: 6)
-            }
-            .frame(width: 34)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(station.name)
-                    .font(.caption)
-                    .foregroundStyle(.primary)
-
-                if station.currentPower > 0 {
-                    Text(String(format: "%.1f kW", Double(station.currentPower) / 1000))
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary)
-                } else {
-                    Text(verbatim: "-")
-                        .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.6))
+                    chargingModeIcon(for: station.chargingMode)
+                        .font(.system(size: 16))
+                        .foregroundStyle(chargingModeColor(for: station.chargingMode))
+                        .offset(x: 8, y: 6)
                 }
+                .frame(width: 34)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(station.name)
+                        .font(.caption)
+                        .foregroundStyle(.primary)
+                        // Station names are user-chosen and the chevron well
+                        // leaves this column narrow; shrink rather than wrap.
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+
+                    if station.currentPower > 0 {
+                        Text(String(format: "%.1f kW", Double(station.currentPower) / 1000))
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.primary)
+                    } else {
+                        Text(verbatim: "-")
+                            .font(.subheadline)
+                            .foregroundStyle(.primary.opacity(0.6))
+                    }
+                }
+
+                Spacer()
+
+                DisclosureChevron()
             }
-
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+            .if(applyCardStyle) { $0.cardStyle() }
         }
-        .if(applyCardStyle) { $0.cardStyle() }
-        .onTapGesture {
-            showChargingModeSelection = true
-        }
+        .buttonStyle(CardButtonStyle())
         .sheet(isPresented: $showChargingModeSelection) {
             ChargingModePickerView()
                 .presentationDetents([.large])

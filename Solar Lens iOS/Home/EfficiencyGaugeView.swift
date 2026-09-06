@@ -25,6 +25,8 @@ struct EfficiencyGaugeView: View {
                     .foregroundStyle(.primary)
             }
 
+            // Tighter in compact: the 190pt landscape column now also
+            // carries a disclosure chevron.
             HStack(spacing: compact ? 12 : 20) {
                 // Self-consumption gauge
                 VStack(spacing: compact ? 3 : 6) {
@@ -137,17 +139,6 @@ struct ArcShape: Shape {
                 clockwise: false
             )
         }
-    }
-}
-
-private struct GlassCardBackground: View {
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        RoundedRectangle(cornerRadius: 20)
-            .fill(colorScheme == .dark ? Color(red: 0.165, green: 0.176, blue: 0.196) : Color(red: 0.918, green: 0.933, blue: 0.953))
-            .shadow(color: colorScheme == .dark ? .white.opacity(0.05) : .white.opacity(0.7), radius: 8, x: -6, y: -6)
-            .shadow(color: colorScheme == .dark ? .black.opacity(0.5) : .black.opacity(0.15), radius: 8, x: 6, y: 6)
     }
 }
 

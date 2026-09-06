@@ -35,12 +35,15 @@ struct HomePortraitLayout: View {
                         .frame(height: 160)
                 }
 
-                EfficiencyGaugeView(
-                    todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
-                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
-                )
-                .cardStyle()
-                .onTapGesture { showEfficiencySheet = true }
+                Button { showEfficiencySheet = true } label: {
+                    EfficiencyGaugeView(
+                        todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
+                        todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree
+                    )
+                    .cardStyle()
+                    .cardDisclosure()
+                }
+                .buttonStyle(CardButtonStyle())
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 8)

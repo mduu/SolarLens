@@ -51,13 +51,16 @@ struct HomeLandscapeLayout: View {
 
                 forecastCard
 
-                EfficiencyGaugeView(
-                    todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
-                    todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree,
-                    compact: true
-                )
-                .cardStyle()
-                .onTapGesture { showEfficiencySheet = true }
+                Button { showEfficiencySheet = true } label: {
+                    EfficiencyGaugeView(
+                        todaySelfConsumptionRate: buildingState.overviewData.todaySelfConsumptionRate,
+                        todayAutarchyDegree: buildingState.overviewData.todayAutarchyDegree,
+                        compact: true
+                    )
+                    .cardStyle()
+                    .cardDisclosure()
+                }
+                .buttonStyle(CardButtonStyle())
             }
             .frame(width: 190)
         }
