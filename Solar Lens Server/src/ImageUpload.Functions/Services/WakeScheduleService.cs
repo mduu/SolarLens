@@ -133,10 +133,20 @@ public class WakeScheduleService
             && !WakeEnvironments.IsValid(request.Environment))
             return (false, "environment must be 'sandbox' or 'production'");
 
-        var existing = await GetAsync(deviceToken, scheduleId);
         var secretHash = HashSecret(request.InstallSecret!);
-        if (existing is not null && existing.SecretHash != secretHash)
-            return (false, "installSecret does not match this schedule");
+
+        // The secret belongs to the device, not to the individual row. Checking
+        // it only against an existing row would leave a hole: a device token is
+        // not secret-grade, and whoever learned one could add a *new* schedule
+        // id with a secret of their own and push arbitrary text to that device.
+        // Once a device has any row, every further write must present the same
+        // secret it registered with.
+        var deviceRows = await GetForDeviceAsync(deviceToken);
+        if (deviceRows.Count > 0 && !deviceRows.Any(r => r.SecretHash == secretHash))
+            return (false, "installSecret does not match this device");
+
+        var existing = deviceRows
+            .FirstOrDefault(r => r.RowKey == scheduleId);
 
         var entity = new WakeScheduleEntity
         {

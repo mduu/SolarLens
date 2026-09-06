@@ -86,9 +86,9 @@ iOS app ──PUT/DELETE /api/wake──▶ [HTTP Functions] ──▶ Azure Tab
 
 **1. Registration API (HTTP triggers, `Microsoft.Azure.Functions.Worker.Extensions.Http` — already referenced)**
 
-- `PUT /api/wake/{deviceToken}/{scheduleId}` — upsert one schedule. Body: `{ environment: "sandbox"|"production", kind: "deadline"|"window", fireAt?, cadenceMinutes?, until?, pushKind: "alert"|"silent", category?, deepLink?, installSecret }`. `scheduleId` is a UUID generated on device (= automation run id / monitor id).
-- `DELETE /api/wake/{deviceToken}/{scheduleId}` and `DELETE /api/wake/{deviceToken}` (all — used by the Settings toggle / logout).
-- `GET /api/wake/{deviceToken}` — optional, re-sync/debug.
+- `PUT /api/wake/{scheduleId}` — upsert one schedule. The device token travels in the `X-Device-Token` header, not the path (it would otherwise be retained in App Insights request telemetry). Body: `{ environment: "sandbox"|"production", kind: "deadline"|"window", fireAt?, cadenceMinutes?, until?, pushKind: "alert"|"silent", category?, deepLink?, installSecret }`. `scheduleId` is a UUID generated on device (= automation run id / monitor id).
+- `DELETE /api/wake/{scheduleId}` and `DELETE /api/wake` (all — used by the Settings toggle / logout).
+- `GET /api/wake` — optional, re-sync/debug.
 - Anonymous like the upload API, protected by the existing `RateLimitService` (per IP) plus an **install secret**: a random 32-byte value generated on first use, stored in the app's Keychain, sent with every request and persisted on the row; updates/deletes must present the same secret so nobody can cancel or spam another device's pushes by guessing tokens. Validate device tokens (64 hex chars) and clamp `cadenceMinutes` (≥ 10) / `until` (≤ 7 days, extend on tick) server-side.
 - No Solar Manager data, no rules, no account. The deep link / category are opaque strings for the app.
 

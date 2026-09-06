@@ -98,6 +98,36 @@ public final class NotificationManager {
 
         Task { await tick(monitorId: newMonitor.id) }
         ensureForegroundTimerStarted()
+        requestAuthorizationIfNeeded()
+    }
+
+    /// Ask for notification permission the moment a monitor is armed, rather
+    /// than when the first one fires.
+    ///
+    /// Firing was too late in two ways: the prompt could appear while the app
+    /// was in the background, and — because `PushRegistrar` only registers once
+    /// permission exists — an install that never ran an automation never
+    /// obtained a device token at all. The server-assisted wake window then
+    /// stayed silently unregistered, which looks exactly like the feature
+    /// working badly rather than never having started.
+    private func requestAuthorizationIfNeeded() {
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                center.requestAuthorization(options: [.alert, .sound]) {
+                    granted, _ in
+                    guard granted else { return }
+                    PushRegistrar.registerIfAuthorized()
+                }
+            case .authorized, .provisional:
+                // Already allowed — make sure a token exists for the wake
+                // window, which a fresh install may still be missing.
+                PushRegistrar.registerIfAuthorized()
+            default:
+                break
+            }
+        }
     }
 
     /// Replace an existing monitor's config. Keeps id and runtime state

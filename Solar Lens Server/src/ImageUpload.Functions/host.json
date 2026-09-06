@@ -10,7 +10,8 @@
     "applicationInsights": {
       "samplingSettings": {
         "isEnabled": true,
-        "excludedTypes": "Request"
+        "_comment": "Exceptions are never sampled: the poison-queue LogError is the single most important signal in the push pipeline, and it fires rarely enough that sampling would be free to drop it entirely.",
+        "excludedTypes": "Request;Exception"
       }
     }
   },

@@ -142,9 +142,10 @@ enum WakeScheduleClient {
         ].compactMapValues { $0 is NSNull ? nil : $0 }
 
         var request = URLRequest(
-            url: URL(string: "\(baseUrl)/\(token)/\(scheduleId)")!
+            url: URL(string: "\(baseUrl)/\(scheduleId)")!
         )
         request.httpMethod = "PUT"
+        request.setValue(token, forHTTPHeaderField: "X-Device-Token")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
         request.timeoutInterval = 15
@@ -189,9 +190,10 @@ enum WakeScheduleClient {
         ]
 
         var request = URLRequest(
-            url: URL(string: "\(baseUrl)/\(token)/\(scheduleId)")!
+            url: URL(string: "\(baseUrl)/\(scheduleId)")!
         )
         request.httpMethod = "PUT"
+        request.setValue(token, forHTTPHeaderField: "X-Device-Token")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
         request.timeoutInterval = 15
@@ -209,9 +211,10 @@ enum WakeScheduleClient {
             return .skipped(reason: "no APNs device token")
         }
         var request = URLRequest(
-            url: URL(string: "\(baseUrl)/\(token)/\(scheduleId)")!
+            url: URL(string: "\(baseUrl)/\(scheduleId)")!
         )
         request.httpMethod = "DELETE"
+        request.setValue(token, forHTTPHeaderField: "X-Device-Token")
         request.setValue(
             KeychainHelper.installSecret,
             forHTTPHeaderField: "X-Install-Secret"
@@ -238,15 +241,21 @@ enum WakeScheduleClient {
         return await cancel(scheduleId: scheduleId)
     }
 
-    /// Forgets this device entirely — used when the user turns the feature off
+    /// Forgets a device entirely — used when the user turns the feature off
     /// or logs out. The server keeps nothing about them afterwards.
+    ///
+    /// `token` defaults to the current one. Token rotation passes the *old*
+    /// token explicitly: by the time the deletion runs, the stored token has
+    /// already been replaced, and clearing the new one would both miss the dead
+    /// rows and undo the registration we just made.
     @discardableResult
-    static func forgetDevice() async -> Result {
-        guard let token = deviceToken else {
+    static func forgetDevice(token explicitToken: String? = nil) async -> Result {
+        guard let token = explicitToken ?? deviceToken else {
             return .skipped(reason: "no APNs device token")
         }
-        var request = URLRequest(url: URL(string: "\(baseUrl)/\(token)")!)
+        var request = URLRequest(url: URL(string: baseUrl)!)
         request.httpMethod = "DELETE"
+        request.setValue(token, forHTTPHeaderField: "X-Device-Token")
         request.setValue(
             KeychainHelper.installSecret,
             forHTTPHeaderField: "X-Install-Secret"
@@ -254,7 +263,10 @@ enum WakeScheduleClient {
         request.timeoutInterval = 15
 
         let result = await send(request)
-        activeScheduleId = nil
+        // Only the current device's registration state is ours to clear.
+        if explicitToken == nil || explicitToken == deviceToken {
+            activeScheduleId = nil
+        }
         switch result {
         case .success: return .cancelled
         case .failure(let reason): return .failed(reason: reason)

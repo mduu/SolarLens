@@ -31,13 +31,13 @@ public class WakeRegistrationFunction
     [Function("WakeUpsert")]
     public async Task<HttpResponseData> Upsert(
         [HttpTrigger(AuthorizationLevel.Anonymous, "put",
-            Route = "wake/{deviceToken}/{scheduleId}")]
+            Route = "wake/{scheduleId}")]
         HttpRequestData req,
-        string deviceToken,
         string scheduleId)
     {
         if (!Allowed(req)) return Status(req, HttpStatusCode.TooManyRequests, "Rate limit exceeded");
-        if (!WakeScheduleService.IsValidDeviceToken(deviceToken))
+        var deviceToken = DeviceToken(req);
+        if (deviceToken is null)
             return Status(req, HttpStatusCode.BadRequest, "Invalid device token");
         if (string.IsNullOrWhiteSpace(scheduleId) || scheduleId.Length > 100)
             return Status(req, HttpStatusCode.BadRequest, "Invalid schedule id");
@@ -70,13 +70,13 @@ public class WakeRegistrationFunction
     [Function("WakeDelete")]
     public async Task<HttpResponseData> Delete(
         [HttpTrigger(AuthorizationLevel.Anonymous, "delete",
-            Route = "wake/{deviceToken}/{scheduleId}")]
+            Route = "wake/{scheduleId}")]
         HttpRequestData req,
-        string deviceToken,
         string scheduleId)
     {
         if (!Allowed(req)) return Status(req, HttpStatusCode.TooManyRequests, "Rate limit exceeded");
-        if (!WakeScheduleService.IsValidDeviceToken(deviceToken))
+        var deviceToken = DeviceToken(req);
+        if (deviceToken is null)
             return Status(req, HttpStatusCode.BadRequest, "Invalid device token");
 
         var secret = Secret(req);
@@ -91,12 +91,12 @@ public class WakeRegistrationFunction
     [Function("WakeDeleteAll")]
     public async Task<HttpResponseData> DeleteAll(
         [HttpTrigger(AuthorizationLevel.Anonymous, "delete",
-            Route = "wake/{deviceToken}")]
-        HttpRequestData req,
-        string deviceToken)
+            Route = "wake")]
+        HttpRequestData req)
     {
         if (!Allowed(req)) return Status(req, HttpStatusCode.TooManyRequests, "Rate limit exceeded");
-        if (!WakeScheduleService.IsValidDeviceToken(deviceToken))
+        var deviceToken = DeviceToken(req);
+        if (deviceToken is null)
             return Status(req, HttpStatusCode.BadRequest, "Invalid device token");
 
         var (ok, error, deleted) = await schedules.DeleteAllForDeviceAsync(
@@ -113,12 +113,12 @@ public class WakeRegistrationFunction
     [Function("WakeList")]
     public async Task<HttpResponseData> List(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get",
-            Route = "wake/{deviceToken}")]
-        HttpRequestData req,
-        string deviceToken)
+            Route = "wake")]
+        HttpRequestData req)
     {
         if (!Allowed(req)) return Status(req, HttpStatusCode.TooManyRequests, "Rate limit exceeded");
-        if (!WakeScheduleService.IsValidDeviceToken(deviceToken))
+        var deviceToken = DeviceToken(req);
+        if (deviceToken is null)
             return Status(req, HttpStatusCode.BadRequest, "Invalid device token");
 
         var rows = await schedules.GetForDeviceAsync(deviceToken);
@@ -157,6 +157,21 @@ public class WakeRegistrationFunction
     }
 
     /// <summary>
+    /// The APNs device token, taken from a header rather than the route.
+    ///
+    /// It used to be a path segment, which put a full device token into every
+    /// request URL — and request telemetry is explicitly excluded from
+    /// sampling, so App Insights kept all of them. A header is not recorded.
+    /// </summary>
+    private static string? DeviceToken(HttpRequestData req)
+    {
+        if (!req.Headers.TryGetValues("X-Device-Token", out var values))
+            return null;
+        var token = values.FirstOrDefault();
+        return WakeScheduleService.IsValidDeviceToken(token) ? token : null;
+    }
+
+    /// <summary>
     /// Per-install secret, generated on the device and kept in its Keychain.
     /// Without it, knowing a device token would be enough to cancel or spam
     /// someone else's schedules.
@@ -169,10 +184,9 @@ public class WakeRegistrationFunction
             if (!string.IsNullOrWhiteSpace(value)) return value;
         }
 
-        var query = System.Web.HttpUtility.ParseQueryString(
-            req.Url.Query);
-        var fromQuery = query["installSecret"];
-        return string.IsNullOrWhiteSpace(fromQuery) ? null : fromQuery;
+        // Deliberately header-only: a secret in the query string would end up
+        // in the same request telemetry the device token just moved out of.
+        return null;
     }
 
     private static HttpResponseData Status(

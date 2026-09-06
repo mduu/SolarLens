@@ -14,6 +14,7 @@ Before starting, print the full progress list. After completing each step, repri
 ✅ Check translations (done)
 👨🏻‍🔧 Bump build number (in progress)
 ⏳ Archive project (pending)
+⏳ Verify signed build (pending)
 ⏳ Upload to App Store Connect (pending)
 ⏳ Create git tag (pending)
 ⏳ Generate "What's New" notes (pending)
@@ -67,7 +68,49 @@ Save the `ARCHIVE_PATH` value — you will need it in the next step.
 
 If the archive fails, read the build output, analyze errors, fix them, and retry (up to 3 times).
 
-## Step 4: Distribute to App Store Connect
+## Step 4: Verify the signed build before uploading
+
+`aps-environment` is `development` in the entitlements file, and Xcode rewrites it
+to `production` only when it **exports** — the `.xcarchive` still says
+`development`. Checking the archive would therefore always look broken; the
+exported `.ipa` is the only place the real value can be read.
+
+An app signed `development` uploads and installs happily and then silently
+receives no pushes, because its token is minted against the APNs sandbox.
+
+Export a copy purely to inspect it, then check the entitlement:
+
+```bash
+VERIFY_DIR=$(mktemp -d) && \
+cat > "$VERIFY_DIR/ExportCheck.plist" <<'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>method</key><string>app-store-connect</string>
+	<key>destination</key><string>export</string>
+	<key>teamID</key><string>UYT5K989XD</string>
+	<key>signingStyle</key><string>automatic</string>
+</dict>
+</plist>
+PLIST
+xcodebuild -exportArchive -archivePath "$ARCHIVE_PATH" \
+  -exportOptionsPlist "$VERIFY_DIR/ExportCheck.plist" \
+  -exportPath "$VERIFY_DIR/out" -allowProvisioningUpdates >/dev/null 2>&1 && \
+unzip -q "$VERIFY_DIR/out/Solar Lens.ipa" -d "$VERIFY_DIR/ipa" && \
+APS=$(codesign -d --entitlements - --xml "$VERIFY_DIR/ipa/Payload/Solar Lens.app" 2>/dev/null \
+  | plutil -convert xml1 -o - - \
+  | python3 -c "import sys,plistlib;print(plistlib.loads(sys.stdin.buffer.read()).get('aps-environment','MISSING'))") && \
+echo "aps-environment: $APS" && \
+[ "$APS" = "production" ] && echo "OK — signed for production APNs" || echo "STOP — not production"
+```
+
+**If this prints anything other than `production`, do not upload.** Report it to
+the user instead: the signed build would be a push-dead release. Most likely
+causes are a stale provisioning profile or the App ID losing its Push
+capability.
+
+## Step 5: Distribute to App Store Connect
 
 After a successful archive, export and upload to App Store Connect. Use the same `ARCHIVE_PATH` from Step 3:
 
@@ -80,7 +123,7 @@ xcodebuild -exportArchive \
 
 This uses `ExportOptions-release.plist` which uploads to App Store Connect for beta testers and public release (no TestFlight-internal-only restriction).
 
-## Step 5: Create git tag
+## Step 6: Create git tag
 
 1. Read the current `APP_VERSION` from `SolarLens.xcodeproj/project.pbxproj` (e.g. `4.0.0`).
 2. Create a git tag following the existing convention: `release/<APP_VERSION>` (e.g. `release/4.0.0`).
@@ -92,7 +135,7 @@ git push origin release/<APP_VERSION>
 
 3. The GitHub release will be created in Step 7 after the "What's New" notes are generated.
 
-## Step 6: Generate "What's New" release notes
+## Step 7: Generate "What's New" release notes
 
 Generate the "What's New" text for App Store Connect.
 
@@ -127,7 +170,7 @@ Generate the "What's New" text for App Store Connect.
 
 The translations should feel native and natural in each language, not like machine-translated text. Match the tone used in existing App Store descriptions for Solar Lens if available.
 
-## Step 7: Create GitHub release
+## Step 8: Create GitHub release
 
 Create a GitHub release based on the tag from Step 5, using the **English** "What's New" bullet list as the release body.
 
@@ -139,7 +182,7 @@ gh release create release/<APP_VERSION> \
 
 Use a HEREDOC for the notes to preserve formatting.
 
-## Step 8: Report result
+## Step 9: Report result
 
 Tell the user:
 - The new build number and version

@@ -605,20 +605,34 @@ its push is accepted, a window when it passes `until`.
 
 | Method | Route | Purpose |
 |---|---|---|
-| `PUT` | `/api/wake/{deviceToken}/{scheduleId}` | Create or update a schedule |
-| `DELETE` | `/api/wake/{deviceToken}/{scheduleId}` | Cancel one schedule |
-| `DELETE` | `/api/wake/{deviceToken}` | Forget this device (Settings toggle, logout) |
-| `GET` | `/api/wake/{deviceToken}` | Re-sync / debugging |
+| `PUT` | `/api/wake/{scheduleId}` | Create or update a schedule |
+| `DELETE` | `/api/wake/{scheduleId}` | Cancel one schedule |
+| `DELETE` | `/api/wake` | Forget this device (Settings toggle, logout) |
+| `GET` | `/api/wake` | Re-sync / debugging |
+
+**The device token goes in the `X-Device-Token` header, never in the URL.** It
+used to be a path segment, which put a full APNs token into every request URL —
+and request telemetry is deliberately excluded from App Insights sampling, so
+every one of them was retained. Headers are not recorded.
 
 Anonymous like the upload API, rate limited per IP, and additionally guarded by
-a per-install secret (`X-Install-Secret` header or `?installSecret=`) that the
-app generates once and keeps in its Keychain — otherwise knowing a device token
-would be enough to cancel or spam someone else's schedules.
+a per-install secret (`X-Install-Secret` header) that the app generates once and
+keeps in its Keychain — otherwise knowing a device token would be enough to
+cancel or spam someone else's schedules. The secret is bound to the *device*:
+once a token has any row, every further write must present the same secret, so a
+leaked token cannot be used to add a schedule with attacker-chosen text. The
+query-string form of the secret was removed for the same reason the token moved
+out of the path.
+
+> **Breaking change.** App builds up to 4.5.0 (359) call the old routes and will
+> get a 404. They fall back to on-device timing exactly as they do when the
+> server is unreachable — degraded timing, never wrong behaviour.
 
 Example:
 
 ```bash
-curl -X PUT "https://<app>.azurewebsites.net/api/wake/$TOKEN/$SCHEDULE_ID" \
+curl -X PUT "https://<app>.azurewebsites.net/api/wake/$SCHEDULE_ID" \
+  -H "X-Device-Token: $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{
     "environment": "sandbox",

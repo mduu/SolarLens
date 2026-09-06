@@ -120,7 +120,7 @@ public class ApnsSenderFunction
                 return;
 
             case ApnsResultKind.Transient:
-                await RetryLaterAsync(message, result);
+                await RetryLaterAsync(message, schedule, result, now);
                 return;
 
             default:
@@ -135,20 +135,34 @@ public class ApnsSenderFunction
     }
 
     private async Task RetryLaterAsync(
-        ApnsPushMessage message, ApnsResult result)
+        ApnsPushMessage message,
+        WakeScheduleEntity schedule,
+        ApnsResult result,
+        DateTimeOffset now)
     {
         var age = DateTimeOffset.UtcNow - message.FireAt;
         if (age > MaxRetryAge)
         {
             // A deadline push this late is worse than none — the device's own
-            // fallback notification has already fired — and a silent wake is
-            // superseded by the next window tick.
+            // fallback notification has already fired.
             logger.LogWarning(
                 "Dropping push for schedule {ScheduleId} after {Minutes} min of APNs trouble ({Status} {Reason})",
                 message.ScheduleId,
                 (int)age.TotalMinutes,
                 result.StatusCode,
                 result.Reason);
+
+            // A window, though, has to be moved on by hand. Only the delivered
+            // path advances it, so giving up here used to leave `NextFireAt` in
+            // the past with no message behind it — the device then got no wake
+            // at all until the daily housekeeping repaired the row at 03:00.
+            if (schedule.Kind == WakeKinds.Window)
+            {
+                await schedules.AdvanceWindowAsync(schedule, now);
+                logger.LogInformation(
+                    "Advanced window {ScheduleId} past the dropped push so it keeps running",
+                    message.ScheduleId);
+            }
             return;
         }
 

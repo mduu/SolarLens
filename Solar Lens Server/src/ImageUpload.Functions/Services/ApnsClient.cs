@@ -34,6 +34,14 @@ public record ApnsResult(ApnsResultKind Kind, int StatusCode, string? Reason);
 /// </summary>
 public class ApnsClient
 {
+    /// <summary>
+    /// Name of the configured <see cref="HttpClient"/>. The client is resolved
+    /// through the factory rather than via <c>AddHttpClient&lt;ApnsClient&gt;</c>,
+    /// because that registers the typed client as *transient* — which silently
+    /// gave every push its own token cache.
+    /// </summary>
+    public const string HttpClientName = "apns";
+
     private const string ProductionHost = "https://api.push.apple.com";
     private const string SandboxHost = "https://api.sandbox.push.apple.com";
 

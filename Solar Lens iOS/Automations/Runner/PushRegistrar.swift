@@ -55,9 +55,11 @@ final class PushRegistrar: NSObject, UIApplicationDelegate {
 
         // The old token can no longer be delivered to; drop its schedules
         // before we start using the new one, so the server does not keep dead
-        // rows around until they expire.
-        if previous != nil {
-            Task { await WakeScheduleClient.forgetDevice() }
+        // rows around until they expire. The old token has to be passed in:
+        // the stored one is overwritten on the next line, and the detached
+        // task would otherwise delete the *new* token's rows.
+        if let previous {
+            Task { await WakeScheduleClient.forgetDevice(token: previous) }
         }
         WakeScheduleClient.deviceToken = token
         Task { @MainActor in
