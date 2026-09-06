@@ -1,0 +1,173 @@
+/* Privacy policy pages.
+   Deliberately a separate, small stylesheet rather than style.css: these pages
+   are plain prose and need none of the landing page's grids, carousels or
+   animations. The custom properties below are copied from style.css so the two
+   share one palette — if that palette moves, both files move with it. */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary: #FFD60A;
+    --text: #1D1D1F;
+    --text-secondary: #6E6E73;
+    --bg: #FFFFFF;
+    --bg-alt: #F5F5F7;
+    --border: #E5E5EA;
+    --radius: 20px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ===== Header ===== */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border);
+}
+
+/* Same width as the prose below, so the logo lines up with the text column
+   instead of floating out to the left on a wide screen. */
+header .container {
+    display: flex;
+    align-items: center;
+    height: 64px;
+}
+
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.logo img {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+}
+
+/* ===== Content ===== */
+
+main {
+    padding: 56px 0 72px;
+}
+
+h1 {
+    font-size: 40px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+}
+
+/* The effective date sits directly under the title as a quiet caption
+   rather than as another paragraph of body text. */
+h1 + p {
+    margin-top: 12px;
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+h1 + p strong {
+    font-weight: 500;
+}
+
+h2 {
+    margin-top: 44px;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+}
+
+p, ul {
+    margin-top: 14px;
+}
+
+ul {
+    padding-left: 22px;
+}
+
+li {
+    margin-top: 8px;
+}
+
+li strong {
+    font-weight: 600;
+}
+
+a {
+    color: #0B6BCB;
+    text-underline-offset: 2px;
+}
+
+/* A rule under the title, in the app's yellow, to tie the page to the brand
+   without colouring anything that has to stay readable. */
+h1 + p::after {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 4px;
+    margin-top: 24px;
+    border-radius: 2px;
+    background: var(--primary);
+}
+
+/* ===== Footer ===== */
+
+.policy-footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-alt);
+    padding: 28px 0;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: var(--text);
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 30px;
+    }
+
+    h2 {
+        font-size: 19px;
+        margin-top: 36px;
+    }
+
+    main {
+        padding: 36px 0 52px;
+    }
+}
