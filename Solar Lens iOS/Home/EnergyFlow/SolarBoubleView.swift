@@ -11,15 +11,17 @@ struct SolarBoubleView: View {
 
         let todayFormatted = String(format: "%.1f", todayKwh)
 
-        EnergyCard(
-            icon: "sun.max.fill",
-            iconColor: .orange,
-            label: "Production",
-            value: String(format: "%.1f kW", currentSolarProductionInKwh),
-            detail: "\(todayFormatted) kWh today",
-            showChevron: true
-        )
-        .onTapGesture { isChartSheetShown = true }
+        Button { isChartSheetShown = true } label: {
+            EnergyCard(
+                icon: "sun.max.fill",
+                iconColor: .orange,
+                label: "Production",
+                value: String(format: "%.1f kW", currentSolarProductionInKwh),
+                detail: "\(todayFormatted) kWh today",
+                showChevron: true
+            )
+        }
+        .buttonStyle(CardButtonStyle())
         .sheet(isPresented: $isChartSheetShown) {
             NavigationView {
                 TodayChartSheet()

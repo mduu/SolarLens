@@ -22,25 +22,27 @@ struct BatteryBoubleView: View {
         if currentBatteryLevel != nil {
             let level = currentBatteryLevel ?? 0
 
-            EnergyCard(
-                icon: batteryIconName,
-                iconColor: batteryColor(level: level),
-                label: "Battery",
-                value: "\(level)%",
-                showChevron: true,
-                customDetail: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        BatteryBar(level: level, color: batteryColor(level: level))
+            Button { showBatterySheet = true } label: {
+                EnergyCard(
+                    icon: batteryIconName,
+                    iconColor: batteryColor(level: level),
+                    label: "Battery",
+                    value: "\(level)%",
+                    showChevron: true,
+                    customDetail: {
+                        VStack(alignment: .leading, spacing: 4) {
+                            BatteryBar(level: level, color: batteryColor(level: level))
 
-                        if let forecastText = compactForecastText {
-                            Text(forecastText)
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
+                            if let forecastText = compactForecastText {
+                                Text(forecastText)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
-                }
-            )
-            .onTapGesture { showBatterySheet = true }
+                )
+            }
+            .buttonStyle(CardButtonStyle())
             .sheet(isPresented: $showBatterySheet) {
                 NavigationView {
                     BatterySheet()

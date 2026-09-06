@@ -13,16 +13,18 @@ struct ConsumptionBoubleView: View {
 
         let todayFormatted = String(format: "%.1f", todayKwh)
 
-        EnergyCard(
-            icon: "house.fill",
-            iconColor: .teal,
-            label: "Consumption",
-            value: String(format: "%.1f kW", currentConsumptionInKwh),
-            detail: todayConsumptionInWh != nil ? "\(todayFormatted) kWh today" : nil,
-            showChevron: true,
-            applyCardStyle: applyCardStyle
-        )
-        .onTapGesture { isDeviceSheetShown = true }
+        Button { isDeviceSheetShown = true } label: {
+            EnergyCard(
+                icon: "house.fill",
+                iconColor: .teal,
+                label: "Consumption",
+                value: String(format: "%.1f kW", currentConsumptionInKwh),
+                detail: todayConsumptionInWh != nil ? "\(todayFormatted) kWh today" : nil,
+                showChevron: true,
+                applyCardStyle: applyCardStyle
+            )
+        }
+        .buttonStyle(CardButtonStyle())
         .sheet(isPresented: $isDeviceSheetShown) {
             NavigationView {
                 DevicePrioritySheet(pinnedConfig: pinnedConfig)

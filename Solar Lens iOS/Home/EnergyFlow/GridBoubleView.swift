@@ -11,15 +11,17 @@ struct GridBoubleView: View {
 
         let todayFormatted = String(format: "%.1f", todayKwh)
 
-        EnergyCard(
-            icon: "network",
-            iconColor: .purple,
-            label: "Grid",
-            value: String(format: "%.1f kW", gridInKwh),
-            detail: todayGridImportInWh != nil ? "\(todayFormatted) kWh today" : nil,
-            showChevron: true
-        )
-        .onTapGesture { showGridSheet = true }
+        Button { showGridSheet = true } label: {
+            EnergyCard(
+                icon: "network",
+                iconColor: .purple,
+                label: "Grid",
+                value: String(format: "%.1f kW", gridInKwh),
+                detail: todayGridImportInWh != nil ? "\(todayFormatted) kWh today" : nil,
+                showChevron: true
+            )
+        }
+        .buttonStyle(CardButtonStyle())
         .sheet(isPresented: $showGridSheet) {
             NavigationView {
                 GridSheet()

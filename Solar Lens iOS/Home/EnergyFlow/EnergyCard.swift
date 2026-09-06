@@ -11,54 +11,62 @@ struct EnergyCard<DetailContent: View>: View {
     var customDetail: (() -> DetailContent)?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(label)
-                        .font(.subheadline)
-                        .foregroundStyle(.primary)
+        HStack(spacing: 3) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(label)
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
+                            // The chevron column costs width these cards do
+                            // not have to spare; a long label shrinks a little
+                            // rather than hyphenating across two lines.
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
 
-                    Text(value)
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.primary)
+                        Text(value)
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
 
-                    if customDetail == nil {
-                        if let detail {
-                            HStack(spacing: 3) {
-                                Image(systemName: "bolt.fill")
-                                    .font(.system(size: 9))
-                                Text(detail)
+                        if customDetail == nil {
+                            if let detail {
+                                HStack(spacing: 3) {
+                                    Image(systemName: "bolt.fill")
+                                        .font(.system(size: 9))
+                                    Text(detail)
+                                        .font(.caption2)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.7)
+                                }
+                                .foregroundStyle(.primary.opacity(0.6))
+                            } else {
+                                Text(" ")
                                     .font(.caption2)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.7)
+                                    .hidden()
                             }
-                            .foregroundStyle(.primary.opacity(0.6))
-                        } else {
-                            Text(" ")
-                                .font(.caption2)
-                                .hidden()
                         }
                     }
-                }
 
-                Spacer(minLength: 4)
+                    Spacer(minLength: 4)
 
-                VStack(spacing: 4) {
                     Image(systemName: icon)
                         .font(.title2)
                         .foregroundStyle(iconColor)
+                }
 
-                    if showChevron {
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(.quaternary)
-                    }
+                if let customDetail {
+                    customDetail()
                 }
             }
 
-            if let customDetail {
-                customDetail()
+            // Sits on the trailing edge, centred, the way a row in a list
+            // announces that it leads somewhere — and a step darker than the
+            // `.quaternary` it used to be, which read as decoration.
+            if showChevron {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.secondary)
             }
         }
         .if(applyCardStyle) { $0.cardStyle() }

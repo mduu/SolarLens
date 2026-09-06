@@ -33,6 +33,27 @@ extension View {
     }
 }
 
+// MARK: - Card Button Style
+
+/// Press feedback for a whole card acting as one button.
+///
+/// A card that opens something looks exactly like one that does not, and a
+/// chevron small enough not to shout is also small enough to miss. Reacting
+/// the instant a finger lands says "this is a control" without drawing
+/// anything extra while at rest — and using a real `Button` gets the
+/// accessibility button trait along with it.
+struct CardButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .opacity(configuration.isPressed ? 0.75 : 1)
+            .animation(
+                .spring(response: 0.25, dampingFraction: 0.7),
+                value: configuration.isPressed
+            )
+    }
+}
+
 #Preview("Card Style") {
     VStack(spacing: 20) {
         Text("Hello World")
