@@ -664,6 +664,26 @@ nav {
     background: linear-gradient(135deg, #5856D6, #AF52DE);
 }
 
+.feature-card:nth-child(10) .feature-icon {
+    background: linear-gradient(135deg, #FF7043, #E64A19);
+}
+
+.feature-card:nth-child(11) .feature-icon {
+    background: linear-gradient(135deg, #FFB300, #EF6C00);
+}
+
+.feature-card:nth-child(12) .feature-icon {
+    background: linear-gradient(135deg, #26C6DA, #0097A7);
+}
+
+.feature-card:nth-child(13) .feature-icon {
+    background: linear-gradient(135deg, #5C6BC0, #283593);
+}
+
+.feature-card:nth-child(14) .feature-icon {
+    background: linear-gradient(135deg, #9CCC65, #558B2F);
+}
+
 .feature-card h3 {
     font-size: 18px;
     font-weight: 600;
@@ -744,16 +764,27 @@ nav {
 }
 
 .privacy-note {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    display: inline-block;
+    max-width: 640px;
     margin-top: 28px;
-    padding: 10px 22px;
-    border-radius: 100px;
+    padding: 12px 24px;
+    border-radius: 20px;
     background: rgba(255, 255, 255, 0.2);
     color: #FFFFFF;
     font-size: 14px;
     font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* The note now carries a sentence and a link rather than one short line, so
+   the link sits in the text flow instead of being pushed to the far edge by
+   the flex row it used to live in. */
+.privacy-note a {
+    color: #FFFFFF;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
 }
 
 .cta .store-device,
