@@ -18,6 +18,11 @@ enum ChartPage {
 
     private var calendar: Calendar { Calendar.current }
 
+    /// Monday-based weeks, whatever the device locale calls its first day.
+    /// `BucketStatisticsStore.weekBuckets` groups with the same calendar, so a
+    /// week window and the bucket sitting in it can never disagree.
+    private var isoCalendar: Calendar { Calendar(identifier: .iso8601) }
+
     /// How far one ‹ / › tap moves.
     var step: DateComponents {
         switch self {
@@ -53,17 +58,50 @@ enum ChartPage {
         }
     }
 
-    /// Rounds a date down onto this page's bucket grid.
+    /// Rounds a date down onto this page's bucket grid — the first instant of
+    /// the calendar period holding it.
+    ///
+    /// Going through date components rather than arithmetic keeps this right
+    /// across a daylight-saving change: `date(from:)` resolves to the real
+    /// first instant of the day, not to "midnight minus an hour".
     func align(_ date: Date) -> Date {
         switch self {
-        case .day, .week, .month:
+        case .day:
             return calendar.startOfDay(for: date)
-        case .year:
+        case .week:
+            let comps = isoCalendar.dateComponents(
+                [.yearForWeekOfYear, .weekOfYear], from: date
+            )
+            return isoCalendar.date(from: comps) ?? calendar.startOfDay(for: date)
+        case .month:
             let comps = calendar.dateComponents([.year, .month], from: date)
             return calendar.date(from: comps) ?? calendar.startOfDay(for: date)
-        case .decade:
+        case .year, .decade:
             let comps = calendar.dateComponents([.year], from: date)
             return calendar.date(from: comps) ?? calendar.startOfDay(for: date)
+        }
+    }
+
+    /// Pages whose newest window stops at the end of the bucket holding today
+    /// instead of running out to its nominal span.
+    ///
+    /// Only `.decade` does. Its ten-year span is a container for year buckets,
+    /// so an installation registered in 2022 would otherwise draw four real
+    /// bars squeezed against six empty years that have not happened yet.
+    var trimsFutureBuckets: Bool {
+        self == .decade
+    }
+
+    /// Start of the bucket following the one that holds `date` — where a
+    /// trimmed window ends.
+    func endOfCurrentBucket(containing date: Date) -> Date {
+        switch self {
+        case .decade:
+            let comps = calendar.dateComponents([.year], from: date)
+            let start = calendar.date(from: comps) ?? calendar.startOfDay(for: date)
+            return calendar.date(byAdding: .year, value: 1, to: start) ?? start
+        default:
+            return end(of: align(date))
         }
     }
 
@@ -72,28 +110,20 @@ enum ChartPage {
         calendar.date(byAdding: span, to: start) ?? start
     }
 
-    /// The window that ends "now" — what the chart shows before the user
-    /// scrolls anywhere. Mirrors the ranges the screens used to fetch:
-    /// today, the last 7 days, the last month, the last 12 months.
+    /// The newest window — what the chart shows before the user scrolls
+    /// anywhere: simply the calendar period that holds today.
+    ///
+    /// Part of that period has usually not happened yet. The current month
+    /// runs to the 1st of the next one and the chart shades the remainder,
+    /// exactly as the day page has always done for the hours after "now".
     var presentWindowStart: Date {
         let now = Date()
         switch self {
-        case .day:
-            return calendar.startOfDay(for: now)
-        case .week:
-            return calendar.date(
-                byAdding: .day, value: -6, to: calendar.startOfDay(for: now)
-            ) ?? now
-        case .month:
-            let start = calendar.date(
-                byAdding: .month, value: -1, to: calendar.startOfDay(for: now)
-            ) ?? now
-            return calendar.date(byAdding: .day, value: 1, to: start) ?? start
-        case .year:
-            let thisMonth = align(now)
-            return calendar.date(byAdding: .month, value: -11, to: thisMonth)
-                ?? thisMonth
+        case .day, .week, .month, .year:
+            return align(now)
         case .decade:
+            // Deliberately still rolling. An aligned decade would run up to
+            // nine years into the future, which is a very empty chart.
             let thisYear = align(now)
             return calendar.date(byAdding: .year, value: -9, to: thisYear)
                 ?? thisYear
@@ -102,8 +132,12 @@ enum ChartPage {
 
     /// Human label for the window starting at `start`, shown between the
     /// ‹ › buttons.
-    func label(for start: Date) -> String {
-        let end = end(of: start)
+    ///
+    /// `windowEnd` lets a trimmed page label what it actually shows rather
+    /// than its nominal span — an "Overall" window cut back to the running
+    /// year would otherwise announce years it does not draw.
+    func label(for start: Date, to windowEnd: Date? = nil) -> String {
+        let end = windowEnd ?? end(of: start)
         let lastDay = calendar.date(byAdding: .day, value: -1, to: end) ?? end
 
         switch self {
@@ -113,18 +147,22 @@ enum ChartPage {
                 return String(localized: "Yesterday")
             }
             return start.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated))
-        case .week, .month:
-            let from = start.formatted(.dateTime.day().month(.abbreviated))
-            let to = lastDay.formatted(.dateTime.day().month(.abbreviated).year())
-            return "\(from) – \(to)"
+        case .week:
+            // One interval rather than two dates joined by a hard-coded dash,
+            // so the shared month and year collapse the way each language
+            // expects. `lastDay` because `end` is the exclusive next Monday.
+            return (start..<lastDay).formatted(
+                .interval.day().month(.abbreviated).year()
+            )
+        case .month:
+            return start.formatted(.dateTime.month(.wide).year())
         case .year:
-            let from = start.formatted(.dateTime.month(.abbreviated).year())
-            let to = lastDay.formatted(.dateTime.month(.abbreviated).year())
-            return "\(from) – \(to)"
+            return start.formatted(.dateTime.year())
         case .decade:
             let from = start.formatted(.dateTime.year())
             let to = lastDay.formatted(.dateTime.year())
-            return "\(from) – \(to)"
+            // A window trimmed back to a single year should say so plainly.
+            return from == to ? from : "\(from) – \(to)"
         }
     }
 }

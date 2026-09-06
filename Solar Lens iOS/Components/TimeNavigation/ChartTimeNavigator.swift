@@ -31,16 +31,26 @@ final class ChartTimeNavigator {
         self.page = page
 
         let present = page.presentWindowStart
+        let floor = Self.floor(for: page, earliest: earliest)
         self.presentWindowStart = present
-        self.windowStart = page.align(present)
-        self.earliest = Self.floor(for: page, earliest: earliest)
+        self.earliest = floor
+        // Clamped here as well as in `setEarliest`: a navigator built with a
+        // known installation date never runs `setEarliest`, and the decade
+        // page would otherwise open ten years back whatever the data covers.
+        self.windowStart = max(page.align(present), floor)
     }
 
     // MARK: - Current window
 
     /// Exclusive end of the visible window.
+    ///
+    /// Trimmed pages stop at the end of the bucket holding today rather than
+    /// at their nominal span, so the bars spread across the whole plot instead
+    /// of being squeezed against years that have not happened yet.
     var windowEnd: Date {
-        page.end(of: windowStart)
+        let nominal = page.end(of: windowStart)
+        guard page.trimsFutureBuckets else { return nominal }
+        return min(nominal, page.endOfCurrentBucket(containing: Date()))
     }
 
     /// The window the user is looking at, as a fetchable range.
@@ -50,7 +60,7 @@ final class ChartTimeNavigator {
 
     /// Label for the ‹ › header.
     var windowLabel: String {
-        page.label(for: windowStart)
+        page.label(for: windowStart, to: windowEnd)
     }
 
     /// True while the newest window is on screen — the › button and the

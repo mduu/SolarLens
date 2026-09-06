@@ -17,7 +17,8 @@ struct GridSheet: View {
     @State private var chartData = MainData(data: [])
     @State private var futureShading: ChartFutureShading?
 
-    /// The seven days ending on the day the chart shows.
+    /// The seven days ending on the day the chart shows — what the card's
+    /// totals cover, and what has to be loaded.
     private var weekRange: Range<Date> {
         let calendar = Calendar.current
         let start = calendar.date(byAdding: .day, value: -6, to: navigator.windowStart)
@@ -29,6 +30,13 @@ struct GridSheet: View {
     /// tariff calculation over ~2,000 samples per day, which is far too much
     /// to redo while the chart is being scrolled.
     @State private var weekData: [DayGridSummary] = []
+
+    /// The six days *before* the one on screen. The shown day already sits on
+    /// the card above in full size, so repeating it as the first row would
+    /// only cost a line — dropping it still leaves a seven-day retrospective.
+    private var listDays: [DayGridSummary] {
+        weekData.filter { $0.date < navigator.windowStart }
+    }
 
     private func rebuildWeekData() {
         let calendar = Calendar.current
@@ -80,7 +88,8 @@ struct GridSheet: View {
                                 .padding(.vertical)
                         } else {
                             GridWeekCard(
-                                weekData: weekData,
+                                days: listDays,
+                                summaryDays: weekData,
                                 tariffSettings: tariffSettings,
                                 fallbackTariff: tariff,
                                 endDate: navigator.isAtPresent

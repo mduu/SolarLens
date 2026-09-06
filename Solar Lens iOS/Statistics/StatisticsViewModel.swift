@@ -259,8 +259,11 @@ class StatisticsViewModel {
         isLoadingTotals = true
         defer { isLoadingTotals = false }
 
+        // Accuracy follows how long the window *is*, not how much of it has
+        // already happened — otherwise the current month's rates would drift
+        // from high to low precision as it fills up.
         let days = calendar.dateComponents(
-            [.day], from: range.lowerBound, to: end
+            [.day], from: range.lowerBound, to: range.upperBound
         ).day ?? 0
         let accuracy: Accuracy = days <= 7 ? .high : (days <= 90 ? .medium : .low)
 

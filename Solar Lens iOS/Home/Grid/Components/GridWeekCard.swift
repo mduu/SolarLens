@@ -2,7 +2,13 @@ import Charts
 import SwiftUI
 
 struct GridWeekCard: View {
-    let weekData: [DayGridSummary]
+    /// One row each — the days before the one shown on the card above.
+    let days: [DayGridSummary]
+
+    /// What the header totals cover: `days` plus the day on screen, so the
+    /// figure is a full seven-day retrospective.
+    let summaryDays: [DayGridSummary]
+
     let tariffSettings: TariffSettingsV3Response?
     let fallbackTariff: TariffV1Response?
 
@@ -14,7 +20,7 @@ struct GridWeekCard: View {
         let currencyCode = CurrencyHelper.currencyCode
 
         // Week aggregate effective (energy-weighted) rates, for transparency.
-        let weekTotals = weekData.reduce(into: (importWh: 0.0, exportWh: 0.0, importCost: 0.0, exportRevenue: 0.0)) { acc, day in
+        let weekTotals = summaryDays.reduce(into: (importWh: 0.0, exportWh: 0.0, importCost: 0.0, exportRevenue: 0.0)) { acc, day in
             acc.importWh += day.totalImportWh
             acc.exportWh += day.totalExportWh
             acc.importCost += TariffCalculator.gridImportCost(
@@ -24,6 +30,7 @@ struct GridWeekCard: View {
         }
         let effImportRate = weekTotals.importWh > 0 ? weekTotals.importCost / (weekTotals.importWh / 1000) : 0
         let effExportRate = weekTotals.exportWh > 0 ? weekTotals.exportRevenue / (weekTotals.exportWh / 1000) : 0
+        let netTotal = weekTotals.exportRevenue - weekTotals.importCost
 
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 4) {
@@ -43,8 +50,33 @@ struct GridWeekCard: View {
                 .foregroundStyle(.primary.opacity(0.7))
             }
 
+            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                Text("Balance")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Text(netTotal.formatted(.currency(code: currencyCode)))
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(netTotal >= 0 ? .green : .red)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+
+                Spacer(minLength: 0)
+
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(verbatim: "−\(weekTotals.importCost.formatted(.currency(code: currencyCode)))")
+                        .foregroundStyle(.red)
+                    Text(verbatim: "+\(weekTotals.exportRevenue.formatted(.currency(code: currencyCode)))")
+                        .foregroundStyle(.green)
+                }
+                .font(.caption2)
+            }
+
+            Divider().opacity(0.35)
+
             VStack(spacing: 0) {
-                ForEach(Array(weekData.enumerated()), id: \.element.id) { index, day in
+                ForEach(Array(days.enumerated()), id: \.element.id) { index, day in
                     let importCost = TariffCalculator.gridImportCost(
                         data: day.data, tariffSettings: tariffSettings, fallbackTariff: fallbackTariff)
                     let exportRevenue = TariffCalculator.gridExportRevenue(
@@ -109,7 +141,7 @@ struct GridWeekCard: View {
                     }
                     .padding(.vertical, 5)
 
-                    if index < weekData.count - 1 {
+                    if index < days.count - 1 {
                         Divider().opacity(0.2)
                     }
                 }

@@ -15,8 +15,10 @@ struct DeviceRangeSamplingPlan {
     /// `[start, end)` bounds to request, in order.
     let chunks: [(start: Date, end: Date)]
 
-    /// The longest range worth sampling per device.
-    private static let maximumRange: TimeInterval = 366 * 24 * 3600
+    /// The longest range worth sampling per device. A whole calendar leap year
+    /// is 366 days exactly, so this carries a day of slack rather than sitting
+    /// on the boundary a year window lands on.
+    private static let maximumRange: TimeInterval = 367 * 24 * 3600
 
     /// `nil` when the range is empty or too long to sample.
     init?(from: Date, to: Date) {

@@ -7,6 +7,8 @@ enum XLabelFormat {
     case isoWeekNumber
     case month
     case monthNarrow
+    /// Months inside a single calendar year, so the year needs no repeating.
+    case monthInYear
     case year
 }
 
@@ -28,6 +30,14 @@ struct FilterableBarChart: View {
     var visibleData: [DayStatistic]?
     var scrollConfig: ChartTimeScrollConfig?
 
+    /// How many buckets the window is *meant* to hold, including the ones that
+    /// have not happened yet. Axis density follows the window rather than the
+    /// data, so a month in progress does not re-space its labels every day.
+    var visibleUnitCount: Int?
+
+    /// Where "now" falls in the window, while the window is still running.
+    var futureShading: ChartFutureShading?
+
     private let productionColor: Color = .orange
     private let consumptionColor: Color = .blue.opacity(0.9)
     private let importColor: Color = Color(red: 1.0, green: 0.3, blue: 0.15)
@@ -46,7 +56,7 @@ struct FilterableBarChart: View {
 
     /// Number of buckets on screen, which is what the axis has to stay
     /// readable for.
-    private var visibleCount: Int { scaleReference.count }
+    private var visibleCount: Int { visibleUnitCount ?? scaleReference.count }
 
     /// How many data points to skip between x-axis labels so they stay readable
     private var xAxisStride: Int {
@@ -63,7 +73,7 @@ struct FilterableBarChart: View {
             if count <= 5 { return 1 }
             // > 5 weeks: stride by ~4 weeks (month-ish)
             return 4
-        case .month, .monthNarrow:
+        case .month, .monthNarrow, .monthInYear:
             return count > 9 ? 2 : 1
         case .year:
             return 1
@@ -72,7 +82,9 @@ struct FilterableBarChart: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            if data.isEmpty {
+            // A window that still has time to run is not empty, it has only
+            // just begun — on the 1st of a month it holds no buckets yet.
+            if data.isEmpty && futureShading == nil {
                 ContentUnavailableView(
                     "No Data Available",
                     systemImage: "chart.bar.xaxis",
@@ -118,6 +130,7 @@ struct FilterableBarChart: View {
                 }
                 .chartYScale(domain: 0...yScaleMax)
                 .chartTimeScroll(scrollConfig)
+                .chartFutureShading(futureShading)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: xUnit, count: xAxisStride)) { value in
                         if let date = value.as(Date.self) {
@@ -144,6 +157,8 @@ struct FilterableBarChart: View {
                                     let y = cal.component(.year, from: date) % 100
                                     let m = cal.component(.month, from: date)
                                     Text("\(y)/\(m)")
+                                case .monthInYear:
+                                    Text(date, format: .dateTime.month(.abbreviated))
                                 case .year:
                                     Text(date, format: .dateTime.year())
                                 }

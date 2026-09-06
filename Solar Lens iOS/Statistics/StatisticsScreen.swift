@@ -372,7 +372,9 @@ struct StatisticsScreen: View {
                     showExport: showExport,
                     chartHeight: 200,
                     visibleData: visibleBars,
-                    scrollConfig: barChartScrollConfig
+                    scrollConfig: barChartScrollConfig,
+                    visibleUnitCount: visibleUnitCount,
+                    futureShading: futureShading
                 )
             }
             .padding(.horizontal)
@@ -421,11 +423,22 @@ struct StatisticsScreen: View {
         viewModel.navigator?.scrollConfig()
     }
 
+    /// Buckets the visible window spans, whether or not they have happened.
+    /// Keeps the axis stride steady while the current period fills up.
+    private var visibleUnitCount: Int? {
+        guard let bucket = viewModel.bucket else { return nil }
+        let window = viewModel.window
+        let component = bucket.calendarComponent
+        return Calendar.current
+            .dateComponents([component], from: window.lowerBound, to: window.upperBound)
+            .value(for: component)
+    }
+
     private var xLabelFormat: XLabelFormat {
         switch viewModel.selectedPeriod {
         case .week: .weekday
         case .month: .dayOfMonth
-        case .year: .monthNarrow
+        case .year: .monthInYear
         case .overall: .year
         case .custom: viewModel.customResolution.chartXLabelFormat
         case .today: .dayOfMonth
