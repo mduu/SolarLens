@@ -6,10 +6,17 @@
 /// lifespan.
 struct EcoImpact {
     /// Avoided CO₂ per Wh of production, in kg (= 0.475 kg/kWh).
-    private static let avoidedCo2PerWhInKg = 0.000475
+    static let avoidedCo2PerWhInKg = 0.000475
+
+    /// CO₂ bound by one tree in a year, in kg.
+    static let boundCo2PerTreePerYearInKg = 18.3
+
+    /// The tree lifespan the comparison is based on, in years.
+    static let treeLifespanInYears = 40.0
 
     /// CO₂ bound by one tree over its lifetime: 18.3 kg/year × 40 years.
-    private static let boundCo2PerTreeInKg = 18.3 * 40
+    static let boundCo2PerTreeInKg =
+        boundCo2PerTreePerYearInKg * treeLifespanInYears
 
     /// Total avoided CO₂ in kg.
     let avoidedCo2InKg: Double
@@ -17,7 +24,12 @@ struct EcoImpact {
     /// Number of trees it would take to bind the same amount of CO₂.
     let equivalentTrees: Double
 
+    /// The production the figures were derived from, so an explanation can
+    /// show the reader their own numbers rather than a general formula.
+    let totalProductionWh: Double
+
     init(totalProductionWh: Double) {
+        self.totalProductionWh = totalProductionWh
         avoidedCo2InKg = totalProductionWh * Self.avoidedCo2PerWhInKg
         equivalentTrees = max(1, avoidedCo2InKg / Self.boundCo2PerTreeInKg)
     }

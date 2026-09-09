@@ -46,7 +46,7 @@ class StatisticsViewModel {
     var isLoadingTotals = false
 
     /// Lifetime production, for the eco meter on the Overall page. Deliberately
-    /// independent of the visible window — "trees saved" is a whole-installation
+    /// independent of the visible window — the tree equivalent is a whole-installation
     /// figure, not a per-window one.
     var lifetimeStatistics: Statistics?
 
