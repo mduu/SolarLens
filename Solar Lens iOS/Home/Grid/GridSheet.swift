@@ -109,11 +109,9 @@ struct GridSheet: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: { dismiss() }) {
-                    Image(systemName: "xmark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 18, height: 18)
-                        .foregroundColor(.purple)
+                    Label("Close", systemImage: "xmark")
+                        .labelStyle(.iconOnly)
+                        .foregroundStyle(.purple)
                 }
             }
         }

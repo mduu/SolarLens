@@ -79,6 +79,7 @@ struct ChargingStationCard: View {
                 DisclosureChevron()
             }
             .if(applyCardStyle) { $0.cardStyle() }
+            .contentShape(Rectangle())
         }
         .buttonStyle(CardButtonStyle())
         .sheet(isPresented: $showChargingModeSelection) {

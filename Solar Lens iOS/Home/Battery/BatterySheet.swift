@@ -76,11 +76,9 @@ struct BatterySheet: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: { dismiss() }) {
-                    Image(systemName: "xmark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 18, height: 18)
-                        .foregroundColor(.green)
+                    Label("Close", systemImage: "xmark")
+                        .labelStyle(.iconOnly)
+                        .foregroundStyle(.green)
                 }
             }
         }

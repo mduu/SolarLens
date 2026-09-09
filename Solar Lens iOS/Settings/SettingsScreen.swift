@@ -34,11 +34,9 @@ struct SettingsScreen: View {
                 Button(action: {
                     dismiss()
                 }) {
-                    Image(systemName: "xmark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 18, height: 18)
-                        .foregroundColor(.indigo)
+                    Label("Close", systemImage: "xmark")
+                        .labelStyle(.iconOnly)
+                        .foregroundStyle(.indigo)
                 }
 
             }

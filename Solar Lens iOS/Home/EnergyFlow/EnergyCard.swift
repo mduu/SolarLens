@@ -60,6 +60,10 @@ struct EnergyCard<DetailContent: View>: View {
         }
         .if(applyCardStyle) { $0.cardStyle() }
         .if(showChevron) { $0.cardDisclosure() }
+        // Without the card style there is no background, and a Button's label
+        // only hit-tests what it actually draws — so a tap in the gap between
+        // the value and the icon fell through and the sheet did not open.
+        .contentShape(Rectangle())
     }
 }
 

@@ -32,6 +32,7 @@ struct PinnedDeviceRow: View {
 
                 DisclosureChevron()
             }
+            .contentShape(Rectangle())
         }
         .buttonStyle(CardButtonStyle())
         .sheet(isPresented: $isDeviceSheetShown) {

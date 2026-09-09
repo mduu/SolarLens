@@ -41,11 +41,9 @@ struct ChargingModePickerView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 18, height: 18)
-                            .foregroundColor(.blue)
+                        Label("Close", systemImage: "xmark")
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(.blue)
                     }
                 }
             }

@@ -84,11 +84,9 @@ struct HeaderView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(action: { showError = false }) {
-                            Image(systemName: "xmark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 18, height: 18)
-                                .foregroundColor(.red)
+                            Label("Close", systemImage: "xmark")
+                                .labelStyle(.iconOnly)
+                                .foregroundStyle(.red)
                         }
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
