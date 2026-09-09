@@ -72,7 +72,7 @@ struct EfficiencyGaugeView: View {
                     Image(systemName: "leaf.fill")
                         .font(.caption2)
                         .foregroundStyle(.green)
-                    Text("\(impact.equivalentTrees, specifier: "%.0f") trees")
+                    Text("like \(impact.equivalentTrees, specifier: "%.0f") trees")
                         .font(.caption2)
                         .fontWeight(.medium)
                         .foregroundStyle(.primary)

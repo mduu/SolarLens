@@ -14,7 +14,7 @@ struct EcoMeterCard: View {
                 .foregroundStyle(.green)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(impact.equivalentTrees, specifier: "%.0f") Trees Saved")
+                Text("Same as \(impact.equivalentTrees, specifier: "%.0f") trees")
                     .font(.title3)
                     .fontWeight(.semibold)
 
@@ -28,6 +28,8 @@ struct EcoMeterCard: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             }
+
+            EcoImpactInfoButton(impact: impact)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)

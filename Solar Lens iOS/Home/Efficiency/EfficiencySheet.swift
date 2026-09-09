@@ -13,7 +13,7 @@ struct EfficiencySheet: View {
     @State private var viewModel = EfficiencyViewModel()
     @AppStorage("efficiency.selectedPeriod") private var storedPeriod: String = EfficiencyPeriod.today.rawValue
 
-    // Lifetime "trees saved" figure — shares the cached overall production and
+    // Lifetime tree-equivalent figure — shares the cached overall production and
     // formula with the home Efficiency card for consistency.
     @AppStorage("cachedOverallProduction") private var cachedOverallProduction: Double = 0
 
@@ -157,25 +157,35 @@ struct EfficiencySheet: View {
     private var treesEquivalentView: some View {
         if cachedOverallProduction > 0 {
             let impact = EcoImpact(totalProductionWh: cachedOverallProduction)
-            HStack(spacing: 5) {
-                Image(systemName: "leaf.fill")
-                    .font(.caption2)
-                    .foregroundStyle(.green)
-                Text("\(impact.equivalentTrees, specifier: "%.0f") trees saved")
-                    .font(.caption2)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.primary)
-                Group {
-                    if impact.showsCo2InTonnes {
-                        Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") t CO₂)")
-                    } else {
-                        Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") kg CO₂)")
+            // Carried the same caption2 as the labels above, which left the
+            // lifetime figure — the only whole-installation number on the
+            // card — as its smallest line. It now matches the weight of the
+            // figures' values and gets a rule of its own.
+            VStack(spacing: 8) {
+                Divider()
+
+                HStack(spacing: 7) {
+                    Image(systemName: "leaf.fill")
+                        .font(.subheadline)
+                        .foregroundStyle(.green)
+                    Text("like \(impact.equivalentTrees, specifier: "%.0f") trees")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
+                    Group {
+                        if impact.showsCo2InTonnes {
+                            Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") t CO₂)")
+                        } else {
+                            Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") kg CO₂)")
+                        }
                     }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                    EcoImpactInfoButton(impact: impact)
                 }
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
             .padding(.top, 2)
         }
     }

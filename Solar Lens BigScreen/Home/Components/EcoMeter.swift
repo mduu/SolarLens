@@ -3,7 +3,7 @@ import SwiftUI
 struct EcoMeter: View {
     var totalSolarProduction: Double
 
-    private var safedTrees: Double {
+    private var treeEquivalent: Double {
         EcoImpact(totalProductionWh: totalSolarProduction).equivalentTrees
     }
 
@@ -13,11 +13,11 @@ struct EcoMeter: View {
                 .font(.system(size: 60))
                 .foregroundStyle(.green)
 
-            Text("\(safedTrees, specifier: "%.0f")")
+            Text("\(treeEquivalent, specifier: "%.0f")")
                 .font(.title3)
 
 
-            Text("Trees planted")
+            Text("Tree equivalent")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
 
