@@ -698,6 +698,31 @@ The Functions host also emits `ApnsSender Count` as a pre-aggregated custom
 metric. It is not sampled and needs no parsing, so it is the better source for a
 plain total — but it has no dimensions, which is why the lines above exist.
 
+**Why `Azure.Core` is filtered to `Warning` in `host.json`.** The queue trigger
+polls storage every `maxPollingInterval` whether or not a push is due, and the
+Azure SDK logs each poll's request and response at `Information`. Measured in
+production: 2340 `Azure.Core` records an hour, flat, against four actual pushes
+an hour — 95% of the whole workspace's ingestion, and constant no matter how
+many devices are registered. That was 3.3 GB a month of the 5 GB free grant
+spent watching an idle queue, against 0.006 GB a week for our own function logs.
+Filtering the category costs nothing: the five-second interval stays, only its
+narration goes.
+
+Note the shape of that setting. Every key under `logLevel` is a log *category*
+and every value must be a valid level, so a `_comment` key there is not ignored
+— the host rejects it with `Configuration value '…' is not supported` and fails
+to start. Comments belong in objects that tolerate unknown keys, such as
+`samplingSettings`, or here.
+
+To confirm the filter is working, ingestion should sit far below 0.01 GB a day:
+
+```kusto
+Usage
+| where TimeGenerated > ago(2d)
+| where IsBillable
+| summarize GB = sum(Quantity) / 1024.0 by bin(TimeGenerated, 1d)
+```
+
 ### APNs configuration
 
 Token-based auth with a `.p8` key — no certificates, no yearly expiry. Set as
