@@ -26519,34 +26519,6 @@
         }
       }
     },
-    "like %.0f trees" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "wie %.0f Bäume"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "som %.0f træer"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "comme %.0f arbres"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "come %.0f alberi"
-          }
-        }
-      }
-    },
     "Tree equivalent" : {
       "localizations" : {
         "de" : {
@@ -26715,90 +26687,6 @@
         }
       }
     },
-    "The CO₂ per kilowatt-hour is the global average published by the International Energy Agency. One tree is taken to bind 18.3 kg of CO₂ a year over a 40-year life. Solar Lens uses the same coefficients as the Huawei FusionSolar app, so both show the same result for the same system." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das CO₂ pro Kilowattstunde ist der globale Durchschnitt der Internationalen Energieagentur. Für einen Baum werden 18,3 kg CO₂ pro Jahr über 40 Jahre Lebensdauer angenommen. Solar Lens verwendet dieselben Faktoren wie die Huawei-FusionSolar-App, damit beide für dieselbe Anlage dasselbe Ergebnis zeigen."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CO₂ pr. kilowatttime er det globale gennemsnit fra Det Internationale Energiagentur. Ét træ regnes for at binde 18,3 kg CO₂ om året i en levetid på 40 år. Solar Lens bruger de samme faktorer som Huawei FusionSolar-appen, så begge viser det samme resultat for det samme anlæg."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le CO₂ par kilowattheure correspond à la moyenne mondiale publiée par l'Agence internationale de l'énergie. Un arbre est censé fixer 18,3 kg de CO₂ par an sur une durée de vie de 40 ans. Solar Lens utilise les mêmes facteurs que l'application Huawei FusionSolar, afin que les deux affichent le même résultat pour la même installation."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La CO₂ per chilowattora è la media mondiale pubblicata dall'Agenzia internazionale per l'energia. Si considera che un albero assorba 18,3 kg di CO₂ all'anno per una vita di 40 anni. Solar Lens usa gli stessi fattori dell'app Huawei FusionSolar, così entrambe mostrano lo stesso risultato per lo stesso impianto."
-          }
-        }
-      }
-    },
-    "In Europe it looks different" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In Europa sieht es anders aus"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I Europa ser det anderledes ud"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En Europe, c'est différent"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In Europa la situazione è diversa"
-          }
-        }
-      }
-    },
-    "The global average lies far above most European grids — Swiss electricity is around 55 g CO₂ per kWh, German around 363 g. Where the grid is already clean, solar energy displaces less CO₂, so the real saving is smaller than the figure shown; in Switzerland considerably so." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der globale Durchschnitt liegt weit über den meisten europäischen Netzen – Schweizer Strom kommt auf rund 55 g CO₂ pro kWh, deutscher auf rund 363 g. Wo das Netz bereits sauber ist, verdrängt Solarstrom weniger CO₂; die tatsächliche Einsparung ist deshalb kleiner als der angezeigte Wert, in der Schweiz deutlich."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Det globale gennemsnit ligger langt over de fleste europæiske elnet – schweizisk strøm ligger på omkring 55 g CO₂ pr. kWh, tysk på omkring 363 g. Hvor nettet allerede er rent, fortrænger solenergi mindre CO₂, så den reelle besparelse er mindre end det viste tal – i Schweiz betydeligt mindre."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La moyenne mondiale se situe bien au-dessus de la plupart des réseaux européens : l'électricité suisse est à environ 55 g de CO₂ par kWh, l'allemande à environ 363 g. Là où le réseau est déjà propre, l'énergie solaire évite moins de CO₂ ; l'économie réelle est donc plus faible que le chiffre affiché, nettement en Suisse."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La media mondiale è molto superiore a quella della maggior parte delle reti europee: l'elettricità svizzera è intorno ai 55 g di CO₂ per kWh, quella tedesca intorno ai 363 g. Dove la rete è già pulita, l'energia solare evita meno CO₂, quindi il risparmio reale è inferiore al valore mostrato; in Svizzera nettamente."
-          }
-        }
-      }
-    },
     "Produced so far" : {
       "localizations" : {
         "de" : {
@@ -26939,30 +26827,442 @@
         }
       }
     },
-    "Same as %.0f trees" : {
+    "Which grid you compare against" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "So viel wie %.0f Bäume"
+            "value" : "Mit welchem Netz du dich vergleichst"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Svarer til %.0f træer"
+            "value" : "Hvilket elnet du sammenligner med"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'équivalent de %.0f arbres"
+            "value" : "Le réseau auquel tu te compares"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Equivalente a %.0f alberi"
+            "value" : "La rete con cui ti confronti"
+          }
+        }
+      }
+    },
+    "The CO₂ per kilowatt-hour is a published average for the grid your system feeds. One tree is taken to bind 18.3 kg of CO₂ a year over a 40-year life." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das CO₂ pro Kilowattstunde ist ein veröffentlichter Durchschnitt für das Netz, in das deine Anlage einspeist. Für einen Baum werden 18,3 kg CO₂ pro Jahr über 40 Jahre Lebensdauer angenommen."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ pr. kilowatttime er et offentliggjort gennemsnit for det elnet, dit anlæg leverer til. Ét træ regnes for at binde 18,3 kg CO₂ om året i en levetid på 40 år."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le CO₂ par kilowattheure est une moyenne publiée pour le réseau auquel ton installation est raccordée. Un arbre est censé fixer 18,3 kg de CO₂ par an sur une durée de vie de 40 ans."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La CO₂ per chilowattora è una media pubblicata per la rete a cui il tuo impianto è collegato. Si considera che un albero assorba 18,3 kg di CO₂ all'anno per una vita di 40 anni."
+          }
+        }
+      }
+    },
+    "You are comparing against the global average, which is dirtier than any European grid. Where the grid is already clean, solar energy displaces less CO₂ — so the figure above is optimistic. Pick your country to see the saving that actually applies to you." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du vergleichst dich mit dem globalen Durchschnitt, der schmutziger ist als jedes europäische Netz. Wo das Netz bereits sauber ist, verdrängt Solarstrom weniger CO₂ – der Wert oben ist also zu optimistisch. Wähle dein Land, um die Ersparnis zu sehen, die für dich wirklich gilt."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du sammenligner med det globale gennemsnit, som er mere forurenende end noget europæisk elnet. Hvor nettet allerede er rent, fortrænger solenergi mindre CO₂ – tallet ovenfor er derfor for optimistisk. Vælg dit land for at se den besparelse, der faktisk gælder for dig."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu te compares à la moyenne mondiale, plus polluante que n'importe quel réseau européen. Là où le réseau est déjà propre, l'énergie solaire évite moins de CO₂ : le chiffre ci-dessus est donc trop optimiste. Choisis ton pays pour voir l'économie qui s'applique réellement à toi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ti stai confrontando con la media mondiale, più inquinante di qualsiasi rete europea. Dove la rete è già pulita, l'energia solare evita meno CO₂: il valore qui sopra è quindi troppo ottimistico. Scegli il tuo Paese per vedere il risparmio che vale davvero per te."
+          }
+        }
+      }
+    },
+    "Grid region" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz-Region"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elnet-region"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Région du réseau"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regione della rete"
+          }
+        }
+      }
+    },
+    "Global average" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Globaler Durchschnitt"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Globalt gennemsnit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moyenne mondiale"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media mondiale"
+          }
+        }
+      }
+    },
+    "Eco impact" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ökobilanz"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miljøaftryk"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impact écologique"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impatto ecologico"
+          }
+        }
+      }
+    },
+    "%.0f g CO₂ per kWh" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.0f g CO₂ pro kWh"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.0f g CO₂ pr. kWh"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.0f g de CO₂ par kWh"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.0f g di CO₂ per kWh"
+          }
+        }
+      }
+    },
+    "Solar energy replaces electricity that would otherwise come from the grid. How much CO₂ that avoids depends on how clean the grid already is, so pick where your system stands. National figures are averages for 2024; the global average is the one published by the International Energy Agency." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solarstrom ersetzt Strom, der sonst aus dem Netz käme. Wie viel CO₂ das vermeidet, hängt davon ab, wie sauber das Netz schon ist – wähle also, wo deine Anlage steht. Die Länderwerte sind Durchschnitte für 2024, der globale Wert stammt von der Internationalen Energieagentur."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solenergi erstatter strøm, der ellers ville komme fra elnettet. Hvor meget CO₂ det sparer, afhænger af, hvor rent nettet allerede er, så vælg, hvor dit anlæg står. Landetallene er gennemsnit for 2024; det globale tal kommer fra Det Internationale Energiagentur."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'énergie solaire remplace de l'électricité qui viendrait sinon du réseau. Le CO₂ ainsi évité dépend de la propreté du réseau : indique donc où se trouve ton installation. Les chiffres nationaux sont des moyennes 2024 ; la moyenne mondiale provient de l'Agence internationale de l'énergie."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'energia solare sostituisce elettricità che altrimenti arriverebbe dalla rete. Quanta CO₂ questo eviti dipende da quanto è già pulita la rete, quindi indica dove si trova il tuo impianto. I valori nazionali sono medie del 2024; quello mondiale è pubblicato dall'Agenzia internazionale per l'energia."
+          }
+        }
+      }
+    },
+    "like %lld trees" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "like %lld tree"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "like %lld trees"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "wie %lld Baum"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "wie %lld Bäume"
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "som %lld træ"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "som %lld træer"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "comme %lld arbre"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "comme %lld arbres"
+                }
+              }
+            }
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "come %lld albero"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "come %lld alberi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Same as %lld trees" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Same as %lld tree"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Same as %lld trees"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "So viel wie %lld Baum"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "So viel wie %lld Bäume"
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Svarer til %lld træ"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Svarer til %lld træer"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "L'équivalent de %lld arbre"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "L'équivalent de %lld arbres"
+                }
+              }
+            }
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Equivalente a %lld albero"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Equivalente a %lld alberi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Your grid region is set to %@, at %.0f g CO₂ per kWh. That is a national average for 2024, so a green tariff or a dirtier hour of the day will differ from it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Netz-Region ist %1$@ mit %2$.0f g CO₂ pro kWh. Das ist ein Landesdurchschnitt für 2024 – ein Ökostrom-Tarif oder eine schmutzigere Tagesstunde weichen davon ab."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din elnet-region er %1$@ med %2$.0f g CO₂ pr. kWh. Det er et landsgennemsnit for 2024, så en grøn tarif eller en mere forurenende time på dagen vil afvige fra det."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta région de réseau est %1$@, à %2$.0f g de CO₂ par kWh. C'est une moyenne nationale pour 2024 : un tarif vert ou une heure plus polluante de la journée s'en écarteront."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua regione di rete è %1$@, con %2$.0f g di CO₂ per kWh. È una media nazionale per il 2024, quindi una tariffa verde o un'ora più inquinante della giornata se ne discosteranno."
           }
         }
       }

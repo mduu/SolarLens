@@ -17,6 +17,9 @@ struct EfficiencySheet: View {
     // formula with the home Efficiency card for consistency.
     @AppStorage("cachedOverallProduction") private var cachedOverallProduction: Double = 0
 
+    @AppStorage(GridCarbonRegion.storageKey)
+    private var storedGridRegion = GridCarbonRegion.fallback.rawValue
+
     private var showWhatIf: Bool { !hasAnyBattery || TesterBuild.isActive }
 
     var body: some View {
@@ -156,7 +159,10 @@ struct EfficiencySheet: View {
     @ViewBuilder
     private var treesEquivalentView: some View {
         if cachedOverallProduction > 0 {
-            let impact = EcoImpact(totalProductionWh: cachedOverallProduction)
+            let impact = EcoImpact(
+                totalProductionWh: cachedOverallProduction,
+                region: GridCarbonRegion(stored: storedGridRegion)
+            )
             // Carried the same caption2 as the labels above, which left the
             // lifetime figure — the only whole-installation number on the
             // card — as its smallest line. It now matches the weight of the
@@ -168,7 +174,7 @@ struct EfficiencySheet: View {
                     Image(systemName: "leaf.fill")
                         .font(.subheadline)
                         .foregroundStyle(.green)
-                    Text("like \(impact.equivalentTrees, specifier: "%.0f") trees")
+                    Text("like \(impact.wholeTrees) trees")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.primary)

@@ -514,6 +514,7 @@
 				Services/Model/Device.swift,
 				Services/Model/EcoImpact.swift,
 				Services/Model/EnergyOverview.swift,
+				Services/Model/GridCarbonRegion.swift,
 				Services/Model/MainData.swift,
 				Services/Model/OverviewData.swift,
 				Services/Model/OverviewDataExtensions.swift,
