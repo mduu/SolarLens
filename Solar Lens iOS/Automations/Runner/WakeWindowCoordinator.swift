@@ -54,10 +54,46 @@ final class WakeWindowCoordinator {
 
     private init() {}
 
-    /// Registers, renews or cancels the window to match the current state.
-    /// Safe (and cheap) to call from ticks, scene-phase changes and whenever a
-    /// monitor or automation starts or stops.
+    /// The most recent fire-and-forget refresh, so a caller that needs the
+    /// work finished can wait for one already running instead of racing it
+    /// into the 60-second guard below.
+    private var pending: Task<Void, Never>?
+
+    /// Fire-and-forget form, for callers that stay alive while it runs —
+    /// scene-phase changes, ticks, a monitor or automation starting or
+    /// stopping.
+    ///
+    /// Do **not** use this from a background wake. See `refreshAndWait`.
     func refresh(force: Bool = false) {
+        pending = Task { await performRefresh(force: force) }
+    }
+
+    /// Registers, renews or cancels the window to match the current state, and
+    /// does not return until the server has answered.
+    ///
+    /// The silent-push handler must use this one. It used to call the
+    /// fire-and-forget form and return; iOS then invoked the completion
+    /// handler and suspended the process with the PUT still in flight, so the
+    /// connection died mid-body. The server logged 499 and
+    /// "Unexpected end of request content" — 219 of them against 88 that
+    /// completed. Worse than noise: `registeredUntil` is only set on success,
+    /// so every cut-off attempt made the next wake try again and be cut off
+    /// too. Window renewal only ever succeeded while the app was foregrounded.
+    ///
+    /// Waits for any in-flight fire-and-forget refresh first: the same
+    /// background wake also runs the monitors, and persisting those kicks off
+    /// a refresh of its own. Without this, that one could win the race, do the
+    /// call, and leave this one to early-return — putting us straight back to
+    /// an unawaited request.
+    func refreshAndWait(force: Bool = false) async {
+        if let pending {
+            await pending.value
+            self.pending = nil
+        }
+        await performRefresh(force: force)
+    }
+
+    private func performRefresh(force: Bool) async {
         let needsWindow =
             AutomationManager.shared.needsSilentWakeWindow
             || NotificationManager.shared.hasActiveMonitors
@@ -66,11 +102,7 @@ final class WakeWindowCoordinator {
             guard registeredUntil != nil || force else { return }
             registeredUntil = nil
             lastRefreshAt = nil
-            Task {
-                await WakeScheduleClient.cancel(
-                    scheduleId: Self.scheduleId
-                )
-            }
+            await WakeScheduleClient.cancel(scheduleId: Self.scheduleId)
             return
         }
 
@@ -89,15 +121,13 @@ final class WakeWindowCoordinator {
 
         let until = Date().addingTimeInterval(Self.windowDuration)
         lastRefreshAt = Date()
-        Task {
-            let result = await WakeScheduleClient.registerWindow(
-                scheduleId: Self.scheduleId,
-                cadenceMinutes: Self.cadenceMinutes,
-                until: until
-            )
-            if case .registered = result {
-                self.registeredUntil = until
-            }
+        let result = await WakeScheduleClient.registerWindow(
+            scheduleId: Self.scheduleId,
+            cadenceMinutes: Self.cadenceMinutes,
+            until: until
+        )
+        if case .registered = result {
+            registeredUntil = until
         }
     }
 

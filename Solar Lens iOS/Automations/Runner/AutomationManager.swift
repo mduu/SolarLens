@@ -634,7 +634,9 @@ public final class AutomationManager: AutomationHost {
         {
             scheduleNextBackgroundCall()
         }
-        WakeWindowCoordinator.shared.refresh()
+        // Awaited, not fired off: the caller signals iOS that we are done as
+        // soon as this returns, and anything still in flight is cut off.
+        await WakeWindowCoordinator.shared.refreshAndWait()
     }
 
     // MARK: - Server wake schedule (story #9)

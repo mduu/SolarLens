@@ -5,7 +5,9 @@
       "default": "Information",
       "Function": "Information",
       "Host.Results": "Information",
-      "Function.DailyHousekeeping": "Warning"
+      "Function.DailyHousekeeping": "Warning",
+      "_comment_AzureCore": "The queue trigger polls storage every maxPollingInterval whether or not a push is due, and the Azure SDK logs each poll's request and response at Information. Measured in production: 2340 Azure.Core records an hour, flat, against 4 actual pushes an hour - 95% of the workspace's whole ingestion, and constant regardless of how many devices are registered. That is 3.3 GB a month of the 5 GB free grant spent on watching an idle queue.",
+      "Azure.Core": "Warning"
     },
     "applicationInsights": {
       "samplingSettings": {
