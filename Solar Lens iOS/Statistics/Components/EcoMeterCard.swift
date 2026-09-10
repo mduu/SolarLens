@@ -3,8 +3,14 @@ import SwiftUI
 struct EcoMeterCard: View {
     var totalProduction: Double
 
+    @AppStorage(GridCarbonRegion.storageKey)
+    private var storedGridRegion = GridCarbonRegion.fallback.rawValue
+
     private var impact: EcoImpact {
-        EcoImpact(totalProductionWh: totalProduction)
+        EcoImpact(
+            totalProductionWh: totalProduction,
+            region: GridCarbonRegion(stored: storedGridRegion)
+        )
     }
 
     var body: some View {
@@ -14,7 +20,7 @@ struct EcoMeterCard: View {
                 .foregroundStyle(.green)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Same as \(impact.equivalentTrees, specifier: "%.0f") trees")
+                Text("Same as \(impact.wholeTrees) trees")
                     .font(.title3)
                     .fontWeight(.semibold)
 

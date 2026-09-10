@@ -78,16 +78,24 @@ struct SettingsScreen: View {
 
             serverSectionContent
 
-            Section(header: Text("Appearance")) {
-                appearanceSectionContent
+            Section(header: Text("Eco impact")) {
+                ecoSectionContent
             }
 
             Section(header: Text("Integrations")) {
                 integrationsSectionContent
             }
 
-            Section(header: Text("Automations")) {
+            Section {
                 automationsSectionContent
+            } header: {
+                Text("Automations")
+            } footer: {
+                automationsSectionFooter
+            }
+
+            Section(header: Text("Appearance")) {
+                appearanceSectionContent
             }
 
             Section(header: Text("Diagnostics")) {
@@ -108,16 +116,24 @@ struct SettingsScreen: View {
             .listStyle(.grouped)
 
             List {
-                Section(header: Text("Appearance")) {
-                    appearanceSectionContent
+                Section(header: Text("Eco impact")) {
+                    ecoSectionContent
                 }
 
                 Section(header: Text("Integrations")) {
                     integrationsSectionContent
                 }
 
-                Section(header: Text("Automations")) {
+                Section {
                     automationsSectionContent
+                } header: {
+                    Text("Automations")
+                } footer: {
+                    automationsSectionFooter
+                }
+
+                Section(header: Text("Appearance")) {
+                    appearanceSectionContent
                 }
 
                 Section(header: Text("Diagnostics")) {
@@ -226,6 +242,19 @@ struct SettingsScreen: View {
     }
 
     @ViewBuilder
+    /// Which grid the CO₂ and tree figures are credited against. Lives here
+    /// as well as behind the tree explanation, because someone who already
+    /// knows their grid should not have to find the explanation first.
+    private var ecoSectionContent: some View {
+        SettingNavigationItem(
+            imageName: "leaf.fill",
+            text: "Grid region",
+            color: .green
+        ) {
+            GridCarbonRegionPicker()
+        }
+    }
+
     private var appearanceSectionContent: some View {
         SettingsToggleItem(
             imageName: "sun.max.trianglebadge.exclamationmark",
@@ -244,14 +273,16 @@ struct SettingsScreen: View {
             isOn: serverAssistedTimingBinding
         )
 
-        SettingsItemCaption(
-            imageName: "hand.raised.fill",
-            text:
-                "Lets Solar Lens run automations with a fixed end time exactly on time, even when the app is closed. Only a notification token and the end time are sent to the Solar Lens server — never your Solar Manager login, your devices or any measurements.",
-            color: .secondary
+    }
+
+    /// `SettingsItemCaption` is a bare icon plus a `Text` with no container —
+    /// fine inside a row's HStack, but dropped straight into a List it became
+    /// two rows, and the icon read as a broken menu item of its own. This is
+    /// what it was always meant to be: the section's footnote.
+    private var automationsSectionFooter: some View {
+        Text(
+            "Lets Solar Lens run automations with a fixed end time exactly on time, even when the app is closed. Only a notification token and the end time are sent to the Solar Lens server — never your Solar Manager login, your devices or any measurements."
         )
-        .font(.footnote)
-        .foregroundStyle(.secondary)
     }
 
     /// Wraps the stored setting so turning it off also removes whatever this

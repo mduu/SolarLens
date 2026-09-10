@@ -11,6 +11,9 @@ struct EfficiencyGaugeView: View {
     @AppStorage("cachedOverallProduction") private var cachedOverallProduction: Double = 0
     @AppStorage("cachedOverallProductionFetchDate") private var cachedFetchDate: Double = 0
 
+    @AppStorage(GridCarbonRegion.storageKey)
+    private var storedGridRegion = GridCarbonRegion.fallback.rawValue
+
     var body: some View {
         let selfConsumption = todaySelfConsumptionRate ?? 0
         let autarky = todayAutarchyDegree ?? 0
@@ -66,13 +69,16 @@ struct EfficiencyGaugeView: View {
             }
 
             if cachedOverallProduction > 0 {
-                let impact = EcoImpact(totalProductionWh: cachedOverallProduction)
+                let impact = EcoImpact(
+                    totalProductionWh: cachedOverallProduction,
+                    region: GridCarbonRegion(stored: storedGridRegion)
+                )
 
                 HStack(spacing: 5) {
                     Image(systemName: "leaf.fill")
                         .font(.caption2)
                         .foregroundStyle(.green)
-                    Text("like \(impact.equivalentTrees, specifier: "%.0f") trees")
+                    Text("like \(impact.wholeTrees) trees")
                         .font(.caption2)
                         .fontWeight(.medium)
                         .foregroundStyle(.primary)
