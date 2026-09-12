@@ -424,13 +424,72 @@ Only PNG and JPEG images are accepted. The service validates:
 - File extension
 - Base64 encoding
 
+## Infrastructure baseline
+
+There is no infrastructure-as-code. Everything below was created by hand and
+lives only in Azure — the deploy workflow runs `func azure functionapp publish`
+and touches code only, so it neither applies nor resets any of it. This table
+is the record. If the app ever has to be rebuilt, rebuild it to these values.
+
+| Resource | Value | |
+|---|---|---|
+| Resource group | `solarlens_prod` | not `rg-solarlens-upload`, which the steps above still name |
+| Function app | `solarlens-upload-func` | West Europe, Linux, dotnet-isolated 10, Functions v4 |
+| Hosting plan | **Flex Consumption** | not the Consumption plan the create step above produces |
+| Instance memory | **512 MB** | see below — the default of 2048 costs four times as much |
+| Maximum instances | 100 | |
+| Always ready | none | always-ready instances have no free grant at all |
+| Storage account | `stsolarlensupload` | Standard LRS; holds the `WakeSchedules` table and the APNs queue |
+| App Insights | `solarlens-upload-func` | **workspace-based**, writing into `DefaultWorkspace-<sub>-WEU` in `DefaultResourceGroup-WEU`, 90-day retention |
+| Alerts | `solarlens-alerts`, Failure Anomalies | ~CHF 0.12/month, the only fixed cost worth naming |
+
+Two of those bite if you forget them.
+
+**App Insights is not in `solarlens_prod`.** It ingests into the subscription's
+default West Europe Log Analytics workspace, which sits in another resource
+group. A cost query scoped to `solarlens_prod` therefore reports no ingestion
+cost at all, however much is being ingested. Scope to the subscription, or
+query the workspace directly.
+
+**The instance memory is the whole cost story.** Flex Consumption offers three
+sizes and nothing between them:
+
+| Instance memory | CPU cores | GB-s per billed second |
+|---|---|---|
+| **512 MB** | 0.25 | 0.5 |
+| 2,048 MB (default) | 1 | 2 |
+| 4,096 MB | 2 | 4 |
+
+This app does almost nothing per invocation — one HTTP/2 request to APNs and a
+table row — so it runs on the smallest. Measured after the change: the working
+set settled at ~425 MB, down from ~497 MB on 2,048 MB, because the .NET GC
+sizes its heap against the container limit rather than against actual need. The
+platform also grants each instance 272 MB on top of the configured size for
+host processes, unbilled, so the real ceiling is higher than the number
+suggests.
+
+To reapply after a rebuild:
+
+```bash
+az functionapp scale config set \
+  --resource-group solarlens_prod --name solarlens-upload-func \
+  --instance-memory 512 --maximum-instance-count 100
+```
+
+Watch `MemoryWorkingSet` for a few hours after any change to this. If it
+approaches the limit, or `OutOfMemory` appears in exceptions, go back to 2048 —
+correctness first, the difference is a few francs a month.
+
 ## Cost Estimation
 
 ### Free Tier Limits
 
-**Azure Functions (Consumption Plan):**
-- First 1,000,000 executions: Free
-- First 400,000 GB-s compute: Free
+**Azure Functions (Flex Consumption):**
+- First 250,000 executions per month: free, then $0.40 per million
+- First 100,000 GB-s per month: free, then $0.026 per 1,000 GB-s
+- Minimum billable execution is **1,000 ms**, rounded up to 100 ms after that —
+  a 600 ms push still bills a full second, which is what makes the instance
+  memory size the dominant lever
 
 **Azure Blob Storage:**
 - First 5GB: ~$0.10/month
@@ -440,16 +499,30 @@ Only PNG and JPEG images are accepted. The service validates:
 - Free tier: 100GB bandwidth/month
 - No cost for hosting
 
-### Estimated Monthly Cost (Light Usage)
+### Measured cost, and what it becomes at scale
 
-Assuming:
-- 100 uploads per month
-- Average image size: 2MB
-- Each upload: 3 function calls (upload, check, download)
+Measured over 30 days with two devices on the push pipeline: **CHF 0.49** for
+the whole `solarlens_prod` group, of which roughly a quarter is the alert rules
+and most of the rest is the queue trigger polling storage. Functions billed
+nothing — well inside the free grants. Ingestion billed nothing either, but see
+the note above about where it is actually charged.
 
-**Total: ~$0.10 - $0.50/month**
+Projected from that, at 96 silent pushes and ~4 registrations per device per
+day:
 
-Most users will stay within the free tier.
+| | 512 MB | 2,048 MB |
+|---|---|---|
+| 100 devices | ~CHF 1.70/month | ~CHF 11.60/month |
+| 250 devices | ~CHF 8/month | ~CHF 35/month |
+
+The gap is entirely GB-seconds. Executions themselves stay near free — 100
+devices generate about 315,000 a month against a 250,000 grant, so a few
+rappen. Storage operations scale with pushes but are rounded to nothing at
+$0.00036 per 10,000.
+
+App Insights ingestion is the other thing to watch: about 2 GB a month at 100
+devices against a 5 GB free grant, in a workspace shared with everything else
+in the subscription.
 
 ### Cost Optimization Tips
 
