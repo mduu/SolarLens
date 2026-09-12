@@ -21,13 +21,30 @@ final class WakeWindowCoordinator {
     /// burns that budget without landing more wakes.
     private static let cadenceMinutes = 15
 
-    /// Short enough that an app which stops running automations stops receiving
-    /// pushes soon after, long enough to survive a while offline.
-    private static let windowDuration: TimeInterval = 6 * 60 * 60
+    /// Long enough to survive a night of iOS declining to wake us.
+    ///
+    /// This was six hours, renewed once half spent, which meant a device had
+    /// to be woken at least once every three hours or the window lapsed. A
+    /// second device in production lost it overnight doing nothing wrong: the
+    /// server delivered twelve silent pushes between 01:00 and 04:00, iOS
+    /// woke the app for none of them, and the window died at 04:19. Only
+    /// opening the app brought it back.
+    ///
+    /// The renewal rides the very wakes it keeps alive, so any throttling gap
+    /// wider than the renewal margin is self-reinforcing — and iOS throttles
+    /// silent pushes hardest at night and on a device that only just enabled
+    /// them. The margin has to be wider than a night.
+    ///
+    /// Cost of a longer window: a device that deletes the app or force-quits
+    /// for good keeps being pushed until this expires, so up to a day of
+    /// wasted pushes rather than a quarter of one. The server caps `Until` at
+    /// seven days, so this stays well inside what it accepts.
+    private static let windowDuration: TimeInterval = 24 * 60 * 60
 
-    /// Don't re-register on every 60 s tick; renew when the window is half
-    /// spent.
-    private static let renewAfter: TimeInterval = 3 * 60 * 60
+    /// Renew once a quarter of the window is spent. Also the throttle that
+    /// keeps a foregrounded app from calling the API every minute — and at
+    /// this ratio it means roughly four registrations a day instead of eight.
+    private static let renewAfter: TimeInterval = 18 * 60 * 60
 
     /// Persisted, not just in memory: a cold start must not look like "no
     /// window registered" and trigger a renewal on every launch.
