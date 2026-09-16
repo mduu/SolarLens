@@ -787,13 +787,41 @@ and every value must be a valid level, so a `_comment` key there is not ignored
 to start. Comments belong in objects that tolerate unknown keys, such as
 `samplingSettings`, or here.
 
-To confirm the filter is working, ingestion should sit far below 0.01 GB a day:
+**And why ApnsSender logs one line per push, not eight.** `IHttpClientFactory`
+narrates every outbound request in four lines at `Information`, and the Functions
+host adds its own `Executing`/`Executed` pair, so a single push wrote eight trace
+records of which one was ours. Worse, the SDK's `Sending HTTP request` line
+carries the request URI — and an APNs URI ends in the device token, undoing the
+redaction this project applies everywhere it logs one itself.
+
+Two filters fix it. `Program.cs` sets `System.Net.Http.HttpClient` to `Warning`
+in the **worker**, because worker logs reach the host already relabelled as
+`Function.<name>.User` and a host.json entry would never match them. `host.json`
+then sets `Function.ApnsSender` to `Warning` for the host's own pair, with
+`Function.ApnsSender.User` held at `Information` so the `wake_push` line
+survives — the more specific category wins.
+
+Failures are unaffected: `Warning` and above still pass, a failed execution logs
+at `Error`, and exceptions are separate telemetry that sampling never touches.
+
+To confirm the filters are working, ingestion should sit far below 0.01 GB a day
+per device, and a push should produce exactly one trace line:
 
 ```kusto
 Usage
 | where TimeGenerated > ago(2d)
 | where IsBillable
 | summarize GB = sum(Quantity) / 1024.0 by bin(TimeGenerated, 1d)
+```
+
+```kusto
+let pushes = toscalar(traces | where timestamp > ago(6h)
+    | where message startswith "wake_push" | count);
+traces
+| where timestamp > ago(6h)
+| summarize Lines = count(), PerPush = round(count() * 1.0 / pushes, 2)
+    by Category = tostring(customDimensions.Category)
+| order by Lines desc
 ```
 
 ### APNs configuration

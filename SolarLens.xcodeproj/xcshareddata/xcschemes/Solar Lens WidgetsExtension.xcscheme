@@ -77,7 +77,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "495539B52CECF51A00D2FE19"
             BuildableName = "Solar Lens WidgetsExtension.appex"
-            BlueprintName = "Solar Lens WidgetsExtension"
             ReferencedContainer = "container:SolarLens.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -120,7 +119,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "495539B52CECF51A00D2FE19"
             BuildableName = "Solar Lens WidgetsExtension.appex"
-            BlueprintName = "Solar Lens WidgetsExtension"
             ReferencedContainer = "container:SolarLens.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

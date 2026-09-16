@@ -6,7 +6,9 @@
       "Function": "Information",
       "Host.Results": "Information",
       "Function.DailyHousekeeping": "Warning",
-      "Azure.Core": "Warning"
+      "Azure.Core": "Warning",
+      "Function.ApnsSender": "Warning",
+      "Function.ApnsSender.User": "Information"
     },
     "applicationInsights": {
       "samplingSettings": {

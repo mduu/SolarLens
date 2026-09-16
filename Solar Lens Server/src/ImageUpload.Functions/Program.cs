@@ -5,6 +5,21 @@ using ImageUpload.Functions.Services;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
+    .ConfigureLogging(logging =>
+    {
+        // IHttpClientFactory narrates every request in four lines at
+        // Information — start, send, response headers, end. At one APNs call
+        // per push that was four fifths of this app's entire log volume.
+        //
+        // It is also a privacy leak: the "Sending HTTP request" line carries
+        // the request URI, and an APNs URI ends in the device token. This
+        // project redacts tokens everywhere it logs them on purpose (see
+        // WakeScheduleService.Redact) and the SDK was quietly undoing that.
+        //
+        // Warning keeps the failures. The wake_push line already records the
+        // outcome of every call, which is what the queries in the README read.
+        logging.AddFilter("System.Net.Http.HttpClient", LogLevel.Warning);
+    })
     .ConfigureServices(services =>
     {
         services.AddSingleton<BlobStorageService>();
