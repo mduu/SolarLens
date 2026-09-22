@@ -624,6 +624,21 @@ public final class AutomationManager: AutomationHost {
         logInfo(message: "Woken by a push notification")
         lastBackgroundFireAt = Date()
 
+        // Renew the window before draining anything, not after.
+        //
+        // Awaiting it fixed the ordering — we no longer return with the PUT
+        // still in flight — but not the budget. iOS grants a silent push
+        // handler around thirty seconds, and the two drains below both talk to
+        // Solar Manager under a fetch timeout. Measured over a week in
+        // production: registrations that succeeded started a median of 8
+        // seconds after their push, the ones iOS killed a median of 51. By
+        // then the allowance was gone.
+        //
+        // Order them by what is recoverable. A drain cut short is retried on
+        // the next wake; a registration cut short means there may not be a
+        // next wake. The cheap call that keeps the mechanism alive goes first.
+        await WakeWindowCoordinator.shared.refreshAndWait()
+
         if hasAutomation { await runActiveAutomation() }
         if hasNotifications {
             await NotificationManager.shared.runOverdueMonitorsInBackground()
@@ -634,9 +649,6 @@ public final class AutomationManager: AutomationHost {
         {
             scheduleNextBackgroundCall()
         }
-        // Awaited, not fired off: the caller signals iOS that we are done as
-        // soon as this returns, and anything still in flight is cut off.
-        await WakeWindowCoordinator.shared.refreshAndWait()
     }
 
     // MARK: - Server wake schedule (story #9)
