@@ -26,6 +26,7 @@ struct BatterySeries: ChartContent {
                             "kW",
                             batteryItem.averagePowerDischargedW / 1000
                         ),
+                        series: .value("Series", batteryConsumptionLabel),
                         stacking: .unstacked
                     )
                     .interpolationMethod(.linear)
@@ -75,6 +76,7 @@ struct BatterySeries: ChartContent {
                             "kW",
                             batteryItem.averagePowerChargedW / 1000
                         ),
+                        series: .value("Series", batteryChargedLabel),
                         stacking: .unstacked
                     )
                     .interpolationMethod(.linear)

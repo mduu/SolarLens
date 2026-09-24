@@ -17,6 +17,7 @@ struct GridSeries: ChartContent {
                 AreaMark(
                     x: .value("Time", dataPoint.date.convertToLocalTime()),
                     y: .value("kW", importKW),
+                    series: .value("Series", gridImportLabel),
                     stacking: .unstacked
                 )
                 .interpolationMethod(.cardinal)
@@ -47,6 +48,7 @@ struct GridSeries: ChartContent {
                 AreaMark(
                     x: .value("Time", dataPoint.date.convertToLocalTime()),
                     y: .value("kW", exportKW),
+                    series: .value("Series", gridExportLabel),
                     stacking: .unstacked
                 )
                 .interpolationMethod(.cardinal)

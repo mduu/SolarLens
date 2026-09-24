@@ -19,6 +19,7 @@ struct ProductionConsumptionSeries: ChartContent {
                     AreaMark(
                         x: .value("Time", dataPoint.date.convertToLocalTime()),
                         y: .value("kW", Double(dataPoint.productionWatts) / 1000),
+                        series: .value("Series", productionLabel),
                         stacking: .unstacked
                     )
                     .interpolationMethod(.cardinal)
@@ -56,6 +57,7 @@ struct ProductionConsumptionSeries: ChartContent {
                     AreaMark(
                         x: .value("Time", dataPoint.date.convertToLocalTime()),
                         y: .value("kW", Double(dataPoint.consumptionWatts) / 1000),
+                        series: .value("Series", consumptionLabel),
                         stacking: .unstacked
                     )
                     .interpolationMethod(.cardinal)
