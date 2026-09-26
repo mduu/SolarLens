@@ -744,6 +744,31 @@ traces
 | order by timestamp desc
 ```
 
+`versions` counts devices per app version, commonest first, e.g.
+`4.5.3 (369)=8;4.5.1 (367)=2;unknown=1`. Clients send it as an `X-App-Version`
+header on every wake call and the row keeps the last one seen; `unknown` is a
+device that last registered from a build predating the header.
+
+That field exists because of a question this server could not answer. When the
+aborted-registration share stayed flat after a client fix shipped, there was no
+way to tell whether the fix had failed or simply had not reached anyone — the
+server knew device tokens and nothing else. A fix that does not work and a fix
+nobody installed look identical from here without it.
+
+Note what it cannot do. A `499` means the client hung up before the body
+arrived, and binding `HttpRequestData` fails before any of our code runs, so an
+aborted request logs no version. The distribution above still answers the
+question indirectly: if nine in ten devices report the new version and the abort
+rate has not moved, the fix is the problem.
+
+```kusto
+traces
+| where message startswith "wake_usage"
+| parse message with * "versions=" versions:string
+| project timestamp, versions
+| order by timestamp desc
+```
+
 `projected` is `windows × (1440 / cadence)` — the silent pushes a day, which is
 the linear cost driver because the sender runs one queue execution per push.
 Multiply by 30 for the month and compare against Flex Consumption's **250,000

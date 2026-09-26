@@ -61,7 +61,8 @@ public class WakeRegistrationFunction
             return Status(req, HttpStatusCode.BadRequest, "Missing body");
 
         var (ok, error) = await schedules.UpsertAsync(
-            deviceToken, scheduleId, body, DateTimeOffset.UtcNow);
+            deviceToken, scheduleId, body, DateTimeOffset.UtcNow,
+            AppVersion(req));
         return ok
             ? Status(req, HttpStatusCode.NoContent, null)
             : Status(req, HttpStatusCode.BadRequest, error);
@@ -163,6 +164,26 @@ public class WakeRegistrationFunction
     /// request URL — and request telemetry is explicitly excluded from
     /// sampling, so App Insights kept all of them. A header is not recorded.
     /// </summary>
+    /// <summary>
+    /// App version and build the caller reports, or null from a client old
+    /// enough not to send it. Length-capped and stripped of anything unusual:
+    /// it goes into a log line and a table column, and it arrives from the
+    /// network.
+    /// </summary>
+    private static string? AppVersion(HttpRequestData req)
+    {
+        if (!req.Headers.TryGetValues("X-App-Version", out var values))
+            return null;
+        var raw = values.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+        var clean = new string(raw
+            .Where(c => char.IsLetterOrDigit(c) || c is '.' or '(' or ')' or ' ' or '-')
+            .Take(32)
+            .ToArray())
+            .Trim();
+        return clean.Length == 0 ? null : clean;
+    }
+
     private static string? DeviceToken(HttpRequestData req)
     {
         if (!req.Headers.TryGetValues("X-Device-Token", out var values))

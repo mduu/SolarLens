@@ -26,6 +26,23 @@ enum WakeScheduleClient {
         return "https://solarlens-upload-func.azurewebsites.net/api/wake"
     }
 
+    /// The build this device is running, sent with every call as
+    /// `X-App-Version` and stored on the schedule row.
+    ///
+    /// The server otherwise knows only a device token, which makes any question
+    /// about a client-side change unanswerable: when the share of aborted
+    /// registrations stayed flat after a fix shipped, there was no way to tell
+    /// whether the fix had failed or simply had not reached anyone yet.
+    ///
+    /// Not personal data — it is the same version string the App Store shows
+    /// publicly, and it says nothing about who is holding the phone.
+    static let appVersion: String = {
+        let info = Bundle.main.infoDictionary
+        let short = info?["CFBundleShortVersionString"] as? String ?? "?"
+        let build = info?["CFBundleVersion"] as? String ?? "?"
+        return "\(short) (\(build))"
+    }()
+
     /// Debug builds get sandbox tokens, TestFlight and App Store builds production
     /// ones; the server picks the matching APNs host per schedule.
     static var environment: String {
@@ -146,6 +163,7 @@ enum WakeScheduleClient {
         )
         request.httpMethod = "PUT"
         request.setValue(token, forHTTPHeaderField: "X-Device-Token")
+        request.setValue(appVersion, forHTTPHeaderField: "X-App-Version")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
         request.timeoutInterval = 15
@@ -194,6 +212,7 @@ enum WakeScheduleClient {
         )
         request.httpMethod = "PUT"
         request.setValue(token, forHTTPHeaderField: "X-Device-Token")
+        request.setValue(appVersion, forHTTPHeaderField: "X-App-Version")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
         request.timeoutInterval = 15
@@ -215,6 +234,7 @@ enum WakeScheduleClient {
         )
         request.httpMethod = "DELETE"
         request.setValue(token, forHTTPHeaderField: "X-Device-Token")
+        request.setValue(appVersion, forHTTPHeaderField: "X-App-Version")
         request.setValue(
             KeychainHelper.installSecret,
             forHTTPHeaderField: "X-Install-Secret"
@@ -256,6 +276,7 @@ enum WakeScheduleClient {
         var request = URLRequest(url: URL(string: baseUrl)!)
         request.httpMethod = "DELETE"
         request.setValue(token, forHTTPHeaderField: "X-Device-Token")
+        request.setValue(appVersion, forHTTPHeaderField: "X-App-Version")
         request.setValue(
             KeychainHelper.installSecret,
             forHTTPHeaderField: "X-Install-Secret"

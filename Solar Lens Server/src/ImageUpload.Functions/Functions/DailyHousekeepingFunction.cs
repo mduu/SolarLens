@@ -65,13 +65,14 @@ public class DailyHousekeepingFunction
         // volume before it happens.
         var usage = await schedules.UsageSnapshotAsync();
         logger.LogWarning(
-            "wake_usage devices={Devices} windows={Windows} deadlines={Deadlines} cadence={Cadence} projected_pushes_per_day={Projected}",
+            "wake_usage devices={Devices} windows={Windows} deadlines={Deadlines} cadence={Cadence} projected_pushes_per_day={Projected} versions={Versions}",
             usage.Devices,
             usage.Windows,
             usage.Deadlines,
             usage.AverageCadenceMinutes,
             usage.AverageCadenceMinutes == 0
                 ? 0
-                : usage.Windows * (1440 / usage.AverageCadenceMinutes));
+                : usage.Windows * (1440 / usage.AverageCadenceMinutes),
+            usage.Versions);
     }
 }

@@ -62,6 +62,17 @@ public class WakeScheduleEntity : ITableEntity
     /// <summary>SHA-256 of the per-install secret; guards updates and deletes.</summary>
     public string SecretHash { get; set; } = string.Empty;
 
+    /// <summary>
+    /// App version and build that last registered this row, e.g. "4.5.3 (369)".
+    /// Null for rows written before the client started sending it.
+    ///
+    /// Here because the server otherwise knows only a device token, which makes
+    /// any question about a client change unanswerable — a fix that ships and a
+    /// fix that nobody installed look identical from this side. Not personal
+    /// data: the same string the App Store lists publicly.
+    /// </summary>
+    public string? AppVersion { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
 }
@@ -135,4 +146,10 @@ public record WakeUsage(
     int Devices,
     int Windows,
     int Deadlines,
-    int AverageCadenceMinutes);
+    int AverageCadenceMinutes,
+    /// <summary>
+    /// Devices per app version, commonest first, e.g. "4.5.3 (369)=8;4.5.1
+    /// (367)=2;unknown=1". One field rather than a row per version so the daily
+    /// line stays one parseable log record.
+    /// </summary>
+    string Versions);

@@ -119,7 +119,8 @@ public class WakeScheduleService
         string deviceToken,
         string scheduleId,
         WakeScheduleRequest request,
-        DateTimeOffset now)
+        DateTimeOffset now,
+        string? appVersion = null)
     {
         await EnsureTableAsync();
 
@@ -161,6 +162,9 @@ public class WakeScheduleService
             DefaultTitle = request.DefaultTitle,
             DefaultBody = request.DefaultBody,
             SecretHash = secretHash,
+            // Keep the last known version when a caller does not report one,
+            // so an older client's renewal does not erase what we learned.
+            AppVersion = appVersion ?? existing?.AppVersion,
             CreatedAt = existing?.CreatedAt ?? now,
             UpdatedAt = now
         };
@@ -447,6 +451,9 @@ public class WakeScheduleService
     {
         await EnsureTableAsync();
         var devices = new HashSet<string>(StringComparer.Ordinal);
+        // One version per device, not per row: a device with a window and a
+        // deadline must not count twice.
+        var versionByDevice = new Dictionary<string, string>(StringComparer.Ordinal);
         var windows = 0;
         var deadlines = 0;
         var cadenceSum = 0;
@@ -454,6 +461,10 @@ public class WakeScheduleService
         await foreach (var entity in table.QueryAsync<WakeScheduleEntity>())
         {
             devices.Add(entity.PartitionKey);
+            versionByDevice[entity.PartitionKey] =
+                string.IsNullOrWhiteSpace(entity.AppVersion)
+                    ? "unknown"
+                    : entity.AppVersion;
             if (entity.Kind == WakeKinds.Window)
             {
                 windows++;
@@ -465,11 +476,20 @@ public class WakeScheduleService
             }
         }
 
+        var versions = string.Join(
+            ";",
+            versionByDevice.Values
+                .GroupBy(v => v, StringComparer.Ordinal)
+                .OrderByDescending(g => g.Count())
+                .ThenBy(g => g.Key, StringComparer.Ordinal)
+                .Select(g => $"{g.Key}={g.Count()}"));
+
         return new WakeUsage(
             devices.Count,
             windows,
             deadlines,
-            windows == 0 ? 0 : cadenceSum / windows);
+            windows == 0 ? 0 : cadenceSum / windows,
+            versions.Length == 0 ? "none" : versions);
     }
 
     /// <summary>Device tokens are personal data — never log them in full.</summary>
