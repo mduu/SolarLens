@@ -414,6 +414,12 @@ public final class AutomationManager: AutomationHost {
         }
 
         Task {
+            // Same reason as in `handleRemoteWake`: the drains below persist
+            // monitor state, which kicks off a fire-and-forget window renewal,
+            // and `setTaskCompleted` then suspends us with that PUT mid-body.
+            // The server logs it as 499 "Unexpected end of request content".
+            await WakeWindowCoordinator.shared.refreshAndWait()
+
             if hasAutomation {
                 await runActiveAutomation()
             }
@@ -459,6 +465,9 @@ public final class AutomationManager: AutomationHost {
         }
 
         Task {
+            // See `handleBackgroundTask`.
+            await WakeWindowCoordinator.shared.refreshAndWait()
+
             if hasAutomation { await runActiveAutomation() }
             if hasNotifications {
                 await NotificationManager.shared
