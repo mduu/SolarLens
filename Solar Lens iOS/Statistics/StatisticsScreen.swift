@@ -409,6 +409,7 @@ struct StatisticsScreen: View {
             hasBattery: buildingState.overviewData.hasAnyBattery
                 && viewModel.batteryFiguresAvailable,
             hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation,
+            isIntraday: viewModel.selectedPeriod == .today,
             gridImportOverride: viewModel.measuredGrid?.imported,
             gridExportOverride: viewModel.measuredGrid?.exported
         )

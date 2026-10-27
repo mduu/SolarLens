@@ -11,6 +11,11 @@ struct StatisticsEnergyCards: View {
     var hasBattery: Bool = false
     var hasCarChargingStation: Bool = false
 
+    /// Whether the chart above is the intraday area chart rather than the
+    /// bar chart. The two use different series colours, and the tiles take
+    /// theirs from whichever chart is showing.
+    var isIntraday: Bool = false
+
     /// Measured grid figures, where the caller has them. Summed samples beat
     /// deriving import/export from the self-consumption rate.
     var gridImportOverride: Double?
@@ -28,6 +33,20 @@ struct StatisticsEnergyCards: View {
     private var showCarCharging: Bool { hasCarChargingStation && carCharged != nil }
     private var showHeatpump: Bool { (heatpumpConsumed ?? 0) > 0 }
     private var showBoiler: Bool { (boilerConsumed ?? 0) > 0 }
+
+    private var consumptionColor: Color {
+        isIntraday
+            ? SerieColors.consumptionColor(useAlternativeColors: false)
+            : StatisticsSeries.consumption.color
+    }
+
+    /// The tile leads with grid import, so it borrows the import series'
+    /// colour. The intraday chart has no grid series to match.
+    private var gridColor: Color { StatisticsSeries.imported.color }
+
+    /// The tile leads with energy charged, matching the intraday "Charged"
+    /// series. The bar chart draws no battery series.
+    private var batteryColor: Color { isIntraday ? .purple : .green }
 
     private var useMWh: Bool {
         let maxValue = [
@@ -53,7 +72,7 @@ struct StatisticsEnergyCards: View {
         LazyVGrid(columns: columns, spacing: 12) {
             EnergyCard(
                 icon: "sun.max.fill",
-                iconColor: .orange,
+                iconColor: StatisticsSeries.production.color,
                 label: "Production",
                 value: format(production),
                 detail: selfConsumptionDetail
@@ -61,7 +80,7 @@ struct StatisticsEnergyCards: View {
 
             EnergyCard(
                 icon: "network",
-                iconColor: .purple,
+                iconColor: gridColor,
                 label: "Grid",
                 value: format(gridImport),
                 detail: gridExportDetail
@@ -90,7 +109,7 @@ struct StatisticsEnergyCards: View {
 
             EnergyCard(
                 icon: "house.fill",
-                iconColor: .teal,
+                iconColor: consumptionColor,
                 label: "Consumption",
                 value: format(consumption),
                 detail: autarkyDetail

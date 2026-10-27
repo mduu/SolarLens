@@ -35,7 +35,7 @@ enum StatisticsSeries: String, CaseIterable, Identifiable {
 
     var color: Color {
         switch self {
-        case .production: .orange
+        case .production: SerieColors.productionColor(useAlternativeColors: false)
         case .consumption: .blue.opacity(0.9)
         case .imported: Color(red: 1.0, green: 0.3, blue: 0.15)
         case .exported: .purple.opacity(0.9)
