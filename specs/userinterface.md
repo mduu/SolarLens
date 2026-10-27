@@ -202,8 +202,11 @@ numbers — **autarky** (purple) and **self-consumption** (indigo) — for the
 selected period, consolidating figures otherwise spread across the Statistics
 tabs. The selected period is persisted (`AppStorage` `efficiency.selectedPeriod`).
 
-Non-battery owners (and tester builds, via `TesterBuild.isActive`) additionally
-see the **"What if I had a battery?"** simulator on this sheet: a year picker,
+Every user additionally sees the **"What if I had a battery?"** simulator on
+this sheet. Battery owners get it as **"What if I had a bigger battery?"**: the
+replay runs on the measured grid flows, so the virtual capacity is extra on top
+of the existing battery. Battery owners also reach it from the battery sheet
+(a card below the advantage report). The simulator has a year picker,
 a custom capacity plus a preset size sweep, adjustable max power / round-trip
 efficiency, a progress bar during the chunked yearly fetch, and a result
 showing estimated CHF saved plus before/after autarky and self-consumption.

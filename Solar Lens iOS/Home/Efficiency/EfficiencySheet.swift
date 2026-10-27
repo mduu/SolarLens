@@ -3,8 +3,8 @@ import SwiftUI
 /// Efficiency sheet, opened from the Efficiency card. Available to all users:
 /// a period selector showing autarky and self-consumption for the chosen
 /// period (consolidating numbers otherwise spread across the Statistics tabs).
-/// Non-battery owners (and tester builds) additionally get the battery
-/// what-if simulator.
+/// Everyone also gets the battery what-if simulator — battery owners use it
+/// to size an upgrade.
 struct EfficiencySheet: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -20,15 +20,13 @@ struct EfficiencySheet: View {
     @AppStorage(GridCarbonRegion.storageKey)
     private var storedGridRegion = GridCarbonRegion.fallback.rawValue
 
-    private var showWhatIf: Bool { !hasAnyBattery || TesterBuild.isActive }
-
     var body: some View {
         NavigationStack {
             GeometryReader { geo in
                 let isLandscape = geo.size.width > geo.size.height
 
-                if isLandscape && showWhatIf {
-                    // Landscape with the simulator: spread the metrics and the
+                if isLandscape {
+                    // Landscape: spread the metrics and the
                     // simulator across two independently scrolling columns.
                     HStack(alignment: .top, spacing: 0) {
                         ScrollView {
@@ -38,19 +36,17 @@ struct EfficiencySheet: View {
                         .frame(width: geo.size.width / 2)
 
                         ScrollView {
-                            BatteryWhatIfView()
+                            BatteryWhatIfView(hasExistingBattery: hasAnyBattery)
                                 .padding()
                         }
                     }
                 } else {
-                    // Portrait, or no simulator: a single column is enough.
+                    // Portrait: metrics and simulator stacked in one column.
                     ScrollView {
                         VStack(spacing: 16) {
                             metricsColumn
 
-                            if showWhatIf {
-                                BatteryWhatIfView()
-                            }
+                            BatteryWhatIfView(hasExistingBattery: hasAnyBattery)
                         }
                         .padding()
                     }

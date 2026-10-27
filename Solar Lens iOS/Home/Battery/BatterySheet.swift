@@ -109,6 +109,8 @@ struct BatterySheet: View {
                 hasAnyBattery: model.overviewData.hasAnyBattery
             )
 
+            simulatorLink
+
             let batteries = model.overviewData.devices.filter { $0.deviceType == .battery }
             if !batteries.isEmpty {
                 BatteryDevicesCard(batteries: batteries)
@@ -133,6 +135,8 @@ struct BatterySheet: View {
                     hasAnyBattery: model.overviewData.hasAnyBattery
                 )
 
+                simulatorLink
+
                 let batteries = model.overviewData.devices.filter { $0.deviceType == .battery }
                 if !batteries.isEmpty {
                     BatteryDevicesCard(batteries: batteries)
@@ -141,6 +145,36 @@ struct BatterySheet: View {
             .frame(maxWidth: .infinity)
         }
         .padding()
+    }
+
+    // MARK: - Simulator
+
+    /// The what-if simulator, also reachable from the Efficiency sheet. Here
+    /// it frames an upgrade: the virtual capacity comes on top of the
+    /// battery the user already has.
+    private var simulatorLink: some View {
+        NavigationLink {
+            ScrollView {
+                BatteryWhatIfView(hasExistingBattery: true)
+                    .padding()
+            }
+            .navigationTitle("Battery simulation")
+            .navigationBarTitleDisplayMode(.inline)
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "sparkles")
+                    .foregroundStyle(.green)
+                Text("What if I had a bigger battery?")
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .cardStyle()
+        }
+        .buttonStyle(CardButtonStyle())
     }
 
     // MARK: - Status card

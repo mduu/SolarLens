@@ -1,10 +1,16 @@
 import SwiftUI
 
-/// "What if I had a battery?" — lets a non-owner pick a year and battery size,
+/// "What if I had a battery?" — lets the user pick a year and battery size,
 /// replays their real data through a virtual battery using their real tariffs,
 /// and reports the money they could have saved plus the autarky and
 /// self-consumption they would have gained.
+///
+/// The replay works on the measured grid flows, so for owners of a battery
+/// the virtual one comes on top of what they already have — the copy says
+/// so, framing it as an upgrade.
 struct BatteryWhatIfView: View {
+    var hasExistingBattery: Bool = false
+
     @State private var viewModel = BatteryWhatIfViewModel()
 
     var body: some View {
@@ -71,10 +77,18 @@ struct BatteryWhatIfView: View {
             HStack(spacing: 6) {
                 Image(systemName: "sparkles")
                     .foregroundStyle(.green)
-                Text("What if I had a battery?")
+                Text(
+                    hasExistingBattery
+                        ? "What if I had a bigger battery?"
+                        : "What if I had a battery?"
+                )
                     .font(.headline)
             }
-            Text("Replays a past year of your own data through a virtual battery, using your real tariffs.")
+            Text(
+                hasExistingBattery
+                    ? "Replays a past year of your own data through extra battery capacity on top of your current battery, using your real tariffs."
+                    : "Replays a past year of your own data through a virtual battery, using your real tariffs."
+            )
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -105,7 +119,7 @@ struct BatteryWhatIfView: View {
             ) {
                 HStack {
                     parameterLabel(
-                        "Battery size",
+                        hasExistingBattery ? "Extra capacity" : "Battery size",
                         infoTitle: "Battery size (kWh)",
                         infoMessage: "How much energy the battery can store, in kilowatt-hours (kWh). A bigger battery keeps more of your daytime solar surplus for the evening and night — but costs more. Typical home batteries are 5–15 kWh.",
                         topic: .capacity
@@ -183,7 +197,11 @@ struct BatteryWhatIfView: View {
         VStack(alignment: .leading, spacing: 12) {
             // Headline verdict for the chosen custom size.
             VStack(alignment: .leading, spacing: 6) {
-                Text("With a \(String(format: "%.0f", custom.capacityKwh)) kWh battery in \(String(viewModel.selectedYear))")
+                Text(
+                    hasExistingBattery
+                        ? "With \(String(format: "%.0f", custom.capacityKwh)) kWh extra capacity in \(String(viewModel.selectedYear))"
+                        : "With a \(String(format: "%.0f", custom.capacityKwh)) kWh battery in \(String(viewModel.selectedYear))"
+                )
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
@@ -494,6 +512,13 @@ private struct YearIllustration: View {
 #Preview {
     ScrollView {
         BatteryWhatIfView()
+            .padding()
+    }
+}
+
+#Preview("Existing battery") {
+    ScrollView {
+        BatteryWhatIfView(hasExistingBattery: true)
             .padding()
     }
 }
