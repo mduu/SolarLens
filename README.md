@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="landingpage/img/appicon.png" width="128" height="128" alt="Solar Lens App Icon" style="border-radius: 22%;">
+  <img src="marketing/app_store_headers/SolarLensHeader_EN_3840x1646.png" width="100%" alt="Solar Lens – Track your energy flow. On iPhone and Apple Watch.">
 </p>
 
 <h1 align="center">Solar Lens</h1>
