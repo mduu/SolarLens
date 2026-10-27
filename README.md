@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="marketing/app_store_headers/SolarLensHeader_EN_3840x1646.png" width="100%" alt="Solar Lens – Track your energy flow. On iPhone and Apple Watch.">
+  <img src="marketing/app_store_headers/SolarLensHeader_EN_1600x686.jpg" width="100%" alt="Solar Lens – Track your energy flow. On iPhone and Apple Watch.">
 </p>
-
-<h1 align="center">Solar Lens</h1>
 
 <p align="center">
   An alternative native Apple client for <a href="https://solar-manager.ch">Solar Manager</a> energy systems.<br>
