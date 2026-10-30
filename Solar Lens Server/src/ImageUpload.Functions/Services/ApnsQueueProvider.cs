@@ -45,7 +45,11 @@ public class ApnsQueueProvider
         Queue = new QueueClient(connectionString, QueueName, options);
         Queue.CreateIfNotExists();
 
+        // The runtime only creates the poison queue on the first poisoned
+        // message. Until then the scale controller's metrics poll for the
+        // ApnsPoison trigger hits a 404 every 15 minutes and logs a warning.
         PoisonQueue = new QueueClient(
             connectionString, PoisonQueueName, options);
+        PoisonQueue.CreateIfNotExists();
     }
 }
