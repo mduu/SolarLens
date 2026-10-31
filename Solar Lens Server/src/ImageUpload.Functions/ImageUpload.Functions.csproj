@@ -11,13 +11,15 @@
     <PackageReference Include="Azure.Storage.Queues" Version="12.28.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="2.52.0" />
     <!--
-      Pinned: 5.5.5 pulls Microsoft.Extensions.* 10.x into the generated
-      host-side extension bundle, which the Functions host (shipping 9.x)
-      cannot load — it fails at startup with "Could not load file or assembly
-      'Microsoft.Extensions.Options, Version=10.0.0.0'". 5.5.0 resolves the
-      classic, host-compatible graph. Re-test locally before bumping.
+      Host compatibility: 5.5.x pulls Microsoft.Extensions.* 10.x into the
+      generated host-side extension bundle. Functions hosts before 4.1054
+      (shipping 9.x) cannot load it and fail at startup with "Could not load
+      file or assembly 'Microsoft.Extensions.Options, Version=10.0.0.0'".
+      Production runs 4.1055 (Oct 2026), so this is fine now. If that error
+      ever reappears, fall back to 5.5.0 and check the host version in the
+      SDKVersion column of AppTraces.
     -->
-    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.5.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.5.5" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.1.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
