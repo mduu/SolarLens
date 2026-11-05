@@ -86,3 +86,4 @@ build
 .obsidian
 specs/.claude/settings.local.json
 .claude/settings.local.json
+specs/user_feedback
