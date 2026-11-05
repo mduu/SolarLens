@@ -318,8 +318,8 @@ struct StatisticsScreen: View {
     // MARK: - Values table
 
     /// The series the chart is drawing right now — the table shows a column
-    /// per bar on screen and nothing else. The flow diagram and the map are
-    /// built from all four, so they list all four.
+    /// per bar on screen and nothing else. The other styles are built from
+    /// all four, so they list all four.
     private var enabledSeries: [StatisticsSeries] {
         guard chartStyle == .bars else { return StatisticsSeries.allCases }
 
@@ -410,6 +410,16 @@ struct StatisticsScreen: View {
                 case .flow:
                     EnergyFlowDiagram(totals: viewModel.windowTotals)
                         .timePaging(barChartScrollConfig)
+                case .balance:
+                    EnergyBalanceChart(
+                        data: visibleBars,
+                        xUnit: bucket.calendarComponent,
+                        xLabelFormat: xLabelFormat,
+                        chartHeight: 200,
+                        scrollConfig: barChartScrollConfig,
+                        visibleUnitCount: visibleUnitCount,
+                        futureShading: futureShading
+                    )
                 case .map:
                     mapContent
                 case .bars:
@@ -451,8 +461,8 @@ struct StatisticsScreen: View {
             hasBattery: buildingState.overviewData.hasAnyBattery
                 && viewModel.batteryFiguresAvailable,
             hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation,
-            // The flow diagram and the map share the intraday chart's
-            // colours; only the classic bars have their own.
+            // Every style but the classic bars shares the intraday chart's
+            // colours.
             isIntraday: viewModel.selectedPeriod == .today || chartStyle != .bars,
             gridImportOverride: viewModel.measuredGrid?.imported,
             gridExportOverride: viewModel.measuredGrid?.exported

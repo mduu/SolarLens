@@ -4,8 +4,11 @@ import SwiftUI
 enum StatisticsChartStyle: String, CaseIterable, Identifiable {
     /// Where the period's energy came from and went, as one picture.
     case flow
-    /// Tiles tinted by autarky or self-consumption — hours, days or months,
-    /// depending on the period.
+    /// Production minus consumption, one bar per bucket: which day, month
+    /// or year ran a surplus and which a deficit.
+    case balance
+    /// Tiles tinted by autarky, self-consumption or balance — hours, days or
+    /// months, depending on the period.
     case map
     /// The four series side by side — what the screen has always drawn.
     case bars
@@ -15,6 +18,7 @@ enum StatisticsChartStyle: String, CaseIterable, Identifiable {
     var name: LocalizedStringKey {
         switch self {
         case .flow: "Flow"
+        case .balance: "Balance"
         case .map: "Map"
         case .bars: "Bars"
         }
@@ -23,6 +27,7 @@ enum StatisticsChartStyle: String, CaseIterable, Identifiable {
     var systemImage: String {
         switch self {
         case .flow: "arrow.triangle.branch"
+        case .balance: "plusminus"
         case .map: "square.grid.3x3.fill"
         case .bars: "chart.bar.fill"
         }
@@ -32,8 +37,8 @@ enum StatisticsChartStyle: String, CaseIterable, Identifiable {
 /// Switches between the chart styles a period offers.
 ///
 /// A row of icons where the chosen one spells its name out. Icons alone would
-/// leave their meaning to guesswork; three labels would not fit next to each
-/// other on a small phone.
+/// leave their meaning to guesswork; four labels would not fit next to each
+/// other on a phone.
 struct StatisticsChartStylePicker: View {
     var styles: [StatisticsChartStyle]
     @Binding var selection: StatisticsChartStyle

@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// A grid of tiles, each tinted by how self-sufficient its slice of time was.
+/// A grid of tiles, each tinted by a `MapMetric` for its slice of time: how
+/// self-sufficient it was, or whether it ran a surplus or a deficit.
 ///
 /// The same picture at every scale: a week as days × hours, a year as
 /// months × days, the whole installation as years × months. What a bar chart
@@ -33,11 +34,11 @@ struct EfficiencyHeatMap: View {
 
     var cellHeight: CGFloat = 12
 
-    /// Writes the percentage into each tile. Only for grids coarse enough to
+    /// Writes the figure into each tile. Only for grids coarse enough to
     /// hold it.
     var showsValues = false
 
-    @Binding var metric: EfficiencyMetric
+    @Binding var metric: MapMetric
 
     /// Lets a horizontal swipe page through time, as it does on the charts
     /// this view takes the place of.
@@ -48,7 +49,21 @@ struct EfficiencyHeatMap: View {
 
     private var columnCount: Int { rows.map(\.cells.count).max() ?? 0 }
 
+    /// The largest figure among the tiles, for metrics whose tint is relative
+    /// to it.
+    private var strongest: Double {
+        metric.strongest(
+            among: rows.lazy.flatMap(\.cells).compactMap { cell -> Double? in
+                guard case .filled(let statistic) = cell else { return nil }
+                return metric.value(of: statistic)
+            }
+        )
+    }
+
     var body: some View {
+        // Once per render, not once per tile.
+        let strongest = strongest
+
         VStack(spacing: 10) {
             VStack(spacing: gap) {
                 ForEach(rows) { row in
@@ -60,7 +75,7 @@ struct EfficiencyHeatMap: View {
                             .frame(width: labelWidth, alignment: .leading)
 
                         ForEach(Array(row.cells.enumerated()), id: \.offset) { _, cell in
-                            tile(cell)
+                            tile(cell, strongest: strongest)
                         }
                     }
                 }
@@ -78,17 +93,14 @@ struct EfficiencyHeatMap: View {
             }
             .timePaging(scrollConfig)
 
-            EfficiencyMetricPicker(metric: $metric)
+            MapMetricPicker(metric: $metric)
 
-            Text(metric.explanation)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            MapMetricCaption(metric: metric)
         }
     }
 
     @ViewBuilder
-    private func tile(_ cell: Cell) -> some View {
+    private func tile(_ cell: Cell, strongest: Double) -> some View {
         switch cell {
         case .absent:
             Color.clear.frame(height: cellHeight)
@@ -97,14 +109,16 @@ struct EfficiencyHeatMap: View {
         case .filled(let statistic):
             if let value = metric.value(of: statistic) {
                 shape
-                    .fill(metric.color.opacity(metric.tintStrength(for: value)))
+                    .fill(metric.fill(for: value, strongest: strongest))
                     .frame(height: cellHeight)
                     .overlay {
                         if showsValues {
-                            Text(verbatim: "\(Int(value.rounded()))")
+                            Text(verbatim: metric.text(for: value))
                                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                                 .monospacedDigit()
-                                .minimumScaleFactor(0.7)
+                                .minimumScaleFactor(0.6)
+                                .lineLimit(1)
+                                .padding(.horizontal, 1)
                         }
                     }
             } else {
@@ -240,7 +254,7 @@ extension EfficiencyHeatMap {
 
 #if DEBUG
     #Preview("Year by day") {
-        @Previewable @State var metric = EfficiencyMetric.autarky
+        @Previewable @State var metric = MapMetric.autarky
         let days = (1...12).flatMap { DayStatistic.previewMonth(month: $0) }
 
         EfficiencyHeatMap(
@@ -252,7 +266,7 @@ extension EfficiencyHeatMap {
     }
 
     #Preview("Years by month") {
-        @Previewable @State var metric = EfficiencyMetric.autarky
+        @Previewable @State var metric = MapMetric.autarky
         let days = (1...12).flatMap { DayStatistic.previewMonth(month: $0) }
 
         EfficiencyHeatMap(

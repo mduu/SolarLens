@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// A month as a calendar, each day tinted by one of the two efficiency
-/// figures: how much of its consumption the house covered itself (autarky),
-/// or how much of its production it kept (self-consumption).
+/// A month as a calendar, each day tinted by a `MapMetric`: how much of its
+/// consumption the house covered itself, how much of its production it kept,
+/// or whether it made more than it used.
 ///
-/// The month-sized member of the `EfficiencyHeatMap` family. The percentage
-/// is written in every tile, so the tint is never the only carrier of the
-/// value, and a tap on a day shows the energy behind it.
+/// The month-sized member of the `EfficiencyHeatMap` family. The figure is
+/// written in every tile, so the tint is never the only carrier of the value,
+/// and a tap on a day shows the energy behind it.
 struct AutarkyCalendarView: View {
 
     /// Day buckets; days outside `month` are ignored.
@@ -17,7 +17,7 @@ struct AutarkyCalendarView: View {
     /// the charts this view takes the place of.
     var scrollConfig: ChartTimeScrollConfig?
 
-    @Binding var metric: EfficiencyMetric
+    @Binding var metric: MapMetric
     @State private var selectedDay: Date?
 
     /// Monday-based, like the week page and the week buckets.
@@ -25,7 +25,7 @@ struct AutarkyCalendarView: View {
 
     init(
         data: [DayStatistic], month: Date,
-        metric: Binding<EfficiencyMetric>,
+        metric: Binding<MapMetric>,
         scrollConfig: ChartTimeScrollConfig? = nil,
         selectedDay: Date? = nil
     ) {
@@ -66,6 +66,12 @@ struct AutarkyCalendarView: View {
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 5), count: 7)
 
+    /// The largest figure among the month's days, for metrics whose tint is
+    /// relative to it.
+    private var strongest: Double {
+        metric.strongest(among: data.compactMap(metric.value(of:)))
+    }
+
     var body: some View {
         VStack(spacing: 10) {
             LazyVGrid(columns: columns, spacing: 5) {
@@ -86,19 +92,16 @@ struct AutarkyCalendarView: View {
             }
             .timePaging(scrollConfig)
 
-            EfficiencyMetricPicker(metric: $metric)
+            MapMetricPicker(metric: $metric)
 
             Group {
                 if let selectedDay, let statistic = byDay[selectedDay] {
                     detailRow(selectedDay, statistic)
                 } else {
-                    Text(metric.explanation)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    MapMetricCaption(metric: metric)
                 }
             }
-            .frame(height: 30)
+            .frame(minHeight: 30)
         }
     }
 
@@ -123,12 +126,16 @@ struct AutarkyCalendarView: View {
 
                 if let value {
                     HStack(alignment: .firstTextBaseline, spacing: 0.5) {
-                        Text(verbatim: "\(Int(value.rounded()))")
+                        Text(verbatim: metric.text(for: value))
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
                             .monospacedDigit()
-                        Text(verbatim: "%")
-                            .font(.system(size: 8, weight: .medium))
-                            .foregroundStyle(.secondary)
+                            .minimumScaleFactor(0.7)
+                            .lineLimit(1)
+                        if let unit = metric.unitSuffix {
+                            Text(verbatim: unit)
+                                .font(.system(size: 8, weight: .medium))
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(.top, 8)
@@ -148,7 +155,7 @@ struct AutarkyCalendarView: View {
             Text(day, format: .dateTime.day().month(.wide))
         )
         .accessibilityValue(
-            Text(verbatim: value.map { "\(Int($0.rounded()))%" } ?? "–")
+            Text(verbatim: value.map { metric.text(for: $0) + (metric.unitSuffix ?? " kWh") } ?? "–")
         )
     }
 
@@ -162,9 +169,9 @@ struct AutarkyCalendarView: View {
                 colors: [Color.gray.opacity(0.07)], startPoint: .top, endPoint: .bottom
             )
         }
-        let strength = metric.tintStrength(for: value)
+        let tint = metric.fill(for: value, strongest: strongest)
         return LinearGradient(
-            colors: [metric.color.opacity(strength), metric.color.opacity(strength * 0.6)],
+            colors: [tint, tint.opacity(0.6)],
             startPoint: .top,
             endPoint: .bottom
         )
@@ -205,7 +212,7 @@ struct AutarkyCalendarView: View {
     }
 
     #Preview("Summer month") {
-        @Previewable @State var metric = EfficiencyMetric.autarky
+        @Previewable @State var metric = MapMetric.autarky
 
         AutarkyCalendarView(
             data: DayStatistic.previewMonth(month: 6),
@@ -216,7 +223,7 @@ struct AutarkyCalendarView: View {
     }
 
     #Preview("Winter month, day selected") {
-        @Previewable @State var metric = EfficiencyMetric.autarky
+        @Previewable @State var metric = MapMetric.autarky
 
         AutarkyCalendarView(
             data: DayStatistic.previewMonth(month: 1),
@@ -228,7 +235,7 @@ struct AutarkyCalendarView: View {
     }
 
     #Preview("Month in progress") {
-        @Previewable @State var metric = EfficiencyMetric.selfConsumption
+        @Previewable @State var metric = MapMetric.selfConsumption
 
         AutarkyCalendarView(
             data: Array(DayStatistic.previewMonth(month: 10).prefix(11)),

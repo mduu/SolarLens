@@ -14,7 +14,7 @@ struct StatisticsChartPreferences: DynamicProperty {
     @AppStorage("stats.overall.chartStyle") private var overallStyle = StatisticsChartStyle.flow
     @AppStorage("stats.custom.chartStyle") private var customStyle = StatisticsChartStyle.flow
 
-    @AppStorage("stats.map.metric") private var mapMetric = EfficiencyMetric.autarky
+    @AppStorage("stats.map.metric") private var mapMetric = MapMetric.autarky
 
     /// The styles a period can be drawn in, in picker order. Empty for Today,
     /// which only has its intraday chart; a custom range has no fixed shape
@@ -22,8 +22,8 @@ struct StatisticsChartPreferences: DynamicProperty {
     static func styles(for period: StatisticsPeriod) -> [StatisticsChartStyle] {
         switch period {
         case .today: []
-        case .week, .month, .year, .overall: [.flow, .map, .bars]
-        case .custom: [.flow, .bars]
+        case .week, .month, .year, .overall: [.flow, .balance, .map, .bars]
+        case .custom: [.flow, .balance, .bars]
         }
     }
 
@@ -39,5 +39,5 @@ struct StatisticsChartPreferences: DynamicProperty {
     }
 
     /// The figure the map tints its tiles by.
-    var metric: Binding<EfficiencyMetric> { $mapMetric }
+    var metric: Binding<MapMetric> { $mapMetric }
 }
