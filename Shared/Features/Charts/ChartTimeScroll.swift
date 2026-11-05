@@ -37,16 +37,27 @@ extension View {
     @ViewBuilder
     func chartTimeScroll(_ config: ChartTimeScrollConfig?) -> some View {
         if let config {
-            let pinned = self.chartXScale(
+            self.chartXScale(
                 domain: config.window.lowerBound...config.window.upperBound
             )
+            .timePaging(config)
+        } else {
+            self
+        }
+    }
 
-            // tvOS has no DragGesture — and no caller there passes a config
-            // either, since only the iOS charts page through time.
-            #if os(tvOS)
-                pinned
-            #else
-                pinned
+    /// The paging swipe on its own, for a view that steps through time
+    /// without being a chart — the statistics calendar. A `nil` config leaves
+    /// the view untouched.
+    @ViewBuilder
+    func timePaging(_ config: ChartTimeScrollConfig?) -> some View {
+        // tvOS has no DragGesture — and no caller there passes a config
+        // either, since only the iOS charts page through time.
+        #if os(tvOS)
+            self
+        #else
+            if let config {
+                self
                     .contentShape(.rect)
                     .gesture(
                         DragGesture(minimumDistance: 24)
@@ -62,9 +73,9 @@ extension View {
                                 }
                             }
                     )
-            #endif
-        } else {
-            self
-        }
+            } else {
+                self
+            }
+        #endif
     }
 }

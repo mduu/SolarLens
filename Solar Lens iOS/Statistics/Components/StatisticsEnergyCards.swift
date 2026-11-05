@@ -11,9 +11,10 @@ struct StatisticsEnergyCards: View {
     var hasBattery: Bool = false
     var hasCarChargingStation: Bool = false
 
-    /// Whether the chart above is the intraday area chart rather than the
-    /// bar chart. The two use different series colours, and the tiles take
-    /// theirs from whichever chart is showing.
+    /// Whether the chart above draws in the intraday chart's colours — the
+    /// intraday chart itself, the balance chart and the calendar do — rather
+    /// than in the classic bar chart's. The tiles take their colours from
+    /// whichever chart is showing.
     var isIntraday: Bool = false
 
     /// Measured grid figures, where the caller has them. Summed samples beat

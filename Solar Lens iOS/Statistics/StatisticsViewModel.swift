@@ -129,6 +129,24 @@ class StatisticsViewModel {
         return buckets.buckets(in: window, bucket: bucket)
     }
 
+    /// The bucket size the map style lays its tiles out from, one step finer
+    /// than the bars: a week by the hour, a year by the day. The whole
+    /// installation is also read by the day and summed into months, which is
+    /// one request instead of twelve per year.
+    var mapBucket: BucketStatisticsStore.Bucket? {
+        switch selectedPeriod {
+        case .week: .hour
+        case .month, .year, .overall: .day
+        case .today, .custom: nil
+        }
+    }
+
+    /// The map's buckets inside the visible window.
+    var mapBuckets: [DayStatistic] {
+        guard let mapBucket else { return [] }
+        return buckets.buckets(in: window, bucket: mapBucket)
+    }
+
     // MARK: - Totals
 
     /// The totals cards' figures, summed over the visible window. Production
@@ -144,6 +162,23 @@ class StatisticsViewModel {
             selfConsumptionRate: windowRates?.selfConsumptionRate,
             autarchyDegree: windowRates?.autarchyDegree
         )
+    }
+
+    /// Production, consumption, import and export over the visible window —
+    /// the four figures the flow diagram is drawn from.
+    ///
+    /// Where the grid figures are not measured, they are derived exactly as
+    /// the Grid tile derives them, from the window's own self-consumption.
+    /// Summing the buckets' derived figures instead lands a rounding step
+    /// away, and a diagram that says 2.1 MWh above a tile that says 2.0 is
+    /// worse than either number.
+    var windowTotals: DayStatistic {
+        var totals = windowSums
+        if measuredGrid == nil, let ownSupply = windowRates?.selfConsumption {
+            totals.imported = max(0, totals.consumption - ownSupply)
+            totals.exported = max(0, totals.production - ownSupply)
+        }
+        return totals
     }
 
     var batteryCharged: Double { windowSums.batteryCharged }
@@ -239,12 +274,22 @@ class StatisticsViewModel {
 
     // MARK: - Loading
 
+    /// `includingMap` also loads the finer buckets the map style needs. They
+    /// are left out otherwise: nobody looking at the bars should pay for a
+    /// year of daily samples.
     @MainActor
-    func loadWindow() async {
+    func loadWindow(includingMap: Bool = false) async {
         if let bucket {
             await buckets.ensureLoaded(loadRange, bucket: bucket)
         } else {
             await intraday.ensureLoaded(around: window)
+        }
+
+        if includingMap, let mapBucket, mapBucket != bucket, !Task.isCancelled {
+            // The map of the whole installation reaches back to its first
+            // day, and the store must not ask for anything before it.
+            await loadEarliestDate()
+            await buckets.ensureLoaded(window, bucket: mapBucket)
         }
     }
 
@@ -320,6 +365,7 @@ class StatisticsViewModel {
             let registered = info.registrationDate
         else { return }
         earliestDate = registered
+        buckets.earliest = registered
         navigator?.setEarliest(registered)
     }
 

@@ -13,7 +13,11 @@ struct StatisticsScreen: View {
     @State private var intradayBatteries: [BatteryHistory] = []
     @State private var barMarks: [DayStatistic] = []
     @State private var visibleBars: [DayStatistic] = []
+    @State private var mapMarks: [DayStatistic] = []
     @State private var futureShading: ChartFutureShading?
+
+    /// Which chart each period draws.
+    private var chartPreferences = StatisticsChartPreferences()
 
     // Persisted series visibility per period
     @AppStorage("stats.week.showProduction") private var weekShowProduction = true
@@ -128,7 +132,7 @@ struct StatisticsScreen: View {
             // does not fire a request per window passed.
             try? await Task.sleep(for: .milliseconds(300))
             guard !Task.isCancelled else { return }
-            await viewModel.loadWindow()
+            await viewModel.loadWindow(includingMap: chartStyle == .map)
             refreshChartData()
             guard !Task.isCancelled else { return }
             await viewModel.loadTotals()
@@ -147,14 +151,16 @@ struct StatisticsScreen: View {
         intradayBatteries = viewModel.intraday.batteryMarks(around: viewModel.window, paddingDays: 0)
         barMarks = viewModel.visibleBuckets
         visibleBars = viewModel.visibleBuckets
+        mapMarks = viewModel.mapBuckets
         futureShading = ChartFutureShading(window: viewModel.window)
     }
 
-    /// Changes to this restart the loading task: the window moved, or the
-    /// buckets it is cut into changed.
+    /// Changes to this restart the loading task: the window moved, the
+    /// buckets it is cut into changed, or the chart style did — the map needs
+    /// finer buckets than the other styles load.
     private var windowIdentity: String {
         let window = viewModel.window
-        return "\(viewModel.selectedPeriod.rawValue)|\(window.lowerBound.timeIntervalSince1970)|\(window.upperBound.timeIntervalSince1970)|\(viewModel.customResolution.rawValue)"
+        return "\(viewModel.selectedPeriod.rawValue)|\(window.lowerBound.timeIntervalSince1970)|\(window.upperBound.timeIntervalSince1970)|\(viewModel.customResolution.rawValue)|\(chartStyle.rawValue)"
     }
 
     // MARK: - Time navigation
@@ -295,11 +301,28 @@ struct StatisticsScreen: View {
         }
     }
 
+    // MARK: - Chart style
+
+    /// The styles the current period can be drawn in.
+    private var chartStyles: [StatisticsChartStyle] {
+        StatisticsChartPreferences.styles(for: viewModel.selectedPeriod)
+    }
+
+    /// The style on screen. A remembered choice the period does not offer
+    /// falls back to the flow diagram.
+    private var chartStyle: StatisticsChartStyle {
+        let stored = chartPreferences.style(for: viewModel.selectedPeriod).wrappedValue
+        return chartStyles.contains(stored) ? stored : .flow
+    }
+
     // MARK: - Values table
 
     /// The series the chart is drawing right now — the table shows a column
-    /// per bar on screen and nothing else.
+    /// per bar on screen and nothing else. The flow diagram and the map are
+    /// built from all four, so they list all four.
     private var enabledSeries: [StatisticsSeries] {
+        guard chartStyle == .bars else { return StatisticsSeries.allCases }
+
         var result: [StatisticsSeries] = []
         if showProduction.wrappedValue { result.append(.production) }
         if showConsumption.wrappedValue { result.append(.consumption) }
@@ -369,23 +392,42 @@ struct StatisticsScreen: View {
             todayContent
         }
 
-        // Every other period: a bar chart of the buckets in the window
+        // Every other period: the buckets in the window, drawn in the style
+        // the user picked for this period
         if let bucket = viewModel.bucket {
             VStack(spacing: 8) {
-                FilterableBarChart(
-                    data: barMarks,
-                    xUnit: bucket.calendarComponent,
-                    xLabelFormat: xLabelFormat,
-                    showProduction: showProduction,
-                    showConsumption: showConsumption,
-                    showImport: showImport,
-                    showExport: showExport,
-                    chartHeight: 200,
-                    visibleData: visibleBars,
-                    scrollConfig: barChartScrollConfig,
-                    visibleUnitCount: visibleUnitCount,
-                    futureShading: futureShading
-                )
+                if chartStyles.count > 1 {
+                    HStack {
+                        Spacer()
+                        StatisticsChartStylePicker(
+                            styles: chartStyles,
+                            selection: chartPreferences.style(for: viewModel.selectedPeriod)
+                        )
+                    }
+                }
+
+                switch chartStyle {
+                case .flow:
+                    EnergyFlowDiagram(totals: viewModel.windowTotals)
+                        .timePaging(barChartScrollConfig)
+                case .map:
+                    mapContent
+                case .bars:
+                    FilterableBarChart(
+                        data: barMarks,
+                        xUnit: bucket.calendarComponent,
+                        xLabelFormat: xLabelFormat,
+                        showProduction: showProduction,
+                        showConsumption: showConsumption,
+                        showImport: showImport,
+                        showExport: showExport,
+                        chartHeight: 200,
+                        visibleData: visibleBars,
+                        scrollConfig: barChartScrollConfig,
+                        visibleUnitCount: visibleUnitCount,
+                        futureShading: futureShading
+                    )
+                }
             }
             .padding(.horizontal)
         }
@@ -409,7 +451,9 @@ struct StatisticsScreen: View {
             hasBattery: buildingState.overviewData.hasAnyBattery
                 && viewModel.batteryFiguresAvailable,
             hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation,
-            isIntraday: viewModel.selectedPeriod == .today,
+            // The flow diagram and the map share the intraday chart's
+            // colours; only the classic bars have their own.
+            isIntraday: viewModel.selectedPeriod == .today || chartStyle != .bars,
             gridImportOverride: viewModel.measuredGrid?.imported,
             gridExportOverride: viewModel.measuredGrid?.exported
         )
@@ -425,6 +469,47 @@ struct StatisticsScreen: View {
             .foregroundStyle(.secondary)
             .multilineTextAlignment(.center)
             .padding(.horizontal)
+        }
+    }
+
+    /// The map in the shape that suits the period: hours of a week, days of
+    /// a month or a year, months of every year on record.
+    @ViewBuilder
+    private var mapContent: some View {
+        switch viewModel.selectedPeriod {
+        case .week:
+            EfficiencyHeatMap(
+                rows: EfficiencyHeatMap.weekByHour(mapMarks, week: viewModel.window),
+                columnLabels: EfficiencyHeatMap.hourColumnLabels,
+                cellHeight: 18,
+                metric: chartPreferences.metric,
+                scrollConfig: barChartScrollConfig
+            )
+        case .month:
+            AutarkyCalendarView(
+                data: mapMarks,
+                month: viewModel.window.lowerBound,
+                metric: chartPreferences.metric,
+                scrollConfig: barChartScrollConfig
+            )
+        case .year:
+            EfficiencyHeatMap(
+                rows: EfficiencyHeatMap.yearByDay(mapMarks, year: viewModel.window.lowerBound),
+                columnLabels: EfficiencyHeatMap.dayColumnLabels,
+                metric: chartPreferences.metric,
+                scrollConfig: barChartScrollConfig
+            )
+        case .overall:
+            EfficiencyHeatMap(
+                rows: EfficiencyHeatMap.yearsByMonth(mapMarks),
+                columnLabels: EfficiencyHeatMap.monthColumnLabels,
+                cellHeight: 26,
+                showsValues: true,
+                metric: chartPreferences.metric,
+                scrollConfig: barChartScrollConfig
+            )
+        case .today, .custom:
+            EmptyView()
         }
     }
 

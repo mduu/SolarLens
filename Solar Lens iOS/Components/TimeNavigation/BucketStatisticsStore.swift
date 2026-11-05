@@ -7,7 +7,7 @@ import SwiftUI
 /// the user walks backwards, so a scroll over ground already covered costs
 /// nothing.
 ///
-/// Day and week buckets come from raw samples (one request per calendar
+/// Hour, day and week buckets come from raw samples (one request per calendar
 /// month); month and year buckets come from the statistics endpoint, one
 /// request each — the same trade the screen made before.
 ///
@@ -16,6 +16,9 @@ import SwiftUI
 final class BucketStatisticsStore {
 
     enum Bucket: Hashable {
+        /// Only the statistics map asks for these — a week drawn as days ×
+        /// hours. They cost a finer sampling interval, so nothing else does.
+        case hour
         case day
         case week
         case month
@@ -23,6 +26,7 @@ final class BucketStatisticsStore {
 
         var calendarComponent: Calendar.Component {
             switch self {
+            case .hour: .hour
             case .day: .day
             case .week: .weekOfYear
             case .month: .month
@@ -33,11 +37,17 @@ final class BucketStatisticsStore {
         /// Whether the buckets are aggregated from raw samples rather than
         /// fetched one statistics call at a time.
         var derivesFromSamples: Bool {
-            self == .day || self == .week
+            self == .hour || self == .day || self == .week
         }
     }
 
     private(set) var isLoading = false
+
+    /// When the installation was registered, once known. Sample requests are
+    /// not sent for anything earlier: a range that starts before the
+    /// installation existed comes back empty as a whole, including the part
+    /// of it that does have data.
+    var earliest: Date?
 
     /// How long a bucket that is still running stays fresh.
     private static let openBucketMaxAge: TimeInterval = 60
@@ -49,6 +59,14 @@ final class BucketStatisticsStore {
     private var daily: [Date: DayStatistic] = [:]
     /// Calendar months whose raw samples have been fetched, and when.
     private var loadedMonths: [Date: Date] = [:]
+
+    /// Hourly figures, keyed by start of hour. Only filled for months that
+    /// were sampled hour by hour — see `hourlyMonths`.
+    private var hourly: [Date: DayStatistic] = [:]
+    /// Calendar months whose samples arrived at hourly resolution. A long run
+    /// is fetched one sample per day, which fills `daily` but leaves nothing
+    /// to draw hours from.
+    private var hourlyMonths: Set<Date> = []
 
     /// Month- and year-sized buckets, kept apart by bucket size.
     ///
@@ -70,6 +88,11 @@ final class BucketStatisticsStore {
     /// absent — the chart draws the gap rather than a fake zero.
     func buckets(in range: Range<Date>, bucket: Bucket) -> [DayStatistic] {
         switch bucket {
+        case .hour:
+            return hourly
+                .filter { range.contains($0.key) }
+                .values
+                .sorted { $0.day < $1.day }
         case .day:
             return daily
                 .filter { range.contains($0.key) }
@@ -117,7 +140,7 @@ final class BucketStatisticsStore {
         defer { isLoading = false }
 
         if bucket.derivesFromSamples {
-            await loadSamples(from: range.lowerBound, to: upper)
+            await loadSamples(from: range.lowerBound, to: upper, hourly: bucket == .hour)
         } else {
             await loadPeriods(from: range.lowerBound, to: upper, bucket: bucket)
         }
@@ -126,17 +149,20 @@ final class BucketStatisticsStore {
     // MARK: - Sample-derived buckets
 
     @MainActor
-    private func loadSamples(from start: Date, to end: Date) async {
+    private func loadSamples(from start: Date, to end: Date, hourly needsHours: Bool) async {
         // Consecutive missing months are fetched in one request. Scrolling adds
         // a month at a time, but the first look at a long custom range would
         // otherwise cost a request per month.
-        for run in missingMonthRuns(from: start, to: end) {
+        let runs = missingMonthRuns(from: start, to: end, hourly: needsHours)
+            .flatMap(splitIntoYears)
+        for run in runs {
             // The caller restarts this task on every scroll; stop as soon as a
             // newer window has superseded this one.
             if Task.isCancelled { return }
 
+            let runStart = max(run.lowerBound, earliest ?? run.lowerBound)
             let runEnd = min(run.upperBound, Date())
-            guard run.lowerBound < runEnd else { continue }
+            guard runStart < runEnd else { continue }
 
             // The figures are watt-hours *per interval*, so a coarser interval
             // sums to the same daily total for a fraction of the payload. Long
@@ -144,13 +170,13 @@ final class BucketStatisticsStore {
             let months = calendar.dateComponents(
                 [.month], from: run.lowerBound, to: run.upperBound
             ).month ?? 1
-            let interval = months > 2 ? 86400 : 3600
+            let interval = months > 2 && !needsHours ? 86400 : 3600
 
             // The run bounds are real instants; the API reads and writes them
             // one time-zone offset earlier — see `ChartPlotSpace`.
             guard
                 let data = try? await energyManager.fetchMainData(
-                    from: ChartPlotSpace.toApi(run.lowerBound),
+                    from: ChartPlotSpace.toApi(runStart),
                     to: ChartPlotSpace.toApi(runEnd),
                     interval: interval
                 )
@@ -172,24 +198,65 @@ final class BucketStatisticsStore {
                 )
             }
 
+            if interval == 3600 {
+                for sample in data.data {
+                    let instant = ChartPlotSpace.fromApi(sample.date)
+                    guard let hour = calendar.dateInterval(of: .hour, for: instant)?.start
+                    else { continue }
+                    hourly[hour] = DayStatistic(
+                        day: hour,
+                        consumption: sample.consumptionOverTimeWatthours,
+                        production: sample.productionOverTimeWatthours,
+                        imported: sample.importedOverTimeWhatthours,
+                        exported: sample.exportedOverTimeWhatthours,
+                        batteryCharged: sample.batteryChargedWh,
+                        batteryDischarged: sample.batteryDischargedWh
+                    )
+                }
+            }
+
             let fetchedAt = Date()
             var month = run.lowerBound
             while month < run.upperBound {
                 loadedMonths[month] = fetchedAt
+                if interval == 3600 { hourlyMonths.insert(month) }
                 guard let next = calendar.date(byAdding: .month, value: 1, to: month) else { break }
                 month = next
             }
         }
     }
 
+    /// Cuts a run into pieces of at most twelve months.
+    ///
+    /// One request for two years of daily samples came back with nothing when
+    /// the statistics map first asked for it (November 2026), while eleven
+    /// months in one request worked. Whether its length was the reason was
+    /// never separated from the other one — it also started before the
+    /// installation existed, see `earliest`. The endpoint documents no
+    /// maximum range, so the pieces stay at a size known to work.
+    private func splitIntoYears(_ run: Range<Date>) -> [Range<Date>] {
+        var pieces: [Range<Date>] = []
+        var start = run.lowerBound
+        while start < run.upperBound {
+            let next = calendar.date(byAdding: .month, value: 12, to: start) ?? run.upperBound
+            let end = min(next, run.upperBound)
+            pieces.append(start..<end)
+            start = end
+        }
+        return pieces
+    }
+
     /// Runs of adjacent calendar months that still need fetching.
-    private func missingMonthRuns(from start: Date, to end: Date) -> [Range<Date>] {
+    private func missingMonthRuns(
+        from start: Date, to end: Date, hourly needsHours: Bool
+    ) -> [Range<Date>] {
         var runs: [Range<Date>] = []
         var runStart: Date?
 
         for month in months(from: start, to: end) {
             let monthEnd = calendar.date(byAdding: .month, value: 1, to: month) ?? end
-            if needsFetch(month, end: monthEnd, in: loadedMonths) {
+            let lacksHours = needsHours && !hourlyMonths.contains(month)
+            if lacksHours || needsFetch(month, end: monthEnd, in: loadedMonths) {
                 if runStart == nil { runStart = month }
             } else if let open = runStart {
                 runs.append(open..<month)
