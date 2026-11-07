@@ -1,0 +1,247 @@
+{
+  "en": [
+    {
+      "file": "home.png",
+      "caption": "See how the\nenergy flows"
+    },
+    {
+      "file": "today.png",
+      "caption": "Follow your day,\nhour by hour"
+    },
+    {
+      "file": "stats_flow_year.png",
+      "caption": "See where your\nenergy goes"
+    },
+    {
+      "file": "stats_map_year.png",
+      "caption": "Spot patterns\nat a glance"
+    },
+    {
+      "file": "stats_balance_year.png",
+      "caption": "Surplus\nor deficit?"
+    },
+    {
+      "file": "automation.png",
+      "caption": "Let automations\ndo the work"
+    },
+    {
+      "file": "notifications.png",
+      "caption": "Get alerted\nwhen it matters"
+    },
+    {
+      "file": "battery.png",
+      "caption": "See what your\nbattery saves you"
+    },
+    {
+      "file": "devices.png",
+      "caption": "Set priorities and\ncharging modes"
+    },
+    {
+      "watch": [
+        "watch_1.png",
+        "watch_2.png",
+        "watch_3.png",
+        "watch_4.png",
+        "watch_5.png",
+        "watch_6.png"
+      ],
+      "caption": "Full support for\nApple Watch"
+    }
+  ],
+  "de": [
+    {
+      "file": "home.png",
+      "caption": "Beobachte den\nEnergiefluss"
+    },
+    {
+      "file": "today.png",
+      "caption": "Dein Tag,\nStunde für Stunde"
+    },
+    {
+      "file": "stats_flow_year.png",
+      "caption": "Sieh, wohin deine\nEnergie geht"
+    },
+    {
+      "file": "stats_map_year.png",
+      "caption": "Erkenne Muster\nauf einen Blick"
+    },
+    {
+      "file": "stats_balance_year.png",
+      "caption": "Im Plus oder\nim Minus?"
+    },
+    {
+      "file": "automation.png",
+      "caption": "Lass Automationen\nfür dich arbeiten"
+    },
+    {
+      "file": "notifications.png",
+      "caption": "Erfahre es,\nwenn es zählt"
+    },
+    {
+      "file": "battery.png",
+      "caption": "Sieh, was deine\nBatterie dir spart"
+    },
+    {
+      "file": "devices.png",
+      "caption": "Prioritäten und\nLademodus steuern"
+    },
+    {
+      "watch": [
+        "watch_1.png",
+        "watch_2.png",
+        "watch_3.png",
+        "watch_4.png",
+        "watch_5.png",
+        "watch_6.png"
+      ],
+      "caption": "Volle Unterstützung\nfür Apple Watch"
+    }
+  ],
+  "da": [
+    {
+      "file": "home.png",
+      "caption": "Se, hvordan\nenergien flyder"
+    },
+    {
+      "file": "today.png",
+      "caption": "Følg din dag\ntime for time"
+    },
+    {
+      "file": "stats_flow_year.png",
+      "caption": "Se, hvor din\nenergi bliver af"
+    },
+    {
+      "file": "stats_map_year.png",
+      "caption": "Find mønstre\nmed ét blik"
+    },
+    {
+      "file": "stats_balance_year.png",
+      "caption": "Overskud eller\nunderskud?"
+    },
+    {
+      "file": "automation.png",
+      "caption": "Lad automatiseringer\ngøre arbejdet"
+    },
+    {
+      "file": "notifications.png",
+      "caption": "Få besked,\nnår det gælder"
+    },
+    {
+      "file": "battery.png",
+      "caption": "Se, hvad batteriet\nsparer dig"
+    },
+    {
+      "file": "devices.png",
+      "caption": "Styr prioriteter\nog ladetilstand"
+    },
+    {
+      "watch": [
+        "watch_1.png",
+        "watch_2.png",
+        "watch_3.png",
+        "watch_4.png",
+        "watch_5.png",
+        "watch_6.png"
+      ],
+      "caption": "Fuld understøttelse\naf Apple Watch"
+    }
+  ],
+  "fr": [
+    {
+      "file": "home.png",
+      "caption": "Suivez le flux\nd'énergie"
+    },
+    {
+      "file": "today.png",
+      "caption": "Votre journée,\nheure par heure"
+    },
+    {
+      "file": "stats_flow_year.png",
+      "caption": "Voyez où va\nvotre énergie"
+    },
+    {
+      "file": "stats_map_year.png",
+      "caption": "Repérez les tendances\nd'un coup d'œil"
+    },
+    {
+      "file": "stats_balance_year.png",
+      "caption": "Excédent\nou déficit ?"
+    },
+    {
+      "file": "automation.png",
+      "caption": "Laissez faire les\nautomatisations"
+    },
+    {
+      "file": "notifications.png",
+      "caption": "Soyez alerté\nau bon moment"
+    },
+    {
+      "file": "battery.png",
+      "caption": "Ce que votre batterie\nvous fait économiser"
+    },
+    {
+      "file": "devices.png",
+      "caption": "Priorités et\nmode de charge"
+    },
+    {
+      "watch": [
+        "watch_1.png",
+        "watch_2.png",
+        "watch_3.png",
+        "watch_4.png",
+        "watch_5.png",
+        "watch_6.png"
+      ],
+      "caption": "Compatible avec\nl'Apple Watch"
+    }
+  ],
+  "it": [
+    {
+      "file": "home.png",
+      "caption": "Guarda come scorre\nl'energia"
+    },
+    {
+      "file": "today.png",
+      "caption": "La tua giornata,\nora per ora"
+    },
+    {
+      "file": "stats_flow_year.png",
+      "caption": "Scopri dove va\nla tua energia"
+    },
+    {
+      "file": "stats_map_year.png",
+      "caption": "Cogli gli schemi\na colpo d'occhio"
+    },
+    {
+      "file": "stats_balance_year.png",
+      "caption": "In attivo\no in passivo?"
+    },
+    {
+      "file": "automation.png",
+      "caption": "Lascia fare alle\nautomazioni"
+    },
+    {
+      "file": "notifications.png",
+      "caption": "Ricevi un avviso\nquando serve"
+    },
+    {
+      "file": "battery.png",
+      "caption": "Scopri quanto ti fa\nrisparmiare la batteria"
+    },
+    {
+      "file": "devices.png",
+      "caption": "Priorità e modalità\ndi ricarica"
+    },
+    {
+      "watch": [
+        "watch_1.png",
+        "watch_2.png",
+        "watch_3.png",
+        "watch_4.png",
+        "watch_5.png",
+        "watch_6.png"
+      ],
+      "caption": "Pieno supporto per\nApple Watch"
+    }
+  ]
+}
