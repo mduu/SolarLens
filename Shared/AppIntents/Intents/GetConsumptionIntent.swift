@@ -20,7 +20,7 @@ struct GetConsumptionIntent: AppIntent {
         let consumptionKW = Double(currentConsumption) / 1000
 
         let dialog = IntentDialog(
-            full: "The current overall consumption is \(String(format: "%.1f", consumptionKW)) kilowatts",
+            full: "The current overall consumption is \(consumptionKW.localized(decimals: 1)) kilowatts",
             systemImageName: "house"
         )
 

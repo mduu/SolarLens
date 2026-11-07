@@ -244,7 +244,7 @@ final class CarPlayManager {
             guard let expected else { continue }
             items.append(
                 row(
-                    title, String(format: "%.1f kWh", expected),
+                    title, "\(expected.localized(decimals: 1)) kWh",
                     icon("sun.and.horizon.fill", .systemOrange)
                 )
             )

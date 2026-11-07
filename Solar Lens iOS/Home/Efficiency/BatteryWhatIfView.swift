@@ -125,7 +125,7 @@ struct BatteryWhatIfView: View {
                         topic: .capacity
                     )
                     Spacer()
-                    Text(verbatim: String(format: "%.0f kWh", viewModel.customCapacityKwh))
+                    Text(verbatim: "\(viewModel.customCapacityKwh.localized(decimals: 0)) kWh")
                         .foregroundStyle(.secondary)
                 }
             }
@@ -141,7 +141,7 @@ struct BatteryWhatIfView: View {
                         topic: .power
                     )
                     Spacer()
-                    Text(verbatim: String(format: "%.1f kW", viewModel.maxPowerKw))
+                    Text(verbatim: "\(viewModel.maxPowerKw.localized(decimals: 1)) kW")
                         .foregroundStyle(.secondary)
                 }
             }
@@ -155,7 +155,7 @@ struct BatteryWhatIfView: View {
                         topic: .efficiency
                     )
                     Spacer()
-                    Text(verbatim: String(format: "%.0f%%", viewModel.roundTripEfficiencyPercent))
+                    Text(verbatim: "\(viewModel.roundTripEfficiencyPercent.localized(decimals: 0))%")
                         .foregroundStyle(.secondary)
                 }
                 Slider(value: $viewModel.roundTripEfficiencyPercent, in: 70...100, step: 1)
@@ -199,8 +199,8 @@ struct BatteryWhatIfView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text(
                     hasExistingBattery
-                        ? "With \(String(format: "%.0f", custom.capacityKwh)) kWh extra capacity in \(String(viewModel.selectedYear))"
-                        : "With a \(String(format: "%.0f", custom.capacityKwh)) kWh battery in \(String(viewModel.selectedYear))"
+                        ? "With \(custom.capacityKwh.localized(decimals: 0)) kWh extra capacity in \(String(viewModel.selectedYear))"
+                        : "With a \(custom.capacityKwh.localized(decimals: 0)) kWh battery in \(String(viewModel.selectedYear))"
                 )
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -236,7 +236,7 @@ struct BatteryWhatIfView: View {
                         .foregroundStyle(.secondary)
                     ForEach(viewModel.sweepResults) { sweep in
                         HStack {
-                            Text(verbatim: String(format: "%.0f kWh", sweep.capacityKwh))
+                            Text(verbatim: "\(sweep.capacityKwh.localized(decimals: 0)) kWh")
                                 .font(.subheadline)
                             Spacer()
                             Text("+\(sweep.autarkyImprovement, specifier: "%.0f")% autarky")

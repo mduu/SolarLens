@@ -30,9 +30,9 @@ struct ForecastWidgetView: View {
                     }
                     .widgetLabel {
                         if let label {
-                            Text("⛅ \(String(format: "%.0f", expected)) kWh \(label)")
+                            Text("⛅ \(expected.localized(decimals: 0)) kWh \(label)")
                         } else {
-                            Text("⛅ \(String(format: "%.0f", expected)) kWh")
+                            Text("⛅ \(expected.localized(decimals: 0)) kWh")
                         }
                     }
                 } else {
@@ -42,7 +42,7 @@ struct ForecastWidgetView: View {
                     ) {
                         Image(systemName: "sun.horizon")
                     } currentValueLabel: {
-                        Text("\(String(format: "%.0f", expected))")
+                        Text("\(expected.localized(decimals: 0))")
                     }
                     #if os(watchOS)
                         .gaugeStyle(.circular)
@@ -57,7 +57,7 @@ struct ForecastWidgetView: View {
         #if os(watchOS)
             case .accessoryCorner:
                 HStack(spacing: 2) {
-                    Text("\(String(format: "%.0f", expected)) kWh")
+                    Text("\(expected.localized(decimals: 0)) kWh")
                     if let label {
                         Text(label)
                     }
@@ -75,11 +75,11 @@ struct ForecastWidgetView: View {
                     ) {
                         Text("kWh")
                     } currentValueLabel: {
-                        Text("\(String(format: "%.0f", expected))")
+                        Text("\(expected.localized(decimals: 0))")
                     } minimumValueLabel: {
                         Text("0")
                     } maximumValueLabel: {
-                        Text("\(String(format: "%.0f", gaugeMax))")
+                        Text("\(gaugeMax.localized(decimals: 0))")
                     }
                     .gaugeStyle(.automatic)
                     .tint(renderingMode == .fullColor ? getGaugeTint() : nil)
@@ -89,9 +89,9 @@ struct ForecastWidgetView: View {
 
         case .accessoryInline:
             if let label {
-                Text("⛅ \(String(format: "%.0f", expected)) kWh \(label)")
+                Text("⛅ \(expected.localized(decimals: 0)) kWh \(label)")
             } else {
-                Text("⛅ \(String(format: "%.0f", expected)) kWh")
+                Text("⛅ \(expected.localized(decimals: 0)) kWh")
             }
 
         default:

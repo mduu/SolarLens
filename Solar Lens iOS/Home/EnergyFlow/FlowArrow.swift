@@ -111,7 +111,7 @@ struct FlowArrow: View {
     private var kWLabel: some View {
         let offset: CGFloat = isHorizontal ? -14 : 22
 
-        Text(String(format: "%.1f kW", power))
+        Text("\(power.localized(decimals: 1)) kW")
             .font(.system(size: 12, weight: .semibold, design: .rounded))
             .foregroundStyle(color)
             .position(

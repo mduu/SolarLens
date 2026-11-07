@@ -22,8 +22,9 @@ struct EnergyFlowDiagram: View {
     private let importColor = StatisticsSeries.imported.color
     private let exportColor = StatisticsSeries.exported.color
 
-    /// Space kept free on each side for a node's name and figure.
-    private let labelWidth: CGFloat = 88
+    /// The least space kept free on each side for a node's name and figure,
+    /// so the diagram does not jump about as short labels come and go.
+    private let minimumLabelWidth: CGFloat = 72
     private let nodeWidth: CGFloat = 7
     private let nodeGap: CGFloat = 16
 
@@ -88,8 +89,31 @@ struct EnergyFlowDiagram: View {
             (size.height - rightGap) / max(consumption + exported, 1)
         )
 
-        let left = labelWidth
-        let right = size.width - labelWidth - nodeWidth
+        // Each side gets the room its own labels need, measured. A fixed
+        // margin sized for "Consumption" cut the French "Consommation" off at
+        // the screen edge.
+        func labelSpace(_ entries: [(name: LocalizedStringKey, wattHours: Double)]) -> CGFloat {
+            let widest = entries.map { entry in
+                max(
+                    context.resolve(Text(entry.name).font(.caption)).measure(in: size).width,
+                    context.resolve(
+                        Text(verbatim: format(entry.wattHours))
+                            .font(.subheadline).fontWeight(.semibold)
+                    ).measure(in: size).width
+                )
+            }.max() ?? 0
+            return min(max(widest + 10, minimumLabelWidth), size.width * 0.36)
+        }
+
+        var leftLabels: [(name: LocalizedStringKey, wattHours: Double)] = []
+        if hasSolar { leftLabels.append(("Solar", production)) }
+        if hasImport { leftLabels.append(("Import", imported)) }
+        var rightLabels: [(name: LocalizedStringKey, wattHours: Double)] = []
+        if hasExport { rightLabels.append(("Export", exported)) }
+        if hasHouse { rightLabels.append(("Consumption", consumption)) }
+
+        let left = labelSpace(leftLabels)
+        let right = size.width - labelSpace(rightLabels) - nodeWidth
 
         // Left: solar on top — its exported share first — then grid import.
         let solarTop = 0.0
@@ -197,7 +221,7 @@ struct EnergyFlowDiagram: View {
         if hasSolar, kept > threshold, min(solarBottom - solarSplit, houseSplit - houseTop) > 22,
             let rate = totals.selfConsumptionRate
         {
-            let formatted = String(format: "%.0f", rate)
+            let formatted = rate.localized(decimals: 0)
             context.draw(
                 Text("\(formatted)% self-consumed")
                     .font(.caption2).fontWeight(.medium).foregroundStyle(.secondary),

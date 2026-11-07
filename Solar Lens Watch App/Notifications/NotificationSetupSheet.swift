@@ -70,7 +70,7 @@ struct WatchNotificationSetupSheet: View {
                             HStack {
                                 Text("Level")
                                 Spacer()
-                                Text(String(format: "%.1f kW", thresholdKW))
+                                Text("\(thresholdKW.localized(decimals: 1)) kW")
                                     .monospacedDigit()
                             }
                         }

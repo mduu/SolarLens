@@ -25,7 +25,7 @@ struct ProductionAndConsumptionWidgetView: View {
                 ) {
                     Image(systemName: "sun.max")
                 } currentValueLabel: {
-                    Text("\(String(format: "%.1f kW", current))")
+                    Text("\("\(current.localized(decimals: 1)) kW")")
                 }
                 .gaugeStyle(.circular)
                 .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
@@ -38,7 +38,7 @@ struct ProductionAndConsumptionWidgetView: View {
 
         case .accessoryCorner:
 
-            Text("\(String(format: "%.1f kW", current))")
+            Text("\("\(current.localized(decimals: 1)) kW")")
                 .foregroundColor(
                     renderingMode == .fullColor
                         ? current >= 0.1 ? .accent : .gray
@@ -61,25 +61,25 @@ struct ProductionAndConsumptionWidgetView: View {
         
         if entry.toHouse ?? 0 > 10 {
             let toHouse = Double(entry.toHouse!) / 1000
-            text += "🏠\(String(format: "%.1f", toHouse))"
+            text += "🏠\(toHouse.localized(decimals: 1))"
         }
 
         if entry.toBattery ?? 0 > 10 {
             let toBattery =
                 Double(entry.toBattery!) / 1000
-            text += "🔋\(String(format: "%.1f", toBattery))"
+            text += "🔋\(toBattery.localized(decimals: 1))"
         } else if entry.fromBattery ?? 0 > 10 {
             let fromBattery =
                 Double(entry.fromBattery!) / 1000
-            text += "🔋 -\(String(format: "%.1f", fromBattery))"
+            text += "🔋 -\(fromBattery.localized(decimals: 1))"
         }
 
         if entry.toGrid ?? 0 > 10 {
             let toGrid = Double(entry.toGrid!) / 1000
-            text += "🌐\(String(format: "%.1f", toGrid))"
+            text += "🌐\(toGrid.localized(decimals: 1))"
         } else if entry.fromGrid ?? 0 > 10 {
             let fromGrid = Double(entry.fromGrid!) / 1000
-            text += "🌐 -\(String(format: "%.1f", fromGrid))"
+            text += "🌐 -\(fromGrid.localized(decimals: 1))"
         }
 
         if entry.carCharging ?? false {

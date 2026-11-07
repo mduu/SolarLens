@@ -26,8 +26,8 @@ extension Int {
 
     func formatAsKiloWatts(widthUnit: Bool = false) -> String {
         widthUnit
-            ? "\(String(format: "%.1f", self)) \(getUnitKw())"
-            : String(format: "%.1f", self)
+            ? "\(self.localized(decimals: 1)) \(getUnitKw())"
+            : self.localized(decimals: 1)
     }
 
     func formatIntoPercentage() -> String {

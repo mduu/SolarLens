@@ -57,7 +57,7 @@ struct BatteryToCarRunningCard: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text(String(format: "%.2f kWh", state.kWhTransferred))
+                Text("\(state.kWhTransferred.localized(decimals: 2)) kWh")
                     .font(.caption.weight(.semibold))
                     .monospacedDigit()
             }

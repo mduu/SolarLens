@@ -40,7 +40,7 @@ struct TodayTimelineWidgetView: View {
                     HStack {
                         Image(systemName: "calendar")
                             .font(.caption)
-                        Text(String(format: "%.1f", total))
+                        Text(total.localized(decimals: 1))
                             .font(.system(size: 12))
                             .foregroundColor(
                                 renderingMode == .fullColor ? .yellow : .primary
@@ -49,7 +49,7 @@ struct TodayTimelineWidgetView: View {
 
                         Image(systemName: "bolt")
                             .font(.caption)
-                        Text(String(format: "%.1f", current))
+                        Text(current.localized(decimals: 1))
                             .font(.system(size: 12))
                             .foregroundColor(
                                 renderingMode == .fullColor ? .yellow : .primary
@@ -58,7 +58,7 @@ struct TodayTimelineWidgetView: View {
 
                         Image(systemName: "arrow.up.to.line")
                             .font(.caption)
-                        Text(String(format: "%.1f", max))
+                        Text(max.localized(decimals: 1))
                             .font(.system(size: 12))
                             .foregroundColor(
                                 renderingMode == .fullColor ? .yellow : .primary

@@ -38,8 +38,8 @@ struct ForecastItem {
     var expected: Double
 
     var stringRange: String {
-        let minStr = String(format: "%.0f", min)
-        let maxStr = String(format: "%.0f", max)
+        let minStr = min.localized(decimals: 0)
+        let maxStr = max.localized(decimals: 0)
 
         if minStr == maxStr {
             return minStr

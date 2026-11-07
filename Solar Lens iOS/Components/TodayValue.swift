@@ -10,7 +10,7 @@ struct TodayValue: View {
                 .font(.system(size: 12, weight: .bold, design: .default))
 
             HStack(alignment: .firstTextBaseline, spacing: 1) {
-                Text(String(format: "%.1f", Double(valueInWh) / 1000))
+                Text((Double(valueInWh) / 1000).localized(decimals: 1))
                     .foregroundColor(.black)
                     .font(.system(size: 12, weight: .bold, design: .default))
                 Text("kWh")

@@ -766,7 +766,7 @@ public final class NotificationManager {
         }
         // Watts → kW with 1 decimal.
         let kw = Double(value) / 1000.0
-        return String(format: "%.1f kW", kw)
+        return "\(kw.localized(decimals: 1)) kW"
     }
 
     private func describe(_ monitor: NotificationMonitor) -> String {

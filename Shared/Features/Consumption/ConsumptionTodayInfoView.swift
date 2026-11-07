@@ -42,7 +42,7 @@ struct ConsumptionTodayInfoView: View {
 
     private func kWValueText(kwValue: Double) -> Text {
         return Text(
-            String(format: "%.1f", kwValue)
+            kwValue.localized(decimals: 1)
         )
         .foregroundColor(.cyan)
     }

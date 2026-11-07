@@ -48,8 +48,8 @@ struct DayForecastView: View {
         let minStr: String
         let maxStr: String
         if f.min >= 1 || f.max >= 1 {
-            minStr = String(format: "%.0f", f.min)
-            maxStr = String(format: "%.0f", f.max)
+            minStr = f.min.localized(decimals: 0)
+            maxStr = f.max.localized(decimals: 0)
         } else {
             // The forecast is so low that it get hard to say
             minStr = String(format: "%d", 0)
@@ -60,7 +60,7 @@ struct DayForecastView: View {
 
     private var expectedText: String? {
         guard let e = expectedVal else { return nil }
-        let text: String = e >= 1 ? String(format: "%.0f", e) : String(format: "%.1f", e)
+        let text: String = e >= 1 ? e.localized(decimals: 0) : e.localized(decimals: 1)
         return "\(text) kWh"
     }
 
@@ -138,9 +138,9 @@ struct DayForecastView: View {
 
     private var accessibilityDescription: String {
         guard let f = dayForecast else { return "No forecast" }
-        let minStr = String(format: "%.1f", f.min)
-        let maxStr = String(format: "%.1f", f.max)
-        let expectedStr = String(format: "%.1f", f.expected)
+        let minStr = f.min.localized(decimals: 1)
+        let maxStr = f.max.localized(decimals: 1)
+        let expectedStr = f.expected.localized(decimals: 1)
         return "Range \(minStr) to \(maxStr) kilowatt-hours. Expected \(expectedStr) kilowatt-hours."
     }
 }

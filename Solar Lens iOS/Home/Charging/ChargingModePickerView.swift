@@ -174,7 +174,7 @@ struct ChargingModePickerView: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             if station.currentPower > 0 {
-                                Text(String(format: "%.1f kW", Double(station.currentPower) / 1000))
+                                Text("\((Double(station.currentPower) / 1000).localized(decimals: 1)) kW")
                                     .font(.headline)
                                     .fontWeight(.bold)
                             } else {
@@ -366,7 +366,7 @@ struct ChargingModePickerView: View {
                     HStack(spacing: 4) {
                         Image(systemName: batteryIconName(percent: batteryPercent))
                             .font(.caption)
-                        Text(String(format: "%.0f%%", batteryPercent))
+                        Text("\(batteryPercent.localized(decimals: 0))%")
                             .font(.caption)
                             .fontWeight(.medium)
                     }

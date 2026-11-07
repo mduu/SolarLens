@@ -9,14 +9,14 @@ struct GridBoubleView: View {
     var body: some View {
         let todayKwh = Double(todayGridImportInWh ?? 0) / 1000
 
-        let todayFormatted = String(format: "%.1f", todayKwh)
+        let todayFormatted = todayKwh.localized(decimals: 1)
 
         Button { showGridSheet = true } label: {
             EnergyCard(
                 icon: "network",
                 iconColor: .purple,
                 label: "Grid",
-                value: String(format: "%.1f kW", gridInKwh),
+                value: "\(gridInKwh.localized(decimals: 1)) kW",
                 detail: todayGridImportInWh != nil ? "\(todayFormatted) kWh today" : nil,
                 showChevron: true
             )

@@ -71,7 +71,7 @@ struct MiniDonut<AdditionalContent: View>: View {
                             VStack {
                                 additionalContent
 
-                                Text("\(String(format: "%.0f", percentage))%")
+                                Text("\(percentage.localized(decimals: 0))%")
                                     .foregroundColor(color)
                                     .font(textFont)
                             }  // :VStack

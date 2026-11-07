@@ -159,7 +159,7 @@ struct StatisticsEnergyCards: View {
 
     private var selfConsumptionDetail: LocalizedStringKey? {
         guard let rate = statistics.selfConsumptionRate else { return nil }
-        let formatted = String(format: "%.0f", rate)
+        let formatted = rate.localized(decimals: 0)
         return "\(formatted)% self-consumed"
     }
 
@@ -173,7 +173,7 @@ struct StatisticsEnergyCards: View {
 
     private var carChargingDetail: LocalizedStringKey? {
         guard let carCharged, consumption > 0 else { return nil }
-        let percentage = String(format: "%.0f", carCharged / consumption * 100)
+        let percentage = (carCharged / consumption * 100).localized(decimals: 0)
         return "\(percentage)% of consumption"
     }
 
@@ -195,7 +195,7 @@ struct StatisticsEnergyCards: View {
 
     private var autarkyDetail: LocalizedStringKey? {
         guard let autarky = statistics.autarchyDegree else { return nil }
-        let formatted = String(format: "%.0f", autarky)
+        let formatted = autarky.localized(decimals: 0)
         return "\(formatted)% Autarky"
     }
 }

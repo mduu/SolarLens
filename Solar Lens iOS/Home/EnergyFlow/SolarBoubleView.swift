@@ -9,14 +9,14 @@ struct SolarBoubleView: View {
     var body: some View {
         let todayKwh = (todaySolarProductionInWh ?? 0) / 1000
 
-        let todayFormatted = String(format: "%.1f", todayKwh)
+        let todayFormatted = todayKwh.localized(decimals: 1)
 
         Button { isChartSheetShown = true } label: {
             EnergyCard(
                 icon: "sun.max.fill",
                 iconColor: .orange,
                 label: "Production",
-                value: String(format: "%.1f kW", currentSolarProductionInKwh),
+                value: "\(currentSolarProductionInKwh.localized(decimals: 1)) kW",
                 detail: "\(todayFormatted) kWh today",
                 showChevron: true
             )

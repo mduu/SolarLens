@@ -21,7 +21,7 @@ struct SolarChartView: View {
                         HStack {
                             Text("Max \(Image(systemName: "sun.max")) =")
                                 .font(.footnote)
-                            Text(String(format: "%.2f kWp", getMaxProductionkW()))
+                            Text("\((getMaxProductionkW()).localized(decimals: 2)) kWp")
                                 .font(.footnote)
                                 .foregroundColor(.yellow)
                         }

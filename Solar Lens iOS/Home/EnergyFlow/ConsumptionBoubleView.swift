@@ -11,14 +11,14 @@ struct ConsumptionBoubleView: View {
     var body: some View {
         let todayKwh = (todayConsumptionInWh ?? 0) / 1000
 
-        let todayFormatted = String(format: "%.1f", todayKwh)
+        let todayFormatted = todayKwh.localized(decimals: 1)
 
         Button { isDeviceSheetShown = true } label: {
             EnergyCard(
                 icon: "house.fill",
                 iconColor: .teal,
                 label: "Consumption",
-                value: String(format: "%.1f kW", currentConsumptionInKwh),
+                value: "\(currentConsumptionInKwh.localized(decimals: 1)) kW",
                 detail: todayConsumptionInWh != nil ? "\(todayFormatted) kWh today" : nil,
                 showChevron: true,
                 applyCardStyle: applyCardStyle

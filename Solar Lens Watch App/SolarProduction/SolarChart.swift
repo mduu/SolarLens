@@ -71,7 +71,7 @@ struct SolarChart: View {
                             || abs(min - number) < 0.2
                             || abs(max - number) < 0.2
                         {
-                            Text("\(String(format: "%.1f", number))")
+                            Text("\(number.localized(decimals: 1))")
                         }
                     }
                 }

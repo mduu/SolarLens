@@ -174,6 +174,6 @@ struct WatchNotificationRunningRow: View {
 
     private func formatValue(_ value: Int) -> String {
         if monitor.kind.isPercent { return "\(value)%" }
-        return String(format: "%.1f kW", Double(value) / 1000.0)
+        return "\((Double(value) / 1000.0).localized(decimals: 1)) kW"
     }
 }

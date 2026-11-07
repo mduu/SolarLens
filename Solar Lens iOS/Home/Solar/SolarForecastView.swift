@@ -41,7 +41,7 @@ struct SolarForecastView: View {
             HStack(alignment: .bottom, spacing: 8) {
                 ForEach(Array(forecasts.enumerated()), id: \.offset) { _, item in
                     VStack(spacing: 4) {
-                        Text(String(format: "%.0f", item.value))
+                        Text(item.value.localized(decimals: 0))
                             .font(.system(size: 9, weight: .medium))
                             .foregroundStyle(.secondary)
 

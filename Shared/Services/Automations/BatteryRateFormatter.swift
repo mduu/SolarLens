@@ -19,6 +19,10 @@ enum BatteryRateFormatter {
         let kW = Double(rateW) / 1000.0
         let sign = rateW > 0 ? "+" : ""
         let arrow = rateW > 0 ? "↑" : "↓"
-        return String(format: "%@%.1f kW %@", sign, kW, arrow)
+        // Formatted here rather than through `Double.localized(decimals:)`:
+        // this file is also compiled into the Live Activity extension, which
+        // does not carry the shared extensions.
+        let figure = kW.formatted(.number.precision(.fractionLength(1)))
+        return "\(sign)\(figure) kW \(arrow)"
     }
 }

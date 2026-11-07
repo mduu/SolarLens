@@ -219,7 +219,7 @@ struct ConsumptionPieChart: View {
             allConsumptions.append(
                 .init(
                     id: "others_\(UUID().uuidString)",
-                    name: "Others",
+                    name: String(localized: "Others"),
                     consumptionInWatt: otherConsumptionValue,
                     color: "#26C6DA"
                 )

@@ -103,7 +103,7 @@ struct BatteryWidgetView: View {
             HStack {
                 Image(systemName: GetBatterySymbolName())
                 Text(
-                    "\(entry.currentBatteryLevel ?? 0)%  \(String(format: "+%.1f", charging)) kW"
+                    "\(entry.currentBatteryLevel ?? 0)%  \("+\(charging.localized(decimals: 1))") kW"
                 )
             }
             .containerBackground(for: .widget) { Color.accentColor }

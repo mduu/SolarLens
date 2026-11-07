@@ -21,7 +21,7 @@ struct ConsumptionWidgetView: View {
                         Image(systemName: "house")
                     }
 
-                    Text("\(String(format: "%.1f kW", current))")
+                    Text("\("\(current.localized(decimals: 1)) kW")")
                         .foregroundColor(
                             renderingMode == .fullColor ? .teal : .primary)
                 }
@@ -80,7 +80,7 @@ struct ConsumptionWidgetView: View {
         var text =
             entry.isStaleData ?? false
             ? "?"
-            : "\(String(format: "%.1f", current)) kW"
+            : "\(current.localized(decimals: 1)) kW"
 
         if entry.carCharging ?? false {
             text += " 🚙"
@@ -93,18 +93,18 @@ struct ConsumptionWidgetView: View {
         var text = ""
         if entry.consumptionFromSolar ?? 0 > 50 {
             let solarConsumption = Double(entry.consumptionFromSolar!) / 1000
-            text = "☀️\(String(format: "%.1f", solarConsumption))"
+            text = "☀️\(solarConsumption.localized(decimals: 1))"
         }
 
         if entry.consumptionFromBattery ?? 0 > 50 {
             let batteryConsumption =
                 Double(entry.consumptionFromBattery!) / 1000
-            text += "🔋\(String(format: "%.1f", batteryConsumption))"
+            text += "🔋\(batteryConsumption.localized(decimals: 1))"
         }
 
         if entry.consumptionFromGrid ?? 0 > 50 {
             let gridConsumption = Double(entry.consumptionFromGrid!) / 1000
-            text += "🌐\(String(format: "%.1f", gridConsumption))"
+            text += "🌐\(gridConsumption.localized(decimals: 1))"
         }
 
         return text

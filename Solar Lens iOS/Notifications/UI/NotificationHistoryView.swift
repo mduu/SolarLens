@@ -180,7 +180,7 @@ private struct NotificationHistoryRow: View {
         if event.kind.isPercent {
             return "\(value)%"
         }
-        return String(format: "%.1f kW", Double(value) / 1000.0)
+        return "\((Double(value) / 1000.0).localized(decimals: 1)) kW"
     }
 }
 

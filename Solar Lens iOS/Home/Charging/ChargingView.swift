@@ -63,7 +63,7 @@ struct ChargingStationCard: View {
                         .minimumScaleFactor(0.75)
 
                     if station.currentPower > 0 {
-                        Text(String(format: "%.1f kW", Double(station.currentPower) / 1000))
+                        Text("\((Double(station.currentPower) / 1000).localized(decimals: 1)) kW")
                             .font(.subheadline)
                             .fontWeight(.bold)
                             .foregroundStyle(.primary)

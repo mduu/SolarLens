@@ -29,7 +29,7 @@ struct SolarProductionWidgetView: View {
                     ) {
                         Image(systemName: "sun.max")
                     } currentValueLabel: {
-                        Text("\(String(format: "%.1f", current))")
+                        Text("\(current.localized(decimals: 1))")
                     }
                     .gaugeStyle(.accessoryCircular)
                     .tint(renderingMode == .fullColor ? getGaugeStyle() : nil)
@@ -69,7 +69,7 @@ struct SolarProductionWidgetView: View {
                         }
                     }  // :ZStack
                     .widgetLabel {
-                        Text("☀️ \(String(format: "%.1f kW", current))")
+                        Text("☀️ \("\(current.localized(decimals: 1)) kW")")
                     }  // :widgetLabel
 
                 } else {
@@ -80,7 +80,7 @@ struct SolarProductionWidgetView: View {
                     ) {
                         Image(systemName: "sun.max")
                     } currentValueLabel: {
-                        Text("\(String(format: "%.1f", current))")
+                        Text("\(current.localized(decimals: 1))")
                     }
                     #if os(watchOS)
                         .gaugeStyle(.circular)
@@ -96,7 +96,7 @@ struct SolarProductionWidgetView: View {
         #if os(watchOS)
             case .accessoryCorner:
 
-                Text("\(String(format: "%.1f", current)) kW")
+                Text("\(current.localized(decimals: 1)) kW")
                     .foregroundColor(
                         renderingMode == .fullColor
                             ? current > 100 ? .accent : .gray
@@ -110,11 +110,11 @@ struct SolarProductionWidgetView: View {
                         ) {
                             Text("kW")
                         } currentValueLabel: {
-                            Text("\(String(format: "%.1f", current))")
+                            Text("\(current.localized(decimals: 1))")
                         } minimumValueLabel: {
                             Text("0")
                         } maximumValueLabel: {
-                            Text("\(String(format: "%.0f", max))")
+                            Text("\(max.localized(decimals: 0))")
                         }
                         .gaugeStyle(.automatic)
                         .tint(

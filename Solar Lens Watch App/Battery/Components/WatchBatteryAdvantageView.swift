@@ -53,7 +53,7 @@ struct WatchBatteryAdvantageView: View {
             // Autarky
             VStack(spacing: 2) {
                 HStack(alignment: .firstTextBaseline, spacing: 1) {
-                    Text(String(format: "+%.0f", autarkyImprovement))
+                    Text("+\(autarkyImprovement.localized(decimals: 0))")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundStyle(.green)
@@ -70,7 +70,7 @@ struct WatchBatteryAdvantageView: View {
             // Self-consumption
             VStack(spacing: 2) {
                 HStack(alignment: .firstTextBaseline, spacing: 1) {
-                    Text(String(format: "+%.0f", selfConsumptionImprovement))
+                    Text("+\(selfConsumptionImprovement.localized(decimals: 0))")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundStyle(.green)

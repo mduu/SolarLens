@@ -24,7 +24,7 @@ extension AutomationBatteryToCar: AutomationLiveActivityProvider {
         let stationW = Int(
             Double(live.currentAmps) * params.phases.fallbackWattsPerAmp
         )
-        let kWh = String(format: "%.2f", live.kWhTransferred)
+        let kWh = live.kWhTransferred.localized(decimals: 2)
 
         let payload = BatteryToCarPayload(
             batterySoc: soc,
