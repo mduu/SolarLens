@@ -2,7 +2,8 @@ import AppKit
 import SwiftUI
 
 // The landscape image App Store Connect shows in search results
-// ("Search results" slot, 2622 × 1206).
+// ("Search results" slot). Supported sizes there are 5244 × 2950, 3840 × 2560
+// and 1920 × 1280; this renders 3840 × 2560 (a 1920 × 1280 layout at 2×).
 //
 // The App Store shows only a centred part of it in the search list, so every
 // element that matters sits in the middle: icon, name and tagline centred at
@@ -23,7 +24,7 @@ struct Entry: Decodable {
     let watch: String
 }
 
-let canvas = CGSize(width: 2622, height: 1206)
+let canvas = CGSize(width: 1920, height: 1280)
 
 struct SearchImage: View {
     let background: NSImage
@@ -32,8 +33,8 @@ struct SearchImage: View {
     let phone: NSImage
     let watch: NSImage
 
-    private let phoneWidth: CGFloat = 640
-    private let bezel: CGFloat = 18
+    private let phoneWidth: CGFloat = 520
+    private let bezel: CGFloat = 15
     private var scale: CGFloat { phoneWidth / 402 }
 
     var body: some View {
@@ -54,23 +55,23 @@ struct SearchImage: View {
                 HStack(spacing: 28) {
                     Image(nsImage: icon)
                         .resizable()
-                        .frame(width: 120, height: 120)
-                        .clipShape(RoundedRectangle(cornerRadius: 27, style: .continuous))
+                        .frame(width: 104, height: 104)
+                        .clipShape(RoundedRectangle(cornerRadius: 23, style: .continuous))
                         .shadow(color: .black.opacity(0.2), radius: 10, y: 5)
                     Text(verbatim: "Solar Lens")
-                        .font(.system(size: 110, weight: .bold, design: .rounded))
+                        .font(.system(size: 96, weight: .bold, design: .rounded))
                 }
                 Text(tagline)
-                    .font(.system(size: 54, weight: .semibold, design: .rounded))
+                    .font(.system(size: 46, weight: .semibold, design: .rounded))
                     .multilineTextAlignment(.center)
             }
             .foregroundStyle(Color(red: 0.16, green: 0.29, blue: 0.36))
-            .padding(.top, 70)
+            .padding(.top, 80)
 
             ZStack(alignment: .bottomTrailing) {
                 phoneFrame
                 watchFrame
-                    .offset(x: 190, y: -40)
+                    .offset(x: 160, y: -30)
             }
             .padding(.top, 420)
         }
@@ -101,7 +102,7 @@ struct SearchImage: View {
     }
 
     private var watchFrame: some View {
-        let width: CGFloat = 300
+        let width: CGFloat = 250
         return Image(nsImage: watch)
             .resizable()
             .interpolation(.high)
@@ -149,7 +150,7 @@ struct Main {
                 )
                 .environment(\.colorScheme, .light)
             )
-            renderer.scale = 1
+            renderer.scale = 2
             guard let image = renderer.cgImage,
                 let png = NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:])
             else {

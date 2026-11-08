@@ -136,9 +136,9 @@ images without jumps, captions on one level, no caption overflowing two lines.
 
 ## Step 5b — Search results image
 
-App Store Connect has a separate "Search results" slot, landscape 2622 × 1206. The
-search list shows only a centred part of it (roughly the middle 40 % of the width),
-so icon, name, tagline, iPhone and watch all sit in the middle.
+App Store Connect has a separate "Search results" slot. It accepts only 5244 × 2950,
+3840 × 2560 or 1920 × 1280 — the screenshot sizes (2622 × 1206 etc.) are rejected.
+The script renders 3840 × 2560. Keep icon, name, tagline, iPhone and watch centred.
 
 ```bash
 swiftc -swift-version 5 -parse-as-library -O -o "$T/search" .claude/skills/app-store-screenshots/search_image.swift
@@ -147,8 +147,8 @@ swiftc -swift-version 5 -parse-as-library -O -o "$T/search" .claude/skills/app-s
 ```
 
 `search.json`: `{ "<lang>": { "tagline": "Line one.\nLine two.", "phone": "home.png", "watch": "watch_1.png" } }`.
-Keep the tagline to two short lines. Output: `final/<lang>/search.png`. Check it with a
-centred crop of about 1100 × 734 px: name and tagline must be complete in it.
+Keep the tagline to two short lines. Output: `final/<lang>/search.png`. Check it in the
+App Store search after uploading.
 
 The detail-page header (5244 × 2950 or 3840 × 1646) is a separate, generated image
 and not produced here; see `header_prompt.md`.
