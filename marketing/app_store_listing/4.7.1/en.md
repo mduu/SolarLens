@@ -1,8 +1,8 @@
-# App Store listing 4.7.0 — English
+# App Store listing 4.7.1 — English
 
 ## Subtitle
 
-Your solar energy at a glance
+For Solar Manager systems
 
 ## Promotional text
 
@@ -10,7 +10,7 @@ New in 4.7: see a week, month or year as an energy flow, a balance or a map of y
 
 ## Keywords
 
-solar,photovoltaic,PV,energy,battery,wallbox,EV charging,autarky,self-consumption,heat pump
+solarmanager,photovoltaic,pv,energy,battery,wallbox,ev,charging,autarky,consumption,heatpump
 
 ## Description
 
@@ -67,5 +67,5 @@ Requirements
 You need a login to an existing Solar Manager installation.
 
 Disclaimer
-Solar Lens is not affiliated with Solar Manager AG. The app is an independent product developed by Marc Dürst.
+Solar Lens is an independent hobby project by Marc Dürst and is not affiliated with Solar Manager AG. It uses the official Solar Manager API.
 ```

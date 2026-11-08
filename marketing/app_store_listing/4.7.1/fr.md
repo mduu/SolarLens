@@ -1,8 +1,8 @@
-# App Store listing 4.7.0 — Français
+# App Store listing 4.7.1 — Français
 
 ## Subtitle
 
-Suivez votre énergie solaire
+Pour votre Solar Manager
 
 ## Promotional text
 
@@ -10,7 +10,7 @@ Nouveau dans la 4.7 : semaine, mois ou année en flux d'énergie, en bilan ou en
 
 ## Keywords
 
-solaire,photovoltaïque,PV,énergie,batterie,borne,voiture électrique,autarcie,autoconsommation
+solarmanager,photovoltaïque,pv,énergie,batterie,borne,recharge,autarcie,autoconsommation,électricité
 
 ## Description
 
@@ -67,5 +67,5 @@ Prérequis
 Vous avez besoin d'un compte pour une installation Solar Manager existante.
 
 Avertissement
-Solar Lens n'est pas affilié à Solar Manager AG. L'app est un produit indépendant développé par Marc Dürst.
+Solar Lens est un projet indépendant de Marc Dürst, non affilié à Solar Manager AG. L'app utilise l'API officielle de Solar Manager.
 ```

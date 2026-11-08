@@ -1,8 +1,8 @@
-# App Store listing 4.7.0 — Italiano
+# App Store listing 4.7.1 — Italiano
 
 ## Subtitle
 
-Segui la tua energia solare
+Per impianti Solar Manager
 
 ## Promotional text
 
@@ -10,7 +10,7 @@ Novità nella 4.7: settimana, mese o anno come flusso di energia, bilancio o map
 
 ## Keywords
 
-solare,fotovoltaico,FV,energia,batteria,wallbox,auto elettrica,autarchia,autoconsumo,pompa di calore
+solarmanager,fotovoltaico,fv,energia,batteria,wallbox,ricarica,autarchia,autoconsumo,elettricità
 
 ## Description
 
@@ -67,5 +67,5 @@ Requisiti
 Ti serve un accesso a un'installazione Solar Manager esistente.
 
 Disclaimer
-Solar Lens non è affiliato a Solar Manager AG. L'app è un prodotto indipendente sviluppato da Marc Dürst.
+Solar Lens è un progetto indipendente di Marc Dürst e non è affiliato a Solar Manager AG. L'app utilizza l'API ufficiale di Solar Manager.
 ```

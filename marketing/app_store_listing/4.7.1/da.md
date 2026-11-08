@@ -1,8 +1,8 @@
-# App Store listing 4.7.0 — Dansk
+# App Store listing 4.7.1 — Dansk
 
 ## Subtitle
 
-Overblik over din solenergi
+Til Solar Manager-anlæg
 
 ## Promotional text
 
@@ -10,7 +10,7 @@ Nyt i 4.7: se en uge, en måned eller et år som energiflow, balance eller kort 
 
 ## Keywords
 
-solceller,solenergi,energi,batteri,ladeboks,elbil,selvforsyning,egetforbrug,varmepumpe,strøm,PV
+solarmanager,solceller,pv,energi,batteri,ladeboks,elbil,opladning,selvforsyning,egetforbrug,strøm
 
 ## Description
 
@@ -67,5 +67,5 @@ Krav
 Du skal have et login til en eksisterende Solar Manager-installation.
 
 Ansvarsfraskrivelse
-Solar Lens er ikke tilknyttet Solar Manager AG. Appen er et selvstændigt produkt udviklet af Marc Dürst.
+Solar Lens er et uafhængigt hobbyprojekt af Marc Dürst og er ikke tilknyttet Solar Manager AG. Appen bruger den officielle Solar Manager-API.
 ```
