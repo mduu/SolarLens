@@ -30,6 +30,7 @@ Print this list before starting and reprint it after each step (✅ done, 👨�
 ⏳ Verify raw screenshots
 ⏳ Compose store images
 ⏳ Check the panorama
+⏳ Search results image
 ⏳ Hand over
 ```
 
@@ -133,9 +134,28 @@ swiftc -O -o "$T/sheet" .claude/skills/app-store-screenshots/contact_sheet.swift
 Look at the contact sheet of every language: the background must run through all
 images without jumps, captions on one level, no caption overflowing two lines.
 
+## Step 5b — Search results image
+
+App Store Connect has a separate "Search results" slot, landscape 2622 × 1206. The
+search list shows only a centred part of it (roughly the middle 40 % of the width),
+so icon, name, tagline, iPhone and watch all sit in the middle.
+
+```bash
+swiftc -swift-version 5 -parse-as-library -O -o "$T/search" .claude/skills/app-store-screenshots/search_image.swift
+"$T/search" ../../../assets/backgrounds_v2/solar_sunset_4k.png \
+  "../../../Solar Lens iOS/Assets.xcassets/AppIcon.appiconset/1024px.png" search.json raw final
+```
+
+`search.json`: `{ "<lang>": { "tagline": "Line one.\nLine two.", "phone": "home.png", "watch": "watch_1.png" } }`.
+Keep the tagline to two short lines. Output: `final/<lang>/search.png`. Check it with a
+centred crop of about 1100 × 734 px: name and tagline must be complete in it.
+
+The detail-page header (5244 × 2950 or 3840 × 1646) is a separate, generated image
+and not produced here; see `header_prompt.md`.
+
 ## Step 6 — Hand over
 
 Images are NOT committed: `.gitignore` excludes every image under `marketing/`.
-Commit only `captions.json` (and any change to this skill), in a commit of its own,
+Commit only `captions.json`, `search.json` (and any change to this skill), in a commit of its own,
 never together with code changes. `raw/` and `final/` stay on Marc's machine.
 Upload is done by Marc in App Store Connect; tell him the folder and the order.

@@ -1,0 +1,27 @@
+{
+  "en": {
+    "tagline": "Your energy flow.\nOn iPhone and Apple Watch.",
+    "phone": "home.png",
+    "watch": "watch_1.png"
+  },
+  "de": {
+    "tagline": "Beobachte den Energiefluss.\nAuf iPhone und Apple Watch.",
+    "phone": "home.png",
+    "watch": "watch_1.png"
+  },
+  "da": {
+    "tagline": "Følg din energi.\nPå iPhone og Apple Watch.",
+    "phone": "home.png",
+    "watch": "watch_1.png"
+  },
+  "fr": {
+    "tagline": "Suivez votre énergie.\nSur iPhone et Apple Watch.",
+    "phone": "home.png",
+    "watch": "watch_1.png"
+  },
+  "it": {
+    "tagline": "Segui la tua energia.\nSu iPhone e Apple Watch.",
+    "phone": "home.png",
+    "watch": "watch_1.png"
+  }
+}
