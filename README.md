@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="marketing/app_store_headers/SolarLensHeader_EN_1600x686.jpg" width="100%" alt="Solar Lens – Track your energy flow. On iPhone and Apple Watch.">
+  <img src=".github/assets/readme-header.jpg" width="100%" alt="Solar Lens – Track your energy flow. On iPhone and Apple Watch.">
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://apple.co/408SKri">
-    <img src="marketing/black.svg" width="120" height="auto" alt="Download on the App Store">
+    <img src="landingpage/img/appstore-badge.svg" width="120" height="auto" alt="Download on the App Store">
   </a>
 </p>
 
