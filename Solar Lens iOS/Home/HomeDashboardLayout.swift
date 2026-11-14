@@ -108,7 +108,7 @@ struct HomeDashboardLayout: View {
     }
 
     private var tileTypeSize: DynamicTypeSize {
-        guard layout == .wide, !router.isShowingDetail else { return dynamicTypeSize }
+        guard layout == .wide else { return dynamicTypeSize }
         return max(dynamicTypeSize, .xLarge)
     }
 

@@ -75,10 +75,21 @@ struct HomeScreen: View {
             .ignoresSafeArea(.container, edges: .top)
         }
         .environment(detailRouter)
-        .inspector(isPresented: detailPaneBinding) {
-            HomeDetailPane(router: detailRouter)
-                .inspectorColumnWidth(min: 360, ideal: 420, max: 480)
+        // The pane floats over the dashboard rather than pushing it aside:
+        // an inspector column would re-flow every tile the moment one of
+        // them is tapped.
+        .overlay(alignment: .trailing) {
+            if detailRouter.isShowingDetail {
+                HomeDetailPane(router: detailRouter)
+                    .frame(width: 420)
+                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                    .shadow(color: .black.opacity(0.2), radius: 24, x: -6, y: 0)
+                    .padding(.vertical, 12)
+                    .padding(.trailing, 12)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+            }
         }
+        .animation(.snappy(duration: 0.28), value: detailRouter.isShowingDetail)
         .onGeometryChange(for: LayoutWidth.self) { proxy in
             LayoutWidth.from(width: proxy.size.width)
         } action: { newValue in
@@ -88,12 +99,6 @@ struct HomeScreen: View {
         }
     }
 
-    private var detailPaneBinding: Binding<Bool> {
-        Binding(
-            get: { detailRouter.isShowingDetail },
-            set: { if !$0 { detailRouter.close() } }
-        )
-    }
 
     // MARK: - Layout Selection
 
