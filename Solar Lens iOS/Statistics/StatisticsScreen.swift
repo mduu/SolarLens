@@ -5,6 +5,17 @@ struct StatisticsScreen: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @State private var viewModel = StatisticsViewModel()
     @State private var showValues = false
+    /// The step this screen's own width falls into — the sidebar has already
+    /// taken its share of the window.
+    @State private var layout: LayoutWidth = .compact
+
+    /// A wide window shows every chart style of the period at once instead of
+    /// making the user pick one.
+    private var showsAllCharts: Bool {
+        layout == .wide && chartStyles.count > 1
+    }
+
+    private var chartHeight: CGFloat { layout == .compact ? 200 : 260 }
 
     /// The marks the charts draw. Refreshed only after a load, so a render
     /// triggered by anything else does not hand Swift Charts a freshly built
@@ -63,6 +74,7 @@ struct StatisticsScreen: View {
                     }
                     .pickerStyle(.segmented)
                     .controlSize(.large)
+                    .frame(maxWidth: 720)
                     .padding(.horizontal)
 
                     // Custom date range + resolution
@@ -123,6 +135,12 @@ struct StatisticsScreen: View {
                 }
             }
             .navigationBarHidden(true)
+            .environment(\.layoutWidth, layout)
+            .onGeometryChange(for: LayoutWidth.self) { proxy in
+                LayoutWidth.from(width: proxy.size.width)
+            } action: { newValue in
+                layout = newValue
+            }
         }
         .onChange(of: viewModel.selectedPeriod) {
             viewModel.periodChanged()
@@ -132,7 +150,7 @@ struct StatisticsScreen: View {
             // does not fire a request per window passed.
             try? await Task.sleep(for: .milliseconds(300))
             guard !Task.isCancelled else { return }
-            await viewModel.loadWindow(includingMap: chartStyle == .map)
+            await viewModel.loadWindow(includingMap: chartStyle == .map || showsAllCharts)
             refreshChartData()
             guard !Task.isCancelled else { return }
             await viewModel.loadTotals()
@@ -160,7 +178,7 @@ struct StatisticsScreen: View {
     /// finer buckets than the other styles load.
     private var windowIdentity: String {
         let window = viewModel.window
-        return "\(viewModel.selectedPeriod.rawValue)|\(window.lowerBound.timeIntervalSince1970)|\(window.upperBound.timeIntervalSince1970)|\(viewModel.customResolution.rawValue)|\(chartStyle.rawValue)"
+        return "\(viewModel.selectedPeriod.rawValue)|\(window.lowerBound.timeIntervalSince1970)|\(window.upperBound.timeIntervalSince1970)|\(viewModel.customResolution.rawValue)|\(showsAllCharts ? "all" : chartStyle.rawValue)"
     }
 
     // MARK: - Time navigation
@@ -395,51 +413,40 @@ struct StatisticsScreen: View {
         // Every other period: the buckets in the window, drawn in the style
         // the user picked for this period
         if let bucket = viewModel.bucket {
-            VStack(spacing: 8) {
-                if chartStyles.count > 1 {
-                    HStack {
-                        Spacer()
-                        StatisticsChartStylePicker(
-                            styles: chartStyles,
-                            selection: chartPreferences.style(for: viewModel.selectedPeriod)
-                        )
+            if showsAllCharts {
+                LazyVGrid(
+                    columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible())],
+                    spacing: 16
+                ) {
+                    ForEach(chartStyles) { style in
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(style.name)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+
+                            chart(style, bucket: bucket)
+                                .frame(maxHeight: .infinity, alignment: .top)
+                        }
+                        .cardStyle()
                     }
                 }
+                .padding(.horizontal)
+            } else {
+                VStack(spacing: 8) {
+                    if chartStyles.count > 1 {
+                        HStack {
+                            Spacer()
+                            StatisticsChartStylePicker(
+                                styles: chartStyles,
+                                selection: chartPreferences.style(for: viewModel.selectedPeriod)
+                            )
+                        }
+                    }
 
-                switch chartStyle {
-                case .flow:
-                    EnergyFlowDiagram(totals: viewModel.windowTotals)
-                        .timePaging(barChartScrollConfig)
-                case .balance:
-                    EnergyBalanceChart(
-                        data: visibleBars,
-                        xUnit: bucket.calendarComponent,
-                        xLabelFormat: xLabelFormat,
-                        chartHeight: 200,
-                        scrollConfig: barChartScrollConfig,
-                        visibleUnitCount: visibleUnitCount,
-                        futureShading: futureShading
-                    )
-                case .map:
-                    mapContent
-                case .bars:
-                    FilterableBarChart(
-                        data: barMarks,
-                        xUnit: bucket.calendarComponent,
-                        xLabelFormat: xLabelFormat,
-                        showProduction: showProduction,
-                        showConsumption: showConsumption,
-                        showImport: showImport,
-                        showExport: showExport,
-                        chartHeight: 200,
-                        visibleData: visibleBars,
-                        scrollConfig: barChartScrollConfig,
-                        visibleUnitCount: visibleUnitCount,
-                        futureShading: futureShading
-                    )
+                    chart(chartStyle, bucket: bucket)
                 }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
         }
 
         // Overall: lifetime stats with eco meter
@@ -463,7 +470,7 @@ struct StatisticsScreen: View {
             hasCarChargingStation: buildingState.overviewData.hasAnyCarChargingStation,
             // Every style but the classic bars shares the intraday chart's
             // colours.
-            isIntraday: viewModel.selectedPeriod == .today || chartStyle != .bars,
+            isIntraday: viewModel.selectedPeriod == .today || showsAllCharts || chartStyle != .bars,
             gridImportOverride: viewModel.measuredGrid?.imported,
             gridExportOverride: viewModel.measuredGrid?.exported
         )
@@ -479,6 +486,45 @@ struct StatisticsScreen: View {
             .foregroundStyle(.secondary)
             .multilineTextAlignment(.center)
             .padding(.horizontal)
+        }
+    }
+
+    /// One chart style for the visible window.
+    @ViewBuilder
+    private func chart(
+        _ style: StatisticsChartStyle, bucket: BucketStatisticsStore.Bucket
+    ) -> some View {
+        switch style {
+        case .flow:
+            EnergyFlowDiagram(totals: viewModel.windowTotals, height: chartHeight)
+                .timePaging(barChartScrollConfig)
+        case .balance:
+            EnergyBalanceChart(
+                data: visibleBars,
+                xUnit: bucket.calendarComponent,
+                xLabelFormat: xLabelFormat,
+                chartHeight: chartHeight,
+                scrollConfig: barChartScrollConfig,
+                visibleUnitCount: visibleUnitCount,
+                futureShading: futureShading
+            )
+        case .map:
+            mapContent
+        case .bars:
+            FilterableBarChart(
+                data: barMarks,
+                xUnit: bucket.calendarComponent,
+                xLabelFormat: xLabelFormat,
+                showProduction: showProduction,
+                showConsumption: showConsumption,
+                showImport: showImport,
+                showExport: showExport,
+                chartHeight: chartHeight,
+                visibleData: visibleBars,
+                scrollConfig: barChartScrollConfig,
+                visibleUnitCount: visibleUnitCount,
+                futureShading: futureShading
+            )
         }
     }
 
@@ -567,7 +613,7 @@ struct StatisticsScreen: View {
                 yMaxOverride: todayYMax,
                 futureShading: futureShading
             )
-            .frame(height: 200)
+            .frame(height: layout == .compact ? 200 : (layout == .wide ? 460 : 320))
 
             VStack(spacing: 4) {
                 HStack(spacing: 6) {
