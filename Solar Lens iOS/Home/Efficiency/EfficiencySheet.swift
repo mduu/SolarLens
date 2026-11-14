@@ -8,6 +8,7 @@ import SwiftUI
 struct EfficiencySheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.closeDetail) private var closeDetail
+    @Environment(\.detailHidesNavigationBar) private var hidesNavigationBar
 
     let hasAnyBattery: Bool
 
@@ -55,6 +56,7 @@ struct EfficiencySheet: View {
             }
             .navigationTitle("Efficiency")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(hidesNavigationBar ? .hidden : .automatic, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {

@@ -97,7 +97,11 @@ struct HomeScreen: View {
                     .frame(width: 420)
                     .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                     .shadow(color: .black.opacity(0.2), radius: 24, x: -6, y: 0)
-                    .padding(.vertical, 12)
+                    // Without the sidebar the tab bar floats across the top
+                    // and does not reserve room for itself; start below it,
+                    // or it covers the pane's close button.
+                    .padding(.top, sidebarIsVisible ? 12 : 64)
+                    .padding(.bottom, 12)
                     .padding(.trailing, 12)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }

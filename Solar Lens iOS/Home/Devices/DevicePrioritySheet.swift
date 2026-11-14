@@ -3,6 +3,7 @@ import SwiftUI
 struct DevicePrioritySheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.closeDetail) private var closeDetail
+    @Environment(\.detailHidesNavigationBar) private var hidesNavigationBar
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
@@ -47,6 +48,7 @@ struct DevicePrioritySheet: View {
         }
         .navigationTitle("Consumption")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(hidesNavigationBar ? .hidden : .automatic, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {

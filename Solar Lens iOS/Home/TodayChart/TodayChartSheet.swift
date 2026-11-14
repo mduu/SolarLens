@@ -3,6 +3,7 @@ import SwiftUI
 struct TodayChartSheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.closeDetail) private var closeDetail
+    @Environment(\.detailHidesNavigationBar) private var hidesNavigationBar
     @Environment(\.colorScheme) var colorScheme
 
     /// Owned here rather than inside `ChartView` so the day switcher can sit in
@@ -22,12 +23,23 @@ struct TodayChartSheet: View {
             )
             .ignoresSafeArea()
 
-            ChartView(navigator: navigator, store: store)
-                .padding(.horizontal)
-                .padding(.bottom)
+            VStack(spacing: 8) {
+                // Without the navigation bar, the day switcher it carried
+                // moves in above the chart.
+                if hidesNavigationBar {
+                    ChartTimeHeader(navigator: navigator, isLoading: store.isLoading)
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                }
+
+                ChartView(navigator: navigator, store: store)
+                    .padding(.horizontal)
+                    .padding(.bottom)
+            }
         }
         .navigationTitle("Solar Production")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(hidesNavigationBar ? .hidden : .automatic, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {
