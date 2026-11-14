@@ -117,6 +117,8 @@ struct BatteryView: View {
             battery.batteryInfo?.modeInfo.standardStandaloneAllowed ?? false
                 ? "Standalone"
                 : "Standard"
+        case .Aria:
+            "Aria"
         case nil:
             ""
         }

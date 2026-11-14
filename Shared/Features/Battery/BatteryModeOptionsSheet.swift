@@ -96,6 +96,9 @@ struct BatteryModeOptionsSheet: View {
                     case .TariffOptimized:
                         Text("To implement")
 
+                    case .Aria:
+                        Text("Not supported!")
+
                     case .Manual:
                         ManualOptionsView(
                             battery: battery,
@@ -217,6 +220,10 @@ struct BatteryModeOptionsSheet: View {
             case .TariffOptimized:
                 existingModeInfo.createClone(
                     batteryMode: .TariffOptimized
+                )
+            case .Aria:
+                existingModeInfo.createClone(
+                    batteryMode: .Aria
                 )
             case .StandardControlled:
                 existingModeInfo.createClone(

@@ -110,6 +110,9 @@ enum BatteryMode: Int {
     case Manual = 3
     case TariffOptimized = 4
     case StandardControlled = 5
+    /// Solar Manager's "Aria" optimization (formerly "AI Optimization").
+    /// Display-only in Solar Lens for now.
+    case Aria = 6
 
     static func from(_ value: Int?) -> BatteryMode {
         return BatteryMode(rawValue: value ?? 0) ?? .StandardControlled
@@ -123,6 +126,7 @@ enum BatteryMode: Int {
         case .Manual: return "Manual"
         case .TariffOptimized: return "Tariff optimized"
         case .StandardControlled: return "Standard"
+        case .Aria: return "Aria"
         }
     }
 }

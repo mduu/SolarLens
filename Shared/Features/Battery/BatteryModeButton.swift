@@ -114,6 +114,8 @@ struct BatteryModeButton: View {
             Image(systemName: "wrench.and.screwdriver")
         case .TariffOptimized:
             Image(systemName: "dollarsign.circle")
+        case .Aria:
+            Image(systemName: "sparkles")
         }
     }
 }
