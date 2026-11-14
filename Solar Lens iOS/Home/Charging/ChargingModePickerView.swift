@@ -32,7 +32,9 @@ struct ChargingModePickerView: View {
                 .extendedUnderSidebar(detailPlacement == .section)
 
                 ScrollView {
-                    if isLandscape || detailPlacement == .section {
+                    if detailPlacement == .section {
+                        sectionContent
+                    } else if isLandscape {
                         landscapeContent
                     } else {
                         portraitContent
@@ -78,6 +80,27 @@ struct ChargingModePickerView: View {
             }
 
             ChargingHistoryCard()
+        }
+        .padding()
+    }
+
+    // MARK: - Section Layout
+
+    /// As a section of its own (iPad sidebar): cars and stations with their
+    /// modes on the left, the charts on the right.
+    private var sectionContent: some View {
+        HStack(alignment: .top, spacing: 16) {
+            VStack(spacing: 16) {
+                carsCard
+
+                ForEach(stations) { station in
+                    chargingStationCard(for: station)
+                }
+            }
+            .frame(maxWidth: .infinity)
+
+            ChargingHistoryCard()
+                .frame(maxWidth: .infinity)
         }
         .padding()
     }
