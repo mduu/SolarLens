@@ -180,7 +180,9 @@ struct HomeScreen: View {
                 solarDetailsData: solarDetailsData,
                 onRefresh: { refreshAll() }
             )
-            .padding(.top, 50)
+            // The tab bar floats over the top without reserving room; with
+            // the sidebar open there is only the status bar to clear.
+            .padding(.top, sidebarIsVisible ? 50 : 92)
             .frame(maxHeight: .infinity, alignment: .top)
             .animation(nil, value: buildingState.overviewData.currentSolarProduction)
             .animation(nil, value: buildingState.overviewData.currentOverallConsumption)
