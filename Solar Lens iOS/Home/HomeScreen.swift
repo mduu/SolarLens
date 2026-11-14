@@ -26,6 +26,7 @@ struct HomeScreen: View {
         ZStack {
             BackgroundView()
                 .ignoresSafeArea()
+                .extendedUnderSidebar()
 
             VStack {
                 GeometryReader { rootGeometry in

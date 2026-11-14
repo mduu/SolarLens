@@ -47,6 +47,17 @@ struct LayoutWidthReader<Content: View>: View {
 }
 
 extension View {
+    /// Continues a background under the iPad's sidebar, so the sidebar's
+    /// glass picks up the screen's colours instead of a flat grey.
+    @ViewBuilder
+    func extendedUnderSidebar(_ isEnabled: Bool = true) -> some View {
+        if #available(iOS 26.0, *), isEnabled {
+            backgroundExtensionEffect()
+        } else {
+            self
+        }
+    }
+
     /// Keeps lists and forms from running edge to edge on a large screen.
     func readableContentWidth(_ maxWidth: CGFloat = 720) -> some View {
         frame(maxWidth: maxWidth)

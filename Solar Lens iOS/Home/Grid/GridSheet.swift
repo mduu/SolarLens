@@ -66,6 +66,7 @@ struct GridSheet: View {
                 endPoint: .bottom
             )
             .ignoresSafeArea()
+            .extendedUnderSidebar(detailPlacement == .section)
 
             VStack(spacing: 0) {
                 ChartTimeHeader(navigator: navigator, isLoading: store.isLoading)

@@ -29,6 +29,7 @@ struct ChargingModePickerView: View {
                     endPoint: .bottom
                 )
                 .ignoresSafeArea()
+                .extendedUnderSidebar(detailPlacement == .section)
 
                 ScrollView {
                     if isLandscape || detailPlacement == .section {
