@@ -188,12 +188,14 @@ Security schemes: `bearerAuth` (JWT), `apiKey` (`x-api-key` header), `basic`.
 - No endpoints removed yet.
 
 **Impact on Solar Lens:**
-- [ ] **Auth migration (deadline 2027-06):** `SolarManagerApiClient.login()` / refresh use `/v1/oauth/*`. Login must move to API Keys + `/v3/auth/refresh` — this changes the onboarding UX (user creates an API Key in Solar Manager instead of entering email/password) and needs a migration path for existing installs, incl. Watch/tvOS/widgets keychain sharing and key rotation handling.
-- [ ] **Device discovery migration (deadline 2027-05):** `/v1/info/sensors/{smId}` → `/v3/users/{smId}/devices` (`SensorInfosV1Response`). The v3 response has no live values (`signal`, `soc`) — those must come from the v3 stream.
-- [ ] **Charging mode 8 (Aria):** `ChargingMode` decodes unknown values as `.off` → a car in Aria mode is shown as "off". Add `case aria = 8`.
-- [ ] **Battery mode 6 (Aria):** `BatteryMode` falls back to `.StandardControlled` for 6. Add the Aria case.
-- [ ] **`soc` is now `number`:** `DataStreamV3Device.soc` is `Int?` with synthesized decoding — a fractional value would fail the *whole* stream decode. `DataDeviceV3Schema.soc` silently becomes `nil` (`try? Int`). Change both to `Double`.
-- [ ] Feature opportunities: Aria mode switching (battery/charger), charging target schedules, per-phase current/voltage on the charger, heat-pump temperatures, `remainingRange` history, `consumption.thisYear`.
+- [ ] **Auth migration (deadline 2027-06):** `SolarManagerApiClient.login()` / refresh use `/v1/oauth/*`. Login must move to API Keys + `/v3/auth/refresh` — this changes the onboarding UX (user creates an API Key in Solar Manager instead of entering email/password) and needs a migration path for existing installs, incl. Watch/tvOS/widgets keychain sharing and key rotation handling. → Story [#10](stories/010-api-key-login.md)
+- [x] Credentials no longer logged: `SolarManagerApi.login()` printed email and password on a failed login; now only the error (Solar Lens 4.8.0).
+- [ ] **Device discovery migration (deadline 2027-05):** `/v1/info/sensors/{smId}` → `/v3/users/{smId}/devices` (`SensorInfosV1Response`). The v3 response has no live values (`signal`, `soc`) — those must come from the v3 stream. Not yet planned in a story.
+- [x] **Charging mode 8 (Aria):** `ChargingMode` decoded unknown values as `.off`, so a car in Aria mode was shown as "off". Added `case aria = 8` — **display-only**, excluded from `ChargingMode.allCases` so pickers, Watch, CarPlay and automations don't offer it (Solar Lens 4.8.0).
+- [x] **Battery mode 6 (Aria):** `BatteryMode` fell back to `.StandardControlled` for 6. Added `case Aria = 6` — **display-only**, not offered in `BatteryModeSheet` (Solar Lens 4.8.0).
+- [x] **`soc` is now `number`:** `DataStreamV3Device.soc` was `Int?` with synthesized decoding — a fractional value would have failed the *whole* stream decode; `DataDeviceV3Schema.soc` silently became `nil`. Both are `Double?` now (Solar Lens 4.8.0).
+- [ ] Aria mode switching (battery/charger with `mpc*` settings) → Story [#11](stories/011-aria-support.md), blocked until an installation with Aria is available for testing.
+- [ ] Feature opportunities: charging target schedules, per-phase current/voltage on the charger, heat-pump temperatures, `remainingRange` history, `consumption.thisYear`.
 
 ### Solar Lens integration update (2026-06-28)
 
