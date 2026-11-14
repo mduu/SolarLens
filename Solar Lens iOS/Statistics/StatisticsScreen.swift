@@ -17,9 +17,9 @@ struct StatisticsScreen: View {
 
     private var chartHeight: CGFloat { layout == .compact ? 200 : 260 }
 
-    /// The marks the charts draw. Refreshed only after a load, so a render
-    /// triggered by anything else does not hand Swift Charts a freshly built
-    /// series to lay out again.
+    /// The marks the charts draw. Refreshed when the window changes and after
+    /// a load, so a render triggered by anything else does not hand Swift
+    /// Charts a freshly built series to lay out again.
     @State private var intradayData = MainData(data: [])
     @State private var intradayBatteries: [BatteryHistory] = []
     @State private var barMarks: [DayStatistic] = []
@@ -144,14 +144,29 @@ struct StatisticsScreen: View {
         }
         .onChange(of: viewModel.selectedPeriod) {
             viewModel.periodChanged()
+            refreshChartData()
+        }
+        .onChange(of: windowIdentity) {
+            // The marks on screen belong to the window that was just left.
+            // Swap them for whatever is already on hand for the new one before
+            // the next frame — otherwise a month's daily bars are drawn into
+            // the year's axis until the load below has finished.
+            refreshChartData()
         }
         .task(id: windowIdentity) {
             // Scrolling walks through windows quickly; settle first so a flick
             // does not fire a request per window passed.
             try? await Task.sleep(for: .milliseconds(300))
             guard !Task.isCancelled else { return }
-            await viewModel.loadWindow(includingMap: chartStyle == .map || showsAllCharts)
+            // Bars first: the map's finer buckets take a good deal longer, and
+            // the other charts should not sit empty waiting for them.
+            await viewModel.loadWindow()
             refreshChartData()
+            if chartStyle == .map || showsAllCharts {
+                guard !Task.isCancelled else { return }
+                await viewModel.loadWindow(includingMap: true)
+                refreshChartData()
+            }
             guard !Task.isCancelled else { return }
             await viewModel.loadTotals()
         }
