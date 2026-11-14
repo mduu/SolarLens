@@ -88,16 +88,18 @@ specs/.claude/settings.local.json
 .claude/settings.local.json
 specs/user_feedback
 
-# Marketing images (screenshots, headers, icons) are kept locally only, not in
-# git. The texts and the tooling that produce them are tracked.
-marketing/**/*.png
-marketing/**/*.jpg
-marketing/**/*.jpeg
-marketing/**/*.gif
-marketing/**/*.mp4
-marketing/**/*.mov
-marketing/**/*.pxd
-marketing/**/*.heic
-marketing/**/*.webp
-marketing/**/*.psd
-marketing/**/*.svg
+# App screenshots (App Store images in all languages, per-release
+# screenshots and recordings) are kept locally only, not in git. Other
+# marketing images (headers, icons, illustrations, badges) and the texts
+# and tooling that produce the screenshots are tracked.
+marketing/app_store_screens/**/*.png
+marketing/app_store_screens/**/*.jpg
+marketing/app_store_screens/**/*.jpeg
+marketing/app_store_screens/**/*.gif
+marketing/app_store_screens/**/*.mp4
+marketing/app_store_screens/**/*.mov
+marketing/app_store_screens/**/*.heic
+marketing/app_store_screens/**/*.webp
+marketing/app_store_screens/**/*.psd
+marketing/app_store_screens/**/*.pxd
+marketing/v[0-9]*/
