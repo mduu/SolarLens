@@ -14,6 +14,7 @@ struct AutomationScreen: View {
                     headerCard
                     mainContent
                 }
+                .readableContentWidth(640)
                 .padding()
             }
             .navigationTitle("Automation")

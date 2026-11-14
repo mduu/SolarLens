@@ -8,6 +8,9 @@ import SwiftUI
 final class TabSelection {
     static let shared = TabSelection()
     var selectedTab: AppTab = .now
+    /// Whether the current layout shows Settings as a section of its own
+    /// (iPad and Mac) instead of a sheet behind the gear button.
+    var hasSettingsTab = false
     private init() {}
 }
 
@@ -35,6 +38,16 @@ private struct TopLevelTabSwipeModifier: ViewModifier {
     let selection: TabSelection
 
     func body(content: Content) -> some View {
+        // On the iPad the sections live in a sidebar; a swipe across a
+        // dashboard full of charts would fight their own scrolling.
+        if UIDevice.current.userInterfaceIdiom != .phone {
+            content
+        } else {
+            swipeable(content)
+        }
+    }
+
+    private func swipeable(_ content: Content) -> some View {
         content.simultaneousGesture(
             DragGesture(minimumDistance: 50, coordinateSpace: .local)
                 .onEnded { value in

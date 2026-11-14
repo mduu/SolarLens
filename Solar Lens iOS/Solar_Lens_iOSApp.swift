@@ -116,6 +116,6 @@ struct Solar_Lens_iOSApp: App {
                     }
                 }
         }
-        //.environment(\.locale, Locale(identifier: "DE"))
+        .commands { SolarLensCommands() }
     }
 }

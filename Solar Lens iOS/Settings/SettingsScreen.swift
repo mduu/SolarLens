@@ -7,6 +7,9 @@ struct SettingsScreen: View {
 
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
 
+    /// Off where Settings is a section of its own rather than a sheet.
+    var showsCloseButton = true
+
     @State var settings = AppSettings()
 
     @State private var isLoading = false
@@ -25,20 +28,24 @@ struct SettingsScreen: View {
                 portraitContent
             }
         }
+        // A list from edge to edge of a 13" screen puts a label and its
+        // switch a forearm apart.
+        .readableContentWidth()
         .selectionDisabled()
         .scrollContentBackground(.hidden)
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Label("Close", systemImage: "xmark")
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(.indigo)
+            if showsCloseButton {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Label("Close", systemImage: "xmark")
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(.indigo)
+                    }
                 }
-
             }
         }
         .onAppear {

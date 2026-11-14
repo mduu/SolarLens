@@ -117,6 +117,7 @@ struct LoginScreen: View {
 
                     Spacer().frame(height: 40)
                 }
+                .readableContentWidth(520)
                 .padding(.horizontal, 30)
             }
         }

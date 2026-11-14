@@ -22,8 +22,7 @@ struct NotificationsScreen: View {
                     // Two-column grid so more kinds fit above the fold.
                     LazyVGrid(
                         columns: [
-                            GridItem(.flexible(), spacing: 12),
-                            GridItem(.flexible()),
+                            GridItem(.adaptive(minimum: 170, maximum: 320), spacing: 12)
                         ],
                         spacing: 12
                     ) {
@@ -35,6 +34,7 @@ struct NotificationsScreen: View {
                         }
                     }
                 }
+                .readableContentWidth(980)
                 .padding()
             }
             .navigationTitle("Notifications")
