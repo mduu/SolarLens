@@ -35,7 +35,7 @@ class SolarManagerApi: RestClient {
             clearLogin()
 
             print(
-                "Login failed! Error: \(error). Email: \(email), Passwort: \(password)"
+                "Login failed! Error: \(error)"
             )
             throw SolarManagerApiClientError.communicationError
         }
