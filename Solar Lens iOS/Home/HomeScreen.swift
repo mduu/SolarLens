@@ -12,7 +12,6 @@ struct HomeScreen: View {
     @State var presentOnboarding: Bool = AppSettings().showOnboarding
     @State var showError: Bool = false
     @State var loadingStartedAt: Date? = nil
-    @State private var refreshToken = 0
     @State private var detailRouter = HomeDetailRouter()
     /// Width of the whole screen, detail pane included. The dashboard is
     /// chosen by this rather than by the width left beside an open pane, or
@@ -162,7 +161,6 @@ struct HomeScreen: View {
             HomeDashboardLayout(
                 showError: $showError,
                 solarDetailsData: solarDetailsData,
-                refreshToken: refreshToken,
                 onRefresh: { refreshAll() }
             )
             .padding(.top, 50)
@@ -198,7 +196,6 @@ struct HomeScreen: View {
 
     private func refreshAll() {
         loadingStartedAt = nil
-        refreshToken += 1
         fetchOverviewData()
         fetchSolarForecastData()
     }
