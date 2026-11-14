@@ -17,8 +17,8 @@ struct DataDeviceV3SchemaData: Decodable {
     /// Device power in [watt]
     var power: Double = 0
 
-    /// Battery state of charge in [%]
-    var soc: Int? = nil
+    /// Battery state of charge in [%]. A number since API 1.91, may be fractional.
+    var soc: Double? = nil
 
     /// Device energy consumed/imported in [watt-hours] over the specified interval
     var iWh: Double = 0
@@ -48,7 +48,7 @@ struct DataDeviceV3SchemaData: Decodable {
         }
 
         power = (try? container.decode(Double.self, forKey: .power)) ?? 0
-        soc = try? container.decode(Int.self, forKey: .soc)
+        soc = try? container.decode(Double.self, forKey: .soc)
         iWh = (try? container.decode(Double.self, forKey: .iWh)) ?? 0
         eWh = (try? container.decode(Double.self, forKey: .eWh)) ?? 0
         temperature = try? container.decode(Double.self, forKey: .temperature)

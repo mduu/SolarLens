@@ -40,8 +40,8 @@ struct DataStreamV3Device : Codable {
     /// Power
     var power: Double?
 
-    /// Battery state of charge in [%]
-    var soc: Int?
+    /// Battery state of charge in [%]. A number since API 1.91, may be fractional.
+    var soc: Double?
 
     /// Temperature in [°C]
     var temperature: Double?
