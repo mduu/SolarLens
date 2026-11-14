@@ -597,8 +597,41 @@ struct StatisticsScreen: View {
         }
     }
 
+    /// Today: the intraday chart, and beside it — where there is room — where
+    /// the day's energy came from and went.
     @ViewBuilder
     private var todayContent: some View {
+        if layout == .compact {
+            todayChart
+                .padding(.horizontal)
+                .padding(.bottom, 8)
+        } else {
+            let stack = layout == .wide
+                ? AnyLayout(HStackLayout(alignment: .top, spacing: 16))
+                : AnyLayout(VStackLayout(spacing: 16))
+
+            stack {
+                todayChart
+                    .cardStyle()
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(StatisticsChartStyle.flow.name)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+
+                    EnergyFlowDiagram(
+                        totals: viewModel.windowTotals,
+                        height: layout == .wide ? 420 : 260
+                    )
+                }
+                .cardStyle()
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 8)
+        }
+    }
+
+    private var todayChart: some View {
         VStack(spacing: 8) {
             OverviewChart(
                 consumption: intradayData,
@@ -613,7 +646,7 @@ struct StatisticsScreen: View {
                 yMaxOverride: todayYMax,
                 futureShading: futureShading
             )
-            .frame(height: layout == .compact ? 200 : (layout == .wide ? 460 : 320))
+            .frame(height: layout == .compact ? 200 : (layout == .wide ? 380 : 320))
 
             VStack(spacing: 4) {
                 HStack(spacing: 6) {
@@ -627,8 +660,6 @@ struct StatisticsScreen: View {
                 }
             }
         }
-        .padding(.horizontal)
-        .padding(.bottom, 8)
     }
 
     /// Peak of the visible day, so scrolling onto an overcast day does not
