@@ -52,7 +52,9 @@ struct BatterySheet: View {
                         || model.overviewData.currentBatteryChargeRate != nil
                     {
                         if !model.overviewData.isStaleData {
-                            if verticalSizeClass == .compact || detailPlacement == .section {
+                            if detailPlacement == .section {
+                                sectionContent
+                            } else if verticalSizeClass == .compact {
                                 landscapeContent
                             } else {
                                 portraitContent
@@ -157,6 +159,36 @@ struct BatterySheet: View {
     /// The what-if simulator, also reachable from the Efficiency sheet. Here
     /// it frames an upgrade: the virtual capacity comes on top of the
     /// battery the user already has.
+    ///
+    /// As a section of its own (iPad sidebar) the view has the room to show
+    /// the simulator itself instead of a link to it: figures and devices on
+    /// the left, the day's chart and the simulator on the right.
+    private var sectionContent: some View {
+        HStack(alignment: .top, spacing: 16) {
+            VStack(spacing: 16) {
+                batteryStatusCard
+
+                BatteryAdvantageSection(
+                    hasAnyBattery: model.overviewData.hasAnyBattery
+                )
+
+                let batteries = model.overviewData.devices.filter { $0.deviceType == .battery }
+                if !batteries.isEmpty {
+                    BatteryDevicesCard(batteries: batteries)
+                }
+            }
+            .frame(maxWidth: .infinity)
+
+            VStack(spacing: 16) {
+                batteryChartCard
+
+                BatteryWhatIfView(hasExistingBattery: true)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .padding()
+    }
+
     private var simulatorLink: some View {
         NavigationLink {
             ScrollView {
