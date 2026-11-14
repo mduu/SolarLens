@@ -17,6 +17,13 @@ struct HomeScreen: View {
     /// chosen by this rather than by the width left beside an open pane, or
     /// opening the pane would swap the layout underneath it.
     @State private var screenLayout: LayoutWidth = .compact
+    @State private var screenWidth: CGFloat = 0
+    @State private var tabSelection = TabSelection.shared
+
+    /// The sidebar takes a good 300 pt; anything less is rounding.
+    private var sidebarIsVisible: Bool {
+        tabSelection.windowWidth - screenWidth > 100
+    }
     @State private var commands = AppCommands.shared
 
     var isPortrait: Bool { verticalSizeClass != .compact }
@@ -75,6 +82,12 @@ struct HomeScreen: View {
             .ignoresSafeArea(.container, edges: .top)
         }
         .environment(detailRouter)
+        .environment(\.sidebarIsVisible, sidebarIsVisible)
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.width
+        } action: { newValue in
+            screenWidth = newValue
+        }
         // The pane floats over the dashboard rather than pushing it aside:
         // an inspector column would re-flow every tile the moment one of
         // them is tapped.

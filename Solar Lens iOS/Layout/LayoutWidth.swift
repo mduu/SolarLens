@@ -29,6 +29,9 @@ enum LayoutWidth: Comparable {
 extension EnvironmentValues {
     /// The width step of the nearest `LayoutWidthReader`.
     @Entry var layoutWidth: LayoutWidth = .compact
+    /// Whether the iPad's sidebar is showing next to the screen. It carries
+    /// its own Settings button, so screens can drop theirs.
+    @Entry var sidebarIsVisible = false
 }
 
 /// Measures the width its content is given and hands the matching

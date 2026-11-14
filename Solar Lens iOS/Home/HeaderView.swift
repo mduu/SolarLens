@@ -6,6 +6,7 @@ struct HeaderView: View {
 
     @Environment(CurrentBuildingState.self) var buildingState:
         CurrentBuildingState
+    @Environment(\.sidebarIsVisible) private var sidebarIsVisible
 
     private let sideWidth: CGFloat = 110
 
@@ -46,7 +47,10 @@ struct HeaderView: View {
 
             // Right: settings
             HStack {
-                SettingsButton()
+                // The sidebar has its own Settings button at its foot.
+                if !sidebarIsVisible {
+                    SettingsButton()
+                }
             }
             .frame(width: sideWidth, alignment: .trailing)
             .padding(.trailing, 16)

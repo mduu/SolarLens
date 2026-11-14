@@ -8,6 +8,9 @@ import SwiftUI
 final class TabSelection {
     static let shared = TabSelection()
     var selectedTab: AppTab = .now
+    /// Width of the whole window. A screen narrower than this has the
+    /// sidebar beside it.
+    var windowWidth: CGFloat = 0
     private init() {}
 }
 

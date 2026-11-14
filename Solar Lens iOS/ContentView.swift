@@ -136,6 +136,11 @@ struct ContentView: View {
                 layout = newValue
                 normalizeSelection()
             }
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                proxy.size.width
+            } action: { newValue in
+                tabSelection.windowWidth = newValue
+            }
             .onChange(of: combinesAutomationAndNotifications) {
                 normalizeSelection()
             }
