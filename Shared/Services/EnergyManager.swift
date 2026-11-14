@@ -55,6 +55,9 @@ protocol EnergyManager {
     /// `fetchCarChargingTotal(from:to:)`.
     func fetchBoilerTotal(from: Date, to: Date) async throws -> Double?
 
+    /// Power and energy per charging station over a range, for charts.
+    func fetchChargingHistory(from: Date, to: Date) async throws -> [ChargingHistory]
+
     func fetchSolarDetails() async throws -> SolarDetailsData
 
     func fetchMainData(from: Date, to: Date, interval: Int) async throws -> MainData

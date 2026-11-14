@@ -75,6 +75,8 @@ struct ChargingModePickerView: View {
             ForEach(stations) { station in
                 chargingStationCard(for: station)
             }
+
+            ChargingHistoryCard()
         }
         .padding()
     }
@@ -83,9 +85,11 @@ struct ChargingModePickerView: View {
 
     private var landscapeContent: some View {
         HStack(alignment: .top, spacing: 16) {
-            // Left column: Cars
+            // Left column: Cars and the charging history
             VStack(spacing: 16) {
                 carsCard
+
+                ChargingHistoryCard()
             }
             .frame(maxWidth: .infinity)
 

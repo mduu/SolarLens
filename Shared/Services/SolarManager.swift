@@ -236,6 +236,38 @@ class SolarManager: EnergyManager {
         )
     }
 
+    func fetchChargingHistory(from: Date, to: Date) async throws -> [ChargingHistory] {
+        guard let plan = DeviceRangeSamplingPlan(from: from, to: to) else {
+            return []
+        }
+
+        try await ensureLoggedIn()
+        try await ensureSmId()
+        try await ensureSensorInfosAreCurrent()
+
+        var result: [ChargingHistory] = []
+        for stationId in getCharingStationSensorIds() {
+            var points: [ChargingHistoryPoint] = []
+            for chunk in plan.chunks {
+                let response = try await solarManagerApi.getV3DeviceDataRange(
+                    device: stationId,
+                    from: chunk.start,
+                    to: chunk.end,
+                    interval: plan.interval
+                )
+                points += response?.data.map { dataPoint in
+                    ChargingHistoryPoint(
+                        date: RestDateHelper.date(from: dataPoint.t) ?? Date(),
+                        powerW: max(dataPoint.power, 0),
+                        energyWh: max(dataPoint.iWh, 0)
+                    )
+                } ?? []
+            }
+            result.append(ChargingHistory(stationId: stationId, points: points))
+        }
+        return result
+    }
+
     func fetchSolarDetails() async throws -> SolarDetailsData {
         try await ensureSmId()
 

@@ -152,6 +152,27 @@ class FakeEnergyManager: EnergyManager {
         )
     }
 
+    func fetchChargingHistory(from: Date, to: Date) async throws -> [ChargingHistory] {
+        // An evening charge on every second day, so both charts have shape.
+        let calendar = Calendar.current
+        var points: [ChargingHistoryPoint] = []
+        var date = from
+        while date < to {
+            let hour = calendar.component(.hour, from: date)
+            let day = calendar.ordinality(of: .day, in: .era, for: date) ?? 0
+            let charging = day % 2 == 0 && (18..<22).contains(hour)
+            points.append(
+                ChargingHistoryPoint(
+                    date: date,
+                    powerW: charging ? 7400 : 0,
+                    energyWh: charging ? 7400 / 4 : 0
+                )
+            )
+            date = date.addingTimeInterval(900)
+        }
+        return [ChargingHistory(stationId: "fake-station", points: points)]
+    }
+
     func fetchBatteryHistory(from: Date, to: Date) async throws -> [BatteryHistory] {
         return BatteryHistory.fakeHistory()
     }
