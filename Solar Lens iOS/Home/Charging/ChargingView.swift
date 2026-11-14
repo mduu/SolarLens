@@ -98,6 +98,7 @@ struct ChargingStationCard: View {
         case .minimalAndSolar: Image(systemName: "fluid.batteryblock")
         case .minimumQuantity: Image(systemName: "minus.plus.and.fluid.batteryblock")
         case .chargingTargetSoc: Image(systemName: "bolt.car.fill")
+        case .aria: Image(systemName: "sparkles")
         }
     }
 
@@ -111,6 +112,7 @@ struct ChargingStationCard: View {
         case .minimalAndSolar: Color(red: 0.95, green: 0.75, blue: 0.0)
         case .minimumQuantity: Color(red: 0.2, green: 0.45, blue: 0.9)
         case .chargingTargetSoc: Color(red: 0.6, green: 0.3, blue: 0.85)
+        case .aria: Color(red: 0.35, green: 0.35, blue: 0.85)
         }
     }
 }

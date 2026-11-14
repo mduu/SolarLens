@@ -13,6 +13,7 @@ extension ChargingMode {
         case .minimalAndSolar:      return "Minimal & Solar"
         case .minimumQuantity:      return "Minimal"
         case .chargingTargetSoc:    return "Car %"
+        case .aria:                 return "Aria"
         }
     }
 
@@ -29,6 +30,7 @@ extension ChargingMode {
         case .minimalAndSolar:      return "Minimal & Solar"
         case .minimumQuantity:      return "Minimum quantity"
         case .chargingTargetSoc:    return "Target charge level"
+        case .aria:                 return "Aria"
         }
     }
 }

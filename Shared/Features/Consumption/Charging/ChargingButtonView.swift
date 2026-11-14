@@ -76,6 +76,8 @@ struct ChargingButtonView: View {
                 systemName: "minus.plus.and.fluid.batteryblock", color: .blue)
         case .chargingTargetSoc:
             return getColoredImage(systemName: "bolt.car", color: .purple)
+        case .aria:
+            return getColoredImage(systemName: "sparkles", color: .indigo)
         }
     }
 

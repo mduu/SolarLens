@@ -9,6 +9,16 @@ enum ChargingMode: Int, Codable, CaseIterable, Identifiable, AppEnum, Sendable {
     case minimalAndSolar = 5
     case minimumQuantity = 6
     case chargingTargetSoc = 7
+    /// Solar Manager's "Aria" optimization (API 1.91+). Solar Lens shows it
+    /// when a charger is in this mode but does not offer it for selection yet,
+    /// so it is left out of `allCases`.
+    case aria = 8
+
+    /// Modes the user can pick. Excludes `.aria`, which is display-only.
+    static let allCases: [ChargingMode] = [
+        .alwaysCharge, .withSolarPower, .withSolarOrLowTariff, .off,
+        .constantCurrent, .minimalAndSolar, .minimumQuantity, .chargingTargetSoc,
+    ]
 
     var id: Int { rawValue }
 
@@ -31,6 +41,7 @@ enum ChargingMode: Int, Codable, CaseIterable, Identifiable, AppEnum, Sendable {
             .minimalAndSolar: .init(stringLiteral: "Minimal & Solar"),
             .minimumQuantity: .init(stringLiteral: "Minimal"),
             .chargingTargetSoc: .init(stringLiteral: "Car %"),
+            .aria: .init(stringLiteral: "Aria"),
         ]
     
     func isSimpleChargingMode() -> Bool {

@@ -342,6 +342,7 @@ struct ChargingModePickerView: View {
         case .minimalAndSolar: Image(systemName: "fluid.batteryblock")
         case .minimumQuantity: Image(systemName: "minus.plus.and.fluid.batteryblock")
         case .chargingTargetSoc: Image(systemName: "bolt.car")
+        case .aria: Image(systemName: "sparkles")
         }
     }
 
@@ -415,6 +416,7 @@ struct ChargingModePickerView: View {
         case .minimalAndSolar: Color(red: 0.95, green: 0.75, blue: 0.0)
         case .minimumQuantity: Color(red: 0.2, green: 0.45, blue: 0.9)
         case .chargingTargetSoc: Color(red: 0.6, green: 0.3, blue: 0.85)
+        case .aria: Color(red: 0.35, green: 0.35, blue: 0.85)
         }
     }
 
@@ -436,6 +438,8 @@ struct ChargingModePickerView: View {
             String(localized: "Charges a specific amount of energy (kWh) by a deadline you set. Solar power is preferred when available.")
         case .chargingTargetSoc:
             String(localized: "Reaches a target battery percentage by a time you set. Prefers solar power when available and tops up from the grid if needed.")
+        case .aria:
+            String(localized: "Solar Manager's Aria optimization plans charging automatically based on forecasts and tariffs.")
         }
     }
 }
