@@ -105,6 +105,11 @@ struct CardButtonStyle: ButtonStyle {
                 .spring(response: 0.25, dampingFraction: 0.7),
                 value: configuration.isPressed
             )
+            #if os(iOS)
+            // Pointer feedback on the iPad with a trackpad and on the Mac.
+            .contentShape(.hoverEffect, CardMetrics.shape)
+            .hoverEffect(.highlight)
+            #endif
     }
 }
 
