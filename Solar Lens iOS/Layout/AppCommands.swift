@@ -9,13 +9,13 @@ final class AppCommands {
 
     /// Bumped by ⌘R; the home screen reloads when it changes.
     var refreshRequest = 0
-    /// Set by ⌘, on layouts that show Settings as a sheet.
+    /// Set by ⌘, and the gear in the sidebar; presents Settings as a sheet.
     var showSettings = false
 
     private init() {}
 }
 
-/// ⌘1…⌘5 for the sections, ⌘R to refresh, ⌘, for Settings.
+/// ⌘1…⌘4 for the sections, ⌘R to refresh, ⌘, for Settings.
 struct SolarLensCommands: Commands {
     var body: some Commands {
         CommandMenu("View") {
@@ -33,11 +33,7 @@ struct SolarLensCommands: Commands {
             Button("Refresh") { AppCommands.shared.refreshRequest += 1 }
                 .keyboardShortcut("r", modifiers: .command)
             Button("Settings") {
-                if TabSelection.shared.hasSettingsTab {
-                    TabSelection.shared.selectedTab = .settings
-                } else {
-                    AppCommands.shared.showSettings = true
-                }
+                AppCommands.shared.showSettings = true
             }
             .keyboardShortcut(",", modifiers: .command)
         }

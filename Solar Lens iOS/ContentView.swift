@@ -5,8 +5,6 @@ enum AppTab: Hashable {
     case automation
     case notifications
     case statistics
-    /// Only a section on layouts with a sidebar; a sheet on the iPhone.
-    case settings
     // Devices, listed in the sidebar. On the iPhone they open from their
     // tile on the home screen.
     case battery
@@ -111,23 +109,31 @@ struct ContentView: View {
                                 .environment(\.detailPlacement, .section)
                         }
                     }
-
-                    Tab("Settings", systemImage: "gear", value: AppTab.settings) {
-                        NavigationStack {
-                            SettingsScreen(showsCloseButton: false)
-                        }
-                        .tint(.indigo)
-                    }
                 }
             }
             // Sidebar on a wide iPad or Mac window, collapsible into a tab
             // bar at the top; the usual bottom tab bar on the iPhone.
             .tabViewStyle(.sidebarAdaptable)
+            // Settings are visited rarely, so they do not get a section of
+            // their own: a quiet gear at the foot of the sidebar, as in
+            // Apple's own iPad apps. With the sidebar collapsed, the gear in
+            // the home screen's header does the same.
+            .tabViewSidebarBottomBar {
+                Button {
+                    commands.showSettings = true
+                } label: {
+                    Label("Settings", systemImage: "gear")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.borderless)
+                .tint(.secondary)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+            }
             .onGeometryChange(for: LayoutWidth.self) { proxy in
                 LayoutWidth.from(width: proxy.size.width)
             } action: { newValue in
                 layout = newValue
-                tabSelection.hasSettingsTab = newValue != .compact
                 normalizeSelection()
             }
             .onChange(of: combinesAutomationAndNotifications) {
@@ -191,8 +197,7 @@ struct ContentView: View {
             tabSelection.selectedTab = .automation
         case .automation where !hasAutomation:
             tabSelection.selectedTab = .notifications
-        case .settings where layout == .compact,
-             .battery where layout == .compact,
+        case .battery where layout == .compact,
              .charging where layout == .compact,
              .grid where layout == .compact:
             tabSelection.selectedTab = .now

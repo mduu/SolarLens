@@ -7,9 +7,6 @@ struct SettingsScreen: View {
 
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
 
-    /// Off where Settings is a section of its own rather than a sheet.
-    var showsCloseButton = true
-
     @State var settings = AppSettings()
 
     @State private var isLoading = false
@@ -36,15 +33,13 @@ struct SettingsScreen: View {
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if showsCloseButton {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Label("Close", systemImage: "xmark")
-                            .labelStyle(.iconOnly)
-                            .foregroundStyle(.indigo)
-                    }
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Label("Close", systemImage: "xmark")
+                        .labelStyle(.iconOnly)
+                        .foregroundStyle(.indigo)
                 }
             }
         }

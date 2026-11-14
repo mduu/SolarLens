@@ -8,9 +8,6 @@ import SwiftUI
 final class TabSelection {
     static let shared = TabSelection()
     var selectedTab: AppTab = .now
-    /// Whether the current layout shows Settings as a section of its own
-    /// (iPad and Mac) instead of a sheet behind the gear button.
-    var hasSettingsTab = false
     private init() {}
 }
 
