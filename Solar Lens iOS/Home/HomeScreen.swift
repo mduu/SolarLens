@@ -12,6 +12,13 @@ struct HomeScreen: View {
     @State var presentOnboarding: Bool = AppSettings().showOnboarding
     @State var showError: Bool = false
     @State var loadingStartedAt: Date? = nil
+    @State private var refreshToken = 0
+    @State private var detailRouter = HomeDetailRouter()
+    /// Width of the whole screen, detail pane included. The dashboard is
+    /// chosen by this rather than by the width left beside an open pane, or
+    /// opening the pane would swap the layout underneath it.
+    @State private var screenLayout: LayoutWidth = .compact
+    @State private var commands = AppCommands.shared
 
     var isPortrait: Bool { verticalSizeClass != .compact }
 
@@ -22,12 +29,15 @@ struct HomeScreen: View {
 
             VStack {
                 GeometryReader { rootGeometry in
-
                     ScrollView {
 
                         ZStack {
 
-                            if isPortrait {
+                            if screenLayout != .compact {
+                                dashboardContent
+                                    .frame(minHeight: rootGeometry.size.height)
+                                    .environment(\.layoutWidth, screenLayout)
+                            } else if isPortrait {
                                 portraitContent
                                     .frame(minHeight: rootGeometry.size.height)
                             } else {
@@ -42,6 +52,9 @@ struct HomeScreen: View {
                     .onAppear {
                         fetchAndStartRefreshTimerForOverviewData()
                         fetchAndStartRefreshTimerForSolarDetailData()
+                    }
+                    .onChange(of: commands.refreshRequest) {
+                        refreshAll()
                     }
                     .refreshable {
                         print("fetch on pull to refresh: overview data")
@@ -61,6 +74,25 @@ struct HomeScreen: View {
             }  // :VStack
             .ignoresSafeArea(.container, edges: .top)
         }
+        .environment(detailRouter)
+        .inspector(isPresented: detailPaneBinding) {
+            HomeDetailPane(router: detailRouter)
+                .inspectorColumnWidth(min: 360, ideal: 420, max: 480)
+        }
+        .onGeometryChange(for: LayoutWidth.self) { proxy in
+            LayoutWidth.from(width: proxy.size.width)
+        } action: { newValue in
+            screenLayout = newValue
+            detailRouter.usesPane = newValue == .wide
+            if newValue != .wide { detailRouter.close() }
+        }
+    }
+
+    private var detailPaneBinding: Binding<Bool> {
+        Binding(
+            get: { detailRouter.isShowingDetail },
+            set: { if !$0 { detailRouter.close() } }
+        )
     }
 
     // MARK: - Layout Selection
@@ -106,6 +138,37 @@ struct HomeScreen: View {
         }
     }
 
+    /// iPad and Mac: the dashboard. It brings its own header, so the loading
+    /// states sit where the iPhone's portrait layout puts them.
+    @ViewBuilder
+    private var dashboardContent: some View {
+        if isLoadingTimedOut() {
+            loadingTimeoutView
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.top, 65)
+        } else if isLoading() {
+            VStack {
+                MainProgressView()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.top, 65)
+        } else {
+            HomeDashboardLayout(
+                showError: $showError,
+                solarDetailsData: solarDetailsData,
+                refreshToken: refreshToken,
+                onRefresh: { refreshAll() }
+            )
+            .padding(.top, 50)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .animation(nil, value: buildingState.overviewData.currentSolarProduction)
+            .animation(nil, value: buildingState.overviewData.currentOverallConsumption)
+            .animation(nil, value: buildingState.overviewData.currentBatteryLevel)
+            .animation(nil, value: buildingState.overviewData.currentGridToHouse)
+            .animation(nil, value: buildingState.overviewData.lastSuccessServerFetch)
+        }
+    }
+
     @ViewBuilder
     private var landscapeContent: some View {
         if isLoadingTimedOut() {
@@ -129,6 +192,7 @@ struct HomeScreen: View {
 
     private func refreshAll() {
         loadingStartedAt = nil
+        refreshToken += 1
         fetchOverviewData()
         fetchSolarForecastData()
     }

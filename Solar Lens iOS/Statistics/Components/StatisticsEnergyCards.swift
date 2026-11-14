@@ -64,10 +64,16 @@ struct StatisticsEnergyCards: View {
         value.formatWattHours(asMWh: useMWh, withUnit: true)
     }
 
-    private let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-    ]
+    @Environment(\.layoutWidth) private var layoutWidth
+
+    /// Two columns on the iPhone. Wider windows fit as many as have room, so
+    /// five cards do not leave one alone in a half-empty row.
+    private var columns: [GridItem] {
+        if layoutWidth == .compact {
+            return [GridItem(.flexible()), GridItem(.flexible())]
+        }
+        return [GridItem(.adaptive(minimum: 190), spacing: 12)]
+    }
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 12) {
@@ -118,9 +124,13 @@ struct StatisticsEnergyCards: View {
 
             // Car charging in its own row when battery is present
             if hasBattery && showCarCharging {
-                Color.clear
-                    .cardStyle()
-                    .hidden()
+                // The spacer keeps Car Charging under Consumption in the
+                // iPhone's two columns; a wider grid just flows on.
+                if layoutWidth == .compact {
+                    Color.clear
+                        .cardStyle()
+                        .hidden()
+                }
 
                 EnergyCard(
                     icon: "ev.charger",

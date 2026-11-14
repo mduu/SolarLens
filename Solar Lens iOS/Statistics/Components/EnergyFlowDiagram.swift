@@ -14,6 +14,8 @@ import SwiftUI
 struct EnergyFlowDiagram: View {
     /// The period's totals, in watt-hours.
     var totals: DayStatistic
+    /// Taller on the iPad dashboard, where the diagram is the centrepiece.
+    var height: CGFloat = 200
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -48,7 +50,7 @@ struct EnergyFlowDiagram: View {
             Canvas { context, size in
                 draw(in: &context, size: size)
             }
-            .frame(height: 200)
+            .frame(height: height)
             .accessibilityElement()
             .accessibilityLabel(accessibilitySummary)
         }
