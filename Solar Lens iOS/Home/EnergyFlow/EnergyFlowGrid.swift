@@ -16,15 +16,25 @@ private extension View {
 
 struct EnergyFlowGrid<BelowBattery: View>: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
-    @StateObject private var pinnedConfig = PinnedDevicesConfiguration()
+    @Environment(HomeDetailRouter.self) private var router: HomeDetailRouter?
+    @StateObject private var pinnedConfig: PinnedDevicesConfiguration
     var showCharging: Bool = false
     private let belowBattery: BelowBattery
     private let hGap: CGFloat = 40
     private let vGap: CGFloat = 60
 
-    init(showCharging: Bool = false, @ViewBuilder belowBattery: () -> BelowBattery = { EmptyView() }) {
+    /// - Parameter pinnedConfig: Pass the caller's own instance when other
+    ///   views on the same screen show or edit the pinned devices too.
+    init(
+        showCharging: Bool = false,
+        pinnedConfig: PinnedDevicesConfiguration? = nil,
+        @ViewBuilder belowBattery: () -> BelowBattery = { EmptyView() }
+    ) {
         self.showCharging = showCharging
         self.belowBattery = belowBattery()
+        _pinnedConfig = StateObject(
+            wrappedValue: pinnedConfig ?? PinnedDevicesConfiguration()
+        )
     }
 
     var body: some View {
@@ -100,6 +110,9 @@ struct EnergyFlowGrid<BelowBattery: View>: View {
                         }
                     }
                     .cardStyle()
+                    .detailSelection(
+                        router?.detail == .consumption || router?.detail == .charging
+                    )
                     .cardAnchor("consumption")
                 } else {
                     ConsumptionBoubleView(
@@ -107,6 +120,7 @@ struct EnergyFlowGrid<BelowBattery: View>: View {
                         todayConsumptionInWh: data.todayConsumption,
                         pinnedConfig: pinnedConfig
                     )
+                    .detailSelection(router?.detail == .consumption)
                     .cardAnchor("consumption")
                 }
             }

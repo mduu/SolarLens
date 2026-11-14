@@ -2,6 +2,8 @@ import SwiftUI
 
 struct GridSheet: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.closeDetail) private var closeDetail
+    @Environment(\.detailPlacement) private var detailPlacement
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.energyManager) var energyManager
 
@@ -71,7 +73,12 @@ struct GridSheet: View {
                     .padding(.top, 8)
 
                 ScrollView {
-                    VStack(spacing: 16) {
+                    // Side by side where the view has a section to itself.
+                    let stack = detailPlacement == .section
+                        ? AnyLayout(HStackLayout(alignment: .top, spacing: 16))
+                        : AnyLayout(VStackLayout(spacing: 16))
+
+                    stack {
                         GridTodayCard(
                             mainData: chartData,
                             tariffSettings: tariffSettings,
@@ -107,11 +114,13 @@ struct GridSheet: View {
         .navigationTitle("Grid")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    Label("Close", systemImage: "xmark")
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(.purple)
+            if detailPlacement != .section {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {
+                        Label("Close", systemImage: "xmark")
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(.purple)
+                    }
                 }
             }
         }

@@ -5,13 +5,16 @@ struct GridBoubleView: View {
     var todayGridImportInWh: Int?
 
     @State private var showGridSheet = false
+    @Environment(HomeDetailRouter.self) private var router: HomeDetailRouter?
 
     var body: some View {
         let todayKwh = Double(todayGridImportInWh ?? 0) / 1000
 
         let todayFormatted = todayKwh.localized(decimals: 1)
 
-        Button { showGridSheet = true } label: {
+        Button {
+            if router?.open(.grid) != true { showGridSheet = true }
+        } label: {
             EnergyCard(
                 icon: "network",
                 iconColor: .purple,
@@ -22,8 +25,9 @@ struct GridBoubleView: View {
             )
         }
         .buttonStyle(CardButtonStyle())
+        .detailSelection(router?.detail == .grid)
         .sheet(isPresented: $showGridSheet) {
-            NavigationView {
+            NavigationStack {
                 GridSheet()
             }
             .presentationDetents([.large])

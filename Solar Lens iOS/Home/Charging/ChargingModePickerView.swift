@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ChargingModePickerView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.closeDetail) private var closeDetail
+    @Environment(\.detailPlacement) private var detailPlacement
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
@@ -17,7 +19,7 @@ struct ChargingModePickerView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 LinearGradient(
                     colors: colorScheme == .dark
@@ -29,7 +31,7 @@ struct ChargingModePickerView: View {
                 .ignoresSafeArea()
 
                 ScrollView {
-                    if isLandscape {
+                    if isLandscape || detailPlacement == .section {
                         landscapeContent
                     } else {
                         portraitContent
@@ -39,11 +41,13 @@ struct ChargingModePickerView: View {
             .navigationTitle("Charging")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Label("Close", systemImage: "xmark")
-                            .labelStyle(.iconOnly)
-                            .foregroundStyle(.blue)
+                if detailPlacement != .section {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {
+                            Label("Close", systemImage: "xmark")
+                                .labelStyle(.iconOnly)
+                                .foregroundStyle(.blue)
+                        }
                     }
                 }
             }

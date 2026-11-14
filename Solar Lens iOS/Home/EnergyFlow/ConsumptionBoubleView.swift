@@ -7,13 +7,17 @@ struct ConsumptionBoubleView: View {
     @ObservedObject var pinnedConfig: PinnedDevicesConfiguration
 
     @State var isDeviceSheetShown: Bool = false
+    @Environment(HomeDetailRouter.self) private var router: HomeDetailRouter?
 
     var body: some View {
         let todayKwh = (todayConsumptionInWh ?? 0) / 1000
 
         let todayFormatted = todayKwh.localized(decimals: 1)
 
-        Button { isDeviceSheetShown = true } label: {
+        Button {
+            router?.pinnedConfig = pinnedConfig
+            if router?.open(.consumption) != true { isDeviceSheetShown = true }
+        } label: {
             EnergyCard(
                 icon: "house.fill",
                 iconColor: .teal,
@@ -26,7 +30,7 @@ struct ConsumptionBoubleView: View {
         }
         .buttonStyle(CardButtonStyle())
         .sheet(isPresented: $isDeviceSheetShown) {
-            NavigationView {
+            NavigationStack {
                 DevicePrioritySheet(pinnedConfig: pinnedConfig)
             }
             .presentationDetents([.large])

@@ -7,6 +7,7 @@ import SwiftUI
 /// to size an upgrade.
 struct EfficiencySheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.closeDetail) private var closeDetail
 
     let hasAnyBattery: Bool
 
@@ -56,7 +57,7 @@ struct EfficiencySheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
+                    Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {
                         Label("Close", systemImage: "xmark")
                             .labelStyle(.iconOnly)
                             .foregroundStyle(.green)

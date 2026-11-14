@@ -2,6 +2,8 @@ import SwiftUI
 
 struct BatterySheet: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.closeDetail) private var closeDetail
+    @Environment(\.detailPlacement) private var detailPlacement
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.energyManager) var energyManager
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -49,7 +51,7 @@ struct BatterySheet: View {
                         || model.overviewData.currentBatteryChargeRate != nil
                     {
                         if !model.overviewData.isStaleData {
-                            if verticalSizeClass == .compact {
+                            if verticalSizeClass == .compact || detailPlacement == .section {
                                 landscapeContent
                             } else {
                                 portraitContent
@@ -74,11 +76,13 @@ struct BatterySheet: View {
         .navigationTitle("Battery")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    Label("Close", systemImage: "xmark")
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(.green)
+            if detailPlacement != .section {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {
+                        Label("Close", systemImage: "xmark")
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(.green)
+                    }
                 }
             }
         }

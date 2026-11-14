@@ -6,6 +6,7 @@ struct BatteryBoubleView: View {
     var batteryForecast: BatteryForecast?
 
     @State var showBatterySheet: Bool = false
+    @Environment(HomeDetailRouter.self) private var router: HomeDetailRouter?
 
     private static let maxForecastDuration: TimeInterval = 24 * 3600
 
@@ -22,7 +23,9 @@ struct BatteryBoubleView: View {
         if currentBatteryLevel != nil {
             let level = currentBatteryLevel ?? 0
 
-            Button { showBatterySheet = true } label: {
+            Button {
+                if router?.open(.battery) != true { showBatterySheet = true }
+            } label: {
                 EnergyCard(
                     icon: batteryIconName,
                     iconColor: batteryColor(level: level),
@@ -43,8 +46,9 @@ struct BatteryBoubleView: View {
                 )
             }
             .buttonStyle(CardButtonStyle())
+            .detailSelection(router?.detail == .battery)
             .sheet(isPresented: $showBatterySheet) {
-                NavigationView {
+                NavigationStack {
                     BatterySheet()
                 }
                 .presentationDetents(

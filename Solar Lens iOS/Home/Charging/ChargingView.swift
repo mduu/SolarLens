@@ -32,9 +32,12 @@ struct ChargingStationCard: View {
     var station: ChargingStation
     var applyCardStyle: Bool = true
     @State private var showChargingModeSelection = false
+    @Environment(HomeDetailRouter.self) private var router: HomeDetailRouter?
 
     var body: some View {
-        Button { showChargingModeSelection = true } label: {
+        Button {
+            if router?.open(.charging) != true { showChargingModeSelection = true }
+        } label: {
             HStack(spacing: 12) {
                 ZStack(alignment: .bottomTrailing) {
                     Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")

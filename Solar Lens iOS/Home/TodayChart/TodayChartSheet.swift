@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TodayChartSheet: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.closeDetail) private var closeDetail
     @Environment(\.colorScheme) var colorScheme
 
     /// Owned here rather than inside `ChartView` so the day switcher can sit in
@@ -29,7 +30,7 @@ struct TodayChartSheet: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
+                Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {
                     Label("Close", systemImage: "xmark")
                         .labelStyle(.iconOnly)
                         .foregroundStyle(.orange)

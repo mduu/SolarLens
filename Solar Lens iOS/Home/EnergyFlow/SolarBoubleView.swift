@@ -5,13 +5,16 @@ struct SolarBoubleView: View {
     var todaySolarProductionInWh: Double?
 
     @State var isChartSheetShown: Bool = false
+    @Environment(HomeDetailRouter.self) private var router: HomeDetailRouter?
 
     var body: some View {
         let todayKwh = (todaySolarProductionInWh ?? 0) / 1000
 
         let todayFormatted = todayKwh.localized(decimals: 1)
 
-        Button { isChartSheetShown = true } label: {
+        Button {
+            if router?.open(.production) != true { isChartSheetShown = true }
+        } label: {
             EnergyCard(
                 icon: "sun.max.fill",
                 iconColor: .orange,
@@ -22,8 +25,9 @@ struct SolarBoubleView: View {
             )
         }
         .buttonStyle(CardButtonStyle())
+        .detailSelection(router?.detail == .production)
         .sheet(isPresented: $isChartSheetShown) {
-            NavigationView {
+            NavigationStack {
                 TodayChartSheet()
             }
             .presentationDetents([.medium, .large])

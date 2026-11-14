@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DevicePrioritySheet: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.closeDetail) private var closeDetail
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
@@ -48,7 +49,7 @@ struct DevicePrioritySheet: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
+                Button(action: { if let closeDetail { closeDetail() } else { dismiss() } }) {
                     Label("Close", systemImage: "xmark")
                         .labelStyle(.iconOnly)
                         .foregroundStyle(.teal)
