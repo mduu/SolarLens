@@ -10,6 +10,8 @@ enum AppTab: Hashable {
     case battery
     case charging
     case grid
+    /// All of them behind one tab bar item, where there is no sidebar.
+    case devices
 }
 
 struct ContentView: View {
@@ -91,24 +93,31 @@ struct ContentView: View {
                 }
 
                 if layout != .compact {
+                    // Sidebar: one entry per device.
                     TabSection("Devices") {
                         if buildingState.overviewData.hasAnyBattery {
                             Tab("Battery", systemImage: "battery.75percent", value: AppTab.battery) {
-                                NavigationStack { BatterySheet() }
-                                    .environment(\.detailPlacement, .section)
+                                DevicesScreen(fixed: .battery)
                             }
                         }
                         if buildingState.overviewData.hasAnyCarChargingStation {
                             Tab("Charging", systemImage: "ev.charger", value: AppTab.charging) {
-                                ChargingModePickerView()
-                                    .environment(\.detailPlacement, .section)
+                                DevicesScreen(fixed: .charging)
                             }
                         }
                         Tab("Grid", systemImage: "network", value: AppTab.grid) {
-                            NavigationStack { GridSheet() }
-                                .environment(\.detailPlacement, .section)
+                            DevicesScreen(fixed: .grid)
                         }
                     }
+                    .defaultVisibility(.hidden, for: .tabBar)
+
+                    // Tab bar: a section would collapse into one item that
+                    // only shows its first entry, so it gets a single item
+                    // with a picker inside instead.
+                    Tab("Devices", systemImage: "powerplug", value: AppTab.devices) {
+                        DevicesScreen()
+                    }
+                    .defaultVisibility(.hidden, for: .sidebar)
                 }
             }
             // Sidebar on a wide iPad or Mac window, collapsible into a tab
@@ -202,7 +211,8 @@ struct ContentView: View {
             tabSelection.selectedTab = .automation
         case .automation where !hasAutomation:
             tabSelection.selectedTab = .notifications
-        case .battery where layout == .compact,
+        case .devices where layout == .compact,
+             .battery where layout == .compact,
              .charging where layout == .compact,
              .grid where layout == .compact:
             tabSelection.selectedTab = .now

@@ -56,6 +56,9 @@ extension EnvironmentValues {
     /// Closes the detail pane. `nil` inside a sheet, where `dismiss` applies.
     @Entry var closeDetail: (() -> Void)? = nil
     @Entry var detailPlacement: DetailPlacement = .sheet
+    /// Set where the screen around a detail view already says what it is,
+    /// and its navigation bar would only add an empty band.
+    @Entry var detailHidesNavigationBar = false
 }
 
 extension View {

@@ -4,6 +4,7 @@ struct ChargingModePickerView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.closeDetail) private var closeDetail
     @Environment(\.detailPlacement) private var detailPlacement
+    @Environment(\.detailHidesNavigationBar) private var hidesNavigationBar
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
@@ -43,6 +44,7 @@ struct ChargingModePickerView: View {
             }
             .navigationTitle("Charging")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(hidesNavigationBar ? .hidden : .automatic, for: .navigationBar)
             .toolbar {
                 if detailPlacement != .section {
                     ToolbarItem(placement: .navigationBarLeading) {

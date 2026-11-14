@@ -4,6 +4,7 @@ struct GridSheet: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.closeDetail) private var closeDetail
     @Environment(\.detailPlacement) private var detailPlacement
+    @Environment(\.detailHidesNavigationBar) private var hidesNavigationBar
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.energyManager) var energyManager
 
@@ -114,6 +115,7 @@ struct GridSheet: View {
         }
         .navigationTitle("Grid")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(hidesNavigationBar ? .hidden : .automatic, for: .navigationBar)
         .toolbar {
             if detailPlacement != .section {
                 ToolbarItem(placement: .navigationBarLeading) {

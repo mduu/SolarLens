@@ -11,6 +11,8 @@ final class TabSelection {
     /// Width of the whole window. A screen narrower than this has the
     /// sidebar beside it.
     var windowWidth: CGFloat = 0
+    /// The device last looked at, shown by the tab bar's Devices item.
+    var lastDevice: AppTab = .battery
     private init() {}
 }
 
