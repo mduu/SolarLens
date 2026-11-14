@@ -6,7 +6,7 @@ This document tracks changes to the [Solar Manager external API](https://externa
 
 ## How to use this file
 
-1. **Periodically** download the latest swagger from https://cloud.solar-manager.ch/swagger.json
+1. **Periodically** download the latest swagger from https://cloud.solar-manager.ch/swagger.json (redirects to `/solarManager/swagger.json` — use `curl -L`)
 2. **Diff** it against the current baseline in `externals/sm_api_swaggers/`
 3. **Document** any relevant changes below (new endpoints, removed endpoints, changed parameters, deprecations)
 4. **Save** the new swagger file in `externals/sm_api_swaggers/` with its version number (e.g., `swagger_1.58.0.json`)
@@ -28,15 +28,15 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 
 | Method | Endpoint | Features | Deprecated? |
 |--------|----------|----------|-------------|
-| POST | `/v1/oauth/login` | Login (all platforms) | — |
-| POST | `/v1/oauth/refresh` | Automatic token refresh / session management | — |
+| POST | `/v1/oauth/login` | Login (all platforms) | ⚠️ **Yes** — since 2026-05, removal **2027-06**. Replaced by API Keys + `/v3/auth/refresh` |
+| POST | `/v1/oauth/refresh` | Automatic token refresh / session management | ⚠️ **Yes** — since 2026-05, removal **2027-06**. Replaced by `/v3/auth/refresh` |
 
 ### Data – Read
 
 | Method | Endpoint                            | Features                                                      | Deprecated?                                                                            |
 | ------ | ----------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | GET    | `/v1/users`                         | System info, gateway discovery, account setup                 | —                                                                                      |
-| GET    | `/v1/info/sensors/{smId}`           | Sensor/device discovery, battery & charger detection          | —                                                                                      |
+| GET    | `/v1/info/sensors/{smId}`           | Sensor/device discovery, battery & charger detection          | ⚠️ **Yes** — since 2026-05, removal **2027-05**. Replaced by `/v3/users/{smId}/devices` |
 | GET    | `/v1/chart/gateway/{smId}`          | Dashboard real-time energy flow                               | —                                                                                      |
 | GET    | `/v1/overview`                      | Energy overview statistics                                    | —                                                                                      |
 | GET    | `/v1/statistics/gateways/{smId}`    | Today's stats, daily/weekly/monthly statistics, solar details | —                                                                                      |
@@ -69,27 +69,31 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 | Field | Value |
 |-------|-------|
 | **API Title** | Solar Manager external API |
-| **Version** | 1.79.13 |
-| **Local file** | `externals/sm_api_swaggers/swagger_1.79.13.json` |
-| **Date recorded** | 2026-03-23 |
+| **Version** | 1.91.4 |
+| **Local file** | `externals/sm_api_swaggers/swagger_1.91.4.json` |
+| **Date recorded** | 2026-11-14 |
 
-### Endpoint Summary (v1.79.13)
+### Endpoint Summary (v1.91.4)
 
-#### Auth (2 endpoints, unchanged)
+#### Auth (3 endpoints)
 
 | Method | Endpoint | Notes |
 |--------|----------|-------|
-| POST | `/v1/oauth/login` | Email/password login, returns access + refresh token |
-| POST | `/v1/oauth/refresh` | Refresh access token |
+| POST | `/v1/oauth/login` | **DEPRECATED** — Email/password login. Deprecated 2026-05, removal 2027-06. Switch to API Keys + `/v3/auth/refresh` |
+| POST | `/v1/oauth/refresh` | **DEPRECATED** — Refresh access token. Deprecated 2026-05, removal 2027-06. Use `/v3/auth/refresh` |
+| POST | `/v3/auth/refresh` | **NEW** — Exchange an API Key (used as refresh token, `grant_type=refresh_token`) for a 1 h access token. With key rotation enabled, every call returns a new refresh token and invalidates the old one (valid 30 days) |
 
-#### Users (13 endpoints)
+Security schemes: `bearerAuth` (JWT), `apiKey` (`x-api-key` header), `basic`.
+
+#### Users (14 endpoints)
 
 | Method | Endpoint | Notes |
 |--------|----------|-------|
 | GET | `/v1/users` | Current user info and gateway list |
 | GET | `/v1/info/user/{uId}` | User details by ID |
-| GET | `/v1/info/gateway/{smId}` | Gateway info |
-| GET | `/v1/info/sensors/{smId}` | All sensors for a gateway |
+| GET | `/v1/info/gateway/{smId}` | Gateway info (now incl. EEBUS info) |
+| GET | `/v1/info/sensors/{smId}` | **DEPRECATED** — All sensors for a gateway. Deprecated 2026-05, removal 2027-05. Use `/v3/users/{smId}/devices` |
+| GET | `/v3/users/{smId}/devices` | **NEW** — Devices incl. configuration (type, priority, tag, car name, device-specific `data` object) |
 | GET | `/v1/customers/{smId}` | Customer info (v1) |
 | GET | `/v2/customers` | All customers (v2) |
 | GET | `/v2/customers/{smId}` | Customer info (v2) |
@@ -112,7 +116,7 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 | GET | `/v1/consumption/gateway/{smId}/range` | Consumption range data |
 | GET | `/v1/statistics/gateways/{smId}` | Historical statistics |
 | GET | `/v1/forecast/gateways/{smId}` | Forecast data |
-| GET | `/v1/data/string/{stringId}/range` | String inverter range data |
+| GET | `/v1/data/string/{stringId}/range` | **DEPRECATED** — String inverter range data. Deprecated 2025-06, removal 2026-06 (date already passed) |
 | GET | `/v1/data/zev/{smId}` | ZEV (multi-tenant) data |
 | GET | `/v3/users/{smId}/data/forecast` | Forecast (v3) |
 | GET | `/v3/users/{smId}/data/range` | Range data (v3) |
@@ -122,7 +126,7 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 
 | Method | Endpoint                                     | Notes                                                                                  |
 | ------ | -------------------------------------------- | -------------------------------------------------------------------------------------- |
-| GET    | `/v1/info/sensor/{sensorId}`                 | Sensor/device info                                                                     |
+| GET    | `/v1/info/sensor/{sensorId}`                 | **DEPRECATED** — Sensor/device info. Deprecated 2026-05, removal 2027-05. Use `/v3/users/{smId}/devices` |
 | GET    | `/v1/consumption/sensor/{sensorId}`          | Sensor consumption data                                                                |
 | GET    | `/v1/data/sensor/{sensorId}/range`           | Sensor range data (v1)                                                                 |
 | GET    | `/v3/devices/{deviceId}/data/range`          | Device range data (v3)                                                                 |
@@ -132,8 +136,8 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 | GET    | `/v1/control/tariff`                         | Tariff control info                                                                    |
 | PUT    | `/v1/configure/sensor-priority/{sensorId}`   | Set sensor priority                                                                    |
 | PUT    | `/v1/control/battery/{sensorId}`             | Control battery (v1)                                                                   |
-| PUT    | `/v2/control/battery/{sensorId}`             | Control battery (v2)                                                                   |
-| PUT    | `/v1/control/car-charger/{sensorId}`         | Control EV charger                                                                     |
+| PUT    | `/v2/control/battery/{sensorId}`             | Control battery (v2). v1.91: mode 6 renamed "AI Optimization" → **Aria** (+ `mpc*` settings), new `tariff*` limit fields |
+| PUT    | `/v1/control/car-charger/{sensorId}`         | Control EV charger. v1.91: modes renumbered/extended (6 = Charging Target kWh, 7 = Charging Target SoC, **8 = Aria**), new schedule fields |
 | PUT    | `/v1/control/car-charging-system/{sensorId}` | **NEW** — Control car charging system (modes: Max Performance, Optimized, No Charging) |
 | PUT    | `/v1/control/heat-pump/{sensorId}`           | Control heat pump                                                                      |
 | PUT    | `/v1/control/inverter/{sensorId}`            | Control inverter                                                                       |
@@ -147,11 +151,49 @@ Overview of which Solar Manager API endpoints Solar Lens currently calls, mapped
 
 - `sensorId` and `deviceId` are identical. All v1 endpoints using `sensorId` will eventually be replaced with v3 endpoints using `deviceId`.
 - v3 endpoints continue to expand alongside v1/v2 — several v1 endpoints now have v3 replacements and deprecation timelines.
+- **Aria** is Solar Manager's new name for the former "AI Optimization" (MPC-based) mode — battery mode 6, heat pump mode 8, water heater mode 7; new for car chargers as mode 8.
 - Car charging system control (`/v1/control/car-charging-system/{sensorId}`) is a new endpoint distinct from the existing car charger control (`/v1/control/car-charger/{sensorId}`).
 
 ---
 
 ## Changelog
+
+### v1.91.4 (2026-11-14)
+
+**File:** `externals/sm_api_swaggers/swagger_1.91.4.json`
+(The swagger URL now redirects to `https://cloud.solar-manager.ch/solarManager/swagger.json`; title is now "Solar Manager External API".)
+
+**New endpoints:**
+- `POST /v3/auth/refresh` — API Key based auth: the API Key acts as refresh token and is exchanged for a 1 h access token (`RefreshTokenResponse`, snake_case: `access_token`, `refresh_token`, `expires_in`, `token_type`, `scope`). With key rotation enabled, each call rotates the refresh token (30 days validity).
+- `GET /v3/users/{smId}/devices` — Device list with configuration (`DevicesConfigV3Schema`: `_id`, `priority`, `type` enum incl. `battery`, `carcharging`, `carchargingsystem`, `v2x`, `heatpump`, …, `tag`, `carName`, untyped `data` object). Replaces `/v1/info/sensors` and `/v1/info/sensor`.
+
+**Changed endpoints (relevant to Solar Lens):**
+- `PUT /v1/control/car-charger/{sensorId}` — `chargingMode` max 7 → 8. Modes now: 6 = Charging Target (kWh), 7 = Charging Target (SoC), **8 = Aria**. New body fields: `chargingTargetSocMax`, `minimumChargeQuantityTargetAmountMax`, `chargingTargetSchedule` / `minimumChargeQuantityTargetSchedule` (per weekday `min`/`max`/`endTime`), `chargingTargetSelectCarIds`.
+- `PUT /v2/control/battery/{sensorId}` — mode 6 "AI Optimization" renamed to **Aria** with settings `mpcLowerSocLimit`, `mpcUpperSocLimit`, `mpcChargingFromGrid`. New tariff fields: `tariffPriceMode` (0/1/2), `tariffAbsolute/Percentage/Offset{Charge,Discharge}Limit`, `tariffDischargeSocLimit`, `tariffPriceLimitSocMin`.
+- `PUT /v1/control/heat-pump/{sensorId}` (mode 8) and `/v1/control/water-heater/{sensorId}` (mode 7) — "AI Optimization" renamed to Aria, new `mpc*` settings.
+- `GET /v3/users/{smId}/data/stream` and `GET /v3/devices/{deviceId}/data/range` — device `soc` changed `integer` → `number`; many new device fields: `mode`, `targetPower`, `targetPercent`, `targetCurrent`, `targetPhases`, `limitType`, `percent`, `currentL1-3`, `voltageL1-3`, `temperatureInside/Outside/Supply/Return`; range additionally `iWhTotal`, `eWhTotal`, `remainingRange`, `updatedAt`.
+- `GET /v3/users/{smId}/data/range` — new `fw` (firmware) field per data point.
+- `GET /v3/users/{smId}/tariffs` — removed `country` and `dynamicTariff.oauth2TokenId`; added `templateKey`, `solarTariff`, `dynamicTariff.label`, `dynamicTariff.subscriptionId`.
+- `GET /v3/users/{smId}/tariff/dynamic` — each price entry now carries its own `currency`.
+- `GET /v1/tariff/gateways/{smId}` — `commonSeasons.*` changed from object to array of `{from, tariff: low|high}` (Solar Lens does not decode this field).
+- `GET /v1/overview` — new `consumption.thisYear`.
+- `GET /v1/info/sensors/{smId}` — `waterHeaterType` now enum `Heater` / `HP`.
+
+**Removed / deprecated endpoints:**
+- `POST /v1/oauth/login` — deprecated 2026-05, **removal 2027-06**. Replaced by API Keys + `/v3/auth/refresh`
+- `POST /v1/oauth/refresh` — deprecated 2026-05, **removal 2027-06**. Replaced by `/v3/auth/refresh`
+- `GET /v1/info/sensors/{smId}` — deprecated 2026-05, **removal 2027-05**. Replaced by `/v3/users/{smId}/devices`
+- `GET /v1/info/sensor/{sensorId}` — deprecated 2026-05, removal 2027-05. Replaced by `/v3/users/{smId}/devices`
+- `GET /v1/data/string/{stringId}/range` — now marked deprecated 2025-06, removal 2026-06 (not used by Solar Lens)
+- No endpoints removed yet.
+
+**Impact on Solar Lens:**
+- [ ] **Auth migration (deadline 2027-06):** `SolarManagerApiClient.login()` / refresh use `/v1/oauth/*`. Login must move to API Keys + `/v3/auth/refresh` — this changes the onboarding UX (user creates an API Key in Solar Manager instead of entering email/password) and needs a migration path for existing installs, incl. Watch/tvOS/widgets keychain sharing and key rotation handling.
+- [ ] **Device discovery migration (deadline 2027-05):** `/v1/info/sensors/{smId}` → `/v3/users/{smId}/devices` (`SensorInfosV1Response`). The v3 response has no live values (`signal`, `soc`) — those must come from the v3 stream.
+- [ ] **Charging mode 8 (Aria):** `ChargingMode` decodes unknown values as `.off` → a car in Aria mode is shown as "off". Add `case aria = 8`.
+- [ ] **Battery mode 6 (Aria):** `BatteryMode` falls back to `.StandardControlled` for 6. Add the Aria case.
+- [ ] **`soc` is now `number`:** `DataStreamV3Device.soc` is `Int?` with synthesized decoding — a fractional value would fail the *whole* stream decode. `DataDeviceV3Schema.soc` silently becomes `nil` (`try? Int`). Change both to `Double`.
+- [ ] Feature opportunities: Aria mode switching (battery/charger), charging target schedules, per-phase current/voltage on the charger, heat-pump temperatures, `remainingRange` history, `consumption.thisYear`.
 
 ### Solar Lens integration update (2026-06-28)
 
