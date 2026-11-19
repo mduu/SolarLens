@@ -103,3 +103,7 @@ marketing/app_store_screens/**/*.webp
 marketing/app_store_screens/**/*.psd
 marketing/app_store_screens/**/*.pxd
 marketing/v[0-9]*/
+# From 4.8 on, the release's announcement image and the screenshots it was
+# built from are kept as references for the next release.
+!marketing/v4.8/
+marketing/**/.DS_Store
