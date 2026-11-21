@@ -616,21 +616,39 @@ nav {
     margin-bottom: 28px;
 }
 
-.ipad-frame {
-    max-width: 600px;
+.ipad-stack {
+    display: grid;
     width: 100%;
+    max-width: 640px;
     justify-self: end;
-    padding: 10px;
-    border-radius: 26px;
+}
+
+.ipad-frame {
+    grid-area: 1 / 1;
+    width: 78%;
+    padding: 8px;
+    border-radius: 22px;
     background: #1D1D1F;
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+}
+
+.ipad-back {
+    justify-self: end;
+    align-self: start;
+}
+
+.ipad-front {
+    justify-self: start;
+    align-self: end;
+    margin-top: 30%;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
 }
 
 .ipad-frame img {
     display: block;
     width: 100%;
     height: auto;
-    border-radius: 17px;
+    border-radius: 15px;
 }
 
 .ipad-points {
@@ -674,9 +692,9 @@ nav {
         gap: 36px;
     }
 
-    .ipad-frame {
+    .ipad-stack {
         justify-self: center;
-        max-width: 520px;
+        max-width: 560px;
     }
 
     .ipad-text {
@@ -691,12 +709,12 @@ nav {
     }
 
     .ipad-frame {
-        padding: 6px;
-        border-radius: 16px;
+        padding: 4px;
+        border-radius: 12px;
     }
 
     .ipad-frame img {
-        border-radius: 11px;
+        border-radius: 8px;
     }
 }
 
