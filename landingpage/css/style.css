@@ -803,6 +803,10 @@ nav {
     background: linear-gradient(135deg, #9CCC65, #558B2F);
 }
 
+.feature-card:nth-child(15) .feature-icon {
+    background: linear-gradient(135deg, #34C759, #1E8E3E);
+}
+
 .feature-card h3 {
     font-size: 18px;
     font-weight: 600;
