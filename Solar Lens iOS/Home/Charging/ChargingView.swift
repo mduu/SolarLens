@@ -38,7 +38,9 @@ struct ChargingStationCard: View {
         Button {
             if router?.open(.charging) != true { showChargingModeSelection = true }
         } label: {
-            HStack(spacing: 12) {
+            // Tight spacing: on narrow cards (iPhone Duo outer display) every
+            // point goes to the user-chosen station name.
+            HStack(spacing: 8) {
                 ZStack(alignment: .bottomTrailing) {
                     Image(systemName: station.currentPower > 0 ? "ev.charger.fill" : "ev.charger")
                         .font(.title3)
@@ -77,7 +79,7 @@ struct ChargingStationCard: View {
                     }
                 }
 
-                Spacer()
+                Spacer(minLength: 0)
 
                 DisclosureChevron()
             }
