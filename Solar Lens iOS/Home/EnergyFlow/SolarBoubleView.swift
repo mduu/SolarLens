@@ -30,8 +30,17 @@ struct SolarBoubleView: View {
             NavigationStack {
                 TodayChartSheet()
             }
-            .presentationDetents([.medium, .large])
+            .presentationDetents([.custom(ChartSheetDetent.self), .large])
         }
+    }
+}
+
+/// Half height like `.medium` on regular phones. On short screens (the iPhone
+/// Duo's outer display) half would leave the chart a sliver, so take more.
+private struct ChartSheetDetent: CustomPresentationDetent {
+    static func height(in context: Context) -> CGFloat? {
+        let fraction = context.maxDetentValue < 700 ? 0.75 : 0.5
+        return context.maxDetentValue * fraction
     }
 }
 
