@@ -2,6 +2,8 @@ import SwiftUI
 
 struct HomePortraitLayout: View {
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
+    /// Room above the header for the status bar / Dynamic Island.
+    var topPadding: CGFloat = 65
     @Binding var showError: Bool
     let solarDetailsData: SolarDetailsData?
     let onRefresh: () -> Void
@@ -11,7 +13,7 @@ struct HomePortraitLayout: View {
     var body: some View {
         VStack(spacing: 10) {
             HeaderView(onRefresh: onRefresh, showError: $showError)
-                .padding(.top, 65)
+                .padding(.top, topPadding)
 
             Spacer()
 

@@ -19,6 +19,20 @@ struct HomeScreen: View {
     @State private var screenLayout: LayoutWidth = .compact
     @State private var screenWidth: CGFloat = 0
     @State private var tabSelection = TabSelection.shared
+    /// Top safe-area inset of the screen. The content scrolls under the
+    /// status bar, so the header is pushed down by this much itself: about
+    /// 62 pt below a Dynamic Island, almost nothing on the iPhone Duo's
+    /// outer display, whose camera sits at the side.
+    @State private var topSafeAreaInset: CGFloat = 62
+
+    /// On the iPhone (including the iPhone Duo, whose tab bar sits at the
+    /// side) nothing floats across the top; on the iPad the tab bar does.
+    private var isPhone: Bool { UIDevice.current.userInterfaceIdiom == .phone }
+
+    /// Where the header starts. The iPad keeps clear of its floating tab bar.
+    private var headerTopPadding: CGFloat {
+        isPhone ? max(topSafeAreaInset, 13) + 3 : 65
+    }
 
     /// The sidebar takes a good 300 pt; anything less is rounding.
     private var sidebarIsVisible: Bool {
@@ -88,6 +102,11 @@ struct HomeScreen: View {
         } action: { newValue in
             screenWidth = newValue
         }
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.safeAreaInsets.top
+        } action: { newValue in
+            topSafeAreaInset = newValue
+        }
         // The pane floats over the dashboard rather than pushing it aside:
         // an inspector column would re-flow every tile the moment one of
         // them is tapped.
@@ -139,15 +158,16 @@ struct HomeScreen: View {
         if isLoadingTimedOut() {
             loadingTimeoutView
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.top, 65)
+                .padding(.top, headerTopPadding)
         } else if isLoading() {
             VStack {
                 MainProgressView()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.top, 65)
+            .padding(.top, headerTopPadding)
         } else {
             HomePortraitLayout(
+                topPadding: headerTopPadding,
                 showError: $showError,
                 solarDetailsData: solarDetailsData,
                 onRefresh: { refreshAll() }
@@ -167,13 +187,13 @@ struct HomeScreen: View {
         if isLoadingTimedOut() {
             loadingTimeoutView
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.top, 65)
+                .padding(.top, headerTopPadding)
         } else if isLoading() {
             VStack {
                 MainProgressView()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.top, 65)
+            .padding(.top, headerTopPadding)
         } else {
             HomeDashboardLayout(
                 showError: $showError,
