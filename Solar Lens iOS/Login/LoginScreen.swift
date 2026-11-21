@@ -9,122 +9,134 @@ struct LoginScreen: View {
     @FocusState private var focusedField: Field?
 
     private enum Field { case email, password }
+    private let errorMessageID = "loginErrorMessage"
 
     var body: some View {
         ZStack {
             LoginBackgroundView()
                 .ignoresSafeArea()
 
-            ScrollView {
-                VStack(spacing: 24) {
-                    Spacer().frame(height: 40)
+            ScrollViewReader { scrollProxy in
+                ScrollView {
+                    VStack(spacing: 24) {
+                        Spacer().frame(height: 40)
 
-                    // App icon
-                    Image("solarlens")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 120, height: 120)
-                        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                        // App icon
+                        Image("solarlens")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 120, height: 120)
+                            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
 
-                    // Title
-                    Text(verbatim: "Solar Lens")
-                        .font(.largeTitle.weight(.bold))
-                        .foregroundStyle(colorScheme == .dark ? .white : Color(h: 215, s: 0.40, b: 0.25))
-                        .padding(.bottom, 8)
+                        // Title
+                        Text(verbatim: "Solar Lens")
+                            .font(.largeTitle.weight(.bold))
+                            .foregroundStyle(colorScheme == .dark ? .white : Color(h: 215, s: 0.40, b: 0.25))
+                            .padding(.bottom, 8)
 
-                    // Login form card
-                    VStack(alignment: .leading, spacing: 24) {
-                        Text("Sign in with your Solar Manager account.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                        // Login form card
+                        VStack(alignment: .leading, spacing: 24) {
+                            Text("Sign in with your Solar Manager account.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
 
-                        // Grouped fields (Apple HIG style — stacked with divider)
-                        VStack(spacing: 0) {
-                            HStack(spacing: 10) {
-                                Image(systemName: "envelope.fill")
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 20)
-                                TextField("Email", text: $email)
-                                    .textContentType(.emailAddress)
-                                    .keyboardType(.emailAddress)
-                                    .autocapitalization(.none)
-                                    .focused($focusedField, equals: .email)
-                                    .submitLabel(.next)
-                                    .onSubmit { focusedField = .password }
+                            // Grouped fields (Apple HIG style — stacked with divider)
+                            VStack(spacing: 0) {
+                                HStack(spacing: 10) {
+                                    Image(systemName: "envelope.fill")
+                                        .foregroundStyle(.secondary)
+                                        .frame(width: 20)
+                                    TextField("Email", text: $email)
+                                        .textContentType(.emailAddress)
+                                        .keyboardType(.emailAddress)
+                                        .autocapitalization(.none)
+                                        .focused($focusedField, equals: .email)
+                                        .submitLabel(.next)
+                                        .onSubmit { focusedField = .password }
+                                }
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 12)
+
+                                Divider()
+                                    .padding(.leading, 44)
+
+                                HStack(spacing: 10) {
+                                    Image(systemName: "lock.fill")
+                                        .foregroundStyle(.secondary)
+                                        .frame(width: 20)
+                                    SecureField("Password", text: $password)
+                                        .textContentType(.password)
+                                        .focused($focusedField, equals: .password)
+                                        .submitLabel(.go)
+                                        .onSubmit { login() }
+                                }
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 12)
                             }
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 12)
-
-                            Divider()
-                                .padding(.leading, 44)
-
-                            HStack(spacing: 10) {
-                                Image(systemName: "lock.fill")
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 20)
-                                SecureField("Password", text: $password)
-                                    .textContentType(.password)
-                                    .focused($focusedField, equals: .password)
-                                    .submitLabel(.go)
-                                    .onSubmit { login() }
-                            }
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 12)
-                        }
-                        .background(
-                            .background.opacity(colorScheme == .dark ? 0.3 : 0.6),
-                            in: RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        )
-
-                        Button(action: login) {
-                            Text("Login")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(isValidLogin())
-                    }
-                    .padding(24)
-                    .background(
-                        .regularMaterial,
-                        in: RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    )
-                    .shadow(color: .black.opacity(0.15), radius: 20, y: 10)
-
-                    // Error message
-                    if model.didLoginSucceed == false {
-                        VStack(spacing: 8) {
-                            Label("Login failed!", systemImage: "exclamationmark.triangle.fill")
-                                .font(.headline)
-                                .foregroundColor(.white)
-
-                            Text(
-                                "Please make sure you are using the correct email and passwort from your Solar Manager login."
+                            .background(
+                                .background.opacity(colorScheme == .dark ? 0.3 : 0.6),
+                                in: RoundedRectangle(cornerRadius: 12, style: .continuous)
                             )
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.9))
-                            .multilineTextAlignment(.center)
-                        }
-                        .padding(16)
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            Color.red.opacity(0.85),
-                            in: RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        )
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                    }
 
-                    Spacer().frame(height: 40)
+                            // Error message — inside the card, right above the button, so it
+                            // stays in view on short screens (iPhone Duo outer display)
+                            // instead of ending up under the keyboard or the bottom edge.
+                            if model.didLoginSucceed == false {
+                                VStack(spacing: 8) {
+                                    Label("Login failed!", systemImage: "exclamationmark.triangle.fill")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+
+                                    Text(
+                                        "Please make sure you are using the correct email and passwort from your Solar Manager login."
+                                    )
+                                    .font(.subheadline)
+                                    .foregroundColor(.white.opacity(0.9))
+                                    .multilineTextAlignment(.center)
+                                }
+                                .padding(16)
+                                .frame(maxWidth: .infinity)
+                                .background(
+                                    Color.red.opacity(0.85),
+                                    in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                )
+                                .id(errorMessageID)
+                                .transition(.move(edge: .top).combined(with: .opacity))
+                            }
+
+                            Button(action: login) {
+                                Text("Login")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 14)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(isValidLogin())
+                        }
+                        .padding(24)
+                        .background(
+                            .regularMaterial,
+                            in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        )
+                        .shadow(color: .black.opacity(0.15), radius: 20, y: 10)
+
+                        Spacer().frame(height: 40)
+                    }
+                    .readableContentWidth(520)
+                    .padding(.horizontal, 30)
                 }
-                .readableContentWidth(520)
-                .padding(.horizontal, 30)
-            }
+                .onChange(of: model.didLoginSucceed) { _, succeeded in
+                    guard succeeded == false else { return }
+                    withAnimation { scrollProxy.scrollTo(errorMessageID, anchor: .center) }
+                }
+            }  // :ScrollViewReader
         }
         .animation(.easeInOut(duration: 0.3), value: model.didLoginSucceed)
     }
 
     private func login() {
+        // Free the room the keyboard takes, so a failure message is visible.
+        focusedField = nil
         Task {
             await model.tryLogin(email: email, password: password)
         }
