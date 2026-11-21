@@ -64,7 +64,13 @@ struct HomeScreen: View {
                             } else {
                                 landscapeContent
                                     .padding()
-                                    .padding(.horizontal, 30)
+                                    // Extra room beside the Dynamic Island. The
+                                    // iPhone Duo's outer display (~580 pt beside
+                                    // its side tab bar) cannot spare it.
+                                    .padding(.horizontal, screenWidth >= 700 ? 30 : 0)
+                                    // Centred when the screen is taller than
+                                    // the content (iPhone Duo outer display).
+                                    .frame(minHeight: rootGeometry.size.height)
                             }
 
                         }  // :ZStack
