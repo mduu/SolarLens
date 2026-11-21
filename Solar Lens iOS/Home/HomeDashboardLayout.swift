@@ -90,13 +90,15 @@ struct HomeDashboardLayout: View {
             // to match, so neither column ends in empty space.
             .fixedSize(horizontal: false, vertical: true)
         } else {
+            // Forecast and efficiency before the chart: what the iPhone shows
+            // at a glance stays above the fold; the chart is the detail.
             VStack(spacing: 16) {
                 flowGrid
-                dayChartCard
                 HStack(alignment: .top, spacing: 16) {
                     forecastCard
                     efficiencyCard
                 }
+                dayChartCard
                 todayFiguresCard
                 devicesCard
             }
