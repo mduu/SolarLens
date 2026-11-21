@@ -51,7 +51,8 @@ struct AutoResetChargingModeCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
+            // Fills the row's height when it stands beside the other card.
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .foregroundStyle(.primary)
             .background(
                 AICardBackground(

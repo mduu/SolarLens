@@ -6,6 +6,11 @@ struct AutomationScreen: View {
     @State private var batteryToCarSetupPresented = false
     @State private var autoResetSetupPresented = false
     @State private var logSheetPresented = false
+    /// Width the screen has; from 640 pt (iPad mini, iPhone Duo unfolded in
+    /// either orientation) the automation cards stand side by side instead
+    /// of in one long column.
+    @State private var availableWidth: CGFloat = 0
+    private var usesTwoColumns: Bool { availableWidth >= 640 }
 
     var body: some View {
         NavigationStack {
@@ -14,8 +19,13 @@ struct AutomationScreen: View {
                     headerCard
                     mainContent
                 }
-                .readableContentWidth(640)
+                .readableContentWidth(usesTwoColumns ? 1000 : 640)
                 .padding()
+            }
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                proxy.size.width
+            } action: { newValue in
+                availableWidth = newValue
             }
             .navigationTitle("Automation")
             .navigationBarTitleDisplayMode(.inline)
@@ -60,9 +70,20 @@ struct AutomationScreen: View {
     /// present for the charging-mode automation).
     @ViewBuilder
     private var mainContent: some View {
-        VStack(spacing: 12) {
-            batteryToCarSlot
-            autoResetSlot
+        if usesTwoColumns {
+            HStack(alignment: .top, spacing: 12) {
+                batteryToCarSlot
+                    .frame(maxWidth: .infinity)
+                autoResetSlot
+                    .frame(maxWidth: .infinity)
+            }
+            // Both cards as tall as the taller one.
+            .fixedSize(horizontal: false, vertical: true)
+        } else {
+            VStack(spacing: 12) {
+                batteryToCarSlot
+                autoResetSlot
+            }
         }
     }
 
