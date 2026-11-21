@@ -36,7 +36,7 @@ struct HeaderView: View {
                     .foregroundColor(.orange)
                 }
             }
-            .frame(width: sideWidth, alignment: .leading)
+            .frame(maxWidth: sideWidth, alignment: .leading)
             .padding(.leading, 16)
 
             Spacer()
@@ -52,7 +52,7 @@ struct HeaderView: View {
                     SettingsButton()
                 }
             }
-            .frame(width: sideWidth, alignment: .trailing)
+            .frame(maxWidth: sideWidth, alignment: .trailing)
             .padding(.trailing, 16)
 
         }  // :HStack

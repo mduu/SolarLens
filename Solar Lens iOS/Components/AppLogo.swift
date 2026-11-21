@@ -24,6 +24,10 @@ struct AppLogo: View {
                     .font(.system(size: 24, weight: .bold))
 
             }
+            // A brand name must never break mid-word, even when a narrow
+            // screen (e.g. the iPhone Duo's outer display) leaves little room.
+            .lineLimit(1)
+            .fixedSize()
 
         }  // :HStack
     }
