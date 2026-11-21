@@ -14,6 +14,34 @@ struct EfficiencyGaugeView: View {
     @AppStorage(GridCarbonRegion.storageKey)
     private var storedGridRegion = GridCarbonRegion.fallback.rawValue
 
+    private func treesLabel(_ impact: EcoImpact) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: "leaf.fill")
+                .font(.caption2)
+                .foregroundStyle(.green)
+            Text("like \(impact.wholeTrees) trees")
+                .font(.caption2)
+                .fontWeight(.medium)
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+        }
+        .fixedSize()
+    }
+
+    private func co2Label(_ impact: EcoImpact) -> some View {
+        Group {
+            if impact.showsCo2InTonnes {
+                Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") t CO₂)")
+            } else {
+                Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") kg CO₂)")
+            }
+        }
+        .font(.caption2)
+        .foregroundStyle(.secondary)
+        .lineLimit(1)
+        .fixedSize()
+    }
+
     var body: some View {
         let selfConsumption = todaySelfConsumptionRate ?? 0
         let autarky = todayAutarchyDegree ?? 0
@@ -74,23 +102,16 @@ struct EfficiencyGaugeView: View {
                     region: GridCarbonRegion(stored: storedGridRegion)
                 )
 
-                HStack(spacing: 5) {
-                    Image(systemName: "leaf.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.green)
-                    Text("like \(impact.wholeTrees) trees")
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.primary)
-                    Group {
-                        if impact.showsCo2InTonnes {
-                            Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") t CO₂)")
-                        } else {
-                            Text("(\(impact.avoidedCo2DisplayValue, specifier: "%.1f") kg CO₂)")
-                        }
+                // On narrow cards (iPhone Duo outer display) drop the CO₂
+                // figure rather than wrapping "like 13 trees" over two lines.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 5) {
+                        treesLabel(impact)
+                        co2Label(impact)
                     }
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    HStack(spacing: 5) {
+                        treesLabel(impact)
+                    }
                 }
             }
         }
