@@ -136,8 +136,12 @@ struct GridWeekCard: View {
                             .padding(.top, 2)
 
                         // Column 4: Mini chart
+                        // Flexible, so the fixed columns still fit narrow
+                        // sheets (iPhone Duo outer display) instead of
+                        // pushing the card past the sheet's edges.
                         DayMiniChart(data: day.data)
-                            .frame(width: 90, height: 36)
+                            .frame(minWidth: 40, maxWidth: 90)
+                            .frame(height: 36)
                     }
                     .padding(.vertical, 5)
 
