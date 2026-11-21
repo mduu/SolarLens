@@ -18,8 +18,22 @@ enum LayoutWidth: Comparable {
     static let mediumMinimum: CGFloat = 700
     static let wideMinimum: CGFloat = 1000
 
-    static func from(width: CGFloat) -> LayoutWidth {
-        if UIDevice.current.userInterfaceIdiom == .phone { return .compact }
+    /// - Parameters:
+    ///   - horizontal/vertical: The size classes of the view being laid out.
+    ///     An iPhone that is regular in both — the iPhone Duo unfolded, in
+    ///     either orientation — has an iPad-sized display and gets the iPad
+    ///     steps, at least `medium`. Apple's guidance for it: compact on the
+    ///     outer display, regular on the inner one. A Pro Max in landscape is
+    ///     regular only horizontally and keeps the iPhone layouts.
+    static func from(
+        width: CGFloat,
+        horizontal: UserInterfaceSizeClass? = nil,
+        vertical: UserInterfaceSizeClass? = nil
+    ) -> LayoutWidth {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            guard horizontal == .regular, vertical == .regular else { return .compact }
+            return width < wideMinimum ? .medium : .wide
+        }
         if width < mediumMinimum { return .compact }
         if width < wideMinimum { return .medium }
         return .wide
@@ -38,10 +52,16 @@ extension EnvironmentValues {
 /// `LayoutWidth` down, both as a closure argument and in the environment.
 struct LayoutWidthReader<Content: View>: View {
     @ViewBuilder var content: (LayoutWidth) -> Content
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         GeometryReader { geometry in
-            let layout = LayoutWidth.from(width: geometry.size.width)
+            let layout = LayoutWidth.from(
+                width: geometry.size.width,
+                horizontal: horizontalSizeClass,
+                vertical: verticalSizeClass
+            )
             content(layout)
                 .environment(\.layoutWidth, layout)
                 .frame(width: geometry.size.width, height: geometry.size.height)

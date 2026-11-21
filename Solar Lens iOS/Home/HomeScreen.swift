@@ -29,6 +29,14 @@ struct HomeScreen: View {
     /// side) nothing floats across the top; on the iPad the tab bar does.
     private var isPhone: Bool { UIDevice.current.userInterfaceIdiom == .phone }
 
+    /// Room the iPhone Duo needs for tiles beside the 420 pt pane: its
+    /// inner display in landscape (~870 pt), not upright (~670 pt).
+    private static let phonePaneMinimumWidth: CGFloat = 800
+
+    /// The pane starts below the header, so the logo and the Settings
+    /// button stay visible beside it.
+    private var phonePaneTopPadding: CGFloat { headerTopPadding + 58 }
+
     /// Where the header starts. The iPad keeps clear of its floating tab bar.
     private var headerTopPadding: CGFloat {
         isPhone ? max(topSafeAreaInset, 13) + 3 : 65
@@ -125,7 +133,7 @@ struct HomeScreen: View {
                     // Without the sidebar the tab bar floats across the top
                     // and does not reserve room for itself; start below it,
                     // or it covers the pane's close button.
-                    .padding(.top, sidebarIsVisible ? 12 : 64)
+                    .padding(.top, sidebarIsVisible ? 12 : (isPhone ? phonePaneTopPadding : 64))
                     .padding(.bottom, 12)
                     .padding(.trailing, 12)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
@@ -133,11 +141,20 @@ struct HomeScreen: View {
         }
         .animation(.snappy(duration: 0.28), value: detailRouter.isShowingDetail)
         .onGeometryChange(for: LayoutWidth.self) { proxy in
-            LayoutWidth.from(width: proxy.size.width)
+            LayoutWidth.from(
+                width: proxy.size.width,
+                horizontal: horizontalSizeClass,
+                vertical: verticalSizeClass
+            )
         } action: { newValue in
             screenLayout = newValue
-            detailRouter.usesPane = newValue == .wide
-            if newValue != .wide { detailRouter.close() }
+            // The iPhone Duo's inner display is narrower than `.wide`, but in
+            // landscape its side tab bar leaves the tiles a column of their
+            // own next to the pane. Upright, the pane would cover them.
+            let usesPane = newValue == .wide
+                || (isPhone && newValue == .medium && screenWidth >= Self.phonePaneMinimumWidth)
+            detailRouter.usesPane = usesPane
+            if !usesPane { detailRouter.close() }
         }
     }
 
@@ -208,7 +225,7 @@ struct HomeScreen: View {
             )
             // The tab bar floats over the top without reserving room; with
             // the sidebar open there is only the status bar to clear.
-            .padding(.top, sidebarIsVisible ? 50 : 92)
+            .padding(.top, sidebarIsVisible ? 50 : (isPhone ? headerTopPadding - 12 : 92))
             .frame(maxHeight: .infinity, alignment: .top)
             .animation(nil, value: buildingState.overviewData.currentSolarProduction)
             .animation(nil, value: buildingState.overviewData.currentOverallConsumption)

@@ -62,16 +62,17 @@ struct HomeDetailPane: View {
         Group {
             switch router.detail {
             case .production:
-                NavigationStack { TodayChartSheet() }
+                NavigationStack { TodayChartSheet().paneSafeArea() }
             case .grid:
-                NavigationStack { GridSheet() }
+                NavigationStack { GridSheet().paneSafeArea() }
             case .battery:
-                NavigationStack { BatterySheet() }
+                NavigationStack { BatterySheet().paneSafeArea() }
             case .consumption:
                 NavigationStack {
                     DevicePrioritySheet(
                         pinnedConfig: router.pinnedConfig ?? PinnedDevicesConfiguration()
                     )
+                    .paneSafeArea()
                 }
             case .charging:
                 ChargingModePickerView()
@@ -87,5 +88,20 @@ struct HomeDetailPane: View {
         .environment(\.closeDetail) { router.close() }
         .environment(\.detailPlacement, .pane)
         .environment(\.detailHidesNavigationBar, true)
+    }
+}
+
+private extension View {
+    /// The pane never reaches the screen edge, yet on the iPhone Duo a
+    /// navigation stack inside it still inherits the window's trailing safe
+    /// area (the 84 pt status column) and leaves that as a gap down its right
+    /// side. Inside the stack it can be dropped.
+    @ViewBuilder
+    func paneSafeArea() -> some View {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            ignoresSafeArea(.container, edges: .trailing)
+        } else {
+            self
+        }
     }
 }

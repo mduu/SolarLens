@@ -2,6 +2,8 @@ import Charts
 import SwiftUI
 
 struct StatisticsScreen: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(CurrentBuildingState.self) var buildingState: CurrentBuildingState
     @State private var viewModel = StatisticsViewModel()
     @State private var showValues = false
@@ -137,7 +139,11 @@ struct StatisticsScreen: View {
             .navigationBarHidden(true)
             .environment(\.layoutWidth, layout)
             .onGeometryChange(for: LayoutWidth.self) { proxy in
-                LayoutWidth.from(width: proxy.size.width)
+                LayoutWidth.from(
+                    width: proxy.size.width,
+                    horizontal: horizontalSizeClass,
+                    vertical: verticalSizeClass
+                )
             } action: { newValue in
                 layout = newValue
             }
