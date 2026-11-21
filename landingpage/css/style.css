@@ -581,6 +581,89 @@ nav {
     }
 }
 
+/* ===== iPad showcase ===== */
+.ipad-showcase {
+    padding: 80px 0 88px;
+    background: var(--bg-alt);
+}
+
+.ipad-showcase .section-title {
+    margin-bottom: 16px;
+}
+
+.ipad-intro {
+    text-align: center;
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.55;
+}
+
+.ipad-frame {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 14px;
+    border-radius: 34px;
+    background: #1D1D1F;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+}
+
+.ipad-frame img {
+    display: block;
+    width: 100%;
+    border-radius: 22px;
+}
+
+.ipad-points {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 32px;
+    margin-top: 36px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.ipad-points li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ipad-points li::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--primary);
+    flex: none;
+}
+
+@media (max-width: 768px) {
+    .ipad-showcase {
+        padding: 56px 0 64px;
+    }
+
+    .ipad-frame {
+        padding: 8px;
+        border-radius: 20px;
+    }
+
+    .ipad-frame img {
+        border-radius: 13px;
+    }
+
+    .ipad-points {
+        flex-direction: column;
+        align-items: flex-start;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 /* ===== Features Section ===== */
 .features {
     padding: 96px 0;
